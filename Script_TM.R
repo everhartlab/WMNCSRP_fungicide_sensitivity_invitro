@@ -30,24 +30,73 @@ p <- ggplot(TM_filtered, aes(x = ecuatorial, y = polar, fill= ID))
 p +  geom_boxplot(notch = TRUE, aes(group =dose, experimental_replicate), outlier.colour = "#000000") + facet_wrap(~ ID)  +labs(title="Plot of dose ~ response by experimental_replicate", x ="Dose (ppm)", y = "Response (cm)")
 #Getting EC50 by ECtable function
 xx <- EC_table(TM_filtered, form = response ~ dose)
-# Filterring by baseline
-baseline <- xx %>% filter(sample=="1"|sample=="118"|sample=="123"|sample=="12B"|sample=="20"|sample=="21"|sample=="449"|sample=="461"|sample=="467"|sample=="475"|sample=="558"|sample=="564"|sample=="568"|sample=="581"|sample=="645"|sample=="667"|sample=="74SS1"|sample=="8"|sample=="87")
+
+#filterring by baseline
+baseline <-
+  xx %>% filter(
+    sample == "1" |
+      sample == "118" |
+      sample == "123" |
+      sample == "12B" |
+      sample == "129" |
+      sample == "20" |
+      sample == "21" |
+      sample == "449" |
+      sample == "461" |
+      sample == "467" |
+      sample == "475" |
+      sample == "558" |
+      sample == "564" |
+      sample == "568" |
+      sample == "581" |
+      sample == "645" |
+      sample == "800" |
+      sample == "667" | sample == "74SS1" | sample == "8" | sample == "87"
+  )
 summary(baseline)
-#Filterring by baseline
-survey<- xx %>% filter(sample=="1025"|sample=="1026"|sample=="1027"|sample=="1029"|sample=="1032"|sample=="1033"|sample=="318"|sample=="413"|sample=="62-02"|sample=="62-03"|sample=="62-04"|sample=="78-01"|sample=="78-02"|sample=="78-05"|sample=="H-01"|sample=="H-03"|sample=="H-04")
+#filterring by survey
+survey <-
+  xx %>% filter(
+    sample == "318" |
+      sample == "413" |
+      sample == "419" |
+      sample == "62-02" |
+      sample == "62-03" |
+      sample == "62-04" |
+      sample == "78-01" |
+      sample == "78-02" |
+      sample == "78-05" | 
+      sample == "H-01" |
+      sample == "H-03" |
+      sample == "H-04"|
+      sample == "I-20" |sample == "S-01"| sample == "W212"
+  )
 summary(survey)
+
+#filterring by treatmentyear2016
+treatmentyear2016 <-
+  xx %>% filter(
+    sample == "1025" |
+      sample == "1026" |
+      sample == "1027" |
+      sample == "1029" |
+      sample == "1032" |
+      sample == "1033" 
+  )
+summary(treatmentyear2016)
+
 
 # Getting the Relative growth (RG) at each dose
 RG <- TM_filtered %>% group_by(ID,dose) %>% summarise(mean_response=mean(response,na.rm=TRUE)) %>% spread(dose,mean_response) %>%  mutate(RG0.75=((`0.75`/`0`)*100)) %>% mutate(RG1=((`1`/`0`)*100)) %>% mutate(RG1.5=((`1.5`/`0`)*100)) %>% mutate(RG2=((`2`/`0`)*100)) %>% mutate(RG2.5=((`2.5`/`0`)*100)) %>%  mutate(RG10=((`10`/`0`)*100))
 
-
+#hdfdb
 
 TM_xx <-  xx %>% 
   select(-Estimate.10,-SE.10,-Estimate.90,-SE.90)
 
 names(TM_xx)[names(TM_xx) == "sample"] <- "ID"
 final_TM<-left_join (RG, TM_xx) %>% mutate(logEC50=(log(Estimate.50)))
-
+pdf("TM_assumptions_linearmodel_each_dose.pdf")
 ##
 finalRG0.75 <- lm(logEC50~RG0.75,final_TM) 
 summary(finalRG0.75)
@@ -89,3 +138,4 @@ summary(finalRG10)
 check_assumptions(finalRG2.5)
 
 ggplot(finalRG10,aes(x=logEC50, y=RG10))+  geom_point() + geom_smooth()
+dev.off()

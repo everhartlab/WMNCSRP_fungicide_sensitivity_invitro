@@ -38,13 +38,14 @@ tetraconazole_filtered <- tetraconazole_data %>%
 #                                 "Dose (ppm)", y = "Response (cm)")
 #Getting EC50 by ECtable
 xx <- EC_table(tetraconazole_filtered, form = response ~ dose)
-#Filterring by baseline
+#filterring by baseline
 baseline <-
   xx %>% filter(
     sample == "1" |
       sample == "118" |
       sample == "123" |
       sample == "12B" |
+      sample == "129" |
       sample == "20" |
       sample == "21" |
       sample == "449" |
@@ -56,30 +57,40 @@ baseline <-
       sample == "568" |
       sample == "581" |
       sample == "645" |
+      sample == "800" |
       sample == "667" | sample == "74SS1" | sample == "8" | sample == "87"
   )
 summary(baseline)
-#Filterring by baseline
+#filterring by survey
 survey <-
+  xx %>% filter(
+    sample == "318" |
+      sample == "413" |
+      sample == "419" |
+      sample == "62-02" |
+      sample == "62-03" |
+      sample == "62-04" |
+      sample == "78-01" |
+      sample == "78-02" |
+      sample == "78-05" | 
+      sample == "H-01" |
+      sample == "H-03" |
+      sample == "H-04"|
+      sample == "I-20" |sample == "S-01"| sample == "W212"
+  )
+summary(survey)
+
+#filterring by treatmentyear2016
+treatmentyear2016 <-
   xx %>% filter(
     sample == "1025" |
       sample == "1026" |
       sample == "1027" |
       sample == "1029" |
       sample == "1032" |
-      sample == "1033" |
-      sample == "318" |
-      sample == "413" |
-      sample == "62-02" |
-      sample == "62-03" |
-      sample == "62-04" |
-      sample == "78-01" |
-      sample == "78-02" |
-      sample == "78-05" | sample == "H-01" | sample == "H-03" |
-      sample == "H-04"
+      sample == "1033" 
   )
-summary(survey)
-
+summary(treatmentyear2016)
 
 RG <-
   tetraconazole_filtered %>% group_by(ID, dose) %>% summarise(mean_response =
@@ -93,7 +104,7 @@ tetraconazole_xx <-  xx %>%
 names(tetraconazole_xx)[names(tetraconazole_xx) == "sample"] <- "ID"
 final_tetraconazole <-
   left_join (RG, tetraconazole_xx) %>% mutate(logEC50 = (log(Estimate.50)))
-pdf("sample.pdf")
+pdf("tetraconazole_assumptions_linearmodel_each_dose.pdf")
 ##
 finalRG0.5 <- lm(logEC50 ~ RG0.5, final_tetraconazole)
 summary(finalRG0.5)
@@ -111,7 +122,7 @@ finalRG2 <- lm(logEC50 ~ RG2, final_tetraconazole)
 summary(finalRG2)
 check_assumptions(finalRG2)
 
-ggplot(finalRG0.04, aes(x = logEC50, y = RG0.04)) +  geom_point() + geom_smooth()
+ggplot(finalRG2, aes(x = logEC50, y = RG2)) +  geom_point() + geom_smooth()
 
 
 ###
@@ -120,11 +131,13 @@ summary(finalRG3)
 check_assumptions(finalRG3)
 
 ggplot(finalRG3, aes(x = logEC50, y = RG3)) +  geom_point() + geom_smooth()
-dev.off()
-#
 
-# finalRG5 <- lm(logEC50 ~ RG5, final_tetraconazole)
-# summary(finalR5)
-# check_assumptions(finalRG5)
-# 
-# ggplot(finalRG5, aes(x = logEC50, y = RG0.5)) +  geom_point() + geom_smooth()
+##
+
+finalRG5 <- lm(logEC50 ~ RG5, final_tetraconazole)
+summary(finalRG5)
+check_assumptions(finalRG5)
+
+ggplot(finalRG5, aes(x = logEC50, y = RG5)) +  geom_point() + geom_smooth()
+
+dev.off()

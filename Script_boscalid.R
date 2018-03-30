@@ -44,6 +44,7 @@ baseline <-
       sample == "118" |
       sample == "123" |
       sample == "12B" |
+      sample == "129" |
       sample == "20" |
       sample == "21" |
       sample == "449" |
@@ -55,30 +56,40 @@ baseline <-
       sample == "568" |
       sample == "581" |
       sample == "645" |
+      sample == "800" |
       sample == "667" | sample == "74SS1" | sample == "8" | sample == "87"
   )
 summary(baseline)
 #filterring by survey
 survey <-
   xx %>% filter(
-    sample == "1025" |
-      sample == "1026" |
-      sample == "1027" |
-      sample == "1029" |
-      sample == "1032" |
-      sample == "1033" |
       sample == "318" |
       sample == "413" |
+      sample == "419" |
       sample == "62-02" |
       sample == "62-03" |
       sample == "62-04" |
       sample == "78-01" |
       sample == "78-02" |
-      sample == "78-05" | sample == "H-01" | sample == "H-03" |
-      sample == "H-04"
-  )
+      sample == "78-05" | 
+      sample == "H-01" |
+      sample == "H-03" |
+      sample == "H-04"|
+    sample == "I-20" |sample == "S-01"| sample == "W212"
+    )
 summary(survey)
 
+#filterring by treatmentyear2016
+treatmentyear2016 <-
+  xx %>% filter(
+    sample == "1025" |
+      sample == "1026" |
+      sample == "1027" |
+      sample == "1029" |
+      sample == "1032" |
+      sample == "1033" 
+        )
+summary(treatmentyear2016)
 
 RG <-
   boscalid_filtered %>% group_by(ID, dose) %>% summarise(mean_response =
@@ -95,7 +106,7 @@ boscalid_xx <-  xx %>%
 names(boscalid_xx)[names(boscalid_xx) == "sample"] <- "ID"
 final_boscalid <-
   left_join (RG, boscalid_xx) %>% mutate(logEC50 = (log(Estimate.50)))
-pdf("sample.pdf")
+pdf("boscalid_assumptions_linearmodel_each_dose.pdf")
 ##
 finalRG0.025 <- lm(logEC50 ~ RG0.025, final_boscalid)
 summary(finalRG0.025)
