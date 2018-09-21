@@ -1,0 +1,1705 @@
+---
+title: "Analyses_Fungicide_sensitivity"
+author: "Nieto_Lopez"
+date: "9/20/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(ggplot2)
+library(ezec)
+#library(NRES803)
+library(broom)
+library(ggridges)
+library(cowplot)
+library(gridExtra)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Reading and subsetting data 
+
+```{r cars}
+#Reading and subsetting data boscalid
+boscaliddata <-
+  read.csv("data/boscalid_serialdilution_baseline(validationdata).csv")
+  boscaliddata <- subset(boscaliddata, select = -X)
+  boscaliddata$repeats <- rep_len(1:4, length.out = 2184)
+  ## Discarding dose at 0.4 ppm and isolate 800 because it has just one experimental replication ##
+  boscaliddata <- boscaliddata %>%
+    filter(!dose ==  0.4 & !ID == 800) %>%
+    group_by(ID, experimental_replicate, dose, ecuatorial, polar, repeats) %>%
+    filter(
+    !ID == "I-20" |
+    !experimental_replicate == 2 |
+    !dose == 0 |
+    !repeats == 3 ,
+    !ID == 1033 |
+    !experimental_replicate == 2 | !dose == 0 | !repeats == 4
+    ) %>%
+    mutate(growth = ((ecuatorial + polar) / 2))
+    
+#Reading and subsetting data picoxystrobin
+  picoxystrobin_data <-
+    read.csv("data/picoxystrobin_serialdi_BL-WMN_survey-WMNCSRP(validationdata).csv")
+    picoxystrobin_data$repeats <- rep_len(1:4, length.out = 2016)
+    ##Discarding some isolates due to they are not there##
+    picoxystrobin_data <- picoxystrobin_data %>%
+      group_by(ID, experimental_replicate, dose, ecuatorial, polar, repeats) %>%
+      filter(
+      !ID == "78-05" |
+      !experimental_replicate == 1 |
+      !dose == 0 |
+      !repeats == 2 ,
+      !ID == "62-04" |
+      !experimental_replicate == 2 |
+      !dose == 0 |
+      !repeats == 3,
+      !ID == "H-04" |
+      !experimental_replicate == 2 | !dose == 0 | !repeats == 2
+      ) %>%
+      mutate(growth = ((ecuatorial + polar) / 2))
+      
+#Reading and subsetting data tetraconazole
+tetraconazole_data <-
+  read.csv("data/tetraconazole_serialdi_BL-WMN_survey-WMNCSRP(validationdata).csv")
+  tetraconazole_data <- subset(tetraconazole_data, select = -(X:X.1))
+  tetraconazole_data$repeats <- rep_len(1:4, length.out = 2016)
+  ##Discarding some isolates due to they are not there##
+  tetraconazole_data <- tetraconazole_data %>%
+    group_by(ID, experimental_replicate, dose, ecuatorial, polar, repeats) %>%
+    filter(
+    !ID == "78-01" |
+    !experimental_replicate == 1 |
+    !dose == 0.5 ,
+    !ID == "78-01" |
+    !experimental_replicate == 1 |
+    !dose == 1 ,
+    !ID == "78-01" |
+    !experimental_replicate == 1 | !dose == 2
+    ) %>%
+    mutate(growth = ((ecuatorial + polar) / 2))
+#Reading and subsetting data TM
+  TMdata <-
+    read.csv("data/TM_serialdi_BL-WMN_survey-WMNCSRP(validationdata).csv")
+    TMdata <- subset(TMdata, select = -(X:X.6))
+    TMdata$repeats <- rep_len(1:4, length.out = 3192)
+    ## Discarding some isolates due to they are not there##
+    TMdata <- TMdata %>%
+      group_by(ID, experimental_replicate, dose, ecuatorial, polar, repeats) %>%
+      filter(!experimental_replicate == 1 |
+      !dose == 1.5 | !repeats == 3) %>%
+      mutate(growth = ((ecuatorial + polar) / 2))
+      
+#Reading and subsetting data discriminatory dose use
+    survey_data <-  read.csv("data/DD_survey-WMNCSRP.csv")
+    survey_data <- survey_data %>%
+    group_by(
+    ID,
+    repeats,
+    experimental_replicate,
+    sham.ecuatorial,
+    sham.polar,
+    picoxystrobin.ecuatorial,
+    picoxystrobin.polar,
+    boscalid.ecuatorial,
+    boscalid.polar,
+    tetraconazole.ecuatorial,
+    tetraconazole.polar,
+    TM.ecuatorial,
+    TM.polar,
+    control.ecuatorial,
+    control.polar
+    ) %>%
+    mutate(
+    sham.growth = ((sham.ecuatorial + sham.polar) / 2),
+    picoxystrobin.growth = ((
+    picoxystrobin.ecuatorial + picoxystrobin.polar
+    ) / 2),
+    boscalid.growth = ((boscalid.ecuatorial + boscalid.polar) / 2),
+    tetraconazole.growth = ((
+    tetraconazole.ecuatorial + tetraconazole.polar
+    ) / 2),
+    TM.growth = ((TM.ecuatorial + TM.polar) / 2),
+    control.growth = ((control.ecuatorial + control.polar) / 2)
+    ) %>%
+    ungroup()
+    
+
+```
+
+
+## Setting the groups of isolates
+
+```{r}
+baseline_isolates <- c("1","118", "123", "12B", "129", "20", "21", "449", "461", "467", "475", "558", "564", "568", "581", "645", "800", "667", "74SS1", "8", "87")
+survey_isolates <-  c("318", "413", "419", "62-02", "62-03", "62-04", "78-01", "78-02", "78-05", "H-01", "H-03", "H-04", "I-20", "S-01", "W212")
+treatmentyear2016_isolates <- c("1025", "1026", "1027", "1029", "1032","1033")
+mexican_bean_survey_isolates <- c("1870","1872", "1884", "1885")
+brazilian_soybean_survey_isolates <-  c("54C", "65B", "51C", "71B", "64D", "53B", "60A")
+beanSIproduction_survey_isolates1 <-  c("698", "699", "710", "711", "724", "725", "731", "732", "738", "739", "746")
+beanSIproduction_survey_isolates2 <-  c("751", "755", "756", "757", "764", "765", "771", "772", "786", "787")
+beanSIproduction_survey_isolates3 <-  c( "811", "812", "813", "814", "817", "818", "851", "852", "853", "855", "858", "859") 
+beanSIproduction_survey_isolates4 <-  c( "860", "861", "862", "867", "870", "871", "877", "878", "884", "885", "891", "892") 
+beanSIproduction_survey_isolates5 <-  c("896", "897", "901", "902", "905", "906", "908", "909", "911", "912", "914")
+
+bean_survey_year95year96year2004 <- c ("274", "307", "504", "505")
+soybean_treatmentyear2015_WI <- c( "2384", "2385", "2386","2388","2407", "2408")
+soybean_treatmentyear2015_WI_control <- c("2383")
+soybean_treatmentyear2016_MI <- c("1058", "1081", "1087", "1109", "1127","1128","1134", "1135", "1139")
+soybean_treatmentyear2016_MI_control <- c("1175")
+soybean_treatmentyear2016_IA <- c("1026","1027","1029")
+soybean_treatmentyear2017_IA <- c( "1328", "1329", "1330", "1331","1332","1340", "1345", "1365", "1366","1392")
+soybean_treatmentyear2017_IA_control <- c ("1327")
+soybean_treatmentyear2017_WI <- c("1502", "1582", "1620", "1622")
+soybean_treatmentyear2017_WI_control <- c("1541")
+soybean_treatmentyear2017_MI <- c("1671", "1672", "1691", "1692", "1712","1713","1721", "1722", "1731", "1732","1791")
+baseline_isolates_corroboration <- c("1","118", "123", "20", "74SS1", "8")
+survey_isolates_corroboration <-  c( "419", "78-02", "H-01", "H-03")
+
+bean_isolates_exposed_to_fungicides <- c("1870","1872", "1884", "1885", "698", "699", 
+                   "710", "711", "724", "725", "731", "732", 
+                   "738", "739", "746", "751", "755", "756", 
+                   "757", "764", "765", "771", "772", "786", 
+                   "787", "811", "812", "813", "814", "817", 
+                   "818", "851", "852", "853", "855", "858", 
+                   "859", "860", "861", "862", "867", "870", 
+                   "871", "877", "878", "884", "885", "891", 
+                   "892", "896", "897", "901", "902", "905", 
+                   "906", "908", "909", "911", "912", "914",
+                   "1","118", "123", "20", "74SS1", "8", 
+                   "274", "307", "504", "505")
+
+soybean_isolates_exposed_to_fungicides<- c( "2384", "2385", "2386","2388","2407", "2408", "2383", "1502", "1582", "1620", "1622", "1541", "1058", "1081", "1087", "1109", "1127","1128", "1134", "1135", "1139", "1175", "1671", "1672", 
+ "1691", "1692", "1712","1713","1721", "1722", "1731", "1732","1791","1026","1027","1029", "1328", "1329", "1330",          "1331","1332","1340", "1345", "1365", "1366",                "1392", "1327")
+
+
+soybean_WI <- c( "2384", "2385", "2386","2388","2407", "2408", 
+                 "2383", "1502", "1582", "1620", "1622", "1541")
+soybean_MI <- c("1058", "1081", "1087", "1109", "1127","1128",
+                 "1134", "1135", "1139", "1175", "1671", "1672", 
+                 "1691", "1692", "1712","1713","1721", "1722", 
+                 "1731", "1732","1791")
+soybean_IA <- c("1026","1027","1029", "1328", "1329", "1330", 
+                "1331","1332","1340", "1345", "1365", "1366",
+                "1392", "1327")
+
+
+Baseline<-
+  c(
+    "1",
+    "118",
+    "123",
+    "12B",
+    "129",
+    "20",
+    "21",
+    "449",
+    "461",
+    "467",
+    "475",
+    "558",
+    "564",
+    "568",
+    "581",
+    "645",
+    "800",
+    "667",
+    "74SS1",
+    "8",
+    "87",
+    "1",
+    "118",
+    "123",
+    "20",
+    "74SS1",
+    "8"
+  )
+Farmer_fields <-
+  c(
+    "318",
+    "413",
+    "419",
+    "62-02",
+    "62-03",
+    "62-04",
+    "78-01",
+    "78-02",
+    "78-05",
+    "H-01",
+    "H-03",
+    "H-04",
+    "I-20",
+    "S-01",
+    "W212",
+    "698",
+    "699",
+    "710",
+    "711",
+    "724",
+    "725",
+    "731",
+    "732",
+    "738",
+    "739",
+    "746",
+    "751",
+    "755",
+    "756",
+    "757",
+    "764",
+    "765",
+    "771",
+    "772",
+    "786",
+    "787",
+    "811",
+    "812",
+    "813",
+    "814",
+    "817",
+    "818",
+    "851",
+    "852",
+    "853",
+    "855",
+    "858",
+    "859",
+    "860",
+    "861",
+    "862",
+    "867",
+    "870",
+    "871",
+    "877",
+    "878",
+    "884",
+    "885",
+    "891",
+    "892",
+    "896",
+    "897",
+    "901",
+    "902",
+    "905",
+    "906",
+    "908",
+    "909",
+    "911",
+    "912",
+    "914",
+    "1025",
+    "1026",
+    "1027",
+    "1029",
+    "1032",
+    "1033",
+    "274",
+    "307",
+    "504",
+    "505"
+  )
+Fungicide_field_trials <-
+  c(
+    "2384",
+    "2385",
+    "2386",
+    "2388",
+    "2407",
+    "2408",
+    "1058",
+    "1081",
+    "1087",
+    "1109",
+    "1127",
+    "1128",
+    "1134",
+    "1135",
+    "1139",
+    "1026",
+    "1027",
+    "1029",
+    "1328",
+    "1329",
+    "1330",
+    "1331",
+    "1332",
+    "1340",
+    "1345",
+    "1365",
+    "1366",
+    "1392",
+    "1502",
+    "1582",
+    "1620",
+    "1622",
+    "1671",
+    "1672",
+    "1691",
+    "1692",
+    "1712",
+    "1713",
+    "1721",
+    "1722",
+    "1731",
+    "1732",
+    "1791",
+    "419",
+    "78-02",
+    "H-01",
+    "H-03"
+  )
+```
+## Creating a function for using the outputs of boxplot.stats function and notice the outlayers
+
+```{r}
+get_range <- function(mynumber) {
+  bb <- boxplot.stats(mynumber)
+  cc <- bb$stats
+  dd <- max(cc)
+  ee <- min(cc)
+  return(data.frame(upper = dd, lower = ee))
+}
+
+```
+## Analysis by fungicide
+#Boscalid
+
+```{r}
+#Boscalid fungicide taking the outlayers from the 8 observations of each one, it reduces from to #
+boscalid_filtered <- boscaliddata %>%
+  group_by(ID, dose) %>%
+  mutate(growth_range = list(get_range(growth))) %>%
+  unnest() %>%
+  filter(growth <= upper & growth >= lower) %>%
+  rename(response = growth) %>%
+  ungroup() %>%
+  select(c(ID, experimental_replicate, repeats, dose, response))
+
+##NORMALITY TEST-Shapiro_test, NO NORMALS##
+
+shapiro.test_boscalid <- boscalid_filtered %>%
+  group_by(ID) %>%
+  do(tidy(shapiro.test(.$response)))
+  
+boscalidfinal <-
+  left_join (shapiro.test_boscalid, boscalid_filtered) %>%
+  mutate(normality = ifelse(p.value > 0.05, "normal", "nonormal")) %>%
+  spread(experimental_replicate, response)
+  #View(boscalidfinal)
+
+##Wilcox test##
+wilcox_boscalid <- boscalidfinal %>%
+  group_by(ID, dose) %>%
+  do(tidy(wilcox.test(.$`1`, .$`2`, paired = TRUE)))
+  #View(wilcox_boscalid)
+##Anyways making linear model since the only required is normality of the errors once the results##
+# Getting EC50 by EC_table function
+xx <- EC_table(boscalid_filtered, form = response ~ dose)
+names(xx)[names(xx) == "sample"] <- "ID"
+boscalid_xx <-
+  xx %>% select(c("ID", "Estimate.50")) %>%
+  rename(EC50 = Estimate.50) %>%
+  group_by(ID, EC50) %>%
+  mutate(group = ifelse(
+    ID %in% baseline_isolates,
+    "baseline",
+    ifelse(
+      ID %in% survey_isolates,
+      "survey_isolates",
+      "treatmentyear2016_isolates"
+    )
+  )) %>% ungroup() %>% mutate(fungicide = "Boscalid")
+
+boscalid_xx$group <- as_factor(boscalid_xx$group)
+levels(boscalid_xx$group)[levels(boscalid_xx$group) == "survey_isolates"] <-
+  "Farmer fields"
+levels(boscalid_xx$group)[levels(boscalid_xx$group) == "treatmentyear2016_isolates"] <-
+  "Trial fields"
+levels(boscalid_xx$group)[levels(boscalid_xx$group) == "baseline"] <-
+  "Baseline"
+
+```
+## Filtering by each group to know the means of each group at first sight
+```{r}
+
+baseline <-  boscalid_xx %>% filter(ID %in% baseline_isolates)
+baselinee <- ( summary(baseline$EC50))
+baselinee[c(1,4,6)]
+survey <-  boscalid_xx %>% filter(ID %in% survey_isolates)
+surveyy <- ( summary(survey$EC50))
+surveyy[c(1,4,6)]
+treatmentyear2016 <- boscalid_xx %>% filter(ID %in% treatmentyear2016_isolates)
+treatmentyear2016_ <- ( summary(treatmentyear2016$EC50))
+treatmentyear2016_[c(1,4,6)]
+
+
+```
+## Procedure to get the Discrimantory Concentration (DC) 
+```{r}
+##Getting relative growth column at each dose where RG = Relative Growth, eg. RG0.025 = Relative Growth at 0.025 ppm##
+RG <-
+  boscalid_filtered %>% group_by(ID, dose) %>% summarise(mean_response = mean(response, na.rm = TRUE)) %>%
+  spread(dose, mean_response) %>%
+  mutate(RG0.025 = ((`0.025` / `0`) * 100)) %>%    
+     mutate(RG0.05 = ((`0.05` / `0`) * 100)) %>%
+        mutate(RG0.05 = ((`0.05` / `0`) * 100)) %>%  
+          mutate(RG0.1 = ((`0.1` / `0`) * 100)) %>%
+            mutate(RG0.2 = ((`0.2` / `0`) * 100)) %>%
+              mutate(RG0.8 = ((`0.8` / `0`) * 100))
+
+final_boscalid <-#joining
+  left_join (RG, boscalid_xx) %>% mutate(logEC50 = (log(EC50))) %>% rename(Estimate.50 = EC50)
+
+#Dose chosen as DC
+# Linear model of log EC50 and relative growth at 0.2 ppm, check normality and homogeneity of variances
+#pdf("boscalid_assumptions_linearmodel_dosechoseasDC_with_outlayers.pdf")
+finalRG0.2 <- lm(logEC50 ~ RG0.2, final_boscalid)
+summary(finalRG0.2)
+plot(finalRG0.2)
+#check_assumptions(finalRG0.2)
+#dev.off()
+##taking out outlayers from Q-Q PLOT $ LEVERAGE TEST, ISOLATES # 1032 from treatment, H-03 & H-04 from survey##
+#pdf("boscalid_assumptions_linearmodel_dosechoseasDC.pdf")
+final_boscalid_clean <-
+  final_boscalid %>% filter(!ID == "1032", !ID == "H-03",!ID == "H-04")
+ 
+ finalRG0.2 <- lm(logEC50 ~ RG0.2, final_boscalid_clean)
+  summary(finalRG0.2)
+  plot(finalRG0.2)
+  #check_assumptions(finalRG0.2)
+  #dev.off()
+# Linear Regression graph of log EC50 and relative growth at 0.2 ppm
+
+  ggplot(finalRG0.2, aes(x = RG0.2, y = logEC50)) +  geom_point() + geom_smooth(method = "lm") +  theme(
+    plot.title = element_text(
+    size = 12,
+    face = "bold",
+    hjust = 0.5,
+    family = "Verdana"
+    ),
+    axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+    face = "bold",
+    size = 14,
+    family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+    ) + labs(title = "Linear regression between EC50 values & relative growth of Boscalid at 0.2 ppm", x =
+    "Relative growth (%)", y = "Log EC50")
+    
+
+# Getting the EC50DC according to the model
+final_boscalid_DC <-
+  final_boscalid_clean %>% mutate(Estimate.50DC = exp(-4.407938 + (0.056624 * RG0.2))) %>% select(ID, Estimate.50DC, Estimate.50)
+
+# Linear model of EC50  and EC50DC, check normality and homogeneity of variances
+final_boscalid_DC_0.2 <- lm (Estimate.50DC ~ Estimate.50, final_boscalid_DC) 
+summary(final_boscalid_DC_0.2)
+plot(final_boscalid_DC_0.2)
+#check_assumptions(final_boscalid_DC_0.2)
+# Linear Regression graph of EC50 and EC50DC
+#pdf("Linear regression of boscalid 0.2 ppm.pdf")  
+ggplot(final_boscalid_DC_0.2, aes(x = EC50, y = Estimate.50DC)) +  theme(
+  plot.title = element_text(
+  size = 14,
+  face = "bold",
+  hjust = 1,
+  family = "Verdana"
+  ),
+  axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
+  axis.text = element_text(
+  face = "bold",
+  size = 14,
+  family = "Verdana"
+  ),
+  panel.background = element_rect(fill = "white", colour = "grey50")
+  ) + labs(title = "Linear regression between EC50 and EC50(D) values of Boscalid ", x =
+  "EC50 (ppm)", y = "EC50(D) (ppm)") + geom_point(shape = 24) + geom_smooth(method = "lm")
+  
+
+# Linear model of log EC50 and relative growth at 0.8 ppm, check normality and homogeneity of variances
+dev.off()
+
+```
+#BOSCALID WITH SURVEY(PRE-TEST FUNGICIDE)
+```{r}
+boscalid_data <- survey_data %>%
+  select(ID,
+         repeats,
+         experimental_replicate,
+         boscalid.growth,
+         control.growth) %>%
+  rename(response = boscalid.growth, control = control.growth)
+
+
+# Using the previous  function in order to take out the outlayers
+boscalid_filtered_survey <- boscalid_data %>%
+  group_by(ID) %>%
+  mutate(response_range = list(get_range(response))) %>%
+  unnest() %>%
+  mutate(control_range = list(get_range(control))) %>%
+  unnest() %>%
+  filter(response <= upper &
+           response >= lower,
+         control <= upper1 & control >= lower1) %>%
+  ungroup() %>%
+  select(c(ID, experimental_replicate, repeats, response, control))
+
+## Checking
+# ggplot(boscalid_filtered_survey , aes(x = response, y = control, fill = ID))  +  geom_boxplot(
+#   notch = TRUE,
+#   aes(group =  experimental_replicate),
+#   outlier.colour = "green",
+#   outlier.size = 2
+# ) + facet_wrap(~ ID)  + labs(title = "Plot of dose ~ response by experimental_replicate", x =
+#                                "Dose (ppm)", y = "Response (cm)")
+
+#boscalid_filtered_survey_plusbaseline
+#  There is no differnece between experimental replicates but there are 3 outlayers,  Becasue of that taking outlayers by and then
+boscalid_filtered_ <- boscalid_filtered_survey %>% 
+  group_by(ID) %>% 
+  summarise(mean_response =mean(response, na.rm = TRUE), mean_control =mean(control, na.rm = TRUE)) %>% 
+  mutate(RG= (mean_response/mean_control)*100) %>% 
+  mutate(Estimate.50DC = exp (-4.407938 + (0.056624*RG))) %>% 
+  select(c(ID, Estimate.50DC))
+
+#final_boscalid_DC2 <- final_boscalid_DC %>% select(-c(`0`, `0.025`, `0.05`, `0.1`, `0.2`, `0.8`, RG0.025, RG0.05, RG0.1, RG0.8 ))
+#boscalid_filtered2 <- boscalid_filtered %>% select(-c(mean_response,mean_control))
+
+summary(boscalid_filtered_$Estimate.50DC)
+summary(final_boscalid_DC$Estimate.50DC)
+
+
+# Filtering by  groups by serial dilution ###CORROBORATION OF ISOLATES FROM DC###
+baseline <-  final_boscalid_DC %>% filter(ID %in% baseline_isolates)
+summary(baseline$Estimate.50DC)
+hist((baseline$Estimate.50DC))
+baseline_corroboration <-  boscalid_filtered %>% filter(ID %in% baseline_isolates_corroboration)
+summary(baseline_corroboration$Estimate.50DC)
+
+survey <- final_boscalid_DC %>% filter(ID %in% survey_isolates)
+summary(survey$Estimate.50DC)
+survey_corroboration <-  boscalid_filtered_ %>% filter(ID %in% survey_isolates_corroboration)
+summary(survey_corroboration$Estimate.50DC)
+
+treatmentyear2016 <- final_boscalid_DC %>% filter(ID %in% treatmentyear2016_isolates)
+summary(treatmentyear2016$Estimate.50DC)
+
+
+
+
+```
+
+#Picoxystrobin
+```{r}
+#Picoxystrobin  fungicide taking the outlayers from the 8 observations of each one, it reduces from 2013 to 1959 
+picoxystrobin_filtered <- picoxystrobin_data %>%
+  group_by(ID, dose) %>%
+  mutate(growth_range = list(get_range(growth))) %>%
+  unnest() %>%
+  filter(growth <= upper & growth >= lower) %>%
+  rename(response = growth) %>%
+  ungroup()%>% 
+  select(c(ID, experimental_replicate, repeats, dose, response))
+
+
+##NORMALITY TEST-Shapiro_test, NO NORMALS##
+shapiro.test_picoxystrobin <- picoxystrobin_filtered %>% 
+  group_by(ID) %>% 
+  do(tidy(shapiro.test(.$response))) 
+
+picoxystrobinfinal <- left_join (shapiro.test_picoxystrobin, picoxystrobin_filtered) %>% 
+  mutate(normality = ifelse(p.value >0.05, "normal", "nonormal")) %>% 
+  spread(experimental_replicate, response)
+#View(picoxystrobinfinal)
+
+##WILCOX TEST##
+wilcox_picoxystrobin<- picoxystrobinfinal%>%
+  group_by(ID, dose) %>%
+  do(tidy(wilcox.test(.$`1`, .$`2`, paired=TRUE)))
+#View(wilcox_picoxystrobin)
+
+#Anyways making linear model since the only required is normality of the errors once the results#
+# Getting EC50 by EC_table function#
+yy <- EC_table(picoxystrobin_filtered, form = response ~ dose)
+
+names(yy)[names(yy) == "sample"] <- "ID"
+picoxystrobin_yy <-
+  yy %>% select(c("ID", "Estimate.50")) %>% rename(EC50 = Estimate.50) %>% group_by(ID, EC50) %>% mutate(group = ifelse(
+  ID %in% baseline_isolates,
+  "baseline",
+  ifelse(
+  ID %in% survey_isolates,
+  "survey_isolates",
+  "treatmentyear2016_isolates"
+  )
+  )) %>% ungroup() %>% mutate(fungicide = "Picoxystrobin")
+  
+
+picoxystrobin_yy$group <- as_factor(picoxystrobin_yy$group)
+levels(picoxystrobin_yy$group)[levels(picoxystrobin_yy$group) == "survey_isolates"] <-"Farmer fields"
+levels(picoxystrobin_yy$group)[levels(picoxystrobin_yy$group) == "treatmentyear2016_isolates"] <-"Trial fields"
+levels(picoxystrobin_yy$group)[levels(picoxystrobin_yy$group) == "baseline"] <-"Baseline"
+
+# p <-
+#   ggplot(picoxystrobin_yy, aes(x = ID, y = EC50, shape = group)) + geom_point(aes(color = group), size = 3) + theme(
+#     plot.title = element_text(
+#       size = 14,
+#       face = "bold",
+#       hjust = 0.5,
+#       family = "Verdana"
+#     ),
+#     axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
+#     axis.text = element_text(
+#       face = "bold",
+#       size = 14,
+#       family = "Verdana"
+#     ),
+#     panel.background = element_rect(fill = "white", colour = "grey50")
+#   ) + labs(title = "Picoxystrobin", x = "Isolates", y = "EC50 (ppm)")
+
+
+```
+
+# Filtering each group
+```{r}
+baseline <-  yy %>% filter(ID %in% baseline_isolates)
+summary(baseline)
+survey <-  yy %>% filter(ID %in% survey_isolates)
+summary(survey)
+treatmentyear2016 <- yy %>% filter(ID %in% treatmentyear2016_isolates)
+summary(treatmentyear2016)
+
+```
+## Procedure to get the Discrimantory Concentration (DC) 
+```{r}
+
+#Getting relative growth column at each dose where RG= Relative Growth, eg. RG0.01= Relative Growth at 0.01 ppm
+RG <-
+  picoxystrobin_filtered %>% group_by(ID, dose) %>% summarise(mean_response = mean(response, na.rm = TRUE)) %>% spread(dose, mean_response) %>%
+  mutate(RG0.01 = ((`0.01` / `0`) * 100)) %>%
+    mutate(RG0.02 = ((`0.02` / `0`) * 100)) %>%  
+      mutate(RG0.04 = ((`0.04` / `0`) * 100)) %>%
+        mutate(RG0.06 = ((`0.06` / `0`) * 100)) %>%
+          mutate(RG0.1 = ((`0.1` / `0`) * 100))
+##Ordering the table##
+#picoxystrobin_yy <-  yy %>%
+  #select(-Estimate.10, -SE.10, -Estimate.90, -SE.90)
+#names(picoxystrobin_yy)[names(picoxystrobin_yy) == "sample"] <- "ID"
+
+final_picoxystrobin <- #joining table
+  left_join (RG, picoxystrobin_yy) %>% mutate(logEC50 = (log(EC50))) %>% rename(Estimate.50 = EC50)
+#Dose chosen as DC
+# Linear model of log EC50 and relative growth at 0.01 ppm, check normality and homogeneity of variances
+pdf("picoxystrobin_assumptions_linearmodel_dosechoseasDC_with_outlayers.pdf")
+finalRG0.01 <- lm(logEC50 ~ RG0.01, final_picoxystrobin)
+summary(finalRG0.01)
+plot(finalRG0.01)
+#check_assumptions(finalRG0.01)
+#dev.off()
+##taking out outlayers from Q-Q PLOT $ LEVERAGE TEST, ISOLATES # 1032 from treatment, 558 & 581 from baseline##
+pdf("picoxystrobin_assumptions_linearmodel_dosechoseasDC.pdf")
+final_picoxystrobin_clean <- final_picoxystrobin %>% filter( !ID == "1032",!ID == "558", !ID == "581" ) 
+finalRG0.01 <- lm(logEC50 ~ RG0.01, final_picoxystrobin_clean)
+summary(finalRG0.01)
+plot(finalRG0.01)
+#check_assumptions(finalRG0.01)
+#dev.off()
+##Linear Regression graph of log EC50 and relative growth at 0.01 ppm ##
+
+ggplot(finalRG0.01, aes(x = RG0.01, y = logEC50)) +  geom_point() + geom_smooth(method = "lm") +  theme(
+  plot.title = element_text(
+    size = 12,
+    face = "bold",
+    hjust = 0.5,
+    family = "Verdana"
+  ),
+  axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
+  axis.text = element_text(
+    face = "bold",
+    size = 14,
+    family = "Verdana"
+  ),
+  panel.background = element_rect(fill = "white", colour = "grey50")
+) + labs(title = "Linear regression between EC50 values & relative growth of Picoxystrobin at 0.01 ppm", x =
+           "Relative growth (%)", y = "Log EC50")
+
+# Getting the EC50DC according to the model
+final_picoxystrobin_DC <-
+  final_picoxystrobin_clean %>% mutate(Estimate.50DC = exp(-6.365817 + (0.034766 *
+  RG0.01))) %>% select(ID, Estimate.50DC, Estimate.50)
+  # Linear model of EC50  and EC50DC, check normality and homogeneity of variances
+final_picoxystrobin_DC_0.01 <- lm (Estimate.50DC ~ Estimate.50, final_picoxystrobin_DC)
+summary(final_picoxystrobin_DC_0.01 )
+plot(final_picoxystrobin_DC_0.01)
+#check_assumptions(final_picoxystrobin_DC_0.01 )
+pdf("Linear regression of picoxystrobin 0.01 ppm.pdf")  
+# Linear Regression graph of EC50 and EC50DC
+ggplot(final_picoxystrobin_DC_0.01,
+       aes(x = Estimate.50, y = Estimate.50DC)) +  theme(
+       plot.title = element_text(
+       size = 14,
+       face = "bold",
+       hjust = 1,
+       family = "Verdana"
+       ),
+       axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
+       axis.text = element_text(
+       face = "bold",
+       size = 14,
+       family = "Verdana"
+       ),
+       panel.background = element_rect(fill = "white", colour = "grey50")
+       ) + labs(title = "Linear regression between EC50 and EC50(D) values of Picoxystrobin ", x =
+       "EC50 (ppm)", y = "EC50(D) (ppm)") + geom_point() + geom_smooth(method = "lm")
+       
+#dev.off()
+
+```
+
+#PICOXYSTROBIN WITH SURVEY(PRE-TEST FUNGICIDE)
+
+```{r}
+picoxystrobin_data <- survey_data %>%
+  select(
+  ID,
+  repeats,
+  experimental_replicate,
+  picoxystrobin.growth,
+  sham.growth,
+  control.growth
+  ) %>%
+  rename(response = picoxystrobin.growth, control = sham.growth)
+  
+# Using the function in order to take out the outlayers
+picoxystrobin_filtered_survey <- picoxystrobin_data %>%
+  group_by(ID) %>%
+    mutate(response_range = list(get_range(response))) %>%
+      unnest() %>%
+        mutate(control_range = list(get_range(control))) %>%
+          unnest() %>%
+            filter(response <= upper &
+                response >= lower,
+                    control <= upper1 & control >= lower1) %>%
+                      ungroup() %>%
+                        select(c(ID, experimental_replicate, repeats, response, control))
+  #picoxystrobin_filtered_survey_plusbaseline
+picoxystrobin_filtered_ <- picoxystrobin_filtered_survey %>%
+  group_by(ID) %>%
+    summarise(
+      mean_response = mean(response, na.rm = TRUE),
+      mean_control = mean(control, na.rm = TRUE)
+       ) %>%
+         mutate(RG = (mean_response / mean_control) * 100) %>%
+           mutate(Estimate.50DC = exp (-6.365817 + (0.034766 * RG))) %>%
+             select(c(ID, Estimate.50DC)) %>%
+               ungroup()
+  summary(picoxystrobin_filtered_$Estimate.50DC)
+  summary(final_picoxystrobin_DC$Estimate.50DC)
+
+
+# Filtering by  groups by serial dilution ###CORROBORATION OF ISOLATES FROM DD###
+baseline <-  final_picoxystrobin_DC %>% filter(ID %in% baseline_isolates)
+summary(baseline$Estimate.50DC)
+hist((baseline$Estimate.50DC))
+baseline_corroboration <-  picoxystrobin_filtered %>% filter(ID %in% baseline_isolates_corroboration)
+summary(baseline_corroboration$Estimate.50DC)
+
+survey <- final_picoxystrobin_DC %>% filter(ID %in% survey_isolates)
+summary(survey$Estimate.50DC)
+survey_corroboration <-  picoxystrobin_filtered %>% filter(ID %in% survey_isolates_corroboration)
+summary(survey_corroboration$Estimate.50DC)
+
+treatmentyear2016 <- final_picoxystrobin_DC %>% filter(ID %in% treatmentyear2016_isolates)
+summary(treatmentyear2016$Estimate.50DC)
+
+
+
+## Filtering by  groups by DD#
+
+mexican_bean_survey <-  final_picoxystrobin_DC %>% filter(ID %in% mexican_bean_survey_isolates)
+summary(mexican_bean_survey$Estimate.50DC)
+
+brazilian_soybean_survey <-  final_picoxystrobin_DC %>% filter(ID %in% brazilian_soybean_survey_isolates)
+summary(brazilian_soybean_survey$Estimate.50DC)
+
+#beanSIproduction_survey <-  final_picoxystrobin_DC %>% filter(ID %in% beanSIproduction_survey_isolates1,ID %in% beanSIproduction_survey_isolates2, ID %in% beanSIproduction_survey_isolates3, ID %in% beanSIproduction_survey_isolates4,ID %in% beanSIproduction_survey_isolates5 )
+#summary(beanSIproduction_survey$Estimate.50DC)
+
+bean_year95year96year2004_survey <-  final_picoxystrobin_DC %>% filter(ID %in% bean_survey_year95year96year2004)
+summary(bean_year95year96year2004_survey$Estimate.50DC)
+
+```
+#Tetraconazole
+
+```{r}
+tetraconazole_filtered <- tetraconazole_data %>%
+  rename(response = growth) %>%
+  group_by(ID, dose) %>%
+  mutate(response_range = list(get_range(response))) %>%
+  unnest() %>%
+  filter(response <= upper & response >= lower) %>%
+  ungroup()%>% 
+  select(c(ID, experimental_replicate, repeats, dose, response))
+
+##NORMALITY TEST-Shapiro_test, NO NORMALS##
+shapiro.test_tetraconazole <- tetraconazole_filtered %>% 
+  group_by(ID) %>% 
+  do(tidy(shapiro.test(.$response))) 
+
+tetraconazolefinal <- left_join (shapiro.test_tetraconazole, tetraconazole_filtered) %>% 
+  mutate(normality = ifelse(p.value >0.05, "normal", "nonormal")) %>% 
+  spread(experimental_replicate, response) %>% 
+  na.omit() 
+#View(tetraconazolefinal)
+##WILCOX TEST##
+wilcox_tetraconazole<- tetraconazolefinal%>%
+  group_by(ID, dose) %>%
+  do(tidy(wilcox.test(.$`1`, .$`2`, paired=TRUE)))
+#View(wilcox_tetraconazole)
+
+##Anyways making linear model since the only required is normality of the errors once the results##
+# Getting EC50 by EC_table function
+
+bb<- EC_table(tetraconazole_filtered, form = response ~ dose)
+names(bb)[names(bb) == "sample"] <- "ID"
+tetraconazole_bb <-
+  bb %>% select(c("ID", "Estimate.50")) %>% rename(EC50 = Estimate.50) %>% group_by(ID, EC50) %>% mutate(group = ifelse(
+    ID %in% baseline_isolates,
+    "baseline",
+    ifelse(
+    ID %in% survey_isolates,
+    "survey_isolates",
+    "treatmentyear2016_isolates"
+    )
+    )) %>% ungroup() %>% mutate(fungicide = "Tetraconazole")
+    
+tetraconazole_bb$group <- as_factor(tetraconazole_bb$group)
+levels(tetraconazole_bb$group)[levels(tetraconazole_bb$group) == "survey_isolates"] <-"Farmer fields"
+levels(tetraconazole_bb$group)[levels(tetraconazole_bb$group) == "treatmentyear2016_isolates"] <-"Trial fields"
+levels(tetraconazole_bb$group)[levels(tetraconazole_bb$group) == "baseline"] <-"Baseline"
+
+#t <-
+  # ggplot(tetraconazole_bb, aes(x = ID, y = EC50, shape = group)) + geom_point(aes(color = group), size = 3) + theme(
+  #   plot.title = element_text(
+  #     size = 14,
+  #     face = "bold",
+  #     hjust = 0.5,
+  #     family = "Verdana"
+  #   ),
+  #   axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
+  #   axis.text = element_text(
+  #     face = "bold",
+  #     size = 14,
+  #     family = "Verdana"
+  #   ),
+  #   panel.background = element_rect(fill = "white", colour = "grey50")
+  # ) + labs(title = "Tetraconazole", x = "Isolates", y = "EC50 (ppm)")
+  # 
+
+
+
+```
+
+# Filtering each group
+```{r}
+baseline <-  bb %>% filter(ID %in% baseline_isolates)
+summary(baseline)
+survey <-  bb %>% filter(ID %in% survey_isolates)
+summary(survey)
+treatmentyear2016 <- bb %>% filter(ID %in% treatmentyear2016_isolates)
+summary(treatmentyear2016)
+
+```
+## Procedure to get the Discrimantory Concentration (DC) 
+```{r}
+RG <-
+  tetraconazole_filtered %>% 
+   group_by(ID, dose) %>%
+    summarise(mean_response = mean(response, na.rm = TRUE)) %>% 
+     spread(dose, mean_response) %>%
+      mutate(RG0.5 =((`0.5` / `0`) * 100)) %>% mutate(RG1 = ((`1` / `0`) * 100)) %>%       mutate(RG2 =((`2` / `0`) * 100)) %>% 
+  mutate(RG3 = ((`3` / `0`) * 100)) %>% 
+  mutate(RG5 =((`5` / `0`) * 100)) 
+
+# #Ordering the table##
+#tetraconazole_bb <-  bb %>%
+ # select(-Estimate.10, -SE.10, -Estimate.90, -SE.90)
+#names(tetraconazole_bb)[names(tetraconazole_bb) == "sample"] <- "ID"
+final_tetraconazole <-#joining
+  left_join (RG, tetraconazole_bb) %>% mutate(logEC50 = (log(EC50))) %>% rename(Estimate.50 = EC50)
+#pdf("tetraconazole_assumptions_linearmodel_each_dose&Linear_regression_with_best_model.pdf")
+
+#Dose chosen as DC
+# Linear model of log EC50 and relative growth at 2 ppm, check normality and homogeneity of variances
+pdf("tetraconazole_assumptions_linearmodel_dosechoseasDC_with_outlayers.pdf")
+finalRG2 <- lm(logEC50 ~ RG2, final_tetraconazole)
+summary(finalRG2)
+plot(finalRG2)
+#check_assumptions(finalRG2)
+#dev.off()
+##taking out outlayers from Q-Q PLOT & LEVERAGE TEST, ISOLATES #  21 , 558 & 667 from baseline##
+pdf("tetraconazole_assumptions_linearmodel_dosechoseasDC.pdf")
+final_tetraconazole_clean <- final_tetraconazole %>% filter( !ID == "21",!ID == "558", !ID == "667" ) 
+finalRG2 <- lm(logEC50 ~ RG2, final_tetraconazole_clean)
+summary(finalRG2)
+plot(finalRG2)
+#check_assumptions(finalRG2)
+dev.off()
+# Linear Regression graph of log EC50 and relative growth at 2 ppm
+ggplot(finalRG2, aes(x = RG2, y =  logEC50)) +  theme(plot.title = element_text(size = 16, face = "bold", hjust = 1))  + labs(title = "Linear regression of tetraconazole 2 ppm", x =
+                                                                                                                                "Relative growth(%)", y = "logEC50") + theme (axis.title.x = element_text(size = 12, face = "bold", hjust = 0.5)) + theme(axis.title.y = element_text(size = 12, face = "bold", hjust = 0.5)) +
+                                                                                                                                theme(axis.text.x = element_text(size = 12)) + theme(axis.text.y = element_text(size = 12)) + theme (axis.line = element_line(colour = "grey50", size = 1)) +
+                                                                                                                                geom_point() + geom_smooth(method = "lm")
+                                                                                                                                # Getting the EC50DC according to the model
+final_tetraconazole_DC <- final_tetraconazole_clean %>% mutate(Estimate.50DC = exp(-1.650985 + (0.044510*RG2))) %>% select(ID, Estimate.50DC, Estimate.50)
+# Linear model of EC50  and EC50DC, check normality and homogeneity of variances
+final_tetraconazole_DC_2 <- lm (Estimate.50DC ~ Estimate.50, final_tetraconazole_DC)
+summary(final_tetraconazole_DC_2)
+plot(final_tetraconazole_DC_2)
+#check_assumptions(final_tetraconazole_DC_2)
+pdf("Linear regression of tetraconazole 2 ppm.pdf")   
+# Linear Regression graph of EC50 and EC50DC
+ggplot(final_tetraconazole_DC_2,
+       aes(x = Estimate.50, y = Estimate.50DC)) +  theme(plot.title = element_text(size = 10, face = "bold", hjust = 0.5)) + labs(title = "Relationship between EC50 values of tetraconazole using the model y = -1.650985 + 0.044510x", x =
+       "EC50 (ppm)", y = "EC50DC (ppm)") + theme (axis.title.x = element_text(size = 12, face = "bold", hjust = 0.5)) + theme(axis.title.y = element_text(size = 12, face = "bold", hjust = 0.5)) +
+       theme(axis.text.x = element_text(size = 12)) + theme(axis.text.y = element_text(size = 12)) + theme (axis.line = element_line(colour = "grey50", size = 1)) + geom_point() + geom_smooth(method = "lm")
+       #dev.off()
+       
+
+
+
+```
+#TETRACONAZOLE WITH SURVEY(PRE-TEST FUNGICIDE)
+
+```{r}
+
+tetraconazole_data <- survey_data %>%
+  select(ID,
+  repeats,
+  experimental_replicate,
+  tetraconazole.growth,
+  control.growth) %>%
+  rename(response = tetraconazole.growth, control = control.growth)
+  
+# Using the function in order to take out the outlayers#
+tetraconazole_filtered_survey <- tetraconazole_data %>%
+  group_by(ID) %>%
+  mutate(response_range = list(get_range(response))) %>%
+  unnest() %>%
+  mutate(control_range = list(get_range(control))) %>%
+  unnest() %>%
+  filter(response <= upper & response >= lower, control <= upper1 & control >= lower1) %>%
+  ungroup()%>% 
+  select(c(ID, experimental_replicate, repeats, response, control))
+
+##PLus baseline
+tetraconazole_filtered_ <- tetraconazole_filtered_survey %>%
+  group_by(ID) %>% 
+  summarise(mean_response =mean(response, na.rm = TRUE), mean_control =mean(control, na.rm = TRUE)) %>% 
+  mutate(RG= (mean_response/mean_control)*100) %>% 
+  mutate(Estimate.50DC = exp (-1.650985 + (0.044510*RG))) %>% 
+select(c(ID, Estimate.50DC)) %>% 
+  ungroup()
+summary(tetraconazole_filtered_$Estimate.50DC)
+summary(final_tetraconazole_DC$Estimate.50DC)
+
+
+# Filtering by  groups by serial dilution ###CORROBORATION OF ISOLATES FROM DC###
+baseline <-  final_tetraconazole_DC %>% filter(ID %in% baseline_isolates)
+summary(baseline$Estimate.50DC)
+hist((baseline$Estimate.50DC))
+baseline_corroboration <-  tetraconazole_filtered %>% filter(ID %in% baseline_isolates_corroboration)
+summary(baseline_corroboration$Estimate.50DC)
+
+survey <- final_tetraconazole_DC %>% filter(ID %in% survey_isolates)
+summary(survey$Estimate.50DC)
+survey_corroboration <-  tetraconazole_filtered %>% filter(ID %in% survey_isolates_corroboration)
+summary(survey_corroboration$Estimate.50DC)
+
+treatmentyear2016 <- final_tetraconazole_DC %>% filter(ID %in% treatmentyear2016_isolates)
+summary(treatmentyear2016$Estimate.50DC)
+
+
+
+## Filtering by  groups by DC#
+
+mexican_bean_survey <-  tetraconazole_filtered %>% filter(ID %in% mexican_bean_survey_isolates)
+summary(mexican_bean_survey$Estimate.50DC)
+
+brazilian_soybean_survey <-  tetraconazole_filtered %>% filter(ID %in% brazilian_soybean_survey_isolates)
+summary(brazilian_soybean_survey$Estimate.50DC)
+
+# beanSIproduction_survey <-  tetraconazole_filtered %>% filter(ID %in% beanSIproduction_survey_isolates1, ID%in%
+# beanSIproduction_survey_isolates2, ID %in% beanSIproduction_survey_isolates3, ID %in% beanSIproduction_survey_isolates4,ID %in% beanSIproduction_survey_isolates5 )
+# summary(beanSIproduction_survey$Estimate.50DC)
+
+bean_year95year96year2004_survey <-  tetraconazole_filtered %>% filter(ID %in% bean_survey_year95year96year2004)
+summary(bean_year95year96year2004_survey$Estimate.50DC)
+
+##By state in order of year increase##
+###WI###
+soybean_treatment_WI_year2015 <-  tetraconazole_filtered %>% filter(ID %in% soybean_treatmentyear2015_WI)
+subset(tetraconazole_filtered, ID == "2383", select = c(ID, Estimate.50DC))
+summary(soybean_treatment_WI_year2015$Estimate.50DC)
+
+
+soybean_treatmentyear_WI_2017 <-  tetraconazole_filtered %>% filter(ID %in% soybean_treatmentyear2017_WI)
+subset(tetraconazole_filtered, ID == "1541", select = c(ID, Estimate.50DC))
+summary(soybean_treatmentyear_WI_2017$Estimate.50DC)
+
+###IA###
+
+soybean_treatment_IA_year2016 <-  tetraconazole_filtered %>% filter(ID %in% soybean_treatmentyear2016_IA)
+summary(soybean_treatment_IA_year2016$Estimate.50DC)
+
+soybean_treatment_IA_year2017 <-  tetraconazole_filtered %>% filter(ID %in% soybean_treatmentyear2017_IA)
+subset(tetraconazole_filtered, ID == "1327", select = c(ID, Estimate.50DC))
+summary(soybean_treatment_IA_year2017$Estimate.50DC)
+
+###MI###
+
+soybean_treatment_MI_year2016 <-  tetraconazole_filtered %>% filter(ID %in% soybean_treatmentyear2016_MI)
+subset(tetraconazole_filtered, ID == "1175", select = c(ID, Estimate.50DC))
+summary(soybean_treatment_MI_year2016$Estimate.50DC)
+
+soybean_treatmentyear_MI_2017 <-  tetraconazole_filtered %>% filter(ID %in% soybean_treatmentyear2017_MI)
+summary(soybean_treatmentyear_MI_2017$Estimate.50DC)
+
+```
+
+#TM
+```{r}
+TM_filtered <- TMdata %>%
+  group_by(ID, dose) %>%
+  mutate(growth_range = list(get_range(growth))) %>%
+  unnest() %>%
+  filter(growth <= upper & growth >= lower) %>%
+  rename(response = growth) %>% 
+  ungroup()
+
+## Discarding all experimental replicate 1 due not consistence in results##
+TM_filtered <- TM_filtered %>%
+  group_by (ID, dose, repeats, response) %>%
+  filter(experimental_replicate==2 | experimental_replicate==3)
+
+
+##NORMALITY TEST-Shapiro_test, NO NORMALS##
+
+shapiro.test_TM <- TM_filtered %>% 
+  group_by(ID) %>% 
+  do(tidy(shapiro.test(.$response))) 
+
+TMfinal <- left_join (shapiro.test_TM, TM_filtered) %>% 
+  mutate(normality = ifelse(p.value >0.05, "normal", "nonormal")) %>% 
+  spread(experimental_replicate, response)
+View(TMfinal)
+
+##WILCOX TEST##
+#wilcox_TM<- TMfinal%>%
+ # group_by(ID, dose) %>%
+  #do(tidy(wilcox.test(.$`1`, .$`2`, paired=TRUE)))
+#View(wilcox_TM)
+#Getting EC50 by ECtable function
+zz <- EC_table(TM_filtered, form = response ~ dose)
+# # Filtering by each group
+# baseline <-  zz %>% filter(sample %in% baseline_isolates)
+# summary(baseline)
+# survey <-  zz %>% filter(sample %in% survey_isolates)
+# summary(survey)
+# treatmentyear2016 <- zz %>% filter(sample %in% treatmentyear2016_isolates)
+# summary(treatmentyear2016)
+# # Getting relative growth column at each dose where RG= Relative Growth, eg. RG0.75= Relative Growth at 0.75 ppm
+# RG <- TM_filtered %>% group_by(ID,dose) %>% summarise(mean_response=mean(response,na.rm=TRUE)) %>% spread(dose,mean_response) %>%  mutate(RG0.75=((`0.75`/`0`)*100)) %>% mutate(RG1=((`1`/`0`)*100)) %>% mutate(RG1.5=((`1.5`/`0`)*100)) %>% mutate(RG2=((`2`/`0`)*100)) %>% mutate(RG2.5=((`2.5`/`0`)*100)) %>%  mutate(RG10=((`10`/`0`)*100))
+# 
+# 
+# #Ordering the table
+# TM_xx <-  xx %>% 
+#   select(-Estimate.10,-SE.10,-Estimate.90,-SE.90)
+# names(TM_xx)[names(TM_xx) == "sample"] <- "ID"
+# final_TM<-left_join (RG, TM_xx) %>% mutate(logEC50=(log(Estimate.50)))
+
+
+```
+#TM WITH SURVEY(PRE-TEST FUNGICIDE)
+
+```{r}
+TM_data <- survey_data %>%
+  select(ID, repeats, experimental_replicate, TM.growth, control.growth) %>% 
+  rename(response = TM.growth, control = control.growth) 
+
+
+
+TM_data <- TM_data %>% 
+  group_by(ID) %>% 
+  summarise(mean_response =mean(response, na.rm = TRUE), mean_control =mean(control, na.rm = TRUE)) %>% 
+  mutate(RG= (mean_response/mean_control)*100)  %>% 
+mutate(resistance = ifelse(RG >24, "resistant", "nonresistant")) 
+
+```
+#plotting all fungicides together by geom_jitter
+
+```{r}
+  new_data <- rbind(boscalid_xx, picoxystrobin_yy, tetraconazole_bb)
+  
+  plot_dat <- new_data %>%
+    ggplot(aes(x = group, y = EC50, fill = fungicide)) +
+    geom_jitter(width = .1, height = 0, shape=21, 
+                size=3.5, alpha=3/4) +
+    theme_minimal() +
+    labs(x = "Group", y = "EC50 (ppm)") +
+    scale_fill_discrete(name="Fungicide")
+  
+  plot_dat
+  ##
+  b <-
+    ggplot(boscalid_xx, aes(x = ID, y = EC50, shape = group)) + geom_point(aes(color = group), size = 3) + theme(
+      plot.title = element_text(
+        size = 14,
+        face = "bold",
+        hjust = 0.5,
+        family = "Verdana"
+      ),
+      axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
+      axis.text = element_text(
+        face = "bold",
+        size = 14,
+        family = "Verdana"
+      ),
+      panel.background = element_rect(fill = "white", colour = "grey50")
+    ) + labs(title = "Boscalid", x = "Isolates", y = "EC50 (ppm)")
+  
+```
+
+XX
+```{r}
+picoxystrobin_yy$group <- as_factor(picoxystrobin_yy$group)
+levels(picoxystrobin_yy$group)[levels(picoxystrobin_yy$group) == "survey_isolates"] <-"Farmer fields"
+levels(picoxystrobin_yy$group)[levels(picoxystrobin_yy$group) == "treatmentyear2016_isolates"] <-"Fungicide fields trials"
+levels(picoxystrobin_yy$group)[levels(picoxystrobin_yy$group) == "baseline"] <-"Baseline"
+
+tetraconazole_bb$group <- as_factor(tetraconazole_bb$group)
+levels(tetraconazole_bb$group)[levels(tetraconazole_bb$group) == "survey_isolates"] <-"Farmer fields"
+levels(tetraconazole_bb$group)[levels(tetraconazole_bb$group) == "treatmentyear2016_isolates"] <-"Fungicide fields trials"
+levels(tetraconazole_bb$group)[levels(tetraconazole_bb$group) == "baseline"] <-"Baseline"
+
+boscalid_xx$group <- as_factor(boscalid_xx$group)
+levels(boscalid_xx$group)[levels(boscalid_xx$group) == "survey_isolates"] <-"Farmer fields"
+levels(boscalid_xx$group)[levels(boscalid_xx$group) == "treatmentyear2016_isolates"] <-"Fungicide fields trials"
+levels(boscalid_xx$group)[levels(boscalid_xx$group) == "baseline"] <-"Baseline"
+
+```
+##Ordering for each fungicide
+```{r}
+final_boscalid_DC <- final_boscalid_DC %>% select(ID, Estimate.50DC)
+boscalid_complete <-  rbind.data.frame(final_boscalid_DC, boscalid_filtered_)
+boscalid_complete <- ungroup(boscalid_complete)
+
+
+
+
+
+###
+# boscalid_control <- boscalid_filtered %>% 
+#   group_by(ID) %>% 
+#   filter(dose == 0) %>% 
+#   summarise(mean_response_control =mean(response, na.rm = TRUE))
+# 
+# boscalid_trt <- boscalid_filtered %>% 
+#   group_by(ID) %>% 
+#   filter(dose != 0) %>% 
+#   summarise(mean_response_trt =mean(response, na.rm = TRUE))
+# 
+# boscalid_new_dat <- boscalid_control %>% 
+#   inner_join(boscalid_trt) %>% 
+#   mutate(RG= (mean_response_trt/mean_response_control)*100) %>% 
+#   mutate(Estimate.50DC = exp (-4.407938 + (0.056624*RG)))
+# ##
+# boscalid_complete<-rbind(final_boscalid_DC,boscalid_filtered_)
+
+# boscalid_happy <- boscalid_complete %>% 
+#   #select(c("ID", "Estimate.50DD")) %>% 
+#   #rename(EC50D = Estimate.50DD) %>% 
+#   mutate(fungicide = "Boscalid")
+#####
+final_picoxystrobin_DC <- final_picoxystrobin_DC %>% select(ID, Estimate.50DC)
+picoxystrobin_complete <-  rbind.data.frame(final_picoxystrobin_DC, picoxystrobin_filtered_)
+picoxystrobin_complete <- ungroup(picoxystrobin_complete)
+
+##
+final_tetraconazole_DC <- final_tetraconazole_DC %>% select(ID, Estimate.50DC)
+tetraconazole_complete <-  rbind.data.frame(final_tetraconazole_DC, tetraconazole_filtered_)
+tetraconazolecomplete <- ungroup(tetraconazole_complete)
+
+```
+
+##Boscalid
+```{r}
+data_for_plots_bos <- boscalid_complete %>% 
+  group_by(ID) %>% 
+  mutate(group = ifelse(
+    ID %in% Baseline,
+    "Baseline",
+    ifelse(
+      ID %in% Fungicide_field_trials,
+      "Fungicide field trials","Farmer fields"
+    )))
+
+data_for_plots_bos$group <- as_factor(data_for_plots_bos$group)
+
+
+plot_bos <- data_for_plots_bos%>%
+  ggplot(aes(x = group, y = Estimate.50DC)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 21,
+    color = "black",
+    fill = "chartreuse2",
+    size = 1,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 12,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs(title = "Boscalid", x = "Group", y = "EC50D (ppm)") + theme(
+    plot.title = element_text(
+      size = 10,
+      face = "bold",
+      hjust = 0.5,
+      family = "Verdana"
+    ),
+    axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 7,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+plot_bos
+
+```
+##Picoxystrobin
+```{r}
+data_for_plots_pico <- picoxystrobin_complete %>% 
+  group_by(ID) %>% 
+  mutate(group = ifelse(
+    ID %in% Baseline,
+    "Baseline",
+    ifelse(
+      ID %in% Fungicide_field_trials,
+      "Fungicide field trials","Farmer fields"
+    )))
+
+data_for_plots_pico$group <- as_factor(data_for_plots_pico$group)
+
+
+plot_pico <- data_for_plots_pico%>%
+  ggplot(aes(x = group, y = Estimate.50DC)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 21,
+    color = "black",
+    fill = "chocolate1",
+    size = 1,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 12,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs(title = "Picoxystrobin", x = "Group", y = "EC50D (ppm)") + theme(
+    plot.title = element_text(
+      size = 10,
+      face = "bold",
+      hjust = 0.5,
+      family = "Verdana"
+    ),
+    axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 7,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+plot_pico
+
+
+```
+##Tetraconazole
+```{r}
+data_for_plots_tetra <- tetraconazole_complete %>% 
+  group_by(ID) %>% 
+  mutate(group = ifelse(
+    ID %in% Baseline,
+    "Baseline",
+    ifelse(
+      ID %in% Fungicide_field_trials,
+      "Fungicide field trials","Farmer fields"
+          )))
+  
+data_for_plots_tetra$group <- as_factor(data_for_plots_tetra$group)
+
+
+plot_tetra <- data_for_plots_tetra%>%
+  ggplot(aes(x = group, y = Estimate.50DC)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 21,
+    color = "black",
+    fill = "deepskyblue",
+    size = 1,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 12,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs(title = "Tetraconazole", x = "Group", y = "EC50D (ppm)") + theme(
+    plot.title = element_text(
+      size = 10,
+      face = "bold",
+      hjust = 0.5,
+      family = "Verdana"
+    ),
+    axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 7,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+
+```
+##Grid
+```{r}
+plot_grid(plot_tetra, plot_pico, plot_bos)
+
+```
+
+#different grouping
+##Boscalid
+```{r}
+data_for_plots_bos_2 <- boscalid_complete %>% 
+  group_by(ID) %>% 
+  mutate(group = ifelse(
+    ID %in% bean_isolates_exposed_to_fungicides,
+    "Bean isolates","Soybean isolates"
+    ))
+
+data_for_plots_bos_2$group <- as_factor(data_for_plots_bos_2$group)
+
+
+plot_bos_2 <- data_for_plots_bos_2%>%
+  ggplot(aes(x = group, y = Estimate.50DC)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 21,
+    color = "black",
+    fill = "chartreuse2",
+    size = 1,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 12,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs(title = "Boscalid", x = "Group", y = "EC50D (ppm)") + theme(
+    plot.title = element_text(
+      size = 10,
+      face = "bold",
+      hjust = 0.5,
+      family = "Verdana"
+    ),
+    axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 7,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+plot_bos_2
+
+```
+##Picoxystrobin
+```{r}
+data_for_plots_pico_2 <- picoxystrobin_complete %>% 
+  group_by(ID) %>% 
+  mutate(group = ifelse(
+    ID %in% bean_isolates_exposed_to_fungicides,
+    "Bean isolates","Soybean isolates"
+    ))
+
+data_for_plots_pico_2$group <- as_factor(data_for_plots_pico_2$group)
+
+
+plot_pico_2 <- data_for_plots_pico_2%>%
+  ggplot(aes(x = group, y = Estimate.50DC)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 21,
+    color = "black",
+    fill = "chocolate1",
+    size = 1,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 12,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs(title = "Picoxystrobin", x = "Group", y = "EC50D (ppm)") + theme(
+    plot.title = element_text(
+      size = 10,
+      face = "bold",
+      hjust = 0.5,
+      family = "Verdana"
+    ),
+    axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 7,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+plot_pico_2
+
+
+```
+##Tetraconazole
+```{r}
+data_for_plots_tetra_2 <- tetraconazole_complete %>% 
+  group_by(ID) %>% 
+  mutate(group = ifelse(
+    ID %in% bean_isolates_exposed_to_fungicides,
+    "Bean isolates","Soybean isolates"
+          ))
+  
+data_for_plots_tetra_2$group <- as_factor(data_for_plots_tetra_2$group)
+
+
+plot_tetra_2 <- data_for_plots_tetra_2%>%
+  ggplot(aes(x = group, y = Estimate.50DC)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 21,
+    color = "black",
+    fill = "deepskyblue",
+    size = 1,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 12,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs(title = "Tetraconazole", x = "Group", y = "EC50D (ppm)") + theme(
+    plot.title = element_text(
+      size = 10,
+      face = "bold",
+      hjust = 0.5,
+      family = "Verdana"
+    ),
+    axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 7,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+plot_tetra_2
+```
+##Grid
+```{r}
+plot_grid(plot_tetra_2, plot_pico_2, plot_bos_2)
+
+```
+#Different grouping
+
+##Boscalid
+```{r}
+data_for_plots_bos_3 <- boscalid_complete %>% 
+  group_by(ID) %>% 
+  mutate(group = ifelse(
+    ID %in% soybean_WI,
+    "Soybean WI",
+    ifelse(
+      ID %in% soybean_IA,
+      "Soybean IA","Soybean MI"
+    )))
+
+data_for_plots_bos_3$group <- as_factor(data_for_plots_bos_3$group)
+
+
+plot_bos_3 <- data_for_plots_bos_3%>%
+  ggplot(aes(x = group, y = Estimate.50DC)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 21,
+    color = "black",
+    fill = "chartreuse2",
+    size = 1,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 12,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs(title = "Boscalid", x = "Group", y = "EC50D (ppm)") + theme(
+    plot.title = element_text(
+      size = 10,
+      face = "bold",
+      hjust = 0.5,
+      family = "Verdana"
+    ),
+    axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 7,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+plot_bos_3
+
+```
+##Picoxystrobin
+```{r}
+data_for_plots_pico_3 <- picoxystrobin_complete %>% 
+  group_by(ID) %>% 
+  mutate(group = ifelse(
+    ID %in% soybean_WI,
+    "Soybean WI",
+    ifelse(
+      ID %in% soybean_IA,
+      "Soybean IA","Soybean MI"
+    )))
+
+data_for_plots_pico_3$group <- as_factor(data_for_plots_pico_3$group)
+
+
+plot_pico_3 <- data_for_plots_pico_3%>%
+  ggplot(aes(x = group, y = Estimate.50DC)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 21,
+    color = "black",
+    fill = "chocolate1",
+    size = 1,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 12,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs(title = "Picoxystrobin", x = "Group", y = "EC50D (ppm)") + theme(
+    plot.title = element_text(
+      size = 10,
+      face = "bold",
+      hjust = 0.5,
+      family = "Verdana"
+    ),
+    axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 7,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+plot_pico_3
+
+
+```
+##Tetraconazole
+```{r}
+data_for_plots_tetra_3 <- tetraconazole_complete %>% 
+  group_by(ID) %>% 
+  mutate(group = ifelse(
+    ID %in% soybean_WI,
+    "Soybean WI",
+    ifelse(
+      ID %in% soybean_IA,
+      "Soybean IA","Soybean MI"
+      )))
+  
+data_for_plots_tetra_3$group <- as_factor(data_for_plots_tetra_3$group)
+
+
+plot_tetra_3 <- data_for_plots_tetra_3%>%
+  ggplot(aes(x = group, y = Estimate.50DC)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 21,
+    color = "black",
+    fill = "deepskyblue",
+    size = 1,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 12,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs(title = "Tetraconazole", x = "Group", y = "EC50D (ppm)") + theme(
+    plot.title = element_text(
+      size = 10,
+      face = "bold",
+      hjust = 0.5,
+      family = "Verdana"
+    ),
+    axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 7,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+plot_tetra_3
+```
+##Grid
+```{r}
+plot_grid(plot_tetra_3, plot_pico_3, plot_bos_3)
+
+```
