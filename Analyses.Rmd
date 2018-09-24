@@ -420,7 +420,7 @@ levels(boscalid_xx$group)[levels(boscalid_xx$group) == "baseline"] <-
   "Baseline"
 
 ```
-## Filtering by each group to know the means of each group at first sight
+## Filtering by each group to know the medians of each group at first sight
 ```{r}
 
 baseline <-  boscalid_xx %>% filter(ID %in% baseline_isolates)
@@ -439,8 +439,8 @@ treatmentyear2016_[c(1,4,6)]
 ```{r}
 ##Getting relative growth column at each dose where RG = Relative Growth, eg. RG0.025 = Relative Growth at 0.025 ppm##
 RG <-
-  boscalid_filtered %>% group_by(ID, dose) %>% summarise(mean_response = mean(response, na.rm = TRUE)) %>%
-  spread(dose, mean_response) %>%
+  boscalid_filtered %>% group_by(ID, dose) %>% summarise(median_response = median(response, na.rm = TRUE)) %>%
+  spread(dose, median_response) %>%
   mutate(RG0.025 = ((`0.025` / `0`) * 100)) %>%    
      mutate(RG0.05 = ((`0.05` / `0`) * 100)) %>%
         mutate(RG0.05 = ((`0.05` / `0`) * 100)) %>%  
@@ -500,7 +500,7 @@ plot(final_boscalid_DC_0.2)
 #check_assumptions(final_boscalid_DC_0.2)
 # Linear Regression graph of EC50 and EC50DC
 #pdf("Linear regression of boscalid 0.2 ppm.pdf")  
-ggplot(final_boscalid_DC_0.2, aes(x = EC50, y = Estimate.50DC)) +  theme(
+ggplot(final_boscalid_DC_0.2, aes(x = Estimate.50, y = Estimate.50DC)) +  theme(
   plot.title = element_text(
   size = 14,
   face = "bold",
@@ -559,13 +559,13 @@ boscalid_filtered_survey <- boscalid_data %>%
 #  There is no differnece between experimental replicates but there are 3 outlayers,  Becasue of that taking outlayers by and then
 boscalid_filtered_ <- boscalid_filtered_survey %>% 
   group_by(ID) %>% 
-  summarise(mean_response =mean(response, na.rm = TRUE), mean_control =mean(control, na.rm = TRUE)) %>% 
-  mutate(RG= (mean_response/mean_control)*100) %>% 
+  summarise(median_response =median(response, na.rm = TRUE), median_control =median(control, na.rm = TRUE)) %>% 
+  mutate(RG= (median_response/median_control)*100) %>% 
   mutate(Estimate.50DC = exp (-4.407938 + (0.056624*RG))) %>% 
   select(c(ID, Estimate.50DC))
 
 #final_boscalid_DC2 <- final_boscalid_DC %>% select(-c(`0`, `0.025`, `0.05`, `0.1`, `0.2`, `0.8`, RG0.025, RG0.05, RG0.1, RG0.8 ))
-#boscalid_filtered2 <- boscalid_filtered %>% select(-c(mean_response,mean_control))
+#boscalid_filtered2 <- boscalid_filtered %>% select(-c(median_response,median_control))
 
 summary(boscalid_filtered_$Estimate.50DC)
 summary(final_boscalid_DC$Estimate.50DC)
@@ -677,7 +677,7 @@ summary(treatmentyear2016)
 
 #Getting relative growth column at each dose where RG= Relative Growth, eg. RG0.01= Relative Growth at 0.01 ppm
 RG <-
-  picoxystrobin_filtered %>% group_by(ID, dose) %>% summarise(mean_response = mean(response, na.rm = TRUE)) %>% spread(dose, mean_response) %>%
+  picoxystrobin_filtered %>% group_by(ID, dose) %>% summarise(median_response = median(response, na.rm = TRUE)) %>% spread(dose, median_response) %>%
   mutate(RG0.01 = ((`0.01` / `0`) * 100)) %>%
     mutate(RG0.02 = ((`0.02` / `0`) * 100)) %>%  
       mutate(RG0.04 = ((`0.04` / `0`) * 100)) %>%
@@ -788,10 +788,10 @@ picoxystrobin_filtered_survey <- picoxystrobin_data %>%
 picoxystrobin_filtered_ <- picoxystrobin_filtered_survey %>%
   group_by(ID) %>%
     summarise(
-      mean_response = mean(response, na.rm = TRUE),
-      mean_control = mean(control, na.rm = TRUE)
+      median_response = median(response, na.rm = TRUE),
+      median_control = median(control, na.rm = TRUE)
        ) %>%
-         mutate(RG = (mean_response / mean_control) * 100) %>%
+         mutate(RG = (median_response / median_control) * 100) %>%
            mutate(Estimate.50DC = exp (-6.365817 + (0.034766 * RG))) %>%
              select(c(ID, Estimate.50DC)) %>%
                ungroup()
@@ -917,8 +917,8 @@ summary(treatmentyear2016)
 RG <-
   tetraconazole_filtered %>% 
    group_by(ID, dose) %>%
-    summarise(mean_response = mean(response, na.rm = TRUE)) %>% 
-     spread(dose, mean_response) %>%
+    summarise(median_response = median(response, na.rm = TRUE)) %>% 
+     spread(dose, median_response) %>%
       mutate(RG0.5 =((`0.5` / `0`) * 100)) %>% mutate(RG1 = ((`1` / `0`) * 100)) %>%       mutate(RG2 =((`2` / `0`) * 100)) %>% 
   mutate(RG3 = ((`3` / `0`) * 100)) %>% 
   mutate(RG5 =((`5` / `0`) * 100)) 
@@ -997,8 +997,8 @@ tetraconazole_filtered_survey <- tetraconazole_data %>%
 ##PLus baseline
 tetraconazole_filtered_ <- tetraconazole_filtered_survey %>%
   group_by(ID) %>% 
-  summarise(mean_response =mean(response, na.rm = TRUE), mean_control =mean(control, na.rm = TRUE)) %>% 
-  mutate(RG= (mean_response/mean_control)*100) %>% 
+  summarise(median_response =median(response, na.rm = TRUE), median_control =median(control, na.rm = TRUE)) %>% 
+  mutate(RG= (median_response/median_control)*100) %>% 
   mutate(Estimate.50DC = exp (-1.650985 + (0.044510*RG))) %>% 
 select(c(ID, Estimate.50DC)) %>% 
   ungroup()
@@ -1041,13 +1041,13 @@ summary(bean_year95year96year2004_survey$Estimate.50DC)
 ##By state in order of year increase##
 ###WI###
 soybean_treatment_WI_year2015 <-  tetraconazole_filtered %>% filter(ID %in% soybean_treatmentyear2015_WI)
-subset(tetraconazole_filtered, ID == "2383", select = c(ID, Estimate.50DC))
-summary(soybean_treatment_WI_year2015$Estimate.50DC)
+#subset(tetraconazole_filtered, ID == "2383", select = c(ID, Estimate.50DC))
+#summary(soybean_treatment_WI_year2015$Estimate.50DC)
 
 
 soybean_treatmentyear_WI_2017 <-  tetraconazole_filtered %>% filter(ID %in% soybean_treatmentyear2017_WI)
-subset(tetraconazole_filtered, ID == "1541", select = c(ID, Estimate.50DC))
-summary(soybean_treatmentyear_WI_2017$Estimate.50DC)
+#subset(tetraconazole_filtered, ID == "1541", select = c(ID, Estimate.50DC))
+#summary(soybean_treatmentyear_WI_2017$Estimate.50DC)
 
 ###IA###
 
@@ -1055,14 +1055,14 @@ soybean_treatment_IA_year2016 <-  tetraconazole_filtered %>% filter(ID %in% soyb
 summary(soybean_treatment_IA_year2016$Estimate.50DC)
 
 soybean_treatment_IA_year2017 <-  tetraconazole_filtered %>% filter(ID %in% soybean_treatmentyear2017_IA)
-subset(tetraconazole_filtered, ID == "1327", select = c(ID, Estimate.50DC))
-summary(soybean_treatment_IA_year2017$Estimate.50DC)
+#subset(tetraconazole_filtered, ID == "1327", select = c(ID, Estimate.50DC))
+#summary(soybean_treatment_IA_year2017$Estimate.50DC)
 
 ###MI###
 
 soybean_treatment_MI_year2016 <-  tetraconazole_filtered %>% filter(ID %in% soybean_treatmentyear2016_MI)
-subset(tetraconazole_filtered, ID == "1175", select = c(ID, Estimate.50DC))
-summary(soybean_treatment_MI_year2016$Estimate.50DC)
+#subset(tetraconazole_filtered, ID == "1175", select = c(ID, Estimate.50DC))
+#summary(soybean_treatment_MI_year2016$Estimate.50DC)
 
 soybean_treatmentyear_MI_2017 <-  tetraconazole_filtered %>% filter(ID %in% soybean_treatmentyear2017_MI)
 summary(soybean_treatmentyear_MI_2017$Estimate.50DC)
@@ -1111,7 +1111,7 @@ zz <- EC_table(TM_filtered, form = response ~ dose)
 # treatmentyear2016 <- zz %>% filter(sample %in% treatmentyear2016_isolates)
 # summary(treatmentyear2016)
 # # Getting relative growth column at each dose where RG= Relative Growth, eg. RG0.75= Relative Growth at 0.75 ppm
-# RG <- TM_filtered %>% group_by(ID,dose) %>% summarise(mean_response=mean(response,na.rm=TRUE)) %>% spread(dose,mean_response) %>%  mutate(RG0.75=((`0.75`/`0`)*100)) %>% mutate(RG1=((`1`/`0`)*100)) %>% mutate(RG1.5=((`1.5`/`0`)*100)) %>% mutate(RG2=((`2`/`0`)*100)) %>% mutate(RG2.5=((`2.5`/`0`)*100)) %>%  mutate(RG10=((`10`/`0`)*100))
+# RG <- TM_filtered %>% group_by(ID,dose) %>% summarise(median_response=median(response,na.rm=TRUE)) %>% spread(dose,median_response) %>%  mutate(RG0.75=((`0.75`/`0`)*100)) %>% mutate(RG1=((`1`/`0`)*100)) %>% mutate(RG1.5=((`1.5`/`0`)*100)) %>% mutate(RG2=((`2`/`0`)*100)) %>% mutate(RG2.5=((`2.5`/`0`)*100)) %>%  mutate(RG10=((`10`/`0`)*100))
 # 
 # 
 # #Ordering the table
@@ -1133,8 +1133,8 @@ TM_data <- survey_data %>%
 
 TM_data <- TM_data %>% 
   group_by(ID) %>% 
-  summarise(mean_response =mean(response, na.rm = TRUE), mean_control =mean(control, na.rm = TRUE)) %>% 
-  mutate(RG= (mean_response/mean_control)*100)  %>% 
+  summarise(median_response =median(response, na.rm = TRUE), median_control =median(control, na.rm = TRUE)) %>% 
+  mutate(RG= (median_response/median_control)*100)  %>% 
 mutate(resistance = ifelse(RG >24, "resistant", "nonresistant")) 
 
 ```
@@ -1172,7 +1172,7 @@ mutate(resistance = ifelse(RG >24, "resistant", "nonresistant"))
   
 ```
 
-XX
+Renaming the groups to be more specifically
 ```{r}
 picoxystrobin_yy$group <- as_factor(picoxystrobin_yy$group)
 levels(picoxystrobin_yy$group)[levels(picoxystrobin_yy$group) == "survey_isolates"] <-"Farmer fields"
@@ -1204,16 +1204,16 @@ boscalid_complete <- ungroup(boscalid_complete)
 # boscalid_control <- boscalid_filtered %>% 
 #   group_by(ID) %>% 
 #   filter(dose == 0) %>% 
-#   summarise(mean_response_control =mean(response, na.rm = TRUE))
+#   summarise(median_response_control =median(response, na.rm = TRUE))
 # 
 # boscalid_trt <- boscalid_filtered %>% 
 #   group_by(ID) %>% 
 #   filter(dose != 0) %>% 
-#   summarise(mean_response_trt =mean(response, na.rm = TRUE))
+#   summarise(median_response_trt =median(response, na.rm = TRUE))
 # 
 # boscalid_new_dat <- boscalid_control %>% 
 #   inner_join(boscalid_trt) %>% 
-#   mutate(RG= (mean_response_trt/mean_response_control)*100) %>% 
+#   mutate(RG= (median_response_trt/median_response_control)*100) %>% 
 #   mutate(Estimate.50DC = exp (-4.407938 + (0.056624*RG)))
 # ##
 # boscalid_complete<-rbind(final_boscalid_DC,boscalid_filtered_)
@@ -1260,7 +1260,7 @@ plot_bos <- data_for_plots_bos%>%
     size = 1,
     alpha = 3 / 4
   ) + stat_summary(
-    fun.y = mean,
+    fun.y = median,
     geom = "point",
     shape = 95,
     size = 12,
@@ -1282,8 +1282,52 @@ plot_bos <- data_for_plots_bos%>%
     ),
     panel.background = element_rect(fill = "white", colour = "grey50")
   )
-plot_bos
 
+plot_bos
+plot_bos2 <- 
+  ggplot(data_for_plots_bos , aes(x = group, y = Estimate.50DC))  +  geom_boxplot(notch = TRUE,
+                                                                                  outlier.colour = "chartreuse2",
+                                                                                  outlier.size = 2)+
+  theme_minimal() +
+  labs(title = "Boscalid", x = "Group", y = "EC50D (ppm)") + theme(
+    plot.title = element_text(
+      size = 10,
+      face = "bold",
+      hjust = 0.5,
+      family = "Verdana"
+    ),
+    axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 7,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+
+      plot_bos2
+      
+    #New function to detect outliers of EC50DC en each group for fungicide
+                                                              
+
+                                                                                              get_range2 <- function(myoutlier) {
+  alpha <- boxplot.stats(myoutlier)
+  necrosis <- alpha$stats
+  wilt <- max(necrosis)
+    return(data.frame(outlierr = wilt))
+}           
+
+  #Using the function                                                                                                                                                                    
+                                                                                              data_for_plots_bos2<- data_for_plots_bos%>% 
+group_by(group)%>%
+mutate(Estimate_50DC_outlier = list(get_range2(Estimate.50DC)))%>%
+unnest() %>% 
+filter(Estimate.50DC >=  outlierr) %>% ungroup() %>%  
+  filter(group == "Fungicide field trials"|group =="Farmer fields" ) %>% 
+#, group =="Farmer fields")
+  #, group == "Fungicide field trials", group =="Farmer fields" )%>%
+ungroup()        %>% 
+  mutate(Fungicide = "Boscalid")
 ```
 ##Picoxystrobin
 ```{r}
@@ -1311,7 +1355,7 @@ plot_pico <- data_for_plots_pico%>%
     size = 1,
     alpha = 3 / 4
   ) + stat_summary(
-    fun.y = mean,
+    fun.y = median,
     geom = "point",
     shape = 95,
     size = 12,
@@ -1334,7 +1378,37 @@ plot_pico <- data_for_plots_pico%>%
     panel.background = element_rect(fill = "white", colour = "grey50")
   )
 plot_pico
-
+plot_pico2 <- 
+ggplot(data_for_plots_pico , aes(x = group, y = Estimate.50DC))  +  geom_boxplot(notch = TRUE,
+                                                                                  outlier.colour = "chocolate1",
+                                                                                  outlier.size = 2) +theme_minimal() +
+  labs(title = "Picoxystrobin", x = "Group", y = "EC50D (ppm)") + theme(
+    plot.title = element_text(
+      size = 10,
+      face = "bold",
+      hjust = 0.5,
+      family = "Verdana"
+    ),
+    axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 7,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+plot_pico2
+#using the function
+data_for_plots_pico2<- data_for_plots_pico%>% 
+group_by(group)%>%
+mutate(Estimate_50DC_outlier = list(get_range2(Estimate.50DC)))%>%
+unnest() %>% 
+filter(Estimate.50DC >=  outlierr) %>% ungroup() %>%  
+  filter(group == "Fungicide field trials"|group =="Farmer fields" ) %>% 
+#, group =="Farmer fields")
+  #, group == "Fungicide field trials", group =="Farmer fields" )%>%
+ungroup()  %>% 
+  mutate(Fungicide = "Picoxystrobin")
 
 ```
 ##Tetraconazole
@@ -1363,7 +1437,7 @@ plot_tetra <- data_for_plots_tetra%>%
     size = 1,
     alpha = 3 / 4
   ) + stat_summary(
-    fun.y = mean,
+    fun.y = median,
     geom = "point",
     shape = 95,
     size = 12,
@@ -1385,11 +1459,50 @@ plot_tetra <- data_for_plots_tetra%>%
     ),
     panel.background = element_rect(fill = "white", colour = "grey50")
   )
+plot_tetra2 <- 
+ggplot(data_for_plots_tetra , aes(x = group, y = Estimate.50DC))  +  geom_boxplot(notch = TRUE,
+                                                                                  outlier.colour = "deepskyblue",
+                                                                                  outlier.size = 2) + theme_minimal() +
+  labs(title = "Tetraconazole", x = "Group", y = "EC50D (ppm)") + theme(
+    plot.title = element_text(
+      size = 10,
+      face = "bold",
+      hjust = 0.5,
+      family = "Verdana"
+    ),
+    axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 7,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+plot_tetra2
 
+#using the function
+data_for_plots_tetra2<- data_for_plots_tetra%>% 
+group_by(group)%>%
+mutate(Estimate_50DC_outlier = list(get_range2(Estimate.50DC)))%>%
+unnest() %>% 
+filter(Estimate.50DC >=  outlierr) %>% ungroup() %>%  
+  filter(group == "Fungicide field trials"|group =="Farmer fields" ) %>% 
+#, group =="Farmer fields")
+  #, group == "Fungicide field trials", group =="Farmer fields" )%>%
+ungroup() %>%
+#select(c(ID, group, Estimate_50DC_outlier))
+  mutate(Fungicide = "Tetraconazole")
+
+    data_for_plots_tetra2
 ```
 ##Grid
 ```{r}
 plot_grid(plot_tetra, plot_pico, plot_bos)
+plot_grid(plot_tetra2, plot_pico2, plot_bos2)
+#creating the tables
+combiningfungicides_outliersEC50DC <- rbind(data_for_plots_bos2, data_for_plots_pico2, data_for_plots_tetra2)
+#write.csv(combiningfungicides_outliersEC50DC, file = "combiningfungicides_outliersEC50DC.csv")
+#combining %>% combining %>% unique()
 
 ```
 
@@ -1417,7 +1530,7 @@ plot_bos_2 <- data_for_plots_bos_2%>%
     size = 1,
     alpha = 3 / 4
   ) + stat_summary(
-    fun.y = mean,
+    fun.y = median,
     geom = "point",
     shape = 95,
     size = 12,
@@ -1465,7 +1578,7 @@ plot_pico_2 <- data_for_plots_pico_2%>%
     size = 1,
     alpha = 3 / 4
   ) + stat_summary(
-    fun.y = mean,
+    fun.y = median,
     geom = "point",
     shape = 95,
     size = 12,
@@ -1514,7 +1627,7 @@ plot_tetra_2 <- data_for_plots_tetra_2%>%
     size = 1,
     alpha = 3 / 4
   ) + stat_summary(
-    fun.y = mean,
+    fun.y = median,
     geom = "point",
     shape = 95,
     size = 12,
@@ -1571,7 +1684,7 @@ plot_bos_3 <- data_for_plots_bos_3%>%
     size = 1,
     alpha = 3 / 4
   ) + stat_summary(
-    fun.y = mean,
+    fun.y = median,
     geom = "point",
     shape = 95,
     size = 12,
@@ -1622,7 +1735,7 @@ plot_pico_3 <- data_for_plots_pico_3%>%
     size = 1,
     alpha = 3 / 4
   ) + stat_summary(
-    fun.y = mean,
+    fun.y = median,
     geom = "point",
     shape = 95,
     size = 12,
@@ -1674,7 +1787,7 @@ plot_tetra_3 <- data_for_plots_tetra_3%>%
     size = 1,
     alpha = 3 / 4
   ) + stat_summary(
-    fun.y = mean,
+    fun.y = median,
     geom = "point",
     shape = 95,
     size = 12,
