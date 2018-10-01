@@ -20,6 +20,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Reading and subsetting data 
 
 ```{r cars}
+#
 #Reading and subsetting data boscalid
 boscaliddata <-
   read.csv("data/boscalid_serialdilution_baseline(validationdata).csv")
