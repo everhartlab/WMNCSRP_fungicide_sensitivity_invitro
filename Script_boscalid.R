@@ -5,15 +5,19 @@ library(tidyverse)
 library(ggplot2)
 library(ezec)
 library(NRES803)
+library(broom)
 #READING AND SUBSETTING DATA
 boscaliddata <-
   read.csv("data/boscalid_serialdilution_baseline(validationdata).csv")
 # Deleting column
 boscaliddata <- subset(boscaliddata, select = -X)
 # Setting 4 repeats for each treatment
-boscaliddata$repeats <- rep_len(1:4, length.out = 2186)
+boscaliddata$repeats <- rep_len(1:4, length.out = 2184)
 # Discarding dose at 0.4 ppm and isolate 800 because it has just one experimental replication
-boscaliddata <- boscaliddata %>%  filter(!dose ==  0.4 & !ID == 800)
+boscaliddata <- boscaliddata %>%  
+  filter(!dose ==  0.4 & !ID == 800) %>% 
+ group_by(ID, experimental_replicate, dose, ecuatorial, polar, repeats) %>%
+  filter( !ID == "I-20" | !experimental_replicate ==2 | !dose== 0 | !repeats== 3 , !ID == 1033 | !experimental_replicate ==2 | !dose== 0 | !repeats== 4)
 # Getting growth as an average between ecuatorial and polar
 boscaliddata <-
   boscaliddata %>% mutate(growth = ((ecuatorial + polar) / 2))
@@ -27,12 +31,34 @@ get_range <- function(mynumber) {
 }
 # Using the function in order to take out the outlayers
 boscalid_filtered <- boscaliddata %>%
-  group_by(ID, experimental_replicate, dose) %>%
+  group_by(ID, dose) %>%
   mutate(growth_range = list(get_range(growth))) %>%
   unnest() %>%
   filter(growth <= upper & growth >= lower) %>%
   rename(response = growth) %>%
-  ungroup()
+  ungroup()%>% 
+  select(c(ID, experimental_replicate, repeats, dose, response))
+
+#FIRST NORMALITY
+
+##Shapiro_test
+
+shapiro.test_boscalid <- boscalid_filtered %>% 
+  group_by(ID) %>% 
+  do(tidy(shapiro.test(.$response))) 
+
+boscalidfinal <- left_join (shapiro.test_boscalid, boscalid_filtered) %>% 
+  mutate(normality = ifelse(p.value >0.05, "normal", "nonormal")) %>% 
+  spread(experimental_replicate, response)
+View(boscalidfinal)
+
+##Wilcox test
+wilcox_boscalid<- boscalidfinal%>%
+  group_by(ID, dose) %>%
+  do(tidy(wilcox.test(.$`1`, .$`2`, paired=TRUE)))
+View(wilcox_boscalid)
+
+
 # Plotting data
 p <-
   ggplot(boscalid_filtered, aes(x = ecuatorial, y = polar, fill = ID))
@@ -81,13 +107,13 @@ finalRG0.025 <- lm(logEC50 ~ RG0.025, final_boscalid)
 summary(finalRG0.025)
 check_assumptions(finalRG0.025)
     # Linear Regression graph oflog EC50 and relative growth at 0.025 ppm
-ggplot(finalRG0.025, aes(x = logEC50, y = RG0.025)) +  geom_point() + geom_smooth(method = "lm")
+ggplot(finalRG0.025, aes(x = RG0.025, y = logEC50)) +  geom_point() + geom_smooth(method = "lm")
 # Linear model of log EC50 and relative growth at 0.05 ppm, check normality and homogeneity of variances
 finalRG0.05 <- lm(logEC50 ~ RG0.05, final_boscalid)
 summary(finalRG0.05)
 check_assumptions(finalRG0.05)
     # Linear Regression graph of log EC50 and relative growth at 0.05 ppm
-ggplot(finalRG0.05, aes(x = RG0.05, y = logEC50)) +  geom_point() + geom_smooth(method = "lm")
+ggplot(finalRG0.05, aes(x = logEC50, y = RG0.05)) +  geom_point() + geom_smooth(method = "lm")
 
 # Linear model of log EC50 and relative growth at 0.1 ppm, check normality and homogeneity of variances
 finalRG0.1 <- lm(logEC50 ~ RG0.1, final_boscalid)
@@ -95,21 +121,23 @@ summary(finalRG0.1)
 check_assumptions(finalRG0.1)
     # Linear Regression graph of log EC50 and relative growth at 0.1 ppm
 
-ggplot(finalRG0.1, aes(x = logEC50, y = RG0.1)) +  geom_point() + geom_smooth(method = "lm")
+ggplot(finalRG0.1, aes(x = RG0.1, y = logEC50)) +  geom_point() + geom_smooth(method = "lm")
 
 #Dose chosen as DD
 # Linear model of log EC50 and relative growth at 0.2 ppm, check normality and homogeneity of variances
 
 finalRG0.2 <- lm(logEC50 ~ RG0.2, final_boscalid)
 summary(finalRG0.2)
+plot(finalRG0.2)
 check_assumptions(finalRG0.2)
     # Linear Regression graph of log EC50 and relative growth at 0.2 ppm
-ggplot(finalRG0.2, aes(x = logEC50, y = RG0.2)) +  geom_point() + geom_smooth(method = "lm")
+ggplot(finalRG0.2, aes(x = RG0.2, y = logEC50)) +  geom_point() + geom_smooth(method = "lm")
     # Getting the EC50DD according to the model
-final_boscalid_DD <- final_boscalid %>% mutate(Estimate.50DD = exp(-4.328466 + (0.054537*RG0.2)))
+final_boscalid_DD <- final_boscalid %>% mutate(Estimate.50DD = exp(-4.336577 + (0.054689*RG0.2)))
     # Linear model of EC50  and EC50DD, check normality and homogeneity of variances
 final_boscalid_DD_0.2 <- lm (Estimate.50DD ~ Estimate.50, final_boscalid_DD)
 summary(final_boscalid_DD_0.2)
+plot(final_boscalid_DD_0.2)
 check_assumptions(final_boscalid_DD_0.2)
     # Linear Regression graph of EC50 and EC50DD
 pdf("Linear regression of boscalid 0.2 ppm.pdf")  

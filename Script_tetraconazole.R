@@ -3,16 +3,18 @@ library(tidyverse)
 library(ggplot2)
 library(ezec)
 library(NRES803)
+library(broom)
 #READING AND SUBSETTING DATA
 tetraconazole_data <-
   read.csv("data/tetraconazole_serialdi_BL-WMN_survey-WMNCSRP(validationdata).csv")
-# tetraconazole_data <- subset(tetraconazole_data, select = -(X:X.9))
+tetraconazole_data <- subset(tetraconazole_data, select = -(X:X.1))
 
 # Setting 4 repeats for each treatment
-tetraconazole_data$repeats <- rep_len(1:4, length.out = 1680)
-# tetraconazole_data <-
-# tetraconazole_data %>% mutate(growth = ((ecuatorial + polar) / 2))
-
+tetraconazole_data$repeats <- rep_len(1:4, length.out = 2016)
+tetraconazole_data <- tetraconazole_data %>% 
+  group_by(ID, experimental_replicate, dose, ecuatorial, polar, repeats) %>%
+  filter( !ID == "78-01" | !experimental_replicate ==1 | !dose== 0.5 , !ID == "78-01" | !experimental_replicate ==1 |!dose== 1 , !ID == "78-01" | !experimental_replicate ==1 | !dose== 2) %>% 
+  mutate(growth = ((ecuatorial + polar) / 2))
 # Creating a function for using the outputs of boxplot.stats function and notice the outlayers
 tetraconazole_data <-  tetraconazole_data%>% select(ID:dose,repeats,response)
 get_range <- function(mynumber) {
@@ -25,21 +27,44 @@ get_range <- function(mynumber) {
 
 # Using the function in order to take out the outlayers
 tetraconazole_filtered <- tetraconazole_data %>%
-  group_by(ID, experimental_replicate, dose) %>%
+  rename(response = growth) %>%
+  group_by(ID, dose) %>%
   mutate(response_range = list(get_range(response))) %>%
   unnest() %>%
   filter(response <= upper & response >= lower) %>%
-  # rename(response = growth) %>%
-  ungroup()
+    ungroup()%>% 
+  select(c(ID, experimental_replicate, repeats, dose, response))
 
-# p <-
-#   ggplot(tetraconazole_filtered, aes(x = ecuatorial, y = polar, fill = ID))
-# p +  geom_boxplot(
-#   notch = TRUE,
-#   aes(group = dose, experimental_replicate),
-#   outlier.colour = "#000000"
-# ) + facet_wrap( ~ ID)  + labs(title = "Plot of dose ~ response by experimental_replicate", x =
-#                                 "Dose (ppm)", y = "Response (cm)")
+#FIRST NORMALITY
+
+##Shapiro_test
+
+shapiro.test_tetraconazole <- tetraconazole_filtered %>% 
+  group_by(ID) %>% 
+  do(tidy(shapiro.test(.$response))) 
+
+tetraconazolefinal <- left_join (shapiro.test_tetraconazole, tetraconazole_filtered) %>% 
+  mutate(normality = ifelse(p.value >0.05, "normal", "nonormal")) %>% 
+  spread(experimental_replicate, response) %>% 
+  na.omit() 
+View(tetraconazolefinal)
+
+##Wilcox test
+wilcox_tetraconazole<- tetraconazolefinal%>%
+  group_by(ID, dose) %>%
+  do(tidy(wilcox.test(.$`1`, .$`2`, paired=TRUE)))
+View(wilcox_tetraconazole)
+
+
+
+p <-
+  ggplot(tetraconazole_filtered, aes(x = ecuatorial, y = polar, fill = ID))
+p +  geom_boxplot(
+  notch = TRUE,
+  aes(group = dose, experimental_replicate),
+  outlier.colour = "#000000"
+) + facet_wrap( ~ ID)  + labs(title = "Plot of dose ~ response by experimental_replicate", x =
+                                "Dose (ppm)", y = "Response (cm)")
 
 # Getting EC50 by EC_table function
 xx <- EC_table(tetraconazole_filtered, form = response ~ dose)
@@ -76,49 +101,56 @@ names(tetraconazole_xx)[names(tetraconazole_xx) == "sample"] <- "ID"
 # Getting the log of the EC50
 final_tetraconazole <-
   left_join (RG, tetraconazole_xx) %>% mutate(logEC50 = (log(Estimate.50)))
-pdf("tetraconazole_assumptions_linearmodel_each_dose.pdf")
-# Linear model of log EC50 and relative growth at 0.5 ppm, check normality and homogeneity of variancesfinalRG0.5 <- lm(logEC50 ~ RG0.5, final_tetraconazole)
+pdf("tetraconazole_assumptions_linearmodel_each_dose&Linear_regression_with_best_model.pdf")
+# Linear model of log EC50 and relative growth at 0.5 ppm, check normality and homogeneity of variances 
+finalRG0.5 <- lm(logEC50 ~ RG0.5, final_tetraconazole)
 summary(finalRG0.5)
+plot(finalRG0.5)
 check_assumptions(finalRG0.5)
     # Linear Regression graph oflog EC50 and relative growth at 0.5 ppm
-ggplot(finalRG0.5, aes(x = logEC50, y = RG0.5)) +  geom_point() + geom_smooth(method = "lm")
+ggplot(finalRG0.5, aes(x = RG0.5, y =  logEC50)) +  theme(plot.title = element_text(size = 16, face = "bold", hjust = 1))  + labs(title = "Linear regression of tetraconazole 0.5 ppm", x ="Relative growth(%)", y = "logEC50" ) + theme (axis.title.x = element_text(size = 12, face = "bold", hjust = 0.5)) + theme( axis.title.y = element_text(size = 12, face = "bold", hjust = 0.5)) +theme( axis.text.x = element_text(size = 12)) + theme( axis.text.y = element_text(size = 12)) + theme (axis.line = element_line(colour = "grey50", size = 1)) +geom_point() + geom_smooth(method = "lm") 
 # Linear model of log EC50 and relative growth at 1 ppm, check normality and homogeneity of variances
 finalRG1 <- lm(logEC50 ~ RG1, final_tetraconazole)
 summary(finalRG1)
+plot(finalRG1)
 check_assumptions(finalRG1)
     # Linear Regression graph of log EC50 and relative growth at 1 ppm
-ggplot(finalRG1, aes(x = logEC50, y = RG1)) +  geom_point() + geom_smooth(method = "lm")
+ggplot(finalRG1, aes(x = RG1, y =  logEC50)) +  theme(plot.title = element_text(size = 16, face = "bold", hjust = 1))  + labs(title = "Linear regression of tetraconazole 1 ppm", x ="Relative growth(%)", y = "logEC50" ) + theme (axis.title.x = element_text(size = 12, face = "bold", hjust = 0.5)) + theme( axis.title.y = element_text(size = 12, face = "bold", hjust = 0.5)) +theme( axis.text.x = element_text(size = 12)) + theme( axis.text.y = element_text(size = 12)) + theme (axis.line = element_line(colour = "grey50", size = 1)) +geom_point() + geom_smooth(method = "lm") 
 
 #Dose chosen as DD
 # Linear model of log EC50 and relative growth at 2 ppm, check normality and homogeneity of variances
 finalRG2 <- lm(logEC50 ~ RG2, final_tetraconazole)
 summary(finalRG2)
+plot(finalRG2)
 check_assumptions(finalRG2)
     # Linear Regression graph of log EC50 and relative growth at 2 ppm
-ggplot(finalRG2, aes(x = logEC50, y = RG2)) +  geom_point() + geom_smooth(method = "lm")
+ggplot(finalRG2, aes(x = RG2, y =  logEC50)) +  theme(plot.title = element_text(size = 16, face = "bold", hjust = 1))  + labs(title = "Linear regression of tetraconazole 2 ppm", x ="Relative growth(%)", y = "logEC50" ) + theme (axis.title.x = element_text(size = 12, face = "bold", hjust = 0.5)) + theme( axis.title.y = element_text(size = 12, face = "bold", hjust = 0.5)) +theme( axis.text.x = element_text(size = 12)) + theme( axis.text.y = element_text(size = 12)) + theme (axis.line = element_line(colour = "grey50", size = 1)) +geom_point() + geom_smooth(method = "lm") 
 
     # Getting the EC50DD according to the model
-final_tetraconazole_DD <- final_tetraconazole %>% mutate(Estimate.50DD = exp(-1.336487 + (0.036323*RG2)))
+final_tetraconazole_DD <- final_tetraconazole %>% mutate(Estimate.50DD = exp(-1.418553 + (0.038615*RG2)))
     # Linear model of EC50  and EC50DD, check normality and homogeneity of variances
 final_tetraconazole_DD_2 <- lm (Estimate.50DD ~ Estimate.50, final_tetraconazole_DD)
 summary(final_tetraconazole_DD_2)
+plot(final_tetraconazole_DD_2)
 check_assumptions(final_tetraconazole_DD_2)
-pdf("Linear regression of tetraconazole 2 ppm.pdf")   
+#pdf("Linear regression of tetraconazole 2 ppm.pdf")   
  # Linear Regression graph of EC50 and EC50DD
-ggplot(final_tetraconazole_DD_2, aes(x = Estimate.50, y = Estimate.50DD)) +  theme(plot.title = element_text(size = 16, face = "bold", hjust = 1)) + labs(title = "Linear regression of tetraconazole 2 ppm", x ="EC50 (ppm)", y = "EC50DD (ppm)" ) + geom_point() + geom_smooth(method = "lm")
-dev.off()
+ggplot(final_tetraconazole_DD_2, aes(x = Estimate.50, y = Estimate.50DD)) +  theme(plot.title = element_text(size = 10, face = "bold", hjust = 0.5)) + labs(title = "Relationship between EC50 values of tetraconazole using the model y = -1.336487 + 0.036323x", x ="EC50 (ppm)", y = "EC50DD (ppm)" ) + theme (axis.title.x = element_text(size = 12, face = "bold", hjust = 0.5)) + theme( axis.title.y = element_text(size = 12, face = "bold", hjust = 0.5)) +theme( axis.text.x = element_text(size = 12)) + theme( axis.text.y = element_text(size = 12)) + theme (axis.line = element_line(colour = "grey50", size = 1)) + geom_point() + geom_smooth(method = "lm")
+#dev.off()
 # Linear model of log EC50 and relative growth at 3 ppm, check normality and homogeneity of variances
 finalRG3 <- lm(logEC50 ~ RG3, final_tetraconazole)
 summary(finalRG3)
+plot(finalRG3)
 check_assumptions(finalRG3)
     # Linear Regression graph of log EC50 and relative growth at 3 ppm
-ggplot(finalRG3, aes(x = logEC50, y = RG3)) +  geom_point() + geom_smooth(method = "lm")
+ggplot(finalRG3, aes(x = RG3, y =  logEC50)) +  theme(plot.title = element_text(size = 16, face = "bold", hjust = 1))  + labs(title = "Linear regression of tetraconazole 3 ppm", x ="Relative growth(%)", y = "logEC50" ) + theme (axis.title.x = element_text(size = 12, face = "bold", hjust = 0.5)) + theme( axis.title.y = element_text(size = 12, face = "bold", hjust = 0.5)) +theme( axis.text.x = element_text(size = 12)) + theme( axis.text.y = element_text(size = 12)) + theme (axis.line = element_line(colour = "grey50", size = 1)) +geom_point() + geom_smooth(method = "lm") 
 
 # Linear model of log EC50 and relative growth at 5 ppm, check normality and homogeneity of variances
 finalRG5 <- lm(logEC50 ~ RG5, final_tetraconazole)
 summary(finalRG5)
+plot(finalRG5)
 check_assumptions(finalRG5)
       # Linear Regression graph of log EC50 and relative growth at 5 ppmggplot(finalRG5, aes(x = logEC50, y = RG5)) +  geom_point() + geom_smooth(method = "lm")
-ggplot(finalRG5, aes(x = logEC50, y = RG5)) +  geom_point() + geom_smooth(method = "lm")
+ggplot(finalRG5, aes(x = RG5, y =  logEC50)) +  theme(plot.title = element_text(size = 16, face = "bold", hjust = 1))  + labs(title = "Linear regression of tetraconazole 5 ppm", x ="Relative growth(%)", y = "logEC50" ) + theme (axis.title.x = element_text(size = 12, face = "bold", hjust = 0.5)) + theme( axis.title.y = element_text(size = 12, face = "bold", hjust = 0.5)) +theme( axis.text.x = element_text(size = 12)) + theme( axis.text.y = element_text(size = 12)) + theme (axis.line = element_line(colour = "grey50", size = 1)) +geom_point() + geom_smooth(method = "lm") 
 
 dev.off()
