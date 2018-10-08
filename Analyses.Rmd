@@ -643,7 +643,7 @@ picoxystrobin_filtered <- picoxystrobin_data %>%
   ungroup()%>% 
   select(c(ID, experimental_replicate, repeats, dose, response))
 
-#Boxplot by experimental replicate,  I would need to remove one replicate from 2d experimental replicate for ID= 1, 12B,467,558,62-04, 645, 78-01, 78-02, 78-05, 8 $87 
+#Boxplot by experimental replicate,  I would need to 
 
 ggplot(picoxystrobin_filtered,aes(x=dose, y=response)) + xlim(0, 0.06)  +  geom_boxplot ( aes(group = experimental_replicate), notch = TRUE,  outlier.colour = "blue1",  outlier.shape = 3, outlier.size=2) + xlab("picoxystrobin dose (ppm)") +
   ylab("response (cm)") + facet_wrap(~  ID ) + ggtitle("Boxplot_picoxystrobin_by_experimental_replicate_&ID_group_by_ID") + theme(plot.title = element_text(hjust = 0.5)) + scale_y_continuous(breaks = c(1:7)) + geom_point(aes(dose,response, size=1), position = "jitter", size= 1) 
@@ -918,7 +918,7 @@ summary(bean_year95year96year2004_survey$Estimate.50DC)
 ## Analysis by fungicide
 #Tetraconazole
 
-```{r}
+```{r, warning=FALSE}
 tetraconazole_filtered <- tetraconazole_data %>%
   rename(response = growth) %>%
   group_by(ID, dose) %>%
@@ -928,7 +928,7 @@ tetraconazole_filtered <- tetraconazole_data %>%
   ungroup()%>% 
   select(c(ID, experimental_replicate, repeats, dose, response))
 
-#Boxplot by experimental replicate,  I would need to remove one replicate from 2d experimental replicate for ID= 1, 12B,467,558,62-04, 645, 78-01, 78-02, 78-05, 8 $87 
+#Boxplot by experimental replicate,  I 
 
 ggplot(tetraconazole_filtered,aes(x=dose, y=response)) + xlim(0, 0.06)  +  geom_boxplot ( aes(group = experimental_replicate), notch = TRUE,  outlier.colour = "blue1",  outlier.shape = 3, outlier.size=2) + xlab("tetraconazole dose (ppm)") +
   ylab("response (cm)") + facet_wrap(~  ID ) + ggtitle("Boxplot_tetraconazole_by_experimental_replicate_&ID_group_by_ID") + theme(plot.title = element_text(hjust = 0.5)) + scale_y_continuous(breaks = c(1:7)) + geom_point(aes(dose,response, size=1), position = "jitter", size= 1) 
@@ -1216,7 +1216,7 @@ TM_filtered <- TM_filtered %>%
   group_by (ID, dose, repeats, response) %>%
   filter(experimental_replicate==2 | experimental_replicate==3)
 
-#Boxplot by experimental replicate,  I would need to remove one replicate from 2d experimental replicate for ID= 1, 12B,467,558,62-04, 645, 78-01, 78-02, 78-05, 8 $87 
+#Boxplot by experimental replicate,  
 
 ggplot(TM_filtered,aes(x=dose, y=response)) + xlim(0, 0.06)  +  geom_boxplot ( aes(group = experimental_replicate), notch = TRUE,  outlier.colour = "blue1",  outlier.shape = 3, outlier.size=2) + xlab("TM dose (ppm)") +
   ylab("response (cm)") + facet_wrap(~  ID ) + ggtitle("Boxplot_TM_by_experimental_replicate_&ID_group_by_ID") + theme(plot.title = element_text(hjust = 0.5)) + scale_y_continuous(breaks = c(1:7)) + geom_point(aes(dose,response, size=1), position = "jitter", size= 1) 
