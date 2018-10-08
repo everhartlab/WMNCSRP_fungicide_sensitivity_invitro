@@ -133,6 +133,11 @@ tetraconazole_data <-
 ## Setting the groups of isolates
 
 ```{r}
+#baseline isolates include isolates coming from Whitemold nurseries, and others, very old, thus never exposed to fungicides
+#Bean production include isolates from SI production
+#survey isolates include farmer fields 
+#treatment isolates include  Fungicide field trials
+#unless other group specified
 baseline_isolates <- c("1","118", "123", "12B", "129", "20", "21", "449", "461", "467", "475", "558", "564", "568", "581", "645", "800", "667", "74SS1", "8", "87")
 survey_isolates <-  c("318", "413", "419", "62-02", "62-03", "62-04", "78-01", "78-02", "78-05", "H-01", "H-03", "H-04", "I-20", "S-01", "W212")
 treatmentyear2016_isolates <- c("1025", "1026", "1027", "1029", "1032","1033")
@@ -366,7 +371,7 @@ get_range <- function(mynumber) {
 ## Analysis by fungicide
 #Boscalid
 
-```{r}
+```{r, warning=FALSE}
 #Boscalid fungicide taking the outlayers from the 8 observations of each one, it reduces from to #
 boscalid_filtered <- boscaliddata %>%
   group_by(ID, dose) %>%
@@ -377,7 +382,17 @@ boscalid_filtered <- boscaliddata %>%
   ungroup() %>%
   select(c(ID, experimental_replicate, repeats, dose, response))
 
-##NORMALITY TEST-Shapiro_test, NO NORMALS##
+#Boxplot by experimental replicate,  I would need to remove one replicate from 2d experimental replicate for ID= 1032, one replicate from each experimental replicate for ID = H-03 and one repeat from 2nd experimental replicate for ID= I-20
+
+ggplot(boscalid_filtered,aes(x=dose, y=response)) + xlim(0, 0.8)  +  geom_boxplot ( aes(group = experimental_replicate), notch = TRUE,  outlier.colour = "blue1",  outlier.shape = 3, outlier.size=2) + xlab("boscalid dose (ppm)") +
+  ylab("response (cm)") + facet_wrap(~  ID ) + ggtitle("Boxplot_boscalid_by_experimental_replicate_&ID_group_by_ID") + theme(plot.title = element_text(hjust = 0.5)) + scale_y_continuous(breaks = c(1:7)) + geom_point(aes(dose,response, size=1), position = "jitter", size= 1) 
+ 
+
+#Boxplot by repeats,   I would need to remove For ID= 1032, the 4th repeat, and For ID= H-03,  the repeat 3,
+ggplot(boscalid_filtered,aes(x=dose, y=response, fill= ID)) + xlim(0, 0.8)  +  geom_boxplot( aes(group = repeats), notch = TRUE,  outlier.colour = "blue1",  outlier.shape = 3, outlier.size=2) + xlab("boscalid dose (ppm)") +  ylab("response (cm)") + scale_y_continuous(breaks = c(1:7)) + geom_point(aes(dose,response, size=1), position = "jitter", size= 1)+ facet_wrap(~ID)+ ggtitle("Boxplot_boscalid_by_repeats_group_by_ID") + theme(plot.title = element_text(hjust = 0.5))
+
+
+##NORMALITY TEST-Shapiro_test, NO NORMALILTY##
 
 shapiro.test_boscalid <- boscalid_filtered %>%
   group_by(ID) %>%
@@ -389,7 +404,7 @@ boscalidfinal <-
   spread(experimental_replicate, response)
   #View(boscalidfinal)
 
-##Wilcox test##
+## Since no normality, make Wilcox test for no parametric data to assess whether their population mean ranks differ##
 wilcox_boscalid <- boscalidfinal %>%
   group_by(ID, dose) %>%
   do(tidy(wilcox.test(.$`1`, .$`2`, paired = TRUE)))
@@ -452,7 +467,33 @@ RG <-
 final_boscalid <-#joining
   left_join (RG, boscalid_xx) %>% mutate(logEC50 = (log(EC50))) %>% rename(Estimate.50 = EC50)
 
-#Dose chosen as DC
+###Linear models of the other doses
+    # Linear model of log EC50 and relative growth at 0.025 ppm, check normality and homogeneity of variances
+
+finalRG0.025 <- lm(logEC50 ~ RG0.025, final_boscalid)
+summary(finalRG0.025)
+#check_assumptions(finalRG0.025)
+    # Linear Regression graph oflog EC50 and relative growth at 0.025 ppm
+ggplot(finalRG0.025, aes(x = RG0.025, y = logEC50)) +  geom_point() + geom_smooth(method = "lm")
+
+    # Linear model of log EC50 and relative growth at 0.05 ppm, check normality and homogeneity of variances
+finalRG0.05 <- lm(logEC50 ~ RG0.05, final_boscalid)
+summary(finalRG0.05)
+#check_assumptions(finalRG0.05)
+    # Linear Regression graph of log EC50 and relative growth at 0.05 ppm
+ggplot(finalRG0.05, aes(x = logEC50, y = RG0.05)) +  geom_point() + geom_smooth(method = "lm")
+
+  # Linear model of log EC50 and relative growth at 0.1 ppm, check normality and homogeneity of variances
+finalRG0.1 <- lm(logEC50 ~ RG0.1, final_boscalid)
+summary(finalRG0.1)
+#check_assumptions(finalRG0.1)
+    # Linear Regression graph of log EC50 and relative growth at 0.1 ppm
+
+ggplot(finalRG0.1, aes(x = RG0.1, y = logEC50)) +  geom_point() + geom_smooth(method = "lm")
+
+
+####################################################################################
+###Dose chosen as DC. Although there is one dose with higher r2, there is no differnec between and this was selected
 # Linear model of log EC50 and relative growth at 0.2 ppm, check normality and homogeneity of variances
 #pdf("boscalid_assumptions_linearmodel_dosechoseasDC_with_outlayers.pdf")
 finalRG0.2 <- lm(logEC50 ~ RG0.2, final_boscalid)
@@ -520,10 +561,10 @@ ggplot(final_boscalid_DC_0.2, aes(x = Estimate.50, y = Estimate.50DC)) +  theme(
   
 
 # Linear model of log EC50 and relative growth at 0.8 ppm, check normality and homogeneity of variances
-dev.off()
+#dev.off()
 
 ```
-#BOSCALID WITH SURVEY(PRE-TEST FUNGICIDE)
+#BOSCALID WITH SURVEY(PRE-TEST FUNGICIDE) inlcuding Farmer fields and Fungicide field trials
 ```{r}
 boscalid_data <- survey_data %>%
   select(ID,
@@ -588,12 +629,10 @@ treatmentyear2016 <- final_boscalid_DC %>% filter(ID %in% treatmentyear2016_isol
 summary(treatmentyear2016$Estimate.50DC)
 
 
-
-
 ```
-
+## Analysis by fungicide
 #Picoxystrobin
-```{r}
+```{r, warning=False}
 #Picoxystrobin  fungicide taking the outlayers from the 8 observations of each one, it reduces from 2013 to 1959 
 picoxystrobin_filtered <- picoxystrobin_data %>%
   group_by(ID, dose) %>%
@@ -604,8 +643,17 @@ picoxystrobin_filtered <- picoxystrobin_data %>%
   ungroup()%>% 
   select(c(ID, experimental_replicate, repeats, dose, response))
 
+#Boxplot by experimental replicate,  I would need to remove one replicate from 2d experimental replicate for ID= 1, 12B,467,558,62-04, 645, 78-01, 78-02, 78-05, 8 $87 
 
-##NORMALITY TEST-Shapiro_test, NO NORMALS##
+ggplot(picoxystrobin_filtered,aes(x=dose, y=response)) + xlim(0, 0.06)  +  geom_boxplot ( aes(group = experimental_replicate), notch = TRUE,  outlier.colour = "blue1",  outlier.shape = 3, outlier.size=2) + xlab("picoxystrobin dose (ppm)") +
+  ylab("response (cm)") + facet_wrap(~  ID ) + ggtitle("Boxplot_picoxystrobin_by_experimental_replicate_&ID_group_by_ID") + theme(plot.title = element_text(hjust = 0.5)) + scale_y_continuous(breaks = c(1:7)) + geom_point(aes(dose,response, size=1), position = "jitter", size= 1) 
+ 
+
+#Boxplot by repeats,  
+ggplot(picoxystrobin_filtered,aes(x=dose, y=response, fill= ID)) + xlim(0, 0.06)  +  geom_boxplot( aes(group = repeats), notch = TRUE,  outlier.colour = "blue1",  outlier.shape = 3, outlier.size=2) + xlab("picoxystrobin dose (ppm)") +  ylab("response (cm)") + scale_y_continuous(breaks = c(1:7)) + geom_point(aes(dose,response, size=1), position = "jitter", size= 1)+ facet_wrap(~ID)+ ggtitle("Boxplot_picoxystrobin_by_repeats_group_by_ID") + theme(plot.title = element_text(hjust = 0.5))
+
+
+##NORMALITY TEST-Shapiro_test, NO NORMALITY##
 shapiro.test_picoxystrobin <- picoxystrobin_filtered %>% 
   group_by(ID) %>% 
   do(tidy(shapiro.test(.$response))) 
@@ -615,7 +663,7 @@ picoxystrobinfinal <- left_join (shapiro.test_picoxystrobin, picoxystrobin_filte
   spread(experimental_replicate, response)
 #View(picoxystrobinfinal)
 
-##WILCOX TEST##
+##Since no normality, make Wilcox test for no parametric data to assess whether their population mean ranks differ##
 wilcox_picoxystrobin<- picoxystrobinfinal%>%
   group_by(ID, dose) %>%
   do(tidy(wilcox.test(.$`1`, .$`2`, paired=TRUE)))
@@ -673,7 +721,7 @@ treatmentyear2016 <- yy %>% filter(ID %in% treatmentyear2016_isolates)
 summary(treatmentyear2016)
 
 ```
-## Procedure to get the Discrimantory Concentration (DC) 
+## Procedure to get the Discriminatory Concentration (DC) 
 ```{r}
 
 #Getting relative growth column at each dose where RG= Relative Growth, eg. RG0.01= Relative Growth at 0.01 ppm
@@ -691,6 +739,41 @@ RG <-
 
 final_picoxystrobin <- #joining table
   left_join (RG, picoxystrobin_yy) %>% mutate(logEC50 = (log(EC50))) %>% rename(Estimate.50 = EC50)
+
+###Linear models of the other doses
+  
+    # Linear model of log EC50 and relative growth at 0.02 ppm, check normality and homogeneity of variances
+
+finalRG0.02 <- lm(logEC50 ~ RG0.02, final_picoxystrobin)
+summary(finalRG0.02)
+plot(finalRG0.02)
+#check_assumptions(finalRG0.02)
+    # Linear Regression graph of log EC50 and relative growth at 0.02 ppm 
+ggplot(finalRG0.02, aes(x = RG0.02, y = logEC50)) +  geom_point() + geom_smooth(method = "lm")
+
+
+# Linear model of log EC50 and relative growth at 0.04 ppm, check normality and homogeneity of variances
+
+finalRG0.04 <- lm(logEC50 ~ RG0.04, final_picoxystrobin)
+summary(finalRG0.04)
+plot(finalRG0.04)
+#check_assumptions(finalRG0.04)
+    # Linear Regression graph of log EC50 and relative growth at 0.04 ppm 
+
+ggplot(finalRG0.04, aes(x = RG0.04, y = logEC50)) +  geom_point() + geom_smooth(method = "lm")
+
+
+    # Linear model of log EC50 and relative growth at 0.06 ppm, check normality and homogeneity of variances
+finalRG0.06 <- lm(logEC50 ~ RG0.06, final_picoxystrobin)
+summary(finalRG0.06)
+plot(finalRG0.06)
+#check_assumptions(finalRG0.06)
+    # Linear Regression graph of log EC50 and relative growth at 0.06 ppm 
+
+ggplot(finalRG0.06, aes(x = RG0.06, y = logEC50)) +  geom_point() + geom_smooth(method = "lm")
+
+
+##################################################################################
 #Dose chosen as DC
 # Linear model of log EC50 and relative growth at 0.01 ppm, check normality and homogeneity of variances
 pdf("picoxystrobin_assumptions_linearmodel_dosechoseasDC_with_outlayers.pdf")
@@ -759,7 +842,7 @@ ggplot(final_picoxystrobin_DC_0.01,
 
 ```
 
-#PICOXYSTROBIN WITH SURVEY(PRE-TEST FUNGICIDE)
+#PICOXYSTROBIN WITH SURVEY(PRE-TEST FUNGICIDE) include Farmer fields and Fungicide field trials
 
 ```{r}
 picoxystrobin_data <- survey_data %>%
@@ -832,6 +915,7 @@ bean_year95year96year2004_survey <-  final_picoxystrobin_DC %>% filter(ID %in% b
 summary(bean_year95year96year2004_survey$Estimate.50DC)
 
 ```
+## Analysis by fungicide
 #Tetraconazole
 
 ```{r}
@@ -844,7 +928,16 @@ tetraconazole_filtered <- tetraconazole_data %>%
   ungroup()%>% 
   select(c(ID, experimental_replicate, repeats, dose, response))
 
-##NORMALITY TEST-Shapiro_test, NO NORMALS##
+#Boxplot by experimental replicate,  I would need to remove one replicate from 2d experimental replicate for ID= 1, 12B,467,558,62-04, 645, 78-01, 78-02, 78-05, 8 $87 
+
+ggplot(tetraconazole_filtered,aes(x=dose, y=response)) + xlim(0, 0.06)  +  geom_boxplot ( aes(group = experimental_replicate), notch = TRUE,  outlier.colour = "blue1",  outlier.shape = 3, outlier.size=2) + xlab("tetraconazole dose (ppm)") +
+  ylab("response (cm)") + facet_wrap(~  ID ) + ggtitle("Boxplot_tetraconazole_by_experimental_replicate_&ID_group_by_ID") + theme(plot.title = element_text(hjust = 0.5)) + scale_y_continuous(breaks = c(1:7)) + geom_point(aes(dose,response, size=1), position = "jitter", size= 1) 
+ 
+
+#Boxplot by repeats,  
+ggplot(tetraconazole_filtered,aes(x=dose, y=response, fill= ID)) + xlim(0, 0.06)  +  geom_boxplot( aes(group = repeats), notch = TRUE,  outlier.colour = "blue1",  outlier.shape = 3, outlier.size=2) + xlab("tetraconazole dose (ppm)") +  ylab("response (cm)") + scale_y_continuous(breaks = c(1:7)) + geom_point(aes(dose,response, size=1), position = "jitter", size= 1)+ facet_wrap(~ID)+ ggtitle("Boxplot_tetraconazole_by_repeats_group_by_ID") + theme(plot.title = element_text(hjust = 0.5))
+
+##NORMALITY TEST-Shapiro_test, NO NORMALILITY##
 shapiro.test_tetraconazole <- tetraconazole_filtered %>% 
   group_by(ID) %>% 
   do(tidy(shapiro.test(.$response))) 
@@ -854,7 +947,7 @@ tetraconazolefinal <- left_join (shapiro.test_tetraconazole, tetraconazole_filte
   spread(experimental_replicate, response) %>% 
   na.omit() 
 #View(tetraconazolefinal)
-##WILCOX TEST##
+##Since no normality, make Wilcox test for no parametric data to assess whether their population mean ranks differ##
 wilcox_tetraconazole<- tetraconazolefinal%>%
   group_by(ID, dose) %>%
   do(tidy(wilcox.test(.$`1`, .$`2`, paired=TRUE)))
@@ -913,7 +1006,7 @@ treatmentyear2016 <- bb %>% filter(ID %in% treatmentyear2016_isolates)
 summary(treatmentyear2016)
 
 ```
-## Procedure to get the Discrimantory Concentration (DC) 
+## Procedure to get the Discrimanatory Concentration (DC) 
 ```{r}
 RG <-
   tetraconazole_filtered %>% 
@@ -932,6 +1025,44 @@ final_tetraconazole <-#joining
   left_join (RG, tetraconazole_bb) %>% mutate(logEC50 = (log(EC50))) %>% rename(Estimate.50 = EC50)
 #pdf("tetraconazole_assumptions_linearmodel_each_dose&Linear_regression_with_best_model.pdf")
 
+
+
+###Linear models of the other doses
+
+    # Linear model of log EC50 and relative growth at 0.5 ppm, check normality and homogeneity of variances 
+finalRG0.5 <- lm(logEC50 ~ RG0.5, final_tetraconazole)
+summary(finalRG0.5)
+plot(finalRG0.5)
+#check_assumptions(finalRG0.5)
+    # Linear Regression graph oflog EC50 and relative growth at 0.5 ppm
+ggplot(finalRG0.5, aes(x = RG0.5, y =  logEC50)) +  theme(plot.title = element_text(size = 16, face = "bold", hjust = 1))  + labs(title = "Linear regression of tetraconazole 0.5 ppm", x ="Relative growth(%)", y = "logEC50" ) + theme (axis.title.x = element_text(size = 12, face = "bold", hjust = 0.5)) + theme( axis.title.y = element_text(size = 12, face = "bold", hjust = 0.5)) +theme( axis.text.x = element_text(size = 12)) + theme( axis.text.y = element_text(size = 12)) + theme (axis.line = element_line(colour = "grey50", size = 1)) +geom_point() + geom_smooth(method = "lm") 
+    # Linear model of log EC50 and relative growth at 1 ppm, check normality and homogeneity of variances
+finalRG1 <- lm(logEC50 ~ RG1, final_tetraconazole)
+summary(finalRG1)
+plot(finalRG1)
+#check_assumptions(finalRG1)
+    # Linear Regression graph of log EC50 and relative growth at 1 ppm
+ggplot(finalRG1, aes(x = RG1, y =  logEC50)) +  theme(plot.title = element_text(size = 16, face = "bold", hjust = 1))  + labs(title = "Linear regression of tetraconazole 1 ppm", x ="Relative growth(%)", y = "logEC50" ) + theme (axis.title.x = element_text(size = 12, face = "bold", hjust = 0.5)) + theme( axis.title.y = element_text(size = 12, face = "bold", hjust = 0.5)) +theme( axis.text.x = element_text(size = 12)) + theme( axis.text.y = element_text(size = 12)) + theme (axis.line = element_line(colour = "grey50", size = 1)) +geom_point() + geom_smooth(method = "lm") 
+
+ 
+finalRG3 <- lm(logEC50 ~ RG3, final_tetraconazole)
+summary(finalRG3)
+plot(finalRG3)
+#check_assumptions(finalRG3)
+    # Linear Regression graph of log EC50 and relative growth at 3 ppm
+ggplot(finalRG3, aes(x = RG3, y =  logEC50)) +  theme(plot.title = element_text(size = 16, face = "bold", hjust = 1))  + labs(title = "Linear regression of tetraconazole 3 ppm", x ="Relative growth(%)", y = "logEC50" ) + theme (axis.title.x = element_text(size = 12, face = "bold", hjust = 0.5)) + theme( axis.title.y = element_text(size = 12, face = "bold", hjust = 0.5)) +theme( axis.text.x = element_text(size = 12)) + theme( axis.text.y = element_text(size = 12)) + theme (axis.line = element_line(colour = "grey50", size = 1)) +geom_point() + geom_smooth(method = "lm") 
+
+    # Linear model of log EC50 and relative growth at 5 ppm, check normality and homogeneity of variances
+finalRG5 <- lm(logEC50 ~ RG5, final_tetraconazole)
+summary(finalRG5)
+plot(finalRG5)
+  #check_assumptions(finalRG5)
+      # Linear Regression graph of log EC50 and relative growth at 5 ppmggplot(finalRG5, aes(x = logEC50, y = RG5)) +  geom_point() + geom_smooth(method = "lm")
+ggplot(finalRG5, aes(x = RG5, y =  logEC50)) +  theme(plot.title = element_text(size = 16, face = "bold", hjust = 1))  + labs(title = "Linear regression of tetraconazole 5 ppm", x ="Relative growth(%)", y = "logEC50" ) + theme (axis.title.x = element_text(size = 12, face = "bold", hjust = 0.5)) + theme( axis.title.y = element_text(size = 12, face = "bold", hjust = 0.5)) +theme( axis.text.x = element_text(size = 12)) + theme( axis.text.y = element_text(size = 12)) + theme (axis.line = element_line(colour = "grey50", size = 1)) +geom_point() + geom_smooth(method = "lm") 
+
+#dev.off()
+
+################################################################################
 #Dose chosen as DC
 # Linear model of log EC50 and relative growth at 2 ppm, check normality and homogeneity of variances
 pdf("tetraconazole_assumptions_linearmodel_dosechoseasDC_with_outlayers.pdf")
@@ -947,7 +1078,7 @@ finalRG2 <- lm(logEC50 ~ RG2, final_tetraconazole_clean)
 summary(finalRG2)
 plot(finalRG2)
 #check_assumptions(finalRG2)
-dev.off()
+#dev.off()
 # Linear Regression graph of log EC50 and relative growth at 2 ppm
 ggplot(finalRG2, aes(x = RG2, y =  logEC50)) +  theme(plot.title = element_text(size = 16, face = "bold", hjust = 1))  + labs(title = "Linear regression of tetraconazole 2 ppm", x =
                                                                                                                                 "Relative growth(%)", y = "logEC50") + theme (axis.title.x = element_text(size = 12, face = "bold", hjust = 0.5)) + theme(axis.title.y = element_text(size = 12, face = "bold", hjust = 0.5)) +
@@ -972,7 +1103,7 @@ ggplot(final_tetraconazole_DC_2,
 
 
 ```
-#TETRACONAZOLE WITH SURVEY(PRE-TEST FUNGICIDE)
+#TETRACONAZOLE WITH SURVEY(PRE-TEST FUNGICIDE) included Farmer fields and Fungicide field trials
 
 ```{r}
 
@@ -1069,7 +1200,7 @@ soybean_treatmentyear_MI_2017 <-  tetraconazole_filtered %>% filter(ID %in% soyb
 summary(soybean_treatmentyear_MI_2017$Estimate.50DC)
 
 ```
-
+## Analysis by fungicide
 #TM
 ```{r}
 TM_filtered <- TMdata %>%
@@ -1085,8 +1216,12 @@ TM_filtered <- TM_filtered %>%
   group_by (ID, dose, repeats, response) %>%
   filter(experimental_replicate==2 | experimental_replicate==3)
 
+#Boxplot by experimental replicate,  I would need to remove one replicate from 2d experimental replicate for ID= 1, 12B,467,558,62-04, 645, 78-01, 78-02, 78-05, 8 $87 
 
-##NORMALITY TEST-Shapiro_test, NO NORMALS##
+ggplot(TM_filtered,aes(x=dose, y=response)) + xlim(0, 0.06)  +  geom_boxplot ( aes(group = experimental_replicate), notch = TRUE,  outlier.colour = "blue1",  outlier.shape = 3, outlier.size=2) + xlab("TM dose (ppm)") +
+  ylab("response (cm)") + facet_wrap(~  ID ) + ggtitle("Boxplot_TM_by_experimental_replicate_&ID_group_by_ID") + theme(plot.title = element_text(hjust = 0.5)) + scale_y_continuous(breaks = c(1:7)) + geom_point(aes(dose,response, size=1), position = "jitter", size= 1) 
+ 
+##NORMALITY TEST-Shapiro_test, NO NORMALITY##
 
 shapiro.test_TM <- TM_filtered %>% 
   group_by(ID) %>% 
@@ -1112,14 +1247,76 @@ zz <- EC_table(TM_filtered, form = response ~ dose)
 # treatmentyear2016 <- zz %>% filter(sample %in% treatmentyear2016_isolates)
 # summary(treatmentyear2016)
 # # Getting relative growth column at each dose where RG= Relative Growth, eg. RG0.75= Relative Growth at 0.75 ppm
-# RG <- TM_filtered %>% group_by(ID,dose) %>% summarise(median_response=median(response,na.rm=TRUE)) %>% spread(dose,median_response) %>%  mutate(RG0.75=((`0.75`/`0`)*100)) %>% mutate(RG1=((`1`/`0`)*100)) %>% mutate(RG1.5=((`1.5`/`0`)*100)) %>% mutate(RG2=((`2`/`0`)*100)) %>% mutate(RG2.5=((`2.5`/`0`)*100)) %>%  mutate(RG10=((`10`/`0`)*100))
+ RG <- TM_filtered %>% group_by(ID,dose) %>% summarise(median_response=median(response,na.rm=TRUE)) %>% spread(dose,median_response) %>%  mutate(RG0.75=((`0.75`/`0`)*100)) %>% mutate(RG1=((`1`/`0`)*100)) %>% mutate(RG1.5=((`1.5`/`0`)*100)) %>% mutate(RG2=((`2`/`0`)*100)) %>% mutate(RG2.5=((`2.5`/`0`)*100)) %>%  mutate(RG10=((`10`/`0`)*100))
 # 
 # 
 # #Ordering the table
-# TM_xx <-  xx %>% 
-#   select(-Estimate.10,-SE.10,-Estimate.90,-SE.90)
-# names(TM_xx)[names(TM_xx) == "sample"] <- "ID"
-# final_TM<-left_join (RG, TM_xx) %>% mutate(logEC50=(log(Estimate.50)))
+TM_xx <-  xx %>%
+select(-Estimate.10,-SE.10,-Estimate.90,-SE.90)
+names(TM_xx)[names(TM_xx) == "sample"] <- "ID"
+ final_TM<-left_join (RG, TM_xx) %>% mutate(logEC50=(log(Estimate.50)))
+
+# Linear model of log EC50 and relative growth at 0.75ppm, check normality and homogeneity of variances
+ finalRG0.75 <- lm(logEC50~RG0.75,final_TM)
+ summary(finalRG0.75)
+# check_assumptions(finalRG0.75)
+    # Linear Regression graph oflog EC50 and relative growth at 0.75 ppm
+# ggplot(finalRG0.75,aes(x=logEC50, y=RG0.75))+  geom_point() + geom_smooth(method = "lm")
+# Linear model of log EC50 and relative growth at 1 ppm, check normality and homogeneity of variances
+finalRG1 <- lm(logEC50~RG1,final_TM) 
+summary(finalRG1)
+plot(finalRG1)
+#check_assumptions(finalRG1)
+    # Linear Regression graph of log EC50 and relative growth at 1 ppm 
+ggplot(finalRG1,aes(x= RG1, y= logEC50))+  geom_point() + geom_smooth(method = "lm")
+
+# Linear model of log EC50 and relative growth at 1.5 ppm, check normality and homogeneity of variances
+finalRG1.5 <- lm(logEC50~RG1.5,final_TM) 
+summary(finalRG1.5)
+plot(finalRG1.5)
+#check_assumptions(finalRG1.5)
+    # Linear Regression graph of log EC50 and relative growth at 1.5 ppm
+ggplot(finalRG1.5,aes(x=RG1.5, y=logEC50))+  geom_point() + geom_smooth(method = "lm")
+
+
+# Linear model of log EC50 and relative growth at 2 ppm, check normality and homogeneity of variances
+finalRG2 <- lm(logEC50~RG2,final_TM) 
+summary(finalRG2)
+plot(finalRG2)
+#check_assumptions(finalRG2)
+      # Linear Regression graph of log EC50 and relative growth at 2 ppm
+ggplot(finalRG2, aes(x = RG2, y = logEC50)) +  geom_point() + geom_smooth(method = "lm")
+
+# Linear model of log EC50 and relative growth at 2.5 ppm, check normality and homogeneity of variances
+
+finalRG2.5<- lm(logEC50~RG2.5,final_TM) 
+summary(finalRG2.5)
+plot(finalRG2.5)
+#check_assumptions(finalRG2.5)
+      # Linear Regression graph of log EC50 and relative growth at 2.5 ppm
+ggplot(finalRG2.5, aes(x = RG2.5, y = logEC50)) +  geom_point() + geom_smooth()
+
+#Dose chosen as DD
+# Linear model of log EC50 and relative growth at 10 ppm, check normality and homogeneity of variances
+finalRG10<- lm(logEC50~RG10,final_TM) 
+summary(finalRG10)
+plot(finalRG10)
+#check_assumptions(finalRG2.5)
+    # Linear Regression graph of log EC50 and relative growth at 10 ppm
+ggplot(finalRG10, aes(x = RG10, y = logEC50)) +  geom_point() + geom_smooth()
+
+# Getting the EC50DD according to the model
+final_TM_DD <- final_TM %>% mutate(Estimate.50DD = exp(1.19249 - (0.02646*RG10)))
+# Linear model of EC50  and EC50DD, check normality and homogeneity of variances
+final_TM_DD_10 <- lm (Estimate.50DD ~ Estimate.50, final_TM_DD)
+summary(final_TM_DD_10)
+plot(final_TM_DD_10)
+#check_assumptions(final_TM_DD_10)
+pdf("Linear regression of thiophanate methyl 10 ppm.pdf")   
+## Linear Regression graph of EC50 and EC50DD
+ggplot(final_TM_DD_10, aes(x = Estimate.50, y = Estimate.50DD)) +  theme(plot.title = element_text(size = 16, face = "bold", hjust = 1)) + labs(title = "Linear regression of thiophanate methyl 10 ppm", x ="EC50 (ppm)", y = "EC50DD (ppm)" ) + geom_point() + geom_smooth(method = "lm")
+
+#dev.off()
 
 
 ```
@@ -1136,7 +1333,8 @@ TM_data <- TM_data %>%
   group_by(ID) %>% 
   summarise(median_response =median(response, na.rm = TRUE), median_control =median(control, na.rm = TRUE)) %>% 
   mutate(RG= (median_response/median_control)*100)  %>% 
-mutate(resistance = ifelse(RG >24, "resistant", "nonresistant")) 
+mutate(resistance = ifelse(RG >24,#more or equal to 25%, 
+                           "resistant", "nonresistant")) 
 
 ```
 #plotting all fungicides together by geom_jitter
