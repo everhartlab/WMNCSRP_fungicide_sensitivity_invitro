@@ -599,11 +599,14 @@ boscalid_filtered_survey <- boscalid_data %>%
 
 #boscalid_filtered_survey_plusbaseline
 #  There is no differnece between experimental replicates but there are 3 outlayers,  Becasue of that taking outlayers by and then
-boscalid_filtered_ <- boscalid_filtered_survey %>% 
-  group_by(ID) %>% 
-  summarise(median_response =median(response, na.rm = TRUE), median_control =median(control, na.rm = TRUE)) %>% 
-  mutate(RG= (median_response/median_control)*100) %>% 
-  mutate(Estimate.50DC = exp (-4.407938 + (0.056624*RG))) %>% 
+boscalid_filtered_ <- boscalid_filtered_survey %>%
+  group_by(ID) %>%
+  summarise(
+  median_response = median(response, na.rm = TRUE),
+  median_control = median(control, na.rm = TRUE)
+  ) %>%
+  mutate(RG = (median_response / median_control) * 100) %>%
+  mutate(Estimate.50DC = exp (-4.407938 + (0.056624 * RG))) %>%
   select(c(ID, Estimate.50DC))
 
 #final_boscalid_DC2 <- final_boscalid_DC %>% select(-c(`0`, `0.025`, `0.05`, `0.1`, `0.2`, `0.8`, RG0.025, RG0.05, RG0.1, RG0.8 ))
@@ -854,7 +857,7 @@ picoxystrobin_data <- survey_data %>%
   sham.growth,
   control.growth
   ) %>%
-  rename(response = picoxystrobin.growth, control = sham.growth)
+  rename(response = picoxystrobin.growth, control = sham.growth) %>% select(-control.growth)
   
 # Using the function in order to take out the outlayers
 picoxystrobin_filtered_survey <- picoxystrobin_data %>%
@@ -1341,7 +1344,7 @@ mutate(resistance = ifelse(RG >24,#more or equal to 25%,
 
 ```{r}
   new_data <- rbind(boscalid_xx, picoxystrobin_yy, tetraconazole_bb)
-  
+ # write.csv(new_data, file = "summarize_isolates_used_for_fungicides.csv")
   plot_dat <- new_data %>%
     ggplot(aes(x = group, y = EC50, fill = fungicide)) +
     geom_jitter(width = .1, height = 0, shape=21, 
@@ -1459,7 +1462,7 @@ plot_bos <- data_for_plots_bos%>%
     size = 1,
     alpha = 3 / 4
   ) + stat_summary(
-    fun.y = median,
+    fun.y = mean,
     geom = "point",
     shape = 95,
     size = 12,
@@ -1554,7 +1557,7 @@ plot_pico <- data_for_plots_pico%>%
     size = 1,
     alpha = 3 / 4
   ) + stat_summary(
-    fun.y = median,
+    fun.y = mean,
     geom = "point",
     shape = 95,
     size = 12,
@@ -1636,7 +1639,7 @@ plot_tetra <- data_for_plots_tetra%>%
     size = 1,
     alpha = 3 / 4
   ) + stat_summary(
-    fun.y = median,
+    fun.y = mean,
     geom = "point",
     shape = 95,
     size = 12,
@@ -1729,7 +1732,7 @@ plot_bos_2 <- data_for_plots_bos_2%>%
     size = 1,
     alpha = 3 / 4
   ) + stat_summary(
-    fun.y = median,
+    fun.y = mean,
     geom = "point",
     shape = 95,
     size = 12,
@@ -1777,7 +1780,7 @@ plot_pico_2 <- data_for_plots_pico_2%>%
     size = 1,
     alpha = 3 / 4
   ) + stat_summary(
-    fun.y = median,
+    fun.y = mean,
     geom = "point",
     shape = 95,
     size = 12,
@@ -1826,7 +1829,7 @@ plot_tetra_2 <- data_for_plots_tetra_2%>%
     size = 1,
     alpha = 3 / 4
   ) + stat_summary(
-    fun.y = median,
+    fun.y = mean,
     geom = "point",
     shape = 95,
     size = 12,
@@ -1883,7 +1886,7 @@ plot_bos_3 <- data_for_plots_bos_3%>%
     size = 1,
     alpha = 3 / 4
   ) + stat_summary(
-    fun.y = median,
+    fun.y = mean,
     geom = "point",
     shape = 95,
     size = 12,
@@ -1934,7 +1937,7 @@ plot_pico_3 <- data_for_plots_pico_3%>%
     size = 1,
     alpha = 3 / 4
   ) + stat_summary(
-    fun.y = median,
+    fun.y = mean,
     geom = "point",
     shape = 95,
     size = 12,
@@ -1986,7 +1989,7 @@ plot_tetra_3 <- data_for_plots_tetra_3%>%
     size = 1,
     alpha = 3 / 4
   ) + stat_summary(
-    fun.y = median,
+    fun.y = mean,
     geom = "point",
     shape = 95,
     size = 12,
