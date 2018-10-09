@@ -436,7 +436,7 @@ levels(boscalid_xx$group)[levels(boscalid_xx$group) == "baseline"] <-
   "Baseline"
 
 ```
-## Filtering by each group to know the medians of each group at first sight
+## Filtering by each group to know the means of each group at first sight
 ```{r}
 
 baseline <-  boscalid_xx %>% filter(ID %in% baseline_isolates)
@@ -455,8 +455,8 @@ treatmentyear2016_[c(1,4,6)]
 ```{r}
 ##Getting relative growth column at each dose where RG = Relative Growth, eg. RG0.025 = Relative Growth at 0.025 ppm##
 RG <-
-  boscalid_filtered %>% group_by(ID, dose) %>% summarise(median_response = median(response, na.rm = TRUE)) %>%
-  spread(dose, median_response) %>%
+  boscalid_filtered %>% group_by(ID, dose) %>% summarise(mean_response = mean(response, na.rm = TRUE)) %>%
+  spread(dose, mean_response) %>%
   mutate(RG0.025 = ((`0.025` / `0`) * 100)) %>%    
      mutate(RG0.05 = ((`0.05` / `0`) * 100)) %>%
         mutate(RG0.05 = ((`0.05` / `0`) * 100)) %>%  
@@ -602,15 +602,15 @@ boscalid_filtered_survey <- boscalid_data %>%
 boscalid_filtered_ <- boscalid_filtered_survey %>%
   group_by(ID) %>%
   summarise(
-  median_response = median(response, na.rm = TRUE),
-  median_control = median(control, na.rm = TRUE)
+  mean_response = mean(response, na.rm = TRUE),
+  mean_control = mean(control, na.rm = TRUE)
   ) %>%
-  mutate(RG = (median_response / median_control) * 100) %>%
+  mutate(RG = (mean_response / mean_control) * 100) %>%
   mutate(Estimate.50DC = exp (-4.407938 + (0.056624 * RG))) %>%
   select(c(ID, Estimate.50DC))
 
 #final_boscalid_DC2 <- final_boscalid_DC %>% select(-c(`0`, `0.025`, `0.05`, `0.1`, `0.2`, `0.8`, RG0.025, RG0.05, RG0.1, RG0.8 ))
-#boscalid_filtered2 <- boscalid_filtered %>% select(-c(median_response,median_control))
+#boscalid_filtered2 <- boscalid_filtered %>% select(-c(mean_response,mean_control))
 
 summary(boscalid_filtered_$Estimate.50DC)
 summary(final_boscalid_DC$Estimate.50DC)
@@ -729,7 +729,7 @@ summary(treatmentyear2016)
 
 #Getting relative growth column at each dose where RG= Relative Growth, eg. RG0.01= Relative Growth at 0.01 ppm
 RG <-
-  picoxystrobin_filtered %>% group_by(ID, dose) %>% summarise(median_response = median(response, na.rm = TRUE)) %>% spread(dose, median_response) %>%
+  picoxystrobin_filtered %>% group_by(ID, dose) %>% summarise(mean_response = mean(response, na.rm = TRUE)) %>% spread(dose, mean_response) %>%
   mutate(RG0.01 = ((`0.01` / `0`) * 100)) %>%
     mutate(RG0.02 = ((`0.02` / `0`) * 100)) %>%  
       mutate(RG0.04 = ((`0.04` / `0`) * 100)) %>%
@@ -875,10 +875,10 @@ picoxystrobin_filtered_survey <- picoxystrobin_data %>%
 picoxystrobin_filtered_ <- picoxystrobin_filtered_survey %>%
   group_by(ID) %>%
     summarise(
-      median_response = median(response, na.rm = TRUE),
-      median_control = median(control, na.rm = TRUE)
+      mean_response = mean(response, na.rm = TRUE),
+      mean_control = mean(control, na.rm = TRUE)
        ) %>%
-         mutate(RG = (median_response / median_control) * 100) %>%
+         mutate(RG = (mean_response / mean_control) * 100) %>%
            mutate(Estimate.50DC = exp (-6.365817 + (0.034766 * RG))) %>%
              select(c(ID, Estimate.50DC)) %>%
                ungroup()
@@ -1014,8 +1014,8 @@ summary(treatmentyear2016)
 RG <-
   tetraconazole_filtered %>% 
    group_by(ID, dose) %>%
-    summarise(median_response = median(response, na.rm = TRUE)) %>% 
-     spread(dose, median_response) %>%
+    summarise(mean_response = mean(response, na.rm = TRUE)) %>% 
+     spread(dose, mean_response) %>%
       mutate(RG0.5 =((`0.5` / `0`) * 100)) %>% mutate(RG1 = ((`1` / `0`) * 100)) %>%       mutate(RG2 =((`2` / `0`) * 100)) %>% 
   mutate(RG3 = ((`3` / `0`) * 100)) %>% 
   mutate(RG5 =((`5` / `0`) * 100)) 
@@ -1132,8 +1132,8 @@ tetraconazole_filtered_survey <- tetraconazole_data %>%
 ##PLus baseline
 tetraconazole_filtered_ <- tetraconazole_filtered_survey %>%
   group_by(ID) %>% 
-  summarise(median_response =median(response, na.rm = TRUE), median_control =median(control, na.rm = TRUE)) %>% 
-  mutate(RG= (median_response/median_control)*100) %>% 
+  summarise(mean_response =mean(response, na.rm = TRUE), mean_control =mean(control, na.rm = TRUE)) %>% 
+  mutate(RG= (mean_response/mean_control)*100) %>% 
   mutate(Estimate.50DC = exp (-1.650985 + (0.044510*RG))) %>% 
 select(c(ID, Estimate.50DC)) %>% 
   ungroup()
@@ -1250,7 +1250,7 @@ zz <- EC_table(TM_filtered, form = response ~ dose)
 # treatmentyear2016 <- zz %>% filter(sample %in% treatmentyear2016_isolates)
 # summary(treatmentyear2016)
 # # Getting relative growth column at each dose where RG= Relative Growth, eg. RG0.75= Relative Growth at 0.75 ppm
- RG <- TM_filtered %>% group_by(ID,dose) %>% summarise(median_response=median(response,na.rm=TRUE)) %>% spread(dose,median_response) %>%  mutate(RG0.75=((`0.75`/`0`)*100)) %>% mutate(RG1=((`1`/`0`)*100)) %>% mutate(RG1.5=((`1.5`/`0`)*100)) %>% mutate(RG2=((`2`/`0`)*100)) %>% mutate(RG2.5=((`2.5`/`0`)*100)) %>%  mutate(RG10=((`10`/`0`)*100))
+ RG <- TM_filtered %>% group_by(ID,dose) %>% summarise(mean_response=mean(response,na.rm=TRUE)) %>% spread(dose,mean_response) %>%  mutate(RG0.75=((`0.75`/`0`)*100)) %>% mutate(RG1=((`1`/`0`)*100)) %>% mutate(RG1.5=((`1.5`/`0`)*100)) %>% mutate(RG2=((`2`/`0`)*100)) %>% mutate(RG2.5=((`2.5`/`0`)*100)) %>%  mutate(RG10=((`10`/`0`)*100))
 # 
 # 
 # #Ordering the table
@@ -1334,8 +1334,8 @@ TM_data <- survey_data %>%
 
 TM_data <- TM_data %>% 
   group_by(ID) %>% 
-  summarise(median_response =median(response, na.rm = TRUE), median_control =median(control, na.rm = TRUE)) %>% 
-  mutate(RG= (median_response/median_control)*100)  %>% 
+  summarise(mean_response =mean(response, na.rm = TRUE), mean_control =mean(control, na.rm = TRUE)) %>% 
+  mutate(RG= (mean_response/mean_control)*100)  %>% 
 mutate(resistance = ifelse(RG >24,#more or equal to 25%, 
                            "resistant", "nonresistant")) 
 
@@ -1406,16 +1406,16 @@ boscalid_complete <- ungroup(boscalid_complete)
 # boscalid_control <- boscalid_filtered %>% 
 #   group_by(ID) %>% 
 #   filter(dose == 0) %>% 
-#   summarise(median_response_control =median(response, na.rm = TRUE))
+#   summarise(mean_response_control =mean(response, na.rm = TRUE))
 # 
 # boscalid_trt <- boscalid_filtered %>% 
 #   group_by(ID) %>% 
 #   filter(dose != 0) %>% 
-#   summarise(median_response_trt =median(response, na.rm = TRUE))
+#   summarise(mean_response_trt =mean(response, na.rm = TRUE))
 # 
 # boscalid_new_dat <- boscalid_control %>% 
 #   inner_join(boscalid_trt) %>% 
-#   mutate(RG= (median_response_trt/median_response_control)*100) %>% 
+#   mutate(RG= (mean_response_trt/mean_response_control)*100) %>% 
 #   mutate(Estimate.50DC = exp (-4.407938 + (0.056624*RG)))
 # ##
 # boscalid_complete<-rbind(final_boscalid_DC,boscalid_filtered_)
