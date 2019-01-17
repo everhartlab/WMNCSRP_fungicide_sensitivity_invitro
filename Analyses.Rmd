@@ -1097,10 +1097,26 @@ plot(final_tetraconazole_DC_2)
 pdf("Linear regression of tetraconazole 2 ppm.pdf")   
 # Linear Regression graph of EC50 and EC50DC
 ggplot(final_tetraconazole_DC_2,
-       aes(x = Estimate.50, y = Estimate.50DC)) +  theme(plot.title = element_text(size = 10, face = "bold", hjust = 0.5)) + labs(title = "Relationship between EC50 values of tetraconazole using the model y = -1.650985 + 0.044510x", x =
-       "EC50 (ppm)", y = "EC50DC (ppm)") + theme (axis.title.x = element_text(size = 12, face = "bold", hjust = 0.5)) + theme(axis.title.y = element_text(size = 12, face = "bold", hjust = 0.5)) +
-       theme(axis.text.x = element_text(size = 12)) + theme(axis.text.y = element_text(size = 12)) + theme (axis.line = element_line(colour = "grey50", size = 1)) + geom_point() + geom_smooth(method = "lm")
-       #dev.off()
+       aes(x = Estimate.50, y = Estimate.50DC)) +  theme(
+         plot.title = element_text(
+        size = 14, 
+        face = "bold", 
+        hjust = 1,
+        family = "Verdana"
+        ),
+        axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
+        axis.text = element_text(
+          face = "bold",
+          size= 14,
+          family= "Verdana"
+          ),
+        panel.background = element_rect(fill = "white",colour = "grey50")) + labs(title= "Linear regression between EC50 and EC50(D) values of Tetraconazole", x =
+       "EC50 (ppm)", y = "EC50(D) (ppm)") + geom_point(shape=21) + geom_smooth(method = "lm")
+        
+       #  + labs(title = "Relationship between EC50 values of tetraconazole using the model y = -1.650985 + 0.044510x", x =
+       # "EC50 (ppm)", y = "EC50DC (ppm)") + theme (axis.title.x = element_text(size = 12, face = "bold", hjust = 0.5)) + theme(axis.title.y = element_text(size = 12, face = "bold", hjust = 0.5)) +
+       # theme(axis.text.x = element_text(size = 12)) + theme(axis.text.y = element_text(size = 12)) + theme (axis.line = element_line(colour = "grey50", size = 1)) + geom_point(shape = 21) + geom_smooth(method = "lm")
+       # #dev.off()
        
 
 
@@ -1459,19 +1475,19 @@ plot_bos <- data_for_plots_bos%>%
     shape = 21,
     color = "black",
     fill = "chartreuse2",
-    size = 1,
+    size = 2,
     alpha = 3 / 4
   ) + stat_summary(
     fun.y = mean,
     geom = "point",
     shape = 95,
-    size = 12,
+    size = 22,
     color = "black"
   ) +
   theme_minimal() +
   labs(title = "Boscalid", x = "Group", y = "EC50D (ppm)") + theme(
     plot.title = element_text(
-      size = 10,
+      size = 16,
       face = "bold",
       hjust = 0.5,
       family = "Verdana"
@@ -1479,7 +1495,7 @@ plot_bos <- data_for_plots_bos%>%
     axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
     axis.text = element_text(
       face = "bold",
-      size = 7,
+      size = 10,
       family = "Verdana"
     ),
     panel.background = element_rect(fill = "white", colour = "grey50")
@@ -1554,19 +1570,19 @@ plot_pico <- data_for_plots_pico%>%
     shape = 21,
     color = "black",
     fill = "chocolate1",
-    size = 1,
+    size = 2,
     alpha = 3 / 4
   ) + stat_summary(
     fun.y = mean,
     geom = "point",
     shape = 95,
-    size = 12,
+    size = 22,
     color = "black"
   ) +
   theme_minimal() +
   labs(title = "Picoxystrobin", x = "Group", y = "EC50D (ppm)") + theme(
     plot.title = element_text(
-      size = 10,
+      size = 16,
       face = "bold",
       hjust = 0.5,
       family = "Verdana"
@@ -1574,7 +1590,7 @@ plot_pico <- data_for_plots_pico%>%
     axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
     axis.text = element_text(
       face = "bold",
-      size = 7,
+      size = 10,
       family = "Verdana"
     ),
     panel.background = element_rect(fill = "white", colour = "grey50")
@@ -1636,19 +1652,19 @@ plot_tetra <- data_for_plots_tetra%>%
     shape = 21,
     color = "black",
     fill = "deepskyblue",
-    size = 1,
+    size = 2,
     alpha = 3 / 4
   ) + stat_summary(
     fun.y = mean,
     geom = "point",
     shape = 95,
-    size = 12,
+    size = 22,
     color = "black"
   ) +
   theme_minimal() +
   labs(title = "Tetraconazole", x = "Group", y = "EC50D (ppm)") + theme(
     plot.title = element_text(
-      size = 10,
+      size = 16,
       face = "bold",
       hjust = 0.5,
       family = "Verdana"
@@ -1656,7 +1672,7 @@ plot_tetra <- data_for_plots_tetra%>%
     axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
     axis.text = element_text(
       face = "bold",
-      size = 7,
+      size = 10,
       family = "Verdana"
     ),
     panel.background = element_rect(fill = "white", colour = "grey50")
@@ -1715,7 +1731,7 @@ data_for_plots_bos_2 <- boscalid_complete %>%
   group_by(ID) %>% 
   mutate(group = ifelse(
     ID %in% bean_isolates_exposed_to_fungicides,
-    "Bean isolates","Soybean isolates"
+    "Dry bean isolates","Soybean isolates"
     ))
 
 data_for_plots_bos_2$group <- as_factor(data_for_plots_bos_2$group)
@@ -1729,19 +1745,19 @@ plot_bos_2 <- data_for_plots_bos_2%>%
     shape = 21,
     color = "black",
     fill = "chartreuse2",
-    size = 1,
+    size = 2,
     alpha = 3 / 4
   ) + stat_summary(
     fun.y = mean,
     geom = "point",
     shape = 95,
-    size = 12,
+    size = 22,
     color = "black"
   ) +
   theme_minimal() +
   labs(title = "Boscalid", x = "Group", y = "EC50D (ppm)") + theme(
     plot.title = element_text(
-      size = 10,
+      size = 16,
       face = "bold",
       hjust = 0.5,
       family = "Verdana"
@@ -1749,7 +1765,7 @@ plot_bos_2 <- data_for_plots_bos_2%>%
     axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
     axis.text = element_text(
       face = "bold",
-      size = 7,
+      size = 10,
       family = "Verdana"
     ),
     panel.background = element_rect(fill = "white", colour = "grey50")
@@ -1763,7 +1779,7 @@ data_for_plots_pico_2 <- picoxystrobin_complete %>%
   group_by(ID) %>% 
   mutate(group = ifelse(
     ID %in% bean_isolates_exposed_to_fungicides,
-    "Bean isolates","Soybean isolates"
+    "Dry bean isolates","Soybean isolates"
     ))
 
 data_for_plots_pico_2$group <- as_factor(data_for_plots_pico_2$group)
@@ -1777,19 +1793,19 @@ plot_pico_2 <- data_for_plots_pico_2%>%
     shape = 21,
     color = "black",
     fill = "chocolate1",
-    size = 1,
+    size = 2,
     alpha = 3 / 4
   ) + stat_summary(
     fun.y = mean,
     geom = "point",
     shape = 95,
-    size = 12,
+    size = 22,
     color = "black"
   ) +
   theme_minimal() +
   labs(title = "Picoxystrobin", x = "Group", y = "EC50D (ppm)") + theme(
     plot.title = element_text(
-      size = 10,
+      size = 16,
       face = "bold",
       hjust = 0.5,
       family = "Verdana"
@@ -1797,7 +1813,7 @@ plot_pico_2 <- data_for_plots_pico_2%>%
     axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
     axis.text = element_text(
       face = "bold",
-      size = 7,
+      size = 10,
       family = "Verdana"
     ),
     panel.background = element_rect(fill = "white", colour = "grey50")
@@ -1812,7 +1828,7 @@ data_for_plots_tetra_2 <- tetraconazole_complete %>%
   group_by(ID) %>% 
   mutate(group = ifelse(
     ID %in% bean_isolates_exposed_to_fungicides,
-    "Bean isolates","Soybean isolates"
+    "Dry bean isolates","Soybean isolates"
           ))
   
 data_for_plots_tetra_2$group <- as_factor(data_for_plots_tetra_2$group)
@@ -1826,19 +1842,19 @@ plot_tetra_2 <- data_for_plots_tetra_2%>%
     shape = 21,
     color = "black",
     fill = "deepskyblue",
-    size = 1,
+    size = 2,
     alpha = 3 / 4
   ) + stat_summary(
     fun.y = mean,
     geom = "point",
     shape = 95,
-    size = 12,
+    size = 22,
     color = "black"
   ) +
   theme_minimal() +
   labs(title = "Tetraconazole", x = "Group", y = "EC50D (ppm)") + theme(
     plot.title = element_text(
-      size = 10,
+      size = 16,
       face = "bold",
       hjust = 0.5,
       family = "Verdana"
@@ -1846,7 +1862,7 @@ plot_tetra_2 <- data_for_plots_tetra_2%>%
     axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
     axis.text = element_text(
       face = "bold",
-      size = 7,
+      size = 10,
       family = "Verdana"
     ),
     panel.background = element_rect(fill = "white", colour = "grey50")
