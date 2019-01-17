@@ -1456,7 +1456,7 @@ tetraconazolecomplete <- ungroup(tetraconazole_complete)
 ```{r}
 data_for_plots_bos <- boscalid_complete %>% 
   group_by(ID) %>% 
-  mutate(group = ifelse(
+  mutate(Origin = ifelse(
     ID %in% Baseline,
     "Baseline",
     ifelse(
@@ -1464,11 +1464,11 @@ data_for_plots_bos <- boscalid_complete %>%
       "Fungicide field trials","Farmer fields"
     )))
 
-data_for_plots_bos$group <- as_factor(data_for_plots_bos$group)
+data_for_plots_bos$Origin <- as_factor(data_for_plots_bos$Origin)
 
 
 plot_bos <- data_for_plots_bos%>%
-  ggplot(aes(x = group, y = Estimate.50DC)) +
+  ggplot(aes(x = Origin, y = Estimate.50DC)) +
   geom_jitter(
     width = .1,
     height = 0,
@@ -1485,7 +1485,7 @@ plot_bos <- data_for_plots_bos%>%
     color = "black"
   ) +
   theme_minimal() +
-  labs(title = "Boscalid", x = "Group", y = "EC50D (ppm)") + theme(
+  labs(title = "Boscalid", x = "Origin", y = "EC50D (ppm)") + theme(
     plot.title = element_text(
       size = 16,
       face = "bold",
@@ -1503,11 +1503,11 @@ plot_bos <- data_for_plots_bos%>%
 
 plot_bos
 plot_bos2 <- 
-  ggplot(data_for_plots_bos , aes(x = group, y = Estimate.50DC))  +  geom_boxplot(notch = TRUE,
+  ggplot(data_for_plots_bos , aes(x = Origin, y = Estimate.50DC))  +  geom_boxplot(notch = TRUE,
                                                                                   outlier.colour = "chartreuse2",
                                                                                   outlier.size = 2)+
   theme_minimal() +
-  labs(title = "Boscalid", x = "Group", y = "EC50D (ppm)") + theme(
+  labs(title = "Boscalid", x = "Origin", y = "EC50D (ppm)") + theme(
     plot.title = element_text(
       size = 10,
       face = "bold",
@@ -1528,7 +1528,7 @@ plot_bos2 <-
     #New function to detect outliers of EC50DC en each group for fungicide
                                                               
 
-                                                                                              get_range2 <- function(myoutlier) {
+                                                              get_range2 <- function(myoutlier) {
   alpha <- boxplot.stats(myoutlier)
   necrosis <- alpha$stats
   wilt <- max(necrosis)
@@ -1536,22 +1536,27 @@ plot_bos2 <-
 }           
 
   #Using the function                                                                                                                                                                    
-                                                                                              data_for_plots_bos2<- data_for_plots_bos%>% 
-group_by(group)%>%
+                                                             data_for_plots_bos2<- data_for_plots_bos%>% 
+group_by(Origin)%>%
 mutate(Estimate_50DC_outlier = list(get_range2(Estimate.50DC)))%>%
 unnest() %>% 
 filter(Estimate.50DC >=  outlierr) %>% ungroup() %>%  
-  filter(group == "Fungicide field trials"|group =="Farmer fields" ) %>% 
+  filter(Origin == "Fungicide field trials"|Origin =="Farmer fields" ) %>% 
 #, group =="Farmer fields")
   #, group == "Fungicide field trials", group =="Farmer fields" )%>%
 ungroup()        %>% 
-  mutate(Fungicide = "Boscalid")
+     group_by(ID) %>% 
+  mutate(Host = ifelse(
+    ID %in% bean_isolates_exposed_to_fungicides,
+    "Dry bean isolates","Soybean isolates"
+    )) %>% 
+  mutate(Fungicide = "Boscalid")%>% ungroup()
 ```
 ##  Picoxystrobin
 ```{r}
 data_for_plots_pico <- picoxystrobin_complete %>% 
   group_by(ID) %>% 
-  mutate(group = ifelse(
+  mutate(Origin = ifelse(
     ID %in% Baseline,
     "Baseline",
     ifelse(
@@ -1559,11 +1564,11 @@ data_for_plots_pico <- picoxystrobin_complete %>%
       "Fungicide field trials","Farmer fields"
     )))
 
-data_for_plots_pico$group <- as_factor(data_for_plots_pico$group)
+data_for_plots_pico$Origin <- as_factor(data_for_plots_pico$Origin)
 
 
 plot_pico <- data_for_plots_pico%>%
-  ggplot(aes(x = group, y = Estimate.50DC)) +
+  ggplot(aes(x = Origin, y = Estimate.50DC)) +
   geom_jitter(
     width = .1,
     height = 0,
@@ -1580,7 +1585,7 @@ plot_pico <- data_for_plots_pico%>%
     color = "black"
   ) +
   theme_minimal() +
-  labs(title = "Picoxystrobin", x = "Group", y = "EC50D (ppm)") + theme(
+  labs(title = "Picoxystrobin", x = "Origin", y = "EC50D (ppm)") + theme(
     plot.title = element_text(
       size = 16,
       face = "bold",
@@ -1597,10 +1602,10 @@ plot_pico <- data_for_plots_pico%>%
   )
 plot_pico
 plot_pico2 <- 
-ggplot(data_for_plots_pico , aes(x = group, y = Estimate.50DC))  +  geom_boxplot(notch = TRUE,
+ggplot(data_for_plots_pico , aes(x = Origin, y = Estimate.50DC))  +  geom_boxplot(notch = TRUE,
                                                                                   outlier.colour = "chocolate1",
                                                                                   outlier.size = 2) +theme_minimal() +
-  labs(title = "Picoxystrobin", x = "Group", y = "EC50D (ppm)") + theme(
+  labs(title = "Picoxystrobin", x = "Origin", y = "EC50D (ppm)") + theme(
     plot.title = element_text(
       size = 10,
       face = "bold",
@@ -1618,22 +1623,27 @@ ggplot(data_for_plots_pico , aes(x = group, y = Estimate.50DC))  +  geom_boxplot
 plot_pico2
 #using the function
 data_for_plots_pico2<- data_for_plots_pico%>% 
-group_by(group)%>%
+group_by(Origin)%>%
 mutate(Estimate_50DC_outlier = list(get_range2(Estimate.50DC)))%>%
 unnest() %>% 
 filter(Estimate.50DC >=  outlierr) %>% ungroup() %>%  
-  filter(group == "Fungicide field trials"|group =="Farmer fields" ) %>% 
+  filter(Origin == "Fungicide field trials"|Origin =="Farmer fields" ) %>% 
 #, group =="Farmer fields")
   #, group == "Fungicide field trials", group =="Farmer fields" )%>%
 ungroup()  %>% 
-  mutate(Fungicide = "Picoxystrobin")
+  group_by(ID) %>% 
+  mutate(Host = ifelse(
+    ID %in% bean_isolates_exposed_to_fungicides,
+    "Dry bean isolates","Soybean isolates"
+    )) %>% 
+  mutate(Fungicide = "Picoxystrobin")%>% ungroup()
 
 ```
 ##  Tetraconazole
 ```{r}
 data_for_plots_tetra <- tetraconazole_complete %>% 
   group_by(ID) %>% 
-  mutate(group = ifelse(
+  mutate(Origin = ifelse(
     ID %in% Baseline,
     "Baseline",
     ifelse(
@@ -1641,11 +1651,11 @@ data_for_plots_tetra <- tetraconazole_complete %>%
       "Fungicide field trials","Farmer fields"
           )))
   
-data_for_plots_tetra$group <- as_factor(data_for_plots_tetra$group)
+data_for_plots_tetra$Origin <- as_factor(data_for_plots_tetra$Origin)
 
 
 plot_tetra <- data_for_plots_tetra%>%
-  ggplot(aes(x = group, y = Estimate.50DC)) +
+  ggplot(aes(x = Origin, y = Estimate.50DC)) +
   geom_jitter(
     width = .1,
     height = 0,
@@ -1662,7 +1672,7 @@ plot_tetra <- data_for_plots_tetra%>%
     color = "black"
   ) +
   theme_minimal() +
-  labs(title = "Tetraconazole", x = "Group", y = "EC50D (ppm)") + theme(
+  labs(title = "Tetraconazole", x = "Origin", y = "EC50D (ppm)") + theme(
     plot.title = element_text(
       size = 16,
       face = "bold",
@@ -1678,10 +1688,10 @@ plot_tetra <- data_for_plots_tetra%>%
     panel.background = element_rect(fill = "white", colour = "grey50")
   )
 plot_tetra2 <- 
-ggplot(data_for_plots_tetra , aes(x = group, y = Estimate.50DC))  +  geom_boxplot(notch = TRUE,
+ggplot(data_for_plots_tetra , aes(x = Origin, y = Estimate.50DC))  +  geom_boxplot(notch = TRUE,
                                                                                   outlier.colour = "deepskyblue",
                                                                                   outlier.size = 2) + theme_minimal() +
-  labs(title = "Tetraconazole", x = "Group", y = "EC50D (ppm)") + theme(
+  labs(title = "Tetraconazole", x = "Origin", y = "EC50D (ppm)") + theme(
     plot.title = element_text(
       size = 10,
       face = "bold",
@@ -1700,17 +1710,20 @@ plot_tetra2
 
 #using the function
 data_for_plots_tetra2<- data_for_plots_tetra%>% 
-group_by(group)%>%
+group_by(Origin)%>%
 mutate(Estimate_50DC_outlier = list(get_range2(Estimate.50DC)))%>%
 unnest() %>% 
 filter(Estimate.50DC >=  outlierr) %>% ungroup() %>%  
-  filter(group == "Fungicide field trials"|group =="Farmer fields" ) %>% 
+  filter(Origin == "Fungicide field trials"|Origin =="Farmer fields" ) %>% 
 #, group =="Farmer fields")
   #, group == "Fungicide field trials", group =="Farmer fields" )%>%
 ungroup() %>%
 #select(c(ID, group, Estimate_50DC_outlier))
-  mutate(Fungicide = "Tetraconazole")
-
+  mutate(Host = ifelse(
+    ID %in% bean_isolates_exposed_to_fungicides,
+    "Dry bean isolates","Soybean isolates"
+    )) %>% 
+    mutate(Fungicide = "Tetraconazole")%>% ungroup()
     data_for_plots_tetra2
 ```
 ##  Grid
@@ -1721,6 +1734,9 @@ plot_grid(plot_tetra2, plot_pico2, plot_bos2)
 combiningfungicides_outliersEC50DC <- rbind(data_for_plots_bos2, data_for_plots_pico2, data_for_plots_tetra2)
 #write.csv(combiningfungicides_outliersEC50DC, file = "combiningfungicides_outliersEC50DC.csv")
 #combining %>% combining %>% unique()
+
+combiningfungicides_outliersEC50DC <- rbind(data_for_plots_bos2, data_for_plots_pico2, data_for_plots_tetra2)
+#write.csv(combiningfungicides_outliersEC50DC, file = "combiningfungicides_outliersEC50DC2.csv")
 
 ```
 
