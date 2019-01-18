@@ -1548,7 +1548,7 @@ ungroup()        %>%
      group_by(ID) %>% 
   mutate(Host = ifelse(
     ID %in% bean_isolates_exposed_to_fungicides,
-    "Dry bean isolates","Soybean isolates"
+    "Dry bean","Soybean"
     )) %>% 
   mutate(Fungicide = "Boscalid")%>% ungroup()
 ```
@@ -1634,7 +1634,7 @@ ungroup()  %>%
   group_by(ID) %>% 
   mutate(Host = ifelse(
     ID %in% bean_isolates_exposed_to_fungicides,
-    "Dry bean isolates","Soybean isolates"
+    "Dry bean","Soybean"
     )) %>% 
   mutate(Fungicide = "Picoxystrobin")%>% ungroup()
 
@@ -1721,7 +1721,7 @@ ungroup() %>%
 #select(c(ID, group, Estimate_50DC_outlier))
   mutate(Host = ifelse(
     ID %in% bean_isolates_exposed_to_fungicides,
-    "Dry bean isolates","Soybean isolates"
+    "Dry bean","Soybean"
     )) %>% 
     mutate(Fungicide = "Tetraconazole")%>% ungroup()
     data_for_plots_tetra2
@@ -1736,7 +1736,14 @@ combiningfungicides_outliersEC50DC <- rbind(data_for_plots_bos2, data_for_plots_
 #combining %>% combining %>% unique()
 
 combiningfungicides_outliersEC50DC <- rbind(data_for_plots_bos2, data_for_plots_pico2, data_for_plots_tetra2)
-#write.csv(combiningfungicides_outliersEC50DC, file = "combiningfungicides_outliersEC50DC2.csv")
+#write.csv(combiningfungicides_outliersEC50DC, file = "combiningfungicides_outliersEC50DC2.csv") It must be the same object was saved now with 2 because it reliasing differnet data
+ 
+
+  combiningfungicides_outliersEC50DC_2 <- combiningfungicides_outliersEC50DC %>% 
+   mutate( Origin_Host_Fungicide = paste( Origin, Host, Fungicide)) %>% 
+   select(ID, Origin_Host_Fungicide) %>% group_by(Origin_Host_Fungicide) %>% 
+   summarize(n=n()) %>% 
+   arrange(desc(n))
 
 ```
 
