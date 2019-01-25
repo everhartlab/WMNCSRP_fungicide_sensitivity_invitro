@@ -372,7 +372,7 @@ get_range <- function(mynumber) {
 #  Boscalid
 
 ```{r, warning=FALSE}
-#Boscalid fungicide taking the outlayers from the 8 observations of each one, it reduces from to #
+#Boscalid fungicide taking the outliers from the 8 observations of each one, it reduces from to #
 boscalid_filtered <- boscaliddata %>%
   group_by(ID, dose) %>%
   mutate(growth_range = list(get_range(growth))) %>%
