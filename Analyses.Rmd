@@ -501,7 +501,7 @@ summary(finalRG0.2)
 plot(finalRG0.2)
 #check_assumptions(finalRG0.2)
 #dev.off()
-##taking out outlayers from Q-Q PLOT $ LEVERAGE TEST, ISOLATES # 1032 from treatment, H-03 & H-04 from survey##
+##taking out outliers from Q-Q PLOT $ LEVERAGE TEST, ISOLATES # 1032 from treatment, H-03 & H-04 from survey##
 #pdf("boscalid_assumptions_linearmodel_dosechoseasDC.pdf")
 final_boscalid_clean <-
   final_boscalid %>% filter(!ID == "1032", !ID == "H-03",!ID == "H-04")
@@ -560,7 +560,7 @@ ggplot(final_boscalid_DC_0.2, aes(x = Estimate.50, y = Estimate.50DC)) +  theme(
   "EC50 (ppm)", y = "EC50(D) (ppm)") + geom_point(shape = 24) + geom_smooth(method = "lm")
   
 
-# Linear model of log EC50 and relative growth at 0.8 ppm, check normality and homogeneity of variances
+
 #dev.off()
 
 ```
