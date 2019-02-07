@@ -14,6 +14,8 @@ library(broom)
 library(ggridges)
 library(cowplot)
 library(gridExtra)
+library(kableExtra)
+library(arsenal)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
@@ -356,7 +358,7 @@ Fungicide_field_trials <-
     "H-03"
   )
 ```
-##  Creating a function for using the outputs of boxplot.stats function and notice the outlayers
+##  Creating a function for using the outputs of boxplot.stats function and notice the outliers
 
 ```{r}
 get_range <- function(mynumber) {
@@ -373,7 +375,7 @@ get_range <- function(mynumber) {
 
 ```{r, warning=FALSE}
 #Boscalid fungicide taking the outliers from the 8 observations of each one, it reduces from to #
-boscalid_filtered <- boscaliddata %>%
+boscalid_filtered  <- boscaliddata %>%
   group_by(ID, dose) %>%
   mutate(growth_range = list(get_range(growth))) %>%
   unnest() %>%
@@ -410,7 +412,7 @@ wilcox_boscalid <- boscalidfinal %>%
   do(tidy(wilcox.test(.$`1`, .$`2`, paired = TRUE)))
   #View(wilcox_boscalid)
 ##Anyways making linear model since the only required is normality of the errors once the results##
-# Getting EC50 by EC_table function
+# Getting EC50 by EC_table 
 xx <- EC_table(boscalid_filtered, form = response ~ dose)
 names(xx)[names(xx) == "sample"] <- "ID"
 boscalid_xx <-
@@ -463,7 +465,7 @@ RG <-
           mutate(RG0.1 = ((`0.1` / `0`) * 100)) %>%
             mutate(RG0.2 = ((`0.2` / `0`) * 100)) %>%
               mutate(RG0.8 = ((`0.8` / `0`) * 100))
-
+#Since here EC50 is known as Estimate EC50 from EC50 table 
 final_boscalid <-#joining
   left_join (RG, boscalid_xx) %>% mutate(logEC50 = (log(EC50))) %>% rename(Estimate.50 = EC50)
 
@@ -575,7 +577,7 @@ boscalid_data <- survey_data %>%
   rename(response = boscalid.growth, control = control.growth)
 
 
-# Using the previous  function in order to take out the outlayers
+# Using the previous  function in order to take out the outliers
 boscalid_filtered_survey <- boscalid_data %>%
   group_by(ID) %>%
   mutate(response_range = list(get_range(response))) %>%
@@ -620,7 +622,7 @@ summary(final_boscalid_DC$Estimate.50DC)
 baseline <-  final_boscalid_DC %>% filter(ID %in% baseline_isolates)
 summary(baseline$Estimate.50DC)
 hist((baseline$Estimate.50DC))
-baseline_corroboration <-  boscalid_filtered %>% filter(ID %in% baseline_isolates_corroboration)
+baseline_corroboration <-  boscalid_filtered_ %>% filter(ID %in% baseline_isolates_corroboration)
 summary(baseline_corroboration$Estimate.50DC)
 
 survey <- final_boscalid_DC %>% filter(ID %in% survey_isolates)
@@ -673,7 +675,7 @@ wilcox_picoxystrobin<- picoxystrobinfinal%>%
 #View(wilcox_picoxystrobin)
 
 #Anyways making linear model since the only required is normality of the errors once the results#
-# Getting EC50 by EC_table function#
+# Getting EC50 by EC_table #
 yy <- EC_table(picoxystrobin_filtered, form = response ~ dose)
 
 names(yy)[names(yy) == "sample"] <- "ID"
@@ -735,6 +737,8 @@ RG <-
       mutate(RG0.04 = ((`0.04` / `0`) * 100)) %>%
         mutate(RG0.06 = ((`0.06` / `0`) * 100)) %>%
           mutate(RG0.1 = ((`0.1` / `0`) * 100))
+#Since here EC50 is known as Estimate EC50 from EC50 table 
+
 ##Ordering the table##
 #picoxystrobin_yy <-  yy %>%
   #select(-Estimate.10, -SE.10, -Estimate.90, -SE.90)
@@ -859,7 +863,7 @@ picoxystrobin_data <- survey_data %>%
   ) %>%
   rename(response = picoxystrobin.growth, control = sham.growth) %>% select(-control.growth)
   
-# Using the function in order to take out the outlayers
+# Using the function in order to take out the outliers
 picoxystrobin_filtered_survey <- picoxystrobin_data %>%
   group_by(ID) %>%
     mutate(response_range = list(get_range(response))) %>%
@@ -890,12 +894,12 @@ picoxystrobin_filtered_ <- picoxystrobin_filtered_survey %>%
 baseline <-  final_picoxystrobin_DC %>% filter(ID %in% baseline_isolates)
 summary(baseline$Estimate.50DC)
 hist((baseline$Estimate.50DC))
-baseline_corroboration <-  picoxystrobin_filtered %>% filter(ID %in% baseline_isolates_corroboration)
+baseline_corroboration <-  picoxystrobin_filtered_ %>% filter(ID %in% baseline_isolates_corroboration)
 summary(baseline_corroboration$Estimate.50DC)
 
 survey <- final_picoxystrobin_DC %>% filter(ID %in% survey_isolates)
 summary(survey$Estimate.50DC)
-survey_corroboration <-  picoxystrobin_filtered %>% filter(ID %in% survey_isolates_corroboration)
+survey_corroboration <-  picoxystrobin_filtered_ %>% filter(ID %in% survey_isolates_corroboration)
 summary(survey_corroboration$Estimate.50DC)
 
 treatmentyear2016 <- final_picoxystrobin_DC %>% filter(ID %in% treatmentyear2016_isolates)
@@ -907,16 +911,17 @@ summary(treatmentyear2016$Estimate.50DC)
 
 mexican_bean_survey <-  final_picoxystrobin_DC %>% filter(ID %in% mexican_bean_survey_isolates)
 summary(mexican_bean_survey$Estimate.50DC)
-
+# 0 observations
 brazilian_soybean_survey <-  final_picoxystrobin_DC %>% filter(ID %in% brazilian_soybean_survey_isolates)
 summary(brazilian_soybean_survey$Estimate.50DC)
-
+# observations
 #beanSIproduction_survey <-  final_picoxystrobin_DC %>% filter(ID %in% beanSIproduction_survey_isolates1,ID %in% beanSIproduction_survey_isolates2, ID %in% beanSIproduction_survey_isolates3, ID %in% beanSIproduction_survey_isolates4,ID %in% beanSIproduction_survey_isolates5 )
 #summary(beanSIproduction_survey$Estimate.50DC)
 
+
 bean_year95year96year2004_survey <-  final_picoxystrobin_DC %>% filter(ID %in% bean_survey_year95year96year2004)
 summary(bean_year95year96year2004_survey$Estimate.50DC)
-
+# 0 observations
 ```
 ##  Analysis by fungicide
 #  Tetraconazole
@@ -957,7 +962,7 @@ wilcox_tetraconazole<- tetraconazolefinal%>%
 #View(wilcox_tetraconazole)
 
 ##Anyways making linear model since the only required is normality of the errors once the results##
-# Getting EC50 by EC_table function
+# Getting EC50 by EC_table 
 
 bb<- EC_table(tetraconazole_filtered, form = response ~ dose)
 names(bb)[names(bb) == "sample"] <- "ID"
@@ -1019,6 +1024,8 @@ RG <-
       mutate(RG0.5 =((`0.5` / `0`) * 100)) %>% mutate(RG1 = ((`1` / `0`) * 100)) %>%       mutate(RG2 =((`2` / `0`) * 100)) %>% 
   mutate(RG3 = ((`3` / `0`) * 100)) %>% 
   mutate(RG5 =((`5` / `0`) * 100)) 
+
+#Since here EC50 is known as Estimate EC50 from EC50 table
 
 # #Ordering the table##
 #tetraconazole_bb <-  bb %>%
@@ -1134,7 +1141,7 @@ tetraconazole_data <- survey_data %>%
   control.growth) %>%
   rename(response = tetraconazole.growth, control = control.growth)
   
-# Using the function in order to take out the outlayers#
+# Using the function in order to take out the outliers#
 tetraconazole_filtered_survey <- tetraconazole_data %>%
   group_by(ID) %>%
   mutate(response_range = list(get_range(response))) %>%
@@ -1161,12 +1168,12 @@ summary(final_tetraconazole_DC$Estimate.50DC)
 baseline <-  final_tetraconazole_DC %>% filter(ID %in% baseline_isolates)
 summary(baseline$Estimate.50DC)
 hist((baseline$Estimate.50DC))
-baseline_corroboration <-  tetraconazole_filtered %>% filter(ID %in% baseline_isolates_corroboration)
+baseline_corroboration <-  tetraconazole_filtered_ %>% filter(ID %in% baseline_isolates_corroboration)
 summary(baseline_corroboration$Estimate.50DC)
 
 survey <- final_tetraconazole_DC %>% filter(ID %in% survey_isolates)
 summary(survey$Estimate.50DC)
-survey_corroboration <-  tetraconazole_filtered %>% filter(ID %in% survey_isolates_corroboration)
+survey_corroboration <-  tetraconazole_filtered_ %>% filter(ID %in% survey_isolates_corroboration)
 summary(survey_corroboration$Estimate.50DC)
 
 treatmentyear2016 <- final_tetraconazole_DC %>% filter(ID %in% treatmentyear2016_isolates)
@@ -1178,44 +1185,45 @@ summary(treatmentyear2016$Estimate.50DC)
 
 mexican_bean_survey <-  tetraconazole_filtered %>% filter(ID %in% mexican_bean_survey_isolates)
 summary(mexican_bean_survey$Estimate.50DC)
-
+# 0 observations
 brazilian_soybean_survey <-  tetraconazole_filtered %>% filter(ID %in% brazilian_soybean_survey_isolates)
 summary(brazilian_soybean_survey$Estimate.50DC)
-
+# 0 observations
 # beanSIproduction_survey <-  tetraconazole_filtered %>% filter(ID %in% beanSIproduction_survey_isolates1, ID%in%
 # beanSIproduction_survey_isolates2, ID %in% beanSIproduction_survey_isolates3, ID %in% beanSIproduction_survey_isolates4,ID %in% beanSIproduction_survey_isolates5 )
 # summary(beanSIproduction_survey$Estimate.50DC)
 
 bean_year95year96year2004_survey <-  tetraconazole_filtered %>% filter(ID %in% bean_survey_year95year96year2004)
 summary(bean_year95year96year2004_survey$Estimate.50DC)
+#0 observations
 
 ##By state in order of year increase##
 ###WI###
-soybean_treatment_WI_year2015 <-  tetraconazole_filtered %>% filter(ID %in% soybean_treatmentyear2015_WI)
+soybean_treatment_WI_year2015 <-  tetraconazole_filtered_ %>% filter(ID %in% soybean_treatmentyear2015_WI)
 #subset(tetraconazole_filtered, ID == "2383", select = c(ID, Estimate.50DC))
 #summary(soybean_treatment_WI_year2015$Estimate.50DC)
 
 
-soybean_treatmentyear_WI_2017 <-  tetraconazole_filtered %>% filter(ID %in% soybean_treatmentyear2017_WI)
+soybean_treatmentyear_WI_2017 <-  tetraconazole_filtered_ %>% filter(ID %in% soybean_treatmentyear2017_WI)
 #subset(tetraconazole_filtered, ID == "1541", select = c(ID, Estimate.50DC))
 #summary(soybean_treatmentyear_WI_2017$Estimate.50DC)
 
 ###IA###
 
-soybean_treatment_IA_year2016 <-  tetraconazole_filtered %>% filter(ID %in% soybean_treatmentyear2016_IA)
+soybean_treatment_IA_year2016 <-  tetraconazole_filtered_ %>% filter(ID %in% soybean_treatmentyear2016_IA)
 summary(soybean_treatment_IA_year2016$Estimate.50DC)
 
-soybean_treatment_IA_year2017 <-  tetraconazole_filtered %>% filter(ID %in% soybean_treatmentyear2017_IA)
+soybean_treatment_IA_year2017 <-  tetraconazole_filtered_ %>% filter(ID %in% soybean_treatmentyear2017_IA)
 #subset(tetraconazole_filtered, ID == "1327", select = c(ID, Estimate.50DC))
 #summary(soybean_treatment_IA_year2017$Estimate.50DC)
 
 ###MI###
 
-soybean_treatment_MI_year2016 <-  tetraconazole_filtered %>% filter(ID %in% soybean_treatmentyear2016_MI)
+soybean_treatment_MI_year2016 <-  tetraconazole_filtered_ %>% filter(ID %in% soybean_treatmentyear2016_MI)
 #subset(tetraconazole_filtered, ID == "1175", select = c(ID, Estimate.50DC))
 #summary(soybean_treatment_MI_year2016$Estimate.50DC)
 
-soybean_treatmentyear_MI_2017 <-  tetraconazole_filtered %>% filter(ID %in% soybean_treatmentyear2017_MI)
+soybean_treatmentyear_MI_2017 <-  tetraconazole_filtered_ %>% filter(ID %in% soybean_treatmentyear2017_MI)
 summary(soybean_treatmentyear_MI_2017$Estimate.50DC)
 
 ```
@@ -1230,7 +1238,7 @@ TM_filtered <- TMdata %>%
   rename(response = growth) %>% 
   ungroup()
 
-## Discarding all experimental replicate 1 due not consistence in results##
+## Discarding all experimental replicate 1 due not consistence in results## anyways it was not consistence in those ones
 TM_filtered <- TM_filtered %>%
   group_by (ID, dose, repeats, response) %>%
   filter(experimental_replicate==2 | experimental_replicate==3)
@@ -1256,7 +1264,7 @@ View(TMfinal)
  # group_by(ID, dose) %>%
   #do(tidy(wilcox.test(.$`1`, .$`2`, paired=TRUE)))
 #View(wilcox_TM)
-#Getting EC50 by ECtable function
+#Getting EC50 by ECtable
 zz <- EC_table(TM_filtered, form = response ~ dose)
 # # Filtering by each group
 # baseline <-  zz %>% filter(sample %in% baseline_isolates)
@@ -1268,12 +1276,14 @@ zz <- EC_table(TM_filtered, form = response ~ dose)
 # # Getting relative growth column at each dose where RG= Relative Growth, eg. RG0.75= Relative Growth at 0.75 ppm
  RG <- TM_filtered %>% group_by(ID,dose) %>% summarise(mean_response=mean(response,na.rm=TRUE)) %>% spread(dose,mean_response) %>%  mutate(RG0.75=((`0.75`/`0`)*100)) %>% mutate(RG1=((`1`/`0`)*100)) %>% mutate(RG1.5=((`1.5`/`0`)*100)) %>% mutate(RG2=((`2`/`0`)*100)) %>% mutate(RG2.5=((`2.5`/`0`)*100)) %>%  mutate(RG10=((`10`/`0`)*100))
 # 
-# 
+#Since here EC50 is known as Estimate EC50 from EC50 table 
+ 
 # #Ordering the table
-TM_xx <-  xx %>%
+TM_zz <-  zz %>%
 select(-Estimate.10,-SE.10,-Estimate.90,-SE.90)
-names(TM_xx)[names(TM_xx) == "sample"] <- "ID"
- final_TM<-left_join (RG, TM_xx) %>% mutate(logEC50=(log(Estimate.50)))
+names(TM_zz)[names(TM_zz) == "sample"] <- "ID"
+ final_TM<-left_join (RG, TM_zz) %>% mutate(logEC50=(log(Estimate.50))) %>% 
+    rename(EC50 = Estimate.50)
 
 # Linear model of log EC50 and relative growth at 0.75ppm, check normality and homogeneity of variances
  finalRG0.75 <- lm(logEC50~RG0.75,final_TM)
@@ -1346,8 +1356,6 @@ TM_data <- survey_data %>%
   select(ID, repeats, experimental_replicate, TM.growth, control.growth) %>% 
   rename(response = TM.growth, control = control.growth) 
 
-
-
 TM_data <- TM_data %>% 
   group_by(ID) %>% 
   summarise(mean_response =mean(response, na.rm = TRUE), mean_control =mean(control, na.rm = TRUE)) %>% 
@@ -1356,7 +1364,131 @@ mutate(resistance = ifelse(RG >24,#more or equal to 25%,
                            "resistant", "nonresistant")) 
 
 ```
-#  plotting all fungicides together by geom_jitter
+
+#  Another approach with TM to pick the probably isolates with high at EC50 of the model with the best model
+```{r}
+# Doing seperately each experimental replicate
+
+TM_filtered <- TMdata %>%
+  group_by(ID, dose) %>%
+  mutate(growth_range = list(get_range(growth))) %>%
+  unnest() %>%
+  filter(growth <= upper & growth >= lower) %>%
+  rename(response = growth) %>% 
+  ungroup()
+
+## Discarding all experimental replicate 1 due not consistence in results## anyways it was not consistence in those ones
+TM_filtered1 <- TM_filtered %>%
+  group_by (ID, dose, repeats, response) %>%
+  filter(experimental_replicate==1)
+
+#Boxplot by experimental replicate,  
+
+ggplot(TM_filtered1,aes(x=dose, y=response)) + xlim(0, 0.06)  +  geom_boxplot ( aes(group = experimental_replicate), notch = TRUE,  outlier.colour = "blue1",  outlier.shape = 3, outlier.size=2) + xlab("TM dose (ppm)") +
+  ylab("response (cm)") + facet_wrap(~  ID ) + ggtitle("Boxplot_TM_by_experimental_replicate_&ID_group_by_ID") + theme(plot.title = element_text(hjust = 0.5)) + scale_y_continuous(breaks = c(1:7)) + geom_point(aes(dose,response, size=1), position = "jitter", size= 1) 
+ 
+##NORMALITY TEST-Shapiro_test, NO NORMALITY##
+
+shapiro.test_TM1 <- TM_filtered1 %>% 
+  group_by(ID) %>% 
+  do(tidy(shapiro.test(.$response))) 
+
+TMfinal1 <- left_join (shapiro.test_TM1, TM_filtered1) %>% 
+  mutate(normality = ifelse(p.value >0.05, "normal", "nonormal")) %>% 
+  spread(experimental_replicate, response)
+View(TMfinal1)
+
+##WILCOX TEST##
+#wilcox_TM<- TMfinal%>%
+ # group_by(ID, dose) %>%
+  #do(tidy(wilcox.test(.$`1`, .$`2`, paired=TRUE)))
+#View(wilcox_TM)
+#Getting EC50 by ECtable
+zz1 <- EC_table(TM_filtered1, form = response ~ dose)
+# # Filtering by each group
+# baseline <-  zz %>% filter(sample %in% baseline_isolates)
+# summary(baseline)
+# survey <-  zz %>% filter(sample %in% survey_isolates)
+# summary(survey)
+# treatmentyear2016 <- zz %>% filter(sample %in% treatmentyear2016_isolates)
+# summary(treatmentyear2016)
+# # Getting relative growth column at each dose where RG= Relative Growth, eg. RG0.75= Relative Growth at 0.75 ppm
+ RG <- TM_filtered1 %>% group_by(ID,dose) %>% summarise(mean_response=mean(response,na.rm=TRUE)) %>% spread(dose,mean_response) %>%  mutate(RG0.75=((`0.75`/`0`)*100)) %>% mutate(RG1=((`1`/`0`)*100)) %>% mutate(RG1.5=((`1.5`/`0`)*100)) %>% mutate(RG2=((`2`/`0`)*100)) %>% mutate(RG2.5=((`2.5`/`0`)*100)) # at this point no 10 ppm used
+# 
+#Since here EC50 is known as Estimate EC50 from EC50 table 
+ 
+# #Ordering the table
+TM_zz1 <-  zz %>%
+select(-Estimate.10,-SE.10,-Estimate.90,-SE.90)
+names(TM_xx)[names(TM_xx) == "sample"] <- "ID"
+ final_TM1<-left_join (RG, TM_xx) %>% mutate(logEC50=(log(Estimate.50))) %>% 
+    rename(EC50 = Estimate.50)
+
+# Linear model of log EC50 and relative growth at 0.75ppm, check normality and homogeneity of variances
+ finalRG0.75_1 <- lm(logEC50~RG0.75,final_TM1)
+ summary(finalRG0.75_1)
+# check_assumptions(finalRG0.75)
+    # Linear Regression graph oflog EC50 and relative growth at 0.75 ppm
+# ggplot(finalRG0.75,aes(x=logEC50, y=RG0.75))+  geom_point() + geom_smooth(method = "lm")
+# Linear model of log EC50 and relative growth at 1 ppm, check normality and homogeneity of variances
+finalRG1_1 <- lm(logEC50~RG1,final_TM1) 
+summary(finalRG1_1)
+plot(finalRG1_1)
+#check_assumptions(finalRG1)
+    # Linear Regression graph of log EC50 and relative growth at 1 ppm 
+ggplot(finalRG1_1,aes(x= RG1, y= logEC50))+  geom_point() + geom_smooth(method = "lm")
+
+# Linear model of log EC50 and relative growth at 1.5 ppm, check normality and homogeneity of variances
+finalRG1.5_1 <- lm(logEC50~RG1.5,final_TM1) 
+summary(finalRG1.5_1)
+plot(finalRG1.5_1)
+#check_assumptions(finalRG1.5)
+    # Linear Regression graph of log EC50 and relative growth at 1.5 ppm
+ggplot(finalRG1.5_1,aes(x=RG1.5, y=logEC50))+  geom_point() + geom_smooth(method = "lm")
+
+
+# Linear model of log EC50 and relative growth at 2 ppm, check normality and homogeneity of variances
+finalRG2_1 <- lm(logEC50~RG2,final_TM1) 
+summary(finalRG2_1)
+plot(finalRG2_1)
+#check_assumptions(finalRG2)
+      # Linear Regression graph of log EC50 and relative growth at 2 ppm
+ggplot(finalRG2_1, aes(x = RG2, y = logEC50)) +  geom_point() + geom_smooth(method = "lm")
+
+# Linear model of log EC50 and relative growth at 2.5 ppm, check normality and homogeneity of variances
+
+finalRG2.5_1<- lm(logEC50~RG2.5,final_TM1) 
+summary(finalRG2.5_1)
+plot(finalRG2.5_1)
+#check_assumptions(finalRG2.5)
+      # Linear Regression graph of log EC50 and relative growth at 2.5 ppm
+ggplot(finalRG2.5_1, aes(x = RG2.5, y = logEC50)) +  geom_point() + geom_smooth()
+
+#Dose chosen as DD
+
+#finalRG10<- lm(logEC50~RG10,final_TM) 
+#summary(finalRG10)
+#plot(finalRG10)
+#check_assumptions(finalRG2.5)
+    # Linear Regression graph of log EC50 and relative growth at 10 ppm
+#ggplot(finalRG10, aes(x = RG10, y = logEC50)) +  geom_point() + geom_smooth()
+
+# Getting the EC50DD according to the model
+final_TM_DD <- final_TM %>% mutate(Estimate.50DD = exp(1.19249 - (0.02646*RG10)))
+# Linear model of EC50  and EC50DD, check normality and homogeneity of variances
+final_TM_DD_10 <- lm (Estimate.50DD ~ Estimate.50, final_TM_DD)
+summary(final_TM_DD_10)
+plot(final_TM_DD_10)
+#check_assumptions(final_TM_DD_10)
+pdf("Linear regression of thiophanate methyl 10 ppm.pdf")   
+## Linear Regression graph of EC50 and EC50DD
+ggplot(final_TM_DD_10, aes(x = Estimate.50, y = Estimate.50DD)) +  theme(plot.title = element_text(size = 16, face = "bold", hjust = 1)) + labs(title = "Linear regression of thiophanate methyl 10 ppm", x ="EC50 (ppm)", y = "EC50DD (ppm)" ) + geom_point() + geom_smooth(method = "lm")
+
+#dev.off()
+
+```
+
+#  Plotting all fungicides together by geom_jitter
 
 ```{r}
   new_data <- rbind(boscalid_xx, picoxystrobin_yy, tetraconazole_bb)
@@ -1387,7 +1519,7 @@ mutate(resistance = ifelse(RG >24,#more or equal to 25%,
       ),
       panel.background = element_rect(fill = "white", colour = "grey50")
     ) + labs(title = "Boscalid", x = "Isolates", y = "EC50 (ppm)")
-  
+  b
 ```
 
 #  Renaming the groups to be more specifically
@@ -1451,8 +1583,20 @@ tetraconazole_complete <-  rbind.data.frame(final_tetraconazole_DC, tetraconazol
 tetraconazolecomplete <- ungroup(tetraconazole_complete)
 
 ```
+# New function to detect outliers
+```{r}
+ #New function to detect outliers of EC50DC en each group for fungicide. These ouliers are considered as equal to the third quantil, i.e. the second max stats
+                                                              
+                                                            get_range2 <- function(myoutlier) {
+  alpha <- boxplot.stats(myoutlier)
+  necrosis <- alpha$stats
+  wilt <- max(necrosis[necrosis!=max(necrosis)])
+    return(data.frame(outlier = wilt))
+}           
 
-##  Boscalid
+```
+
+##  Boscalid Plots
 ```{r}
 data_for_plots_bos <- boscalid_complete %>% 
   group_by(ID) %>% 
@@ -1525,34 +1669,10 @@ plot_bos2 <-
 
       plot_bos2
       
-    #New function to detect outliers of EC50DC en each group for fungicide
-                                                              
-
-                                                              get_range2 <- function(myoutlier) {
-  alpha <- boxplot.stats(myoutlier)
-  necrosis <- alpha$stats
-  wilt <- max(necrosis)
-    return(data.frame(outlierr = wilt))
-}           
-
-  #Using the function                                                                                                                                                                    
-                                                             data_for_plots_bos2<- data_for_plots_bos%>% 
-group_by(Origin)%>%
-mutate(Estimate_50DC_outlier = list(get_range2(Estimate.50DC)))%>%
-unnest() %>% 
-filter(Estimate.50DC >=  outlierr) %>% ungroup() %>%  
-  filter(Origin == "Fungicide field trials"|Origin =="Farmer fields" ) %>% 
-#, group =="Farmer fields")
-  #, group == "Fungicide field trials", group =="Farmer fields" )%>%
-ungroup()        %>% 
-     group_by(ID) %>% 
-  mutate(Host = ifelse(
-    ID %in% bean_isolates_exposed_to_fungicides,
-    "Dry bean","Soybean"
-    )) %>% 
-  mutate(Fungicide = "Boscalid")%>% ungroup()
+   
+  
 ```
-##  Picoxystrobin
+##  Picoxystrobin Plots
 ```{r}
 data_for_plots_pico <- picoxystrobin_complete %>% 
   group_by(ID) %>% 
@@ -1621,25 +1741,8 @@ ggplot(data_for_plots_pico , aes(x = Origin, y = Estimate.50DC))  +  geom_boxplo
     panel.background = element_rect(fill = "white", colour = "grey50")
   )
 plot_pico2
-#using the function
-data_for_plots_pico2<- data_for_plots_pico%>% 
-group_by(Origin)%>%
-mutate(Estimate_50DC_outlier = list(get_range2(Estimate.50DC)))%>%
-unnest() %>% 
-filter(Estimate.50DC >=  outlierr) %>% ungroup() %>%  
-  filter(Origin == "Fungicide field trials"|Origin =="Farmer fields" ) %>% 
-#, group =="Farmer fields")
-  #, group == "Fungicide field trials", group =="Farmer fields" )%>%
-ungroup()  %>% 
-  group_by(ID) %>% 
-  mutate(Host = ifelse(
-    ID %in% bean_isolates_exposed_to_fungicides,
-    "Dry bean","Soybean"
-    )) %>% 
-  mutate(Fungicide = "Picoxystrobin")%>% ungroup()
-
 ```
-##  Tetraconazole
+##  Tetraconazole Plots
 ```{r}
 data_for_plots_tetra <- tetraconazole_complete %>% 
   group_by(ID) %>% 
@@ -1708,12 +1811,80 @@ ggplot(data_for_plots_tetra , aes(x = Origin, y = Estimate.50DC))  +  geom_boxpl
   )
 plot_tetra2
 
-#using the function
+
+```
+# Using the function to detect outliers considered since the third quantil
+```{r}
+# Boscalid                                                               
+data_for_plots_bos2<- data_for_plots_bos%>% 
+group_by(Origin)%>%
+mutate(Estimate_50DC_outlier = list(get_range2(Estimate.50DC)))%>%
+unnest() %>% 
+filter(Estimate.50DC >=  outlier) %>% ungroup() %>%  
+  filter(Origin == "Fungicide field trials"|Origin =="Farmer fields" ) %>% 
+#, group =="Farmer fields")
+  #, group == "Fungicide field trials", group =="Farmer fields" )%>%
+ungroup()        %>% 
+     #group_by(ID) %>% 
+  mutate(Host = ifelse(
+    ID %in% bean_isolates_exposed_to_fungicides,
+    "Dry bean","Soybean"
+    )) %>% 
+  mutate(MOA = "Group_7")%>% ungroup() 
+ #Transforming ID in character
+  data_for_plots_bos2$ID <- as.character(data_for_plots_bos2$ID)
+  #Replacing from form ID to Inventory ID
+  data_for_plots_bos2$ID[data_for_plots_bos2$ID == "H-01"]  <- "2220"
+    data_for_plots_bos2$ID[data_for_plots_bos2$ID == "62-02"] <- "2098"
+data_for_plots_bos2$ID[data_for_plots_bos2$ID == "78-02"] <- "2140"
+data_for_plots_bos2$ID[data_for_plots_bos2$ID == "78-05"]  <- "2143"
+  data_for_plots_bos2$ID[data_for_plots_bos2$ID == "65B"]  <- "2528"
+ #Transforming ID in numeric  
+data_for_plots_bos2$ID <- as.numeric(data_for_plots_bos2$ID)  
+
+#creating the table in pdf
+data_for_plots_bos2 %>% 
+  kable(format = "markdown") %>%    write2pdf("boscalid_outliers.pdf")
+  
+#Picoxystrobin
+data_for_plots_pico2<- data_for_plots_pico%>% 
+group_by(Origin)%>%
+mutate(Estimate_50DC_outlier = list(get_range2(Estimate.50DC)))%>%
+unnest() %>% 
+filter(Estimate.50DC >=  outlier) %>% ungroup() %>%  
+  filter(Origin == "Fungicide field trials"|Origin =="Farmer fields" ) %>% 
+#, group =="Farmer fields")
+  #, group == "Fungicide field trials", group =="Farmer fields" )%>%
+ungroup()  %>% 
+  #group_by(ID) %>% 
+  mutate(Host = ifelse(
+    ID %in% bean_isolates_exposed_to_fungicides,
+    "Dry bean","Soybean"
+    )) %>% 
+  mutate(MOA = "Group_11")%>% ungroup()
+
+#Transforming ID in character
+data_for_plots_pico2$ID <- as.character(data_for_plots_pico2$ID)
+#Replacing from form ID to Inventory ID
+data_for_plots_pico2$ID[data_for_plots_pico2$ID == "H-03"] <- "2222"
+data_for_plots_pico2$ID[data_for_plots_pico2$ID == "51C"] <- "2449"
+data_for_plots_pico2$ID[data_for_plots_pico2$ID == "53B"] <- "2536"
+data_for_plots_pico2$ID[data_for_plots_pico2$ID == "54C"] <- "2453"
+data_for_plots_pico2$ID[data_for_plots_pico2$ID == "71B"] <- "2505"
+
+#Transforming ID in number
+data_for_plots_pico2$ID <- as.numeric(data_for_plots_pico2$ID)
+
+#creating the table in pdf
+data_for_plots_pico2 %>% 
+kable(format = "markdown") %>%    write2pdf("picoxystrobin_outliers.pdf")
+
+#Tetraconazole
 data_for_plots_tetra2<- data_for_plots_tetra%>% 
 group_by(Origin)%>%
 mutate(Estimate_50DC_outlier = list(get_range2(Estimate.50DC)))%>%
 unnest() %>% 
-filter(Estimate.50DC >=  outlierr) %>% ungroup() %>%  
+filter(Estimate.50DC >=  outlier) %>% ungroup() %>%  
   filter(Origin == "Fungicide field trials"|Origin =="Farmer fields" ) %>% 
 #, group =="Farmer fields")
   #, group == "Fungicide field trials", group =="Farmer fields" )%>%
@@ -1723,9 +1894,27 @@ ungroup() %>%
     ID %in% bean_isolates_exposed_to_fungicides,
     "Dry bean","Soybean"
     )) %>% 
-    mutate(Fungicide = "Tetraconazole")%>% ungroup()
-    data_for_plots_tetra2
+    mutate(MOA = "Group_3")%>% ungroup()
+    
+    #Transforming ID in character
+    data_for_plots_tetra2$ID <- as.character(data_for_plots_tetra2$ID)
+#Replacing from form ID to Inventory ID
+data_for_plots_tetra2$ID[data_for_plots_tetra2$ID == "78-02"] <- "2140"
+data_for_plots_tetra2$ID[data_for_plots_tetra2$ID == "78-05"] <- "2143"
+data_for_plots_tetra2$ID[data_for_plots_tetra2$ID == "I-20"] <- "2362"
+data_for_plots_tetra2$ID[data_for_plots_tetra2$ID == "S-01"] <- "2320"
+data_for_plots_tetra2$ID[data_for_plots_tetra2$ID == "54C"] <- "2453"
+data_for_plots_tetra2$ID[data_for_plots_tetra2$ID == "65B"] <- "2528"
+#Transforming ID in number
+data_for_plots_tetra2$ID <- as.numeric(data_for_plots_tetra2$ID)
+
+#Creating the table in pdf
+data_for_plots_tetra2 %>% 
+kable(format = "markdown") %>%    write2pdf("tetraconazole_outliers.pdf")
 ```
+
+
+
 ##  Grid
 ```{r}
 plot_grid(plot_tetra, plot_pico, plot_bos)
@@ -1747,7 +1936,7 @@ combiningfungicides_outliersEC50DC <- rbind(data_for_plots_bos2, data_for_plots_
 
 ```
 
-#  Different grouping
+#  Different grouping plots
 ##  Boscalid
 ```{r}
 data_for_plots_bos_2 <- boscalid_complete %>% 
@@ -1897,7 +2086,7 @@ plot_tetra_2
 plot_grid(plot_tetra_2, plot_pico_2, plot_bos_2)
 
 ```
-#  Different grouping
+#  Different grouping plots
 
 ##  Boscalid
 ```{r}
