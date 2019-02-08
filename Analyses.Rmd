@@ -1335,15 +1335,16 @@ plot(finalRG10)
 ggplot(finalRG10, aes(x = RG10, y = logEC50)) +  geom_point() + geom_smooth()
 
 # Getting the EC50DD according to the model
-final_TM_DD <- final_TM %>% mutate(Estimate.50DD = exp(1.19249 - (0.02646*RG10)))
+
+final_TM_DD <- final_TM %>% mutate(Estimate.50DD = exp(1.282440 - (0.004732*RG10)))
 # Linear model of EC50  and EC50DD, check normality and homogeneity of variances
-final_TM_DD_10 <- lm (Estimate.50DD ~ Estimate.50, final_TM_DD)
+final_TM_DD_10 <- lm (Estimate.50DD ~ EC50, final_TM_DD)
 summary(final_TM_DD_10)
 plot(final_TM_DD_10)
 #check_assumptions(final_TM_DD_10)
 pdf("Linear regression of thiophanate methyl 10 ppm.pdf")   
 ## Linear Regression graph of EC50 and EC50DD
-ggplot(final_TM_DD_10, aes(x = Estimate.50, y = Estimate.50DD)) +  theme(plot.title = element_text(size = 16, face = "bold", hjust = 1)) + labs(title = "Linear regression of thiophanate methyl 10 ppm", x ="EC50 (ppm)", y = "EC50DD (ppm)" ) + geom_point() + geom_smooth(method = "lm")
+ggplot(final_TM_DD_10, aes(x = EC50, y = Estimate.50DD)) +  theme(plot.title = element_text(size = 16, face = "bold", hjust = 1)) + labs(title = "Linear regression of thiophanate methyl 10 ppm", x ="EC50 (ppm)", y = "EC50DD (ppm)" ) + geom_point() + geom_smooth(method = "lm")
 
 #dev.off()
 
@@ -1367,7 +1368,7 @@ mutate(resistance = ifelse(RG >24,#more or equal to 25%,
 
 #  Another approach with TM to pick the probably isolates with high at EC50 of the model with the best model
 ```{r}
-# Doing seperately each experimental replicate
+# Picking the best fit model
 
 TM_filtered <- TMdata %>%
   group_by(ID, dose) %>%
@@ -1380,7 +1381,7 @@ TM_filtered <- TMdata %>%
 ## Discarding all experimental replicate 1 due not consistence in results## anyways it was not consistence in those ones
 TM_filtered1 <- TM_filtered %>%
   group_by (ID, dose, repeats, response) %>%
-  filter(experimental_replicate==1)
+  filter(experimental_replicate==2 | experimental_replicate==3)
 
 #Boxplot by experimental replicate,  
 
@@ -1405,26 +1406,57 @@ View(TMfinal1)
 #View(wilcox_TM)
 #Getting EC50 by ECtable
 zz1 <- EC_table(TM_filtered1, form = response ~ dose)
-# # Filtering by each group
-# baseline <-  zz %>% filter(sample %in% baseline_isolates)
-# summary(baseline)
-# survey <-  zz %>% filter(sample %in% survey_isolates)
-# summary(survey)
-# treatmentyear2016 <- zz %>% filter(sample %in% treatmentyear2016_isolates)
-# summary(treatmentyear2016)
-# # Getting relative growth column at each dose where RG= Relative Growth, eg. RG0.75= Relative Growth at 0.75 ppm
- RG <- TM_filtered1 %>% group_by(ID,dose) %>% summarise(mean_response=mean(response,na.rm=TRUE)) %>% spread(dose,mean_response) %>%  mutate(RG0.75=((`0.75`/`0`)*100)) %>% mutate(RG1=((`1`/`0`)*100)) %>% mutate(RG1.5=((`1.5`/`0`)*100)) %>% mutate(RG2=((`2`/`0`)*100)) %>% mutate(RG2.5=((`2.5`/`0`)*100)) # at this point no 10 ppm used
+
+
+names(zz1)[names(zz1) == "sample"] <- "ID"
+TM_zz1 <-
+  zz1 %>% select(c("ID", "Estimate.50")) %>% rename(EC50 = Estimate.50) %>% group_by(ID, EC50) %>% mutate(group = ifelse(
+    ID %in% baseline_isolates,
+    "baseline",
+    ifelse(
+    ID %in% survey_isolates,
+    "survey_isolates",
+    "treatmentyear2016_isolates"
+    )
+    )) %>% ungroup() %>% mutate(fungicide = "TM")
+    
+TM_zz1$group <- as_factor(TM_zz1$group)
+levels(TM_zz1$group)[levels(TM_zz1$group) == "survey_isolates"] <-"Farmer fields"
+levels(TM_zz1$group)[levels(TM_zz1$group) == "treatmentyear2016_isolates"] <-"Trial fields"
+levels(TM_zz1$group)[levels(TM_zz1$group) == "baseline"] <-"Baseline"
+
+#  Filtering each group
+baseline <-  TM_zz1 %>% filter(ID %in% baseline_isolates)
+summary(baseline)
+survey <-  TM_zz1 %>% filter(ID %in% survey_isolates)
+summary(survey)
+treatmentyear2016 <- TM_zz1 %>% filter(ID %in% treatmentyear2016_isolates)
+summary(treatmentyear2016)
+ 
+ 
+
+
+#Procedure to get Discriminatory conecntration
+
+
+ RG <- TM_filtered1 %>% group_by(ID,dose) %>% summarise(mean_response=mean(response,na.rm=TRUE)) %>% spread(dose,mean_response) %>%  mutate(RG0.75=((`0.75`/`0`)*100)) %>% mutate(RG1=((`1`/`0`)*100)) %>% mutate(RG1.5=((`1.5`/`0`)*100)) %>% mutate(RG2=((`2`/`0`)*100)) %>% mutate(RG2.5=((`2.5`/`0`)*100)) %>% 
+   mutate(RG10=((`10`/`0`)*100))
 # 
 #Since here EC50 is known as Estimate EC50 from EC50 table 
  
 # #Ordering the table
-TM_zz1 <-  zz %>%
-select(-Estimate.10,-SE.10,-Estimate.90,-SE.90)
-names(TM_xx)[names(TM_xx) == "sample"] <- "ID"
- final_TM1<-left_join (RG, TM_xx) %>% mutate(logEC50=(log(Estimate.50))) %>% 
-    rename(EC50 = Estimate.50)
+#TM_zz1 <-  zz1 %>%
+#select(-Estimate.10,-SE.10,-Estimate.90,-SE.90)
 
-# Linear model of log EC50 and relative growth at 0.75ppm, check normality and homogeneity of variances
+
+
+ final_TM1<-left_join (RG, TM_zz1) %>% 
+   mutate(logEC50=(log(EC50))) 
+    #rename(EC50 = Estimate.50)
+
+
+ 
+ # Linear model of log EC50 and relative growth at 0.75ppm, check normality and homogeneity of variances
  finalRG0.75_1 <- lm(logEC50~RG0.75,final_TM1)
  summary(finalRG0.75_1)
 # check_assumptions(finalRG0.75)
@@ -1455,6 +1487,16 @@ plot(finalRG2_1)
       # Linear Regression graph of log EC50 and relative growth at 2 ppm
 ggplot(finalRG2_1, aes(x = RG2, y = logEC50)) +  geom_point() + geom_smooth(method = "lm")
 
+# Linear model of log EC50 and relative growth at 10 ppm, check normality and homogeneity of variances
+finalRG10 <- lm(logEC50 ~ RG10, final_TM1)
+summary(finalRG10)
+plot(finalRG10)
+#check_assumptions(finalRG2.5)
+#Linear Regression graph of log EC50 and relative growth at 10 ppm
+ggplot(finalRG10, aes(x = RG10, y = logEC50)) +  geom_point() + geom_smooth()
+
+#Dose chosen as  potential DD
+
 # Linear model of log EC50 and relative growth at 2.5 ppm, check normality and homogeneity of variances
 
 finalRG2.5_1<- lm(logEC50~RG2.5,final_TM1) 
@@ -1464,28 +1506,55 @@ plot(finalRG2.5_1)
       # Linear Regression graph of log EC50 and relative growth at 2.5 ppm
 ggplot(finalRG2.5_1, aes(x = RG2.5, y = logEC50)) +  geom_point() + geom_smooth()
 
-#Dose chosen as DD
 
-#finalRG10<- lm(logEC50~RG10,final_TM) 
-#summary(finalRG10)
-#plot(finalRG10)
-#check_assumptions(finalRG2.5)
-    # Linear Regression graph of log EC50 and relative growth at 10 ppm
-#ggplot(finalRG10, aes(x = RG10, y = logEC50)) +  geom_point() + geom_smooth()
+
+
 
 # Getting the EC50DD according to the model
-final_TM_DD <- final_TM %>% mutate(Estimate.50DD = exp(1.19249 - (0.02646*RG10)))
+final_TM_DD1 <- final_TM1 %>% mutate(Estimate.50DD = exp(-0.3262858 + (0.0248733*RG2.5)))
 # Linear model of EC50  and EC50DD, check normality and homogeneity of variances
-final_TM_DD_10 <- lm (Estimate.50DD ~ Estimate.50, final_TM_DD)
-summary(final_TM_DD_10)
-plot(final_TM_DD_10)
+final_TM_DD_2.5 <- lm (Estimate.50DD ~ EC50, final_TM_DD1)
+summary(final_TM_DD_2.5)
+plot(final_TM_DD_2.5)
 #check_assumptions(final_TM_DD_10)
 pdf("Linear regression of thiophanate methyl 10 ppm.pdf")   
 ## Linear Regression graph of EC50 and EC50DD
-ggplot(final_TM_DD_10, aes(x = Estimate.50, y = Estimate.50DD)) +  theme(plot.title = element_text(size = 16, face = "bold", hjust = 1)) + labs(title = "Linear regression of thiophanate methyl 10 ppm", x ="EC50 (ppm)", y = "EC50DD (ppm)" ) + geom_point() + geom_smooth(method = "lm")
+ggplot(final_TM_DD_2.5, aes(x = EC50, y = Estimate.50DD)) +  theme(plot.title = element_text(size = 16, face = "bold", hjust = 1)) + labs(title = "Linear regression of thiophanate methyl 10 ppm", x ="EC50 (ppm)", y = "EC50DD (ppm)" ) + geom_point() + geom_smooth(method = "lm")
 
 #dev.off()
 
+#TM WITH SURVEY(PRE-TEST FUNGICIDE)
+
+
+TM_data <- survey_data %>%
+  select(ID, repeats, experimental_replicate, TM.growth, control.growth) %>% 
+  rename(response = TM.growth, control = control.growth) 
+
+# Using the function in order to take out the outliers#
+TM_data_filtered_survey <- TM_data %>%
+  group_by(ID) %>%
+  mutate(response_range = list(get_range(response))) %>%
+  unnest() %>%
+  mutate(control_range = list(get_range(control))) %>%
+  unnest() %>%
+  filter(response <= upper & response >= lower, control <= upper1 & control >= lower1) %>%
+  ungroup()%>% 
+  select(c(ID, experimental_replicate, repeats, response, control))
+
+##PLus baseline
+TM_filtered_ <- TM_data_filtered_survey %>%
+  group_by(ID) %>% 
+  summarise(mean_response =mean(response, na.rm = TRUE), mean_control =mean(control, na.rm = TRUE)) %>% 
+  mutate(RG= (mean_response/mean_control)*100) %>% 
+  mutate(Estimate.50DC = exp (-0.3262858 + (0.0248733*RG))) %>% 
+select(c(ID, Estimate.50DC)) %>% 
+  ungroup()
+
+#summary(tetraconazole_filtered_$Estimate.50DC)
+#summary(final_tetraconazole_DC$Estimate.50DC)
+
+
+  
 ```
 
 #  Plotting all fungicides together by geom_jitter
@@ -1539,9 +1608,15 @@ levels(boscalid_xx$group)[levels(boscalid_xx$group) == "survey_isolates"] <-"Far
 levels(boscalid_xx$group)[levels(boscalid_xx$group) == "treatmentyear2016_isolates"] <-"Fungicide fields trials"
 levels(boscalid_xx$group)[levels(boscalid_xx$group) == "baseline"] <-"Baseline"
 
+boscalid_xx$group <- as_factor(boscalid_xx$group)
+levels(boscalid_xx$group)[levels(boscalid_xx$group) == "survey_isolates"] <-"Farmer fields"
+levels(boscalid_xx$group)[levels(boscalid_xx$group) == "treatmentyear2016_isolates"] <-"Fungicide fields trials"
+levels(boscalid_xx$group)[levels(boscalid_xx$group) == "baseline"] <-"Baseline"
+
 ```
 ##  Ordering for each fungicide
 ```{r}
+
 final_boscalid_DC <- final_boscalid_DC %>% select(ID, Estimate.50DC)
 boscalid_complete <-  rbind.data.frame(final_boscalid_DC, boscalid_filtered_)
 boscalid_complete <- ungroup(boscalid_complete)
@@ -1550,28 +1625,7 @@ boscalid_complete <- ungroup(boscalid_complete)
 
 
 
-###
-# boscalid_control <- boscalid_filtered %>% 
-#   group_by(ID) %>% 
-#   filter(dose == 0) %>% 
-#   summarise(mean_response_control =mean(response, na.rm = TRUE))
-# 
-# boscalid_trt <- boscalid_filtered %>% 
-#   group_by(ID) %>% 
-#   filter(dose != 0) %>% 
-#   summarise(mean_response_trt =mean(response, na.rm = TRUE))
-# 
-# boscalid_new_dat <- boscalid_control %>% 
-#   inner_join(boscalid_trt) %>% 
-#   mutate(RG= (mean_response_trt/mean_response_control)*100) %>% 
-#   mutate(Estimate.50DC = exp (-4.407938 + (0.056624*RG)))
-# ##
-# boscalid_complete<-rbind(final_boscalid_DC,boscalid_filtered_)
 
-# boscalid_happy <- boscalid_complete %>% 
-#   #select(c("ID", "Estimate.50DD")) %>% 
-#   #rename(EC50D = Estimate.50DD) %>% 
-#   mutate(fungicide = "Boscalid")
 #####
 final_picoxystrobin_DC <- final_picoxystrobin_DC %>% select(ID, Estimate.50DC)
 picoxystrobin_complete <-  rbind.data.frame(final_picoxystrobin_DC, picoxystrobin_filtered_)
@@ -1581,6 +1635,11 @@ picoxystrobin_complete <- ungroup(picoxystrobin_complete)
 final_tetraconazole_DC <- final_tetraconazole_DC %>% select(ID, Estimate.50DC)
 tetraconazole_complete <-  rbind.data.frame(final_tetraconazole_DC, tetraconazole_filtered_)
 tetraconazolecomplete <- ungroup(tetraconazole_complete)
+##
+final_TM_DC <- final_TM_DD1 %>% select(ID, Estimate.50DD) %>% rename(Estimate.50DC= Estimate.50DD)# there is a change a name of the column
+
+TM_complete <- rbind.data.frame(final_TM_DC, TM_filtered_)
+TM_complete <- ungroup(TM_complete)
 
 ```
 # New function to detect outliers
@@ -1813,6 +1872,80 @@ plot_tetra2
 
 
 ```
+
+# TM plots
+
+```{r}
+data_for_plots_TM <- TM_complete %>% 
+  group_by(ID) %>% 
+  mutate(Origin = ifelse(
+    ID %in% Baseline,
+    "Baseline",
+    ifelse(
+      ID %in% Fungicide_field_trials,
+      "Fungicide field trials","Farmer fields"
+    )))
+
+data_for_plots_TM$Origin <- as_factor(data_for_plots_TM$Origin)
+
+plot_TM <- data_for_plots_TM%>%
+  ggplot(aes(x = Origin, y = Estimate.50DC)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 21,
+    color = "black",
+    fill = "deepskyblue",
+    size = 2,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 22,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs(title = "TM", x = "Origin", y = "EC50D (ppm)") + theme(
+    plot.title = element_text(
+      size = 16,
+      face = "bold",
+      hjust = 0.5,
+      family = "Verdana"
+    ),
+    axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 10,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+plot_TM2 <- 
+ggplot(data_for_plots_TM, aes(x = Origin, y = Estimate.50DC))  +  geom_boxplot(notch = TRUE,
+                                                                                  outlier.colour = "deepskyblue",
+                                                                                  outlier.size = 2) + theme_minimal() +
+  labs(title = "TM", x = "Origin", y = "EC50D (ppm)") + theme(
+    plot.title = element_text(
+      size = 10,
+      face = "bold",
+      hjust = 0.5,
+      family = "Verdana"
+    ),
+    axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 7,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+plot_TM2
+
+
+
+```
+
 # Using the function to detect outliers considered since the third quantil
 ```{r}
 # Boscalid                                                               
@@ -1839,8 +1972,12 @@ ungroup()        %>%
 data_for_plots_bos2$ID[data_for_plots_bos2$ID == "78-02"] <- "2140"
 data_for_plots_bos2$ID[data_for_plots_bos2$ID == "78-05"]  <- "2143"
   data_for_plots_bos2$ID[data_for_plots_bos2$ID == "65B"]  <- "2528"
+  data_for_plots_bos2$ID[data_for_plots_bos2$ID =="413"]  <- "2386"
  #Transforming ID in numeric  
 data_for_plots_bos2$ID <- as.numeric(data_for_plots_bos2$ID)  
+
+#For repeated
+data_for_plots_bos2$ID[duplicated(data_for_plots_bos2$ID)]
 
 #creating the table in pdf
 data_for_plots_bos2 %>% 
@@ -1870,10 +2007,17 @@ data_for_plots_pico2$ID[data_for_plots_pico2$ID == "H-03"] <- "2222"
 data_for_plots_pico2$ID[data_for_plots_pico2$ID == "51C"] <- "2449"
 data_for_plots_pico2$ID[data_for_plots_pico2$ID == "53B"] <- "2536"
 data_for_plots_pico2$ID[data_for_plots_pico2$ID == "54C"] <- "2453"
-data_for_plots_pico2$ID[data_for_plots_pico2$ID == "71B"] <- "2505"
-
+data_for_plots_pico2$ID[data_for_plots_pico2$ID == "71B"] <-
+"2505"
+data_for_plots_pico2$ID[data_for_plots_pico2$ID=="318"]  <- "2390"
+data_for_plots_pico2$ID[data_for_plots_pico2$ID =="413"]  <- "2386"
+data_for_plots_pico2$ID[data_for_plots_pico2$ID =="12B"]  <- "12"
+data_for_plots_pico2$ID[data_for_plots_pico2$ID =="74"]  <- "74"
+data_for_plots_pico2$ID[data_for_plots_pico2$ID =="419"]  <- "2385"
 #Transforming ID in number
 data_for_plots_pico2$ID <- as.numeric(data_for_plots_pico2$ID)
+#For repeated
+data_for_plots_pico2$ID[duplicated(data_for_plots_pico2$ID)]
 
 #creating the table in pdf
 data_for_plots_pico2 %>% 
@@ -1905,12 +2049,71 @@ data_for_plots_tetra2$ID[data_for_plots_tetra2$ID == "I-20"] <- "2362"
 data_for_plots_tetra2$ID[data_for_plots_tetra2$ID == "S-01"] <- "2320"
 data_for_plots_tetra2$ID[data_for_plots_tetra2$ID == "54C"] <- "2453"
 data_for_plots_tetra2$ID[data_for_plots_tetra2$ID == "65B"] <- "2528"
+data_for_plots_tetra2$ID[data_for_plots_tetra2$ID =="419"]  <- "2385"
+data_for_plots_tetra2$ID[data_for_plots_tetra2$ID =="12B"]  <- "12"
 #Transforming ID in number
 data_for_plots_tetra2$ID <- as.numeric(data_for_plots_tetra2$ID)
+
+#For repeated
+data_for_plots_tetra2$ID[duplicated(data_for_plots_tetra2$ID)]
 
 #Creating the table in pdf
 data_for_plots_tetra2 %>% 
 kable(format = "markdown") %>%    write2pdf("tetraconazole_outliers.pdf")
+
+
+# TM
+
+data_for_plots_TM2<- data_for_plots_TM%>% 
+group_by(Origin)%>%
+mutate(Estimate_50DC_outlier = list(get_range2(Estimate.50DC)))%>%
+unnest() %>% 
+filter(Estimate.50DC >=  outlier) %>% ungroup() %>%  
+  filter(Origin == "Fungicide field trials"|Origin =="Farmer fields" ) %>% 
+#, group =="Farmer fields")
+  #, group == "Fungicide field trials", group =="Farmer fields" )%>%
+ungroup()        %>% 
+     #group_by(ID) %>% 
+  mutate(Host = ifelse(
+    ID %in% bean_isolates_exposed_to_fungicides,
+    "Dry bean","Soybean"
+    )) %>% 
+  mutate(MOA = "Group_7")%>% ungroup() 
+ #Transforming ID in character
+  data_for_plots_TM2$ID <- as.character(data_for_plots_TM2$ID)
+  #Replacing from form ID to Inventory ID
+  data_for_plots_TM2$ID[data_for_plots_TM2$ID == "H-01"]  <- "2220"
+  data_for_plots_TM2$ID[data_for_plots_TM2$ID == "H-03"]  <- "2222"
+  data_for_plots_TM2$ID[data_for_plots_TM2$ID == "H-04"]  <- "2223"
+    data_for_plots_TM2$ID[data_for_plots_TM2$ID == "62-02"] <- "2098"
+     data_for_plots_TM2$ID[data_for_plots_TM2$ID == "62-03"] <- "2099"
+      data_for_plots_TM2$ID[data_for_plots_TM2$ID == "62-04"] <- "2100"
+data_for_plots_TM2$ID[data_for_plots_TM2$ID == "78-01"] <- "2139"
+      data_for_plots_TM2$ID[data_for_plots_TM2$ID == "78-02"] <- "2140"
+data_for_plots_TM2$ID[data_for_plots_TM2$ID == "78-05"]  <- "2143"
+data_for_plots_TM2$ID[data_for_plots_TM2$ID =="65B"]  <- "2528"
+ data_for_plots_TM2$ID[data_for_plots_TM2$ID =="51C"]  <- "2449"
+ data_for_plots_TM2$ID[data_for_plots_TM2$ID =="53B"]  <- "2536"
+ data_for_plots_TM2$ID[data_for_plots_TM2$ID =="54C"]  <- "2453"
+ data_for_plots_TM2$ID[data_for_plots_TM2$ID =="74"]  <- "74"
+data_for_plots_TM2$ID[data_for_plots_TM2$ID =="I-20"]  <- "2362"
+data_for_plots_TM2$ID[data_for_plots_TM2$ID =="S-01"]  <- "2320"
+data_for_plots_TM2$ID[data_for_plots_TM2$ID =="W212"]  <- "2388"
+data_for_plots_TM2$ID[data_for_plots_TM2$ID =="318"]  <- "2390"
+data_for_plots_TM2$ID[data_for_plots_TM2$ID =="413"]  <- "2386"
+data_for_plots_TM2$ID[data_for_plots_TM2$ID =="419"]  <- "2385"
+#Transforming ID in numeric  
+data_for_plots_TM2$ID <- as.numeric(data_for_plots_TM2$ID)  
+
+#For repeated
+data_for_plots_TM2$ID[duplicated(data_for_plots_TM2$ID)]
+#creating the table in pdf
+data_for_plots_TM2 %>% 
+  kable(format = "markdown") %>%  
+  write2pdf("TM_outliers.pdf")
+  
+
+
 ```
 
 
