@@ -1964,6 +1964,8 @@ ungroup()        %>%
     "Dry bean","Soybean"
     )) %>% 
   mutate(MOA = "Group_7")%>% ungroup() 
+
+
  #Transforming ID in character
   data_for_plots_bos2$ID <- as.character(data_for_plots_bos2$ID)
   #Replacing from form ID to Inventory ID
@@ -1974,7 +1976,18 @@ data_for_plots_bos2$ID[data_for_plots_bos2$ID == "78-05"]  <- "2143"
   data_for_plots_bos2$ID[data_for_plots_bos2$ID == "65B"]  <- "2528"
   data_for_plots_bos2$ID[data_for_plots_bos2$ID =="413"]  <- "2386"
  #Transforming ID in numeric  
-data_for_plots_bos2$ID <- as.numeric(data_for_plots_bos2$ID)  
+data_for_plots_bos2$ID <- as.numeric(data_for_plots_bos2$ID) 
+
+#Edgar: Look here
+WM <- read.csv("data/WM-fixingproductnamesID2573_modifyingforactiveingredient_6.csv", stringsAsFactors = TRUE)
+
+unique(data_for_plots_bos2$ID) #49 IDs
+
+field_ID_data <- data_for_plots_bos2 %>% 
+  inner_join(WM, by = c(ID = "Collection_ID")) %>% 
+  rename(Origin = "Origin.x", Host = "Host.x") %>% 
+  select(colnames(data_for_plots_bos2), Field)
+
 
 #For repeated
 data_for_plots_bos2$ID[duplicated(data_for_plots_bos2$ID)]
