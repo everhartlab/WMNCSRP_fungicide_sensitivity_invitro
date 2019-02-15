@@ -1737,7 +1737,7 @@ data_for_plots_bos <- boscalid_complete %>%
     "Baseline",
     ifelse(
       ID %in% Farmer_fields2,
-      "Farmer fields","Fungicide field trials"
+      "FF","FFT"
     )))
 
 data_for_plots_bos$Origin <- as_factor(data_for_plots_bos$Origin)
@@ -1797,7 +1797,7 @@ data_for_plots_pico <- picoxystrobin_complete %>%
     "Baseline",
     ifelse(
       ID %in% Farmer_fields2,
-      "Farmer fields","Fungicide field trials"
+      "FF","FFT"
     )))
 
 data_for_plots_pico$Origin <- as_factor(data_for_plots_pico$Origin)
@@ -1854,7 +1854,7 @@ data_for_plots_tetra <- tetraconazole_complete %>%
     "Baseline",
     ifelse(
       ID %in% Farmer_fields2,
-      "Farmer fields","Fungicide field trials"
+      "FF","FFT"
     )))
 
 data_for_plots_tetra$Origin <- as_factor(data_for_plots_tetra$Origin)
@@ -1913,7 +1913,7 @@ data_for_plots_TM <- TM_complete %>%
     "Baseline",
     ifelse(
       ID %in% Farmer_fields2,
-      "Farmer fields","Fungicide field trials"
+      "FF","FFT"
     )))
 
 data_for_plots_TM$Origin <- as_factor(data_for_plots_TM$Origin)
@@ -2643,7 +2643,7 @@ data_for_plots_bos_2 <- boscalid_complete %>%
   group_by(ID) %>% 
   mutate(group = ifelse(
     ID %in% bean_isolates_exposed_to_fungicides,
-    "Dry bean isolates","Soybean isolates"
+    "Dry bean","Soybean"
     ))
 
 data_for_plots_bos_2$group <- as_factor(data_for_plots_bos_2$group)
@@ -2685,7 +2685,7 @@ data_for_plots_pico_2 <- picoxystrobin_complete %>%
   group_by(ID) %>% 
   mutate(group = ifelse(
     ID %in% bean_isolates_exposed_to_fungicides,
-    "Dry bean isolates","Soybean isolates"
+    "Dry bean","Soybean"
     ))
 
 data_for_plots_pico_2$group <- as_factor(data_for_plots_pico_2$group)
@@ -2728,7 +2728,7 @@ data_for_plots_tetra_2 <- tetraconazole_complete %>%
   group_by(ID) %>% 
   mutate(group = ifelse(
     ID %in% bean_isolates_exposed_to_fungicides,
-    "Dry bean isolates","Soybean isolates"
+    "Dry bean","Soybean"
           ))
   
 data_for_plots_tetra_2$group <- as_factor(data_for_plots_tetra_2$group)
@@ -2738,7 +2738,7 @@ plot_tetra_2 <- data_for_plots_tetra_2%>%
   ggplot(aes(x = group, y = Estimate.50DC)) +
   geom_jitter(
     width = .1,
-    height = 0,
+    height = 0.5,
     shape = 21,
     color = "black",
     fill = "deepskyblue",
