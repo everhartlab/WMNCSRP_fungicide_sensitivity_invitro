@@ -357,6 +357,9 @@ Fungicide_field_trials <-
     "H-01",
     "H-03"
   )
+Farmer_fields2 <- c(136:442, 455, 456, 466, 468, 470, 471, 478:554, 602:610, 612:635, 671, 672, 682:690, 695:797, 810:823, 834, 835, 848:1024, 1255: 1326, 1491: 1500, 1661:1670, 1831: 2246, 2303: 2342,2362: 2381, 2393: 2573)
+
+baseline_isolates2 <- c(1: 136, 444: 454, 457: 465, 467, 469, 472:477, 555:601, 611, 636:670, 673: 680, 691:694 , 798: 809,  824: 833, 836: 847)
 ```
 ##  Creating a function for using the outputs of boxplot.stats function and notice the outliers
 
@@ -575,8 +578,15 @@ boscalid_data <- survey_data %>%
          boscalid.growth,
          control.growth) %>%
   rename(response = boscalid.growth, control = control.growth)
+boscalid_data$ID <- as.character(boscalid_data$ID)
+###
+alga <-  boscalid_filtered %>% filter(dose== 0.2 | dose== 0) %>%  spread(dose, response) %>% rename(control= '0',  response = '0.2') %>% select(ID, repeats, experimental_replicate,  response,control )
+alga$ID <- as.character(alga$ID)
 
-
+##
+ 
+ boscalid_data <- boscalid_data %>% full_join (alga)
+ 
 # Using the previous  function in order to take out the outliers
 boscalid_filtered_survey <- boscalid_data %>%
   group_by(ID) %>%
@@ -863,6 +873,16 @@ picoxystrobin_data <- survey_data %>%
   ) %>%
   rename(response = picoxystrobin.growth, control = sham.growth) %>% select(-control.growth)
   
+picoxystrobin_data$ID <- as.character(picoxystrobin_data$ID)
+###
+protozoa <-  picoxystrobin_filtered %>% filter(dose== 0.01 | dose== 0) %>%  spread(dose, response) %>% rename(control= '0',  response = '0.01') %>% select(ID, repeats, experimental_replicate,  response,control )
+protozoa$ID <- as.character(protozoa$ID)
+
+##
+ 
+ picoxystrobin_data <- picoxystrobin_data %>% full_join (protozoa)
+ 
+
 # Using the function in order to take out the outliers
 picoxystrobin_filtered_survey <- picoxystrobin_data %>%
   group_by(ID) %>%
@@ -1140,7 +1160,16 @@ tetraconazole_data <- survey_data %>%
   tetraconazole.growth,
   control.growth) %>%
   rename(response = tetraconazole.growth, control = control.growth)
-  
+  tetraconazole_data$ID <- as.character(tetraconazole_data$ID)
+###
+amibae <-  tetraconazole_filtered %>% filter(dose== 2 | dose== 0) %>%  spread(dose, response) %>% rename(control= '0',  response = '2') %>% select(ID, repeats, experimental_replicate,  response,control )
+protozoa$ID <- as.character(protozoa$ID)
+
+##
+ 
+ tetraconazole_data <- tetraconazole_data %>% full_join (amibae)
+ 
+
 # Using the function in order to take out the outliers#
 tetraconazole_filtered_survey <- tetraconazole_data %>%
   group_by(ID) %>%
@@ -1655,20 +1684,479 @@ TM_complete <- ungroup(TM_complete)
 
 ```
 
-##  Boscalid Plots
+# ordering the dataframes
 ```{r}
+#Transforming before in characters
+boscalid_complete$ID <- as.character(boscalid_complete$ID)
+#Replacing the ID from the inventory ID
+ boscalid_complete$ID[ boscalid_complete$ID =="12B"]  <- "12"
+ boscalid_complete$ID[ boscalid_complete$ID=="318"]  <- "2390"
+ boscalid_complete$ID[ boscalid_complete$ID =="413"]  <- "2386"
+ boscalid_complete$ID[ boscalid_complete$ID =="419"]  <- "2385"
+  boscalid_complete$ID[ boscalid_complete$ID == "62-01"] <- "2097"  
+  boscalid_complete$ID[ boscalid_complete$ID == "62-02"] <- "2098"
+   boscalid_complete$ID[ boscalid_complete$ID == "62-03"] <- "2099"
+    boscalid_complete$ID[ boscalid_complete$ID == "62-04"] <- "2100"
+ #boscalid_complete[ boscalid_complete$ID =="74SS1"]  <- "74"
+
+ boscalid_complete$ID[ boscalid_complete$ID == "78-01"] <- "2139"
+  boscalid_complete$ID[ boscalid_complete$ID == "78-02"] <- "2140"
+
+
+ boscalid_complete$ID[ boscalid_complete$ID == "78-05"]  <- "2143"
+ 
+ boscalid_complete$ID[ boscalid_complete$ID == "H-01"]  <- "2220"
+ boscalid_complete$ID[ boscalid_complete$ID == "H-03"] <- "2222"
+
+  boscalid_complete$ID[ boscalid_complete$ID == "I-20"] <- "2362"
+     boscalid_complete$ID[ boscalid_complete$ID =="W212"]  <- "2388"
+
+  
+  boscalid_complete$ID[ boscalid_complete$ID == "51C"] <- "2449"
+ boscalid_complete$ID[ boscalid_complete$ID == "53B"] <- "2536"
+boscalid_complete$ID[ boscalid_complete$ID == "54C"] <- "2559"
+boscalid_complete$ID[ boscalid_complete$ID == "60A"] <- ""
+
+boscalid_complete$ID[ boscalid_complete$ID == "64D"] <- "2518"
+ boscalid_complete$ID[ boscalid_complete$ID == "65B"]  <- "2528"
+ boscalid_complete$ID[ boscalid_complete$ID == "71B"] <-
+"2505"
+
+ 
+ boscalid_complete$ID[ boscalid_complete$ID == "S-01"] <- "2320"
+
+#Transformin now to numeric
+  boscalid_complete$ID <- as.numeric(boscalid_complete$ID)
+
+ #Ordering
+
 data_for_plots_bos <- boscalid_complete %>% 
   group_by(ID) %>% 
   mutate(Origin = ifelse(
-    ID %in% Baseline,
+    ID %in% baseline_isolates2,
     "Baseline",
     ifelse(
-      ID %in% Fungicide_field_trials,
-      "Fungicide field trials","Farmer fields"
+      ID %in% Farmer_fields2,
+      "Farmer fields","Fungicide field trials"
     )))
 
 data_for_plots_bos$Origin <- as_factor(data_for_plots_bos$Origin)
 
+
+##########picoxystrobin#######
+
+#Transforming before in characters
+picoxystrobin_complete$ID <- as.character(picoxystrobin_complete$ID)
+#Replacing the ID from the inventory ID
+ picoxystrobin_complete$ID[ picoxystrobin_complete$ID =="12B"]  <- "12"
+ picoxystrobin_complete$ID[ picoxystrobin_complete$ID=="318"]  <- "2390"
+ picoxystrobin_complete$ID[ picoxystrobin_complete$ID =="413"]  <- "2386"
+ picoxystrobin_complete$ID[ picoxystrobin_complete$ID =="419"]  <- "2385"
+  picoxystrobin_complete$ID[ picoxystrobin_complete$ID == "62-01"] <- "2097"  
+  picoxystrobin_complete$ID[ picoxystrobin_complete$ID == "62-02"] <- "2098"
+   picoxystrobin_complete$ID[ picoxystrobin_complete$ID == "62-03"] <- "2099"
+    picoxystrobin_complete$ID[ picoxystrobin_complete$ID == "62-04"] <- "2100"
+ #picoxystrobin_complete[ picoxystrobin_complete$ID =="74SS1"]  <- "74"
+
+ picoxystrobin_complete$ID[ picoxystrobin_complete$ID == "78-01"] <- "2139"
+  picoxystrobin_complete$ID[ picoxystrobin_complete$ID == "78-02"] <- "2140"
+
+
+ picoxystrobin_complete$ID[ picoxystrobin_complete$ID == "78-05"]  <- "2143"
+ 
+ picoxystrobin_complete$ID[ picoxystrobin_complete$ID == "H-01"]  <- "2220"
+ picoxystrobin_complete$ID[ picoxystrobin_complete$ID == "H-03"] <- "2222"
+  picoxystrobin_complete$ID[ picoxystrobin_complete$ID == "H-04"] <- "2223"
+
+  picoxystrobin_complete$ID[ picoxystrobin_complete$ID == "I-20"] <- "2362"
+     picoxystrobin_complete$ID[ picoxystrobin_complete$ID =="W212"]  <- "2388"
+
+  
+  picoxystrobin_complete$ID[ picoxystrobin_complete$ID == "51C"] <- "2449"
+ picoxystrobin_complete$ID[ picoxystrobin_complete$ID == "53B"] <- "2536"
+picoxystrobin_complete$ID[ picoxystrobin_complete$ID == "54C"] <- "2559"
+picoxystrobin_complete$ID[ picoxystrobin_complete$ID == "60A"] <- ""
+
+picoxystrobin_complete$ID[ picoxystrobin_complete$ID == "64D"] <- "2518"
+ picoxystrobin_complete$ID[ picoxystrobin_complete$ID == "65B"]  <- "2528"
+ picoxystrobin_complete$ID[ picoxystrobin_complete$ID == "71B"] <-
+"2505"
+
+ 
+ picoxystrobin_complete$ID[ picoxystrobin_complete$ID == "S-01"] <- "2320"
+
+#Transformin now to numeric
+  picoxystrobin_complete$ID <- as.numeric(picoxystrobin_complete$ID)
+
+ #Ordering
+
+data_for_plots_pico <- picoxystrobin_complete %>% 
+  group_by(ID) %>% 
+  mutate(Origin = ifelse(
+    ID %in% baseline_isolates2,
+    "Baseline",
+    ifelse(
+      ID %in% Farmer_fields2,
+      "Farmer fields","Fungicide field trials"
+    )))
+
+data_for_plots_pico$Origin <- as_factor(data_for_plots_pico$Origin)
+
+##########tetraconazole#######
+
+tetraconazole_complete$ID <- as.character(tetraconazole_complete$ID)
+#Replacing the ID from the inventory ID
+ tetraconazole_complete$ID[ tetraconazole_complete$ID =="12B"]  <- "12"
+ tetraconazole_complete$ID[ tetraconazole_complete$ID=="318"]  <- "2390"
+ tetraconazole_complete$ID[ tetraconazole_complete$ID =="413"]  <- "2386"
+ tetraconazole_complete$ID[ tetraconazole_complete$ID =="419"]  <- "2385"
+  tetraconazole_complete$ID[ tetraconazole_complete$ID == "62-01"] <- "2097"  
+  tetraconazole_complete$ID[ tetraconazole_complete$ID == "62-02"] <- "2098"
+   tetraconazole_complete$ID[ tetraconazole_complete$ID == "62-03"] <- "2099"
+    tetraconazole_complete$ID[ tetraconazole_complete$ID == "62-04"] <- "2100"
+ #tetraconazole_complete[ tetraconazole_complete$ID =="74SS1"]  <- "74"
+
+ tetraconazole_complete$ID[ tetraconazole_complete$ID == "78-01"] <- "2139"
+  tetraconazole_complete$ID[ tetraconazole_complete$ID == "78-02"] <- "2140"
+
+
+ tetraconazole_complete$ID[ tetraconazole_complete$ID == "78-05"]  <- "2143"
+ 
+ tetraconazole_complete$ID[ tetraconazole_complete$ID == "H-01"]  <- "2220"
+ tetraconazole_complete$ID[ tetraconazole_complete$ID == "H-03"] <- "2222"
+tetraconazole_complete$ID[ tetraconazole_complete$ID == "H-04"] <- "2223"
+  tetraconazole_complete$ID[ tetraconazole_complete$ID == "I-20"] <- "2362"
+     tetraconazole_complete$ID[ tetraconazole_complete$ID =="W212"]  <- "2388"
+
+  
+  tetraconazole_complete$ID[ tetraconazole_complete$ID == "51C"] <- "2449"
+ tetraconazole_complete$ID[ tetraconazole_complete$ID == "53B"] <- "2536"
+tetraconazole_complete$ID[ tetraconazole_complete$ID == "54C"] <- "2559"
+tetraconazole_complete$ID[ tetraconazole_complete$ID == "60A"] <- ""
+
+tetraconazole_complete$ID[ tetraconazole_complete$ID == "64D"] <- "2518"
+ tetraconazole_complete$ID[ tetraconazole_complete$ID == "65B"]  <- "2528"
+ tetraconazole_complete$ID[ tetraconazole_complete$ID == "71B"] <-
+"2505"
+
+ 
+ tetraconazole_complete$ID[ tetraconazole_complete$ID == "S-01"] <- "2320"
+
+#Transformin now to numeric
+  tetraconazole_complete$ID <- as.numeric(tetraconazole_complete$ID)
+
+ #Ordering
+
+data_for_plots_tetra <- tetraconazole_complete %>% 
+  group_by(ID) %>% 
+  mutate(Origin = ifelse(
+    ID %in% baseline_isolates2,
+    "Baseline",
+    ifelse(
+      ID %in% Farmer_fields2,
+      "Farmer fields","Fungicide field trials"
+    )))
+
+data_for_plots_tetra$Origin <- as_factor(data_for_plots_tetra$Origin)
+
+
+##########TM#######
+
+#Transforming before in characters
+TM_complete$ID <- as.character(TM_complete$ID)
+#Replacing the ID from the inventory ID
+ TM_complete$ID[ TM_complete$ID =="12B"]  <- "12"
+ TM_complete$ID[ TM_complete$ID=="318"]  <- "2390"
+ TM_complete$ID[ TM_complete$ID =="413"]  <- "2386"
+ TM_complete$ID[ TM_complete$ID =="419"]  <- "2385"
+  TM_complete$ID[ TM_complete$ID == "62-01"] <- "2097"  
+  TM_complete$ID[ TM_complete$ID == "62-02"] <- "2098"
+   TM_complete$ID[ TM_complete$ID == "62-03"] <- "2099"
+    TM_complete$ID[ TM_complete$ID == "62-04"] <- "2100"
+ #TM_complete[ TM_complete$ID =="74SS1"]  <- "74"
+
+ TM_complete$ID[ TM_complete$ID == "78-01"] <- "2139"
+  TM_complete$ID[ TM_complete$ID == "78-02"] <- "2140"
+
+
+ TM_complete$ID[ TM_complete$ID == "78-05"]  <- "2143"
+ 
+ TM_complete$ID[ TM_complete$ID == "H-01"]  <- "2220"
+ TM_complete$ID[ TM_complete$ID == "H-03"] <- "2222"
+TM_complete$ID[ TM_complete$ID == "H-04"] <- "2223"
+  TM_complete$ID[ TM_complete$ID == "I-20"] <- "2362"
+     TM_complete$ID[ TM_complete$ID =="W212"]  <- "2388"
+
+  
+  TM_complete$ID[ TM_complete$ID == "51C"] <- "2449"
+ TM_complete$ID[ TM_complete$ID == "53B"] <- "2536"
+TM_complete$ID[ TM_complete$ID == "54C"] <- "2559"
+TM_complete$ID[ TM_complete$ID == "60A"] <- ""
+
+TM_complete$ID[ TM_complete$ID == "64D"] <- "2518"
+ TM_complete$ID[ TM_complete$ID == "65B"]  <- "2528"
+ TM_complete$ID[ TM_complete$ID == "71B"] <-
+"2505"
+
+ 
+ TM_complete$ID[ TM_complete$ID == "S-01"] <- "2320"
+
+#Transformin now to numeric
+  TM_complete$ID <- as.numeric(TM_complete$ID)
+
+ #Ordering
+
+data_for_plots_TM <- TM_complete %>% 
+  group_by(ID) %>% 
+  mutate(Origin = ifelse(
+    ID %in% baseline_isolates2,
+    "Baseline",
+    ifelse(
+      ID %in% Farmer_fields2,
+      "Farmer fields","Fungicide field trials"
+    )))
+
+data_for_plots_TM$Origin <- as_factor(data_for_plots_TM$Origin)
+
+
+
+```
+#reading new dataset
+```{r}
+#Edgar: Look here
+WM <- read.csv("data/WM-fixingproductnamesID2573_modifyingforactiveingredient_6.csv", stringsAsFactors = TRUE)
+```
+
+
+# Boscalid
+```{r}
+# Boscalid                                                               
+data_for_plots_bos2<- data_for_plots_bos%>% 
+group_by(Origin)%>%
+mutate(Estimate_50DC_outlier = list(get_range2(Estimate.50DC)))%>%
+unnest() %>% 
+filter(Estimate.50DC >=  outlier) %>% ungroup() %>%  
+  filter(Origin == "Fungicide field trials"|Origin =="Farmer fields" ) %>% 
+#, group =="Farmer fields")
+  #, group == "Fungicide field trials", group =="Farmer fields" )%>%
+ungroup()        %>% 
+     #group_by(ID) %>% 
+  mutate(Host = ifelse(
+    ID %in% bean_isolates_exposed_to_fungicides,
+    "Dry bean","Soybean"
+    )) %>% ungroup()#%>% 
+  #mutate(MOA = "Group_7") 
+
+
+ 
+
+summary_field_original_boscalid <- WM %>% 
+  select(Field, Collection_ID, molecule.s._current_season) %>% 
+  unique() %>% 
+  group_by(Field, molecule.s._current_season) %>% 
+  summarize(N_isolates = n()) %>% 
+  mutate(Empty_field = (Field == "")) %>% 
+  filter(Empty_field == FALSE) %>% 
+  select(-Empty_field) %>% 
+  ungroup()
+
+unique(data_for_plots_bos2$ID) #49 IDs
+
+data_for_plots_bos2$ID <- as.factor(data_for_plots_bos2$ID)
+
+field_ID_data_boscalid <- data_for_plots_bos2 %>% 
+  left_join(WM, by = c(ID = "Collection_ID")) %>% 
+  rename(Origin = "Origin.x", Host = "Host.x") %>% 
+  select(colnames(data_for_plots_bos2), Field, Year, State) %>%
+    left_join (summary_field_original_boscalid) %>% 
+  filter(molecule.s._current_season == "boscalid")
+  
+
+#transforming to numeric
+field_ID_data_boscalid$ID <- as.numeric(field_ID_data_boscalid$ID ) 
+
+#ordering ID
+field_ID_data_boscalid <- field_ID_data_boscalid %>% 
+arrange(ID)
+#creating the table in pdf
+field_ID_data_boscalid %>% 
+  kable(format = "markdown") %>%    write2pdf("boscalid_outliers.pdf")
+  
+
+
+```
+#picoxystroin
+```{r}
+# Picoxystrobin                                                               
+data_for_plots_pico2<- data_for_plots_pico%>% 
+group_by(Origin)%>%
+mutate(Estimate_50DC_outlier = list(get_range2(Estimate.50DC)))%>%
+unnest() %>% 
+filter(Estimate.50DC >=  outlier) %>% ungroup() %>%  
+  filter(Origin == "Fungicide field trials"|Origin =="Farmer fields" ) %>% 
+#, group =="Farmer fields")
+  #, group == "Fungicide field trials", group =="Farmer fields" )%>%
+ungroup()        %>% 
+     #group_by(ID) %>% 
+  mutate(Host = ifelse(
+    ID %in% bean_isolates_exposed_to_fungicides,
+    "Dry bean","Soybean"
+    )) %>% ungroup()#%>% 
+  #mutate(MOA = "Group_7") 
+
+
+ 
+
+summary_field_original_picoxystrobin <- WM %>% 
+  select(Field, Collection_ID) %>% 
+  unique() %>% 
+  group_by(Field) %>% 
+  summarize(N_isolates = n()) %>% 
+  mutate(Empty_field = (Field == "")) %>% 
+  filter(Empty_field == FALSE) %>% 
+  select(-Empty_field)
+
+unique(data_for_plots_pico2$ID) #49 IDs
+
+data_for_plots_pico2$ID <- as.factor(data_for_plots_pico2$ID)
+
+field_ID_data_picoxystrobin <- data_for_plots_pico2 %>% 
+  left_join(WM, by = c(ID = "Collection_ID")) %>% 
+  rename(Origin = "Origin.x", Host = "Host.x") %>% 
+  select(colnames(data_for_plots_pico2), Field, Year, State) %>% 
+  left_join(summary_field_original_picoxystrobin)  
+  
+
+#transforming to numeric
+field_ID_data_picoxystrobin$ID <- as.numeric(field_ID_data_picoxystrobin$ID ) 
+
+#ordering ID
+field_ID_data_picoxystrobin <- field_ID_data_picoxystrobin %>% 
+arrange(ID)
+#creating the table in pdf
+field_ID_data_picoxystrobin %>% 
+  kable(format = "markdown") %>%    write2pdf("picoxystrobin_outliers.pdf")
+  
+
+
+```
+
+#Tetraconazole
+```{r}
+# Tetraconazole                                                               
+data_for_plots_tetra2<- data_for_plots_tetra%>% 
+group_by(Origin)%>%
+mutate(Estimate_50DC_outlier = list(get_range2(Estimate.50DC)))%>%
+unnest() %>% 
+filter(Estimate.50DC >=  outlier) %>% ungroup() %>%  
+  filter(Origin == "Fungicide field trials"|Origin =="Farmer fields" ) %>% 
+#, group =="Farmer fields")
+  #, group == "Fungicide field trials", group =="Farmer fields" )%>%
+ungroup()        %>% 
+     #group_by(ID) %>% 
+  mutate(Host = ifelse(
+    ID %in% bean_isolates_exposed_to_fungicides,
+    "Dry bean","Soybean"
+    )) %>% ungroup()#%>% 
+  #mutate(MOA = "Group_7") 
+
+
+ 
+
+summary_field_original_tetraconazole <- WM %>% 
+  select(Field, Collection_ID) %>% 
+  unique() %>% 
+  group_by(Field) %>% 
+  summarize(N_isolates = n()) %>% 
+  mutate(Empty_field = (Field == "")) %>% 
+  filter(Empty_field == FALSE) %>% 
+  select(-Empty_field)
+
+unique(data_for_plots_tetra2$ID) #49 IDs
+
+data_for_plots_tetra2$ID <- as.factor(data_for_plots_tetra2$ID)
+
+field_ID_data_tetraconazole <- data_for_plots_tetra2 %>% 
+  left_join(WM, by = c(ID = "Collection_ID")) %>% 
+  rename(Origin = "Origin.x", Host = "Host.x") %>% 
+  select(colnames(data_for_plots_tetra2), Field, Year, State) %>% 
+  left_join(summary_field_original_tetraconazole)  
+  
+
+#transforming to numeric
+field_ID_data_tetraconazole$ID <- as.numeric(field_ID_data_tetraconazole$ID ) 
+
+#ordering ID
+field_ID_data_tetraconazole <- field_ID_data_tetraconazole %>% 
+arrange(ID)
+#creating the table in pdf
+field_ID_data_tetraconazole %>% 
+  kable(format = "markdown") %>%    write2pdf("tetraconazole_outliers.pdf")
+  
+
+
+```
+# TM
+```{r}
+# TM                                                               
+data_for_plots_thio2<- data_for_plots_TM%>% 
+group_by(Origin)%>%
+mutate(Estimate_50DC_outlier = list(get_range2(Estimate.50DC)))%>%
+unnest() %>% 
+filter(Estimate.50DC >=  outlier) %>% ungroup() %>%  
+  filter(Origin == "Fungicide field trials"|Origin =="Farmer fields" ) %>% 
+#, group =="Farmer fields")
+  #, group == "Fungicide field trials", group =="Farmer fields" )%>%
+ungroup()        %>% 
+     #group_by(ID) %>% 
+  mutate(Host = ifelse(
+    ID %in% bean_isolates_exposed_to_fungicides,
+    "Dry bean","Soybean"
+    )) %>% ungroup()#%>% 
+  #mutate(MOA = "Group_7") 
+
+
+ 
+
+summary_field_original_TM <- WM %>% 
+  select(Field, Collection_ID) %>% 
+  unique() %>% 
+  group_by(Field) %>% 
+  summarize(N_isolates = n()) %>% 
+  mutate(Empty_field = (Field == "")) %>% 
+  filter(Empty_field == FALSE) %>% 
+  select(-Empty_field)
+
+unique(data_for_plots_thio2$ID) #49 IDs
+
+data_for_plots_thio2$ID <- as.factor(data_for_plots_thio2$ID)
+
+field_ID_data_TM <- data_for_plots_thio2 %>% 
+  left_join(WM, by = c(ID = "Collection_ID")) %>% 
+  rename(Origin = "Origin.x", Host = "Host.x") %>% 
+  select(colnames(data_for_plots_thio2), Field, Year, State) %>% 
+  left_join(summary_field_original_TM)  
+  
+
+#transforming to numeric
+field_ID_data_TM$ID <- as.numeric(field_ID_data_TM$ID ) 
+
+#ordering ID
+field_ID_data_TM <- field_ID_data_TM %>% 
+arrange(ID)
+#creating the table in pdf
+field_ID_data_TM %>% 
+  kable(format = "markdown") %>%   
+  write2pdf("TM_outliers.pdf")
+  
+
+
+
+```
+
+##  Boscalid Plots
+
+```{r}
 
 plot_bos <- data_for_plots_bos%>%
   ggplot(aes(x = Origin, y = Estimate.50DC)) +
@@ -1688,17 +2176,11 @@ plot_bos <- data_for_plots_bos%>%
     color = "black"
   ) +
   theme_minimal() +
-  labs(title = "Boscalid", x = "Origin", y = "EC50D (ppm)") + theme(
-    plot.title = element_text(
-      size = 16,
-      face = "bold",
-      hjust = 0.5,
-      family = "Verdana"
-    ),
+  labs( x = "Origin", y = "EC50D (ppm)") + theme(
     axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
     axis.text = element_text(
       face = "bold",
-      size = 10,
+      size = 7,
       family = "Verdana"
     ),
     panel.background = element_rect(fill = "white", colour = "grey50")
@@ -1733,18 +2215,6 @@ plot_bos2 <-
 ```
 ##  Picoxystrobin Plots
 ```{r}
-data_for_plots_pico <- picoxystrobin_complete %>% 
-  group_by(ID) %>% 
-  mutate(Origin = ifelse(
-    ID %in% Baseline,
-    "Baseline",
-    ifelse(
-      ID %in% Fungicide_field_trials,
-      "Fungicide field trials","Farmer fields"
-    )))
-
-data_for_plots_pico$Origin <- as_factor(data_for_plots_pico$Origin)
-
 
 plot_pico <- data_for_plots_pico%>%
   ggplot(aes(x = Origin, y = Estimate.50DC)) +
@@ -1764,17 +2234,11 @@ plot_pico <- data_for_plots_pico%>%
     color = "black"
   ) +
   theme_minimal() +
-  labs(title = "Picoxystrobin", x = "Origin", y = "EC50D (ppm)") + theme(
-    plot.title = element_text(
-      size = 16,
-      face = "bold",
-      hjust = 0.5,
-      family = "Verdana"
-    ),
-    axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+  labs(x = "Origin", y = "EC50D (ppm)") + theme(
+        axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
     axis.text = element_text(
       face = "bold",
-      size = 10,
+      size = 7,
       family = "Verdana"
     ),
     panel.background = element_rect(fill = "white", colour = "grey50")
@@ -1803,18 +2267,6 @@ plot_pico2
 ```
 ##  Tetraconazole Plots
 ```{r}
-data_for_plots_tetra <- tetraconazole_complete %>% 
-  group_by(ID) %>% 
-  mutate(Origin = ifelse(
-    ID %in% Baseline,
-    "Baseline",
-    ifelse(
-      ID %in% Fungicide_field_trials,
-      "Fungicide field trials","Farmer fields"
-          )))
-  
-data_for_plots_tetra$Origin <- as_factor(data_for_plots_tetra$Origin)
-
 
 plot_tetra <- data_for_plots_tetra%>%
   ggplot(aes(x = Origin, y = Estimate.50DC)) +
@@ -1834,21 +2286,16 @@ plot_tetra <- data_for_plots_tetra%>%
     color = "black"
   ) +
   theme_minimal() +
-  labs(title = "Tetraconazole", x = "Origin", y = "EC50D (ppm)") + theme(
-    plot.title = element_text(
-      size = 16,
-      face = "bold",
-      hjust = 0.5,
-      family = "Verdana"
-    ),
-    axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+  labs( x = "Origin", y = "EC50D (ppm)") + theme(
+        axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
     axis.text = element_text(
       face = "bold",
-      size = 10,
+      size = 7,
       family = "Verdana"
     ),
     panel.background = element_rect(fill = "white", colour = "grey50")
   )
+plot_tetra
 plot_tetra2 <- 
 ggplot(data_for_plots_tetra , aes(x = Origin, y = Estimate.50DC))  +  geom_boxplot(notch = TRUE,
                                                                                   outlier.colour = "deepskyblue",
@@ -1876,17 +2323,7 @@ plot_tetra2
 # TM plots
 
 ```{r}
-data_for_plots_TM <- TM_complete %>% 
-  group_by(ID) %>% 
-  mutate(Origin = ifelse(
-    ID %in% Baseline,
-    "Baseline",
-    ifelse(
-      ID %in% Fungicide_field_trials,
-      "Fungicide field trials","Farmer fields"
-    )))
 
-data_for_plots_TM$Origin <- as_factor(data_for_plots_TM$Origin)
 
 plot_TM <- data_for_plots_TM%>%
   ggplot(aes(x = Origin, y = Estimate.50DC)) +
@@ -1916,11 +2353,12 @@ plot_TM <- data_for_plots_TM%>%
     axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
     axis.text = element_text(
       face = "bold",
-      size = 10,
+      size = 7,
       family = "Verdana"
     ),
     panel.background = element_rect(fill = "white", colour = "grey50")
   )
+plot_TM
 plot_TM2 <- 
 ggplot(data_for_plots_TM, aes(x = Origin, y = Estimate.50DC))  +  geom_boxplot(notch = TRUE,
                                                                                   outlier.colour = "deepskyblue",
@@ -1962,8 +2400,9 @@ ungroup()        %>%
   mutate(Host = ifelse(
     ID %in% bean_isolates_exposed_to_fungicides,
     "Dry bean","Soybean"
-    )) %>% 
-  mutate(MOA = "Group_7")%>% ungroup() 
+    ))
+#%>% 
+  #mutate(MOA = "Group_7")%>% ungroup() 
 
 
  #Transforming ID in character
@@ -1978,22 +2417,41 @@ data_for_plots_bos2$ID[data_for_plots_bos2$ID == "78-05"]  <- "2143"
  #Transforming ID in numeric  
 data_for_plots_bos2$ID <- as.numeric(data_for_plots_bos2$ID) 
 
-#Edgar: Look here
+
 WM <- read.csv("data/WM-fixingproductnamesID2573_modifyingforactiveingredient_6.csv", stringsAsFactors = TRUE)
+
+summary_field_original <- WM %>% 
+  select(Field, Collection_ID) %>% 
+  unique() %>% 
+  group_by(Field) %>% 
+  summarize(Num_original_isolates = n()) %>% 
+  mutate(Empty_field = (Field == "")) %>% 
+  filter(Empty_field == FALSE) %>% 
+  select(-Empty_field)  
 
 unique(data_for_plots_bos2$ID) #49 IDs
 
+data_for_plots_bos2$ID <- as.factor(data_for_plots_bos2$ID)
+
 field_ID_data <- data_for_plots_bos2 %>% 
-  inner_join(WM, by = c(ID = "Collection_ID")) %>% 
+  left_join(WM, by = c(ID = "Collection_ID")) %>% 
   rename(Origin = "Origin.x", Host = "Host.x") %>% 
-  select(colnames(data_for_plots_bos2), Field)
+    select(colnames(data_for_plots_bos2), Field,  Year, State) %>% 
+  left_join(summary_field_original)  %>% 
+  arrange(ID)  %>% 
+  rename(N_isolates =Num_original_isolates) %>% 
+  select(-outlier) %>% 
+  arrange(ID)
+         
+     
+
 
 
 #For repeated
 data_for_plots_bos2$ID[duplicated(data_for_plots_bos2$ID)]
 
 #creating the table in pdf
-data_for_plots_bos2 %>% 
+field_ID_data %>% 
   kable(format = "markdown") %>%    write2pdf("boscalid_outliers.pdf")
   
 #Picoxystrobin
@@ -2010,8 +2468,8 @@ ungroup()  %>%
   mutate(Host = ifelse(
     ID %in% bean_isolates_exposed_to_fungicides,
     "Dry bean","Soybean"
-    )) %>% 
-  mutate(MOA = "Group_11")%>% ungroup()
+    )) #%>% 
+  #mutate(MOA = "Group_11")%>% ungroup()
 
 #Transforming ID in character
 data_for_plots_pico2$ID <- as.character(data_for_plots_pico2$ID)
@@ -2029,8 +2487,9 @@ data_for_plots_pico2$ID[data_for_plots_pico2$ID =="74"]  <- "74"
 data_for_plots_pico2$ID[data_for_plots_pico2$ID =="419"]  <- "2385"
 #Transforming ID in number
 data_for_plots_pico2$ID <- as.numeric(data_for_plots_pico2$ID)
-#For repeated
-data_for_plots_pico2$ID[duplicated(data_for_plots_pico2$ID)]
+
+
+
 
 #creating the table in pdf
 data_for_plots_pico2 %>% 
@@ -2067,8 +2526,16 @@ data_for_plots_tetra2$ID[data_for_plots_tetra2$ID =="12B"]  <- "12"
 #Transforming ID in number
 data_for_plots_tetra2$ID <- as.numeric(data_for_plots_tetra2$ID)
 
-#For repeated
-data_for_plots_tetra2$ID[duplicated(data_for_plots_tetra2$ID)]
+field_ID_data <- data_for_plots_TM2 %>% 
+  left_join(WM, by = c(ID = "Collection_ID")) %>% 
+  rename(Origin = "Origin.x", Host = "Host.x") %>% 
+    select(colnames(data_for_plots_bos2), Field, molecule.s._current_season, Year, State) %>% 
+  left_join(summary_field_original)  %>% 
+mutate(molecule.s._current_season = na_if(molecule.s._current_season, "")) %>% 
+  filter(molecule.s._current_season == "thiophanate_methyl"| is.na(molecule.s._current_season)) %>%  arrange(ID) %>% rename(Fungicide = molecule.s._current_season) %>% 
+  rename(N_isolates =Num_original_isolates) %>% 
+  select(-outlier)
+
 
 #Creating the table in pdf
 data_for_plots_tetra2 %>% 
@@ -2117,6 +2584,23 @@ data_for_plots_TM2$ID[data_for_plots_TM2$ID =="413"]  <- "2386"
 data_for_plots_TM2$ID[data_for_plots_TM2$ID =="419"]  <- "2385"
 #Transforming ID in numeric  
 data_for_plots_TM2$ID <- as.numeric(data_for_plots_TM2$ID)  
+
+
+summary_field_original <- WM %>% 
+  select(Field, Collection_ID,molecule.s._current_season ) %>% 
+  unique() %>% 
+  group_by(Field, molecule.s._current_season) %>% 
+  summarize(Num_original_isolates = n()) %>% 
+  mutate(Empty_field = (Field == "")) %>% 
+  filter(Empty_field == FALSE) %>% 
+  select(-Empty_field)  
+
+
+
+unique(data_for_plots_TM2$ID) #49 IDs
+
+data_for_plots_TM2$ID <- as.factor(data_for_plots_TM2$ID)
+
 
 #For repeated
 data_for_plots_TM2$ID[duplicated(data_for_plots_TM2$ID)]
@@ -2183,17 +2667,11 @@ plot_bos_2 <- data_for_plots_bos_2%>%
     color = "black"
   ) +
   theme_minimal() +
-  labs(title = "Boscalid", x = "Group", y = "EC50D (ppm)") + theme(
-    plot.title = element_text(
-      size = 16,
-      face = "bold",
-      hjust = 0.5,
-      family = "Verdana"
-    ),
-    axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+  labs( x = "Group", y = "EC50D (ppm)") + theme(
+        axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
     axis.text = element_text(
       face = "bold",
-      size = 10,
+      size = 7,
       family = "Verdana"
     ),
     panel.background = element_rect(fill = "white", colour = "grey50")
@@ -2231,17 +2709,11 @@ plot_pico_2 <- data_for_plots_pico_2%>%
     color = "black"
   ) +
   theme_minimal() +
-  labs(title = "Picoxystrobin", x = "Group", y = "EC50D (ppm)") + theme(
-    plot.title = element_text(
-      size = 16,
-      face = "bold",
-      hjust = 0.5,
-      family = "Verdana"
-    ),
-    axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+  labs( x = "Group", y = "EC50D (ppm)") + theme(
+        axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
     axis.text = element_text(
       face = "bold",
-      size = 10,
+      size = 7,
       family = "Verdana"
     ),
     panel.background = element_rect(fill = "white", colour = "grey50")
@@ -2280,17 +2752,11 @@ plot_tetra_2 <- data_for_plots_tetra_2%>%
     color = "black"
   ) +
   theme_minimal() +
-  labs(title = "Tetraconazole", x = "Group", y = "EC50D (ppm)") + theme(
-    plot.title = element_text(
-      size = 16,
-      face = "bold",
-      hjust = 0.5,
-      family = "Verdana"
-    ),
-    axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+  labs( x = "Group", y = "EC50D (ppm)") + theme(
+        axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
     axis.text = element_text(
       face = "bold",
-      size = 10,
+      size = 7,
       family = "Verdana"
     ),
     panel.background = element_rect(fill = "white", colour = "grey50")
