@@ -1586,39 +1586,6 @@ select(c(ID, Estimate.50DC)) %>%
   
 ```
 
-#  Plotting all fungicides together by geom_jitter
-
-```{r}
-  new_data <- rbind(boscalid_xx, picoxystrobin_yy, tetraconazole_bb)
- # write.csv(new_data, file = "summarize_isolates_used_for_fungicides.csv")
-  plot_dat <- new_data %>%
-    ggplot(aes(x = group, y = EC50, fill = fungicide)) +
-    geom_jitter(width = .1, height = 0, shape=21, 
-                size=3.5, alpha=3/4) +
-    theme_minimal() +
-    labs(x = "Group", y = "EC50 (ppm)") +
-    scale_fill_discrete(name="Fungicide")
-  
-  plot_dat
-  ##
-  b <-
-    ggplot(boscalid_xx, aes(x = ID, y = EC50, shape = group)) + geom_point(aes(color = group), size = 3) + theme(
-      plot.title = element_text(
-        size = 14,
-        face = "bold",
-        hjust = 0.5,
-        family = "Verdana"
-      ),
-      axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
-      axis.text = element_text(
-        face = "bold",
-        size = 14,
-        family = "Verdana"
-      ),
-      panel.background = element_rect(fill = "white", colour = "grey50")
-    ) + labs(title = "Boscalid", x = "Isolates", y = "EC50 (ppm)")
-  b
-```
 
 #  Renaming the groups to be more specifically
 ```{r}
@@ -1643,6 +1610,7 @@ levels(boscalid_xx$group)[levels(boscalid_xx$group) == "treatmentyear2016_isolat
 levels(boscalid_xx$group)[levels(boscalid_xx$group) == "baseline"] <-"Baseline"
 
 ```
+
 ##  Ordering for each fungicide
 ```{r}
 
@@ -1671,18 +1639,7 @@ TM_complete <- rbind.data.frame(final_TM_DC, TM_filtered_)
 TM_complete <- ungroup(TM_complete)
 
 ```
-# New function to detect outliers
-```{r}
- #New function to detect outliers of EC50DC en each group for fungicide. These ouliers are considered as equal to the third quantil, i.e. the second max stats
-                                                              
-                                                            get_range2 <- function(myoutlier) {
-  alpha <- boxplot.stats(myoutlier)
-  necrosis <- alpha$stats
-  wilt <- max(necrosis[necrosis!=max(necrosis)])
-    return(data.frame(outlier = wilt))
-}           
 
-```
 
 # ordering the dataframes
 ```{r}
@@ -1921,236 +1878,11 @@ data_for_plots_TM$Origin <- as_factor(data_for_plots_TM$Origin)
 
 
 ```
-#reading new dataset
+
 ```{r}
-#Edgar: Look here
-WM <- read.csv("data/WM-fixingproductnamesID2573_modifyingforactiveingredient_6.csv", stringsAsFactors = TRUE)
-```
 
-
-# Boscalid
-```{r}
-# Boscalid                                                               
-data_for_plots_bos2<- data_for_plots_bos%>% 
-group_by(Origin)%>%
-mutate(Estimate_50DC_outlier = list(get_range2(Estimate.50DC)))%>%
-unnest() %>% 
-filter(Estimate.50DC >=  outlier) %>% ungroup() %>%  
-  filter(Origin == "Fungicide field trials"|Origin =="Farmer fields" ) %>% 
-#, group =="Farmer fields")
-  #, group == "Fungicide field trials", group =="Farmer fields" )%>%
-ungroup()        %>% 
-     #group_by(ID) %>% 
-  mutate(Host = ifelse(
-    ID %in% bean_isolates_exposed_to_fungicides,
-    "Dry bean","Soybean"
-    )) %>% ungroup()#%>% 
-  #mutate(MOA = "Group_7") 
-
-
- 
-
-summary_field_original_boscalid <- WM %>% 
-  select(Field, Collection_ID, molecule.s._current_season) %>% 
-  unique() %>% 
-  group_by(Field, molecule.s._current_season) %>% 
-  summarize(N_isolates = n()) %>% 
-  mutate(Empty_field = (Field == "")) %>% 
-  filter(Empty_field == FALSE) %>% 
-  select(-Empty_field) %>% 
-  ungroup()
-
-unique(data_for_plots_bos2$ID) #49 IDs
-
-data_for_plots_bos2$ID <- as.factor(data_for_plots_bos2$ID)
-
-field_ID_data_boscalid <- data_for_plots_bos2 %>% 
-  left_join(WM, by = c(ID = "Collection_ID")) %>% 
-  rename(Origin = "Origin.x", Host = "Host.x") %>% 
-  select(colnames(data_for_plots_bos2), Field, Year, State) %>%
-    left_join (summary_field_original_boscalid) %>% 
-  filter(molecule.s._current_season == "boscalid")
-  
-
-#transforming to numeric
-field_ID_data_boscalid$ID <- as.numeric(field_ID_data_boscalid$ID ) 
-
-#ordering ID
-field_ID_data_boscalid <- field_ID_data_boscalid %>% 
-arrange(ID)
-#creating the table in pdf
-field_ID_data_boscalid %>% 
-  kable(format = "markdown") %>%    write2pdf("boscalid_outliers.pdf")
-  
-
-
-```
-#picoxystroin
-```{r}
-# Picoxystrobin                                                               
-data_for_plots_pico2<- data_for_plots_pico%>% 
-group_by(Origin)%>%
-mutate(Estimate_50DC_outlier = list(get_range2(Estimate.50DC)))%>%
-unnest() %>% 
-filter(Estimate.50DC >=  outlier) %>% ungroup() %>%  
-  filter(Origin == "Fungicide field trials"|Origin =="Farmer fields" ) %>% 
-#, group =="Farmer fields")
-  #, group == "Fungicide field trials", group =="Farmer fields" )%>%
-ungroup()        %>% 
-     #group_by(ID) %>% 
-  mutate(Host = ifelse(
-    ID %in% bean_isolates_exposed_to_fungicides,
-    "Dry bean","Soybean"
-    )) %>% ungroup()#%>% 
-  #mutate(MOA = "Group_7") 
-
-
- 
-
-summary_field_original_picoxystrobin <- WM %>% 
-  select(Field, Collection_ID) %>% 
-  unique() %>% 
-  group_by(Field) %>% 
-  summarize(N_isolates = n()) %>% 
-  mutate(Empty_field = (Field == "")) %>% 
-  filter(Empty_field == FALSE) %>% 
-  select(-Empty_field)
-
-unique(data_for_plots_pico2$ID) #49 IDs
-
-data_for_plots_pico2$ID <- as.factor(data_for_plots_pico2$ID)
-
-field_ID_data_picoxystrobin <- data_for_plots_pico2 %>% 
-  left_join(WM, by = c(ID = "Collection_ID")) %>% 
-  rename(Origin = "Origin.x", Host = "Host.x") %>% 
-  select(colnames(data_for_plots_pico2), Field, Year, State) %>% 
-  left_join(summary_field_original_picoxystrobin)  
-  
-
-#transforming to numeric
-field_ID_data_picoxystrobin$ID <- as.numeric(field_ID_data_picoxystrobin$ID ) 
-
-#ordering ID
-field_ID_data_picoxystrobin <- field_ID_data_picoxystrobin %>% 
-arrange(ID)
-#creating the table in pdf
-field_ID_data_picoxystrobin %>% 
-  kable(format = "markdown") %>%    write2pdf("picoxystrobin_outliers.pdf")
-  
-
-
-```
-
-#Tetraconazole
-```{r}
-# Tetraconazole                                                               
-data_for_plots_tetra2<- data_for_plots_tetra%>% 
-group_by(Origin)%>%
-mutate(Estimate_50DC_outlier = list(get_range2(Estimate.50DC)))%>%
-unnest() %>% 
-filter(Estimate.50DC >=  outlier) %>% ungroup() %>%  
-  filter(Origin == "Fungicide field trials"|Origin =="Farmer fields" ) %>% 
-#, group =="Farmer fields")
-  #, group == "Fungicide field trials", group =="Farmer fields" )%>%
-ungroup()        %>% 
-     #group_by(ID) %>% 
-  mutate(Host = ifelse(
-    ID %in% bean_isolates_exposed_to_fungicides,
-    "Dry bean","Soybean"
-    )) %>% ungroup()#%>% 
-  #mutate(MOA = "Group_7") 
-
-
- 
-
-summary_field_original_tetraconazole <- WM %>% 
-  select(Field, Collection_ID) %>% 
-  unique() %>% 
-  group_by(Field) %>% 
-  summarize(N_isolates = n()) %>% 
-  mutate(Empty_field = (Field == "")) %>% 
-  filter(Empty_field == FALSE) %>% 
-  select(-Empty_field)
-
-unique(data_for_plots_tetra2$ID) #49 IDs
-
-data_for_plots_tetra2$ID <- as.factor(data_for_plots_tetra2$ID)
-
-field_ID_data_tetraconazole <- data_for_plots_tetra2 %>% 
-  left_join(WM, by = c(ID = "Collection_ID")) %>% 
-  rename(Origin = "Origin.x", Host = "Host.x") %>% 
-  select(colnames(data_for_plots_tetra2), Field, Year, State) %>% 
-  left_join(summary_field_original_tetraconazole)  
-  
-
-#transforming to numeric
-field_ID_data_tetraconazole$ID <- as.numeric(field_ID_data_tetraconazole$ID ) 
-
-#ordering ID
-field_ID_data_tetraconazole <- field_ID_data_tetraconazole %>% 
-arrange(ID)
-#creating the table in pdf
-field_ID_data_tetraconazole %>% 
-  kable(format = "markdown") %>%    write2pdf("tetraconazole_outliers.pdf")
-  
-
-
-```
-# TM
-```{r}
-# TM                                                               
-data_for_plots_thio2<- data_for_plots_TM%>% 
-group_by(Origin)%>%
-mutate(Estimate_50DC_outlier = list(get_range2(Estimate.50DC)))%>%
-unnest() %>% 
-filter(Estimate.50DC >=  outlier) %>% ungroup() %>%  
-  filter(Origin == "Fungicide field trials"|Origin =="Farmer fields" ) %>% 
-#, group =="Farmer fields")
-  #, group == "Fungicide field trials", group =="Farmer fields" )%>%
-ungroup()        %>% 
-     #group_by(ID) %>% 
-  mutate(Host = ifelse(
-    ID %in% bean_isolates_exposed_to_fungicides,
-    "Dry bean","Soybean"
-    )) %>% ungroup()#%>% 
-  #mutate(MOA = "Group_7") 
-
-
- 
-
-summary_field_original_TM <- WM %>% 
-  select(Field, Collection_ID) %>% 
-  unique() %>% 
-  group_by(Field) %>% 
-  summarize(N_isolates = n()) %>% 
-  mutate(Empty_field = (Field == "")) %>% 
-  filter(Empty_field == FALSE) %>% 
-  select(-Empty_field)
-
-unique(data_for_plots_thio2$ID) #49 IDs
-
-data_for_plots_thio2$ID <- as.factor(data_for_plots_thio2$ID)
-
-field_ID_data_TM <- data_for_plots_thio2 %>% 
-  left_join(WM, by = c(ID = "Collection_ID")) %>% 
-  rename(Origin = "Origin.x", Host = "Host.x") %>% 
-  select(colnames(data_for_plots_thio2), Field, Year, State) %>% 
-  left_join(summary_field_original_TM)  
-  
-
-#transforming to numeric
-field_ID_data_TM$ID <- as.numeric(field_ID_data_TM$ID ) 
-
-#ordering ID
-field_ID_data_TM <- field_ID_data_TM %>% 
-arrange(ID)
-#creating the table in pdf
-field_ID_data_TM %>% 
-  kable(format = "markdown") %>%   
-  write2pdf("TM_outliers.pdf")
-  
-
-
+unique(data_for_plots_bos$ID)
+data_for_plots_bos2$ID[duplicated(data_for_plots_bos2$ID)]
 
 ```
 
@@ -2177,13 +1909,14 @@ plot_bos <- data_for_plots_bos%>%
   ) +
   theme_minimal() +
   labs( x = "Origin", y = "EC50D (ppm)") + theme(
+    panel.border = element_rect(colour = "black", fill=NA, size=1),
     axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
     axis.text = element_text(
       face = "bold",
       size = 7,
       family = "Verdana"
     ),
-    panel.background = element_rect(fill = "white", colour = "grey50")
+    panel.background = element_rect(fill = "white", colour = "grey50" )
   )
 
 plot_bos
@@ -2234,7 +1967,7 @@ plot_pico <- data_for_plots_pico%>%
     color = "black"
   ) +
   theme_minimal() +
-  labs(x = "Origin", y = "EC50D (ppm)") + theme(
+  labs(x = "Origin", y = "EC50D (ppm)") + theme(panel.border = element_rect(colour = "black", fill=NA, size=1),
         axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
     axis.text = element_text(
       face = "bold",
@@ -2286,7 +2019,7 @@ plot_tetra <- data_for_plots_tetra%>%
     color = "black"
   ) +
   theme_minimal() +
-  labs( x = "Origin", y = "EC50D (ppm)") + theme(
+  labs( x = "Origin", y = "EC50D (ppm)") + theme(panel.border = element_rect(colour = "black", fill=NA, size=1),
         axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
     axis.text = element_text(
       face = "bold",
@@ -2384,15 +2117,359 @@ plot_TM2
 
 ```
 
-# Using the function to detect outliers considered since the third quantil
+
+
+
+##  Grid
 ```{r}
-# Boscalid                                                               
+plot_grid(plot_tetra, plot_pico, plot_bos)
+plot_grid(plot_tetra2, plot_pico2, plot_bos2)
+#creating the tables
+combiningfungicides_outliersEC50DC <- rbind(data_for_plots_bos2, data_for_plots_pico2, data_for_plots_tetra2)
+#write.csv(combiningfungicides_outliersEC50DC, file = "combiningfungicides_outliersEC50DC.csv")
+#combining %>% combining %>% unique()
+
+combiningfungicides_outliersEC50DC <- rbind(data_for_plots_bos2, data_for_plots_pico2, data_for_plots_tetra2)
+#write.csv(combiningfungicides_outliersEC50DC, file = "combiningfungicides_outliersEC50DC2.csv") It must be the same object was saved now with 2 because it reliasing differnet data
+ 
+
+  combiningfungicides_outliersEC50DC_2 <- combiningfungicides_outliersEC50DC %>% 
+   mutate( Origin_Host_Fungicide = paste( Origin, Host, Fungicide)) %>% 
+   select(ID, Origin_Host_Fungicide) %>% group_by(Origin_Host_Fungicide) %>% 
+   summarize(n=n()) %>% 
+   arrange(desc(n))
+
+```
+
+#  Different grouping plots
+##  Boscalid
+```{r}
+data_for_plots_bos_2 <- boscalid_complete %>% 
+  group_by(ID) %>% 
+  mutate(group = ifelse(
+    ID %in% bean_isolates_exposed_to_fungicides,
+    "Dry bean","Soybean"
+    ))
+
+data_for_plots_bos_2$group <- as_factor(data_for_plots_bos_2$group)
+
+
+plot_bos_2 <- data_for_plots_bos_2%>%
+  ggplot(aes(x = group, y = Estimate.50DC)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 21,
+    color = "black",
+    fill = "chartreuse2",
+    size = 2,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 22,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs( x = "Group", y = "EC50D (ppm)") + theme(
+    panel.border = element_rect(colour = "black", fill=NA, size=1),
+        axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 7,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+plot_bos_2
+
+```
+##  Picoxystrobin
+```{r}
+data_for_plots_pico_2 <- picoxystrobin_complete %>% 
+  group_by(ID) %>% 
+  mutate(group = ifelse(
+    ID %in% bean_isolates_exposed_to_fungicides,
+    "Dry bean","Soybean"
+    ))
+
+data_for_plots_pico_2$group <- as_factor(data_for_plots_pico_2$group)
+
+
+plot_pico_2 <- data_for_plots_pico_2%>%
+  ggplot(aes(x = group, y = Estimate.50DC)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 21,
+    color = "black",
+    fill = "chocolate1",
+    size = 2,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 22,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs( x = "Group", y = "EC50D (ppm)") + theme(
+    panel.border = element_rect(colour = "black", fill=NA, size=1),
+        axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 7,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+plot_pico_2
+
+
+```
+##  Tetraconazole
+```{r}
+data_for_plots_tetra_2 <- tetraconazole_complete %>% 
+  group_by(ID) %>% 
+  mutate(group = ifelse(
+    ID %in% bean_isolates_exposed_to_fungicides,
+    "Dry bean","Soybean"
+          ))
+  
+data_for_plots_tetra_2$group <- as_factor(data_for_plots_tetra_2$group)
+
+
+plot_tetra_2 <- data_for_plots_tetra_2%>%
+  ggplot(aes(x = group, y = Estimate.50DC)) +
+  geom_jitter(
+    width = .1,
+    height = 0.5,
+    shape = 21,
+    color = "black",
+    fill = "deepskyblue",
+    size = 2,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 22,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs( x = "Group", y = "EC50D (ppm)") + theme(
+        panel.border = element_rect(colour = "black", fill=NA, size=1),
+
+        axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 7,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+plot_tetra_2
+```
+##  Grid
+```{r}
+plot_grid(plot_tetra_2, plot_pico_2, plot_bos_2)
+
+```
+#  Different grouping plots
+
+##  Boscalid
+```{r}
+data_for_plots_bos_3 <- boscalid_complete %>% 
+  group_by(ID) %>% 
+  mutate(group = ifelse(
+    ID %in% soybean_WI,
+    "Soybean WI",
+    ifelse(
+      ID %in% soybean_IA,
+      "Soybean IA","Soybean MI"
+    )))
+
+data_for_plots_bos_3$group <- as_factor(data_for_plots_bos_3$group)
+
+
+plot_bos_3 <- data_for_plots_bos_3%>%
+  ggplot(aes(x = group, y = Estimate.50DC)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 21,
+    color = "black",
+    fill = "chartreuse2",
+    size = 1,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 12,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs(title = "Boscalid", x = "Group", y = "EC50D (ppm)") + theme(
+    plot.title = element_text(
+      size = 10,
+      face = "bold",
+      hjust = 0.5,
+      family = "Verdana"
+    ),
+    axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 7,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+plot_bos_3
+
+```
+##  Picoxystrobin
+```{r}
+data_for_plots_pico_3 <- picoxystrobin_complete %>% 
+  group_by(ID) %>% 
+  mutate(group = ifelse(
+    ID %in% soybean_WI,
+    "Soybean WI",
+    ifelse(
+      ID %in% soybean_IA,
+      "Soybean IA","Soybean MI"
+    )))
+
+data_for_plots_pico_3$group <- as_factor(data_for_plots_pico_3$group)
+
+
+plot_pico_3 <- data_for_plots_pico_3%>%
+  ggplot(aes(x = group, y = Estimate.50DC)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 21,
+    color = "black",
+    fill = "chocolate1",
+    size = 1,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 12,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs(title = "Picoxystrobin", x = "Group", y = "EC50D (ppm)") + theme(
+    plot.title = element_text(
+      size = 10,
+      face = "bold",
+      hjust = 0.5,
+      family = "Verdana"
+    ),
+    axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 7,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+plot_pico_3
+
+
+```
+##  Tetraconazole
+```{r}
+data_for_plots_tetra_3 <- tetraconazole_complete %>% 
+  group_by(ID) %>% 
+  mutate(group = ifelse(
+    ID %in% soybean_WI,
+    "Soybean WI",
+    ifelse(
+      ID %in% soybean_IA,
+      "Soybean IA","Soybean MI"
+      )))
+  
+data_for_plots_tetra_3$group <- as_factor(data_for_plots_tetra_3$group)
+
+
+plot_tetra_3 <- data_for_plots_tetra_3%>%
+  ggplot(aes(x = group, y = Estimate.50DC)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 21,
+    color = "black",
+    fill = "deepskyblue",
+    size = 1,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 12,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs(title = "Tetraconazole", x = "Group", y = "EC50D (ppm)") + theme(
+    plot.title = element_text(
+      size = 10,
+      face = "bold",
+      hjust = 0.5,
+      family = "Verdana"
+    ),
+    axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 7,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+plot_tetra_3
+```
+##  Grid
+```{r}
+plot_grid(plot_tetra_3, plot_pico_3, plot_bos_3)
+
+```
+#reading new dataset
+```{r}
+#Edgar: Look here
+WM <- read.csv("data/WM-fixingproductnamesID2573_modifyingforactiveingredient_6.csv", stringsAsFactors = TRUE)
+```
+
+# Using the function to detect outliers considered since the third quantil
+
+```{r}
+ #New function to detect outliers of EC50DC en each group for fungicide. These ouliers are considered as equal to the third quantil, i.e. the second max stats
+                                                              
+                                                            get_range2 <- function(myoutlier) {
+  alpha <- boxplot.stats(myoutlier)
+  necrosis <- alpha$stats
+  wilt <- max(necrosis[necrosis!=max(necrosis)])
+    return(data.frame(outlier = wilt))
+}           
+
+```
+
+
+
+```{r}
+# Boscalid                                     
+
+glimpse (data_for_plots_bos)
+
 data_for_plots_bos2<- data_for_plots_bos%>% 
 group_by(Origin)%>%
 mutate(Estimate_50DC_outlier = list(get_range2(Estimate.50DC)))%>%
 unnest() %>% 
 filter(Estimate.50DC >=  outlier) %>% ungroup() %>%  
-  filter(Origin == "Fungicide field trials"|Origin =="Farmer fields" ) %>% 
+  filter(Origin == "FFT"|Origin =="FF" ) %>% 
 #, group =="Farmer fields")
   #, group == "Fungicide field trials", group =="Farmer fields" )%>%
 ungroup()        %>% 
@@ -2405,21 +2482,7 @@ ungroup()        %>%
   #mutate(MOA = "Group_7")%>% ungroup() 
 
 
- #Transforming ID in character
-  data_for_plots_bos2$ID <- as.character(data_for_plots_bos2$ID)
-  #Replacing from form ID to Inventory ID
-  data_for_plots_bos2$ID[data_for_plots_bos2$ID == "H-01"]  <- "2220"
-    data_for_plots_bos2$ID[data_for_plots_bos2$ID == "62-02"] <- "2098"
-data_for_plots_bos2$ID[data_for_plots_bos2$ID == "78-02"] <- "2140"
-data_for_plots_bos2$ID[data_for_plots_bos2$ID == "78-05"]  <- "2143"
-  data_for_plots_bos2$ID[data_for_plots_bos2$ID == "65B"]  <- "2528"
-  data_for_plots_bos2$ID[data_for_plots_bos2$ID =="413"]  <- "2386"
- #Transforming ID in numeric  
-data_for_plots_bos2$ID <- as.numeric(data_for_plots_bos2$ID) 
-
-
-WM <- read.csv("data/WM-fixingproductnamesID2573_modifyingforactiveingredient_6.csv", stringsAsFactors = TRUE)
-
+ 
 summary_field_original <- WM %>% 
   select(Field, Collection_ID) %>% 
   unique() %>% 
@@ -2429,7 +2492,7 @@ summary_field_original <- WM %>%
   filter(Empty_field == FALSE) %>% 
   select(-Empty_field)  
 
-unique(data_for_plots_bos2$ID) #49 IDs
+unique(data_for_plots_bos2$ID) #46 IDs
 
 data_for_plots_bos2$ID <- as.factor(data_for_plots_bos2$ID)
 
@@ -2610,321 +2673,5 @@ data_for_plots_TM2 %>%
   write2pdf("TM_outliers.pdf")
   
 
-
-```
-
-
-
-##  Grid
-```{r}
-plot_grid(plot_tetra, plot_pico, plot_bos)
-plot_grid(plot_tetra2, plot_pico2, plot_bos2)
-#creating the tables
-combiningfungicides_outliersEC50DC <- rbind(data_for_plots_bos2, data_for_plots_pico2, data_for_plots_tetra2)
-#write.csv(combiningfungicides_outliersEC50DC, file = "combiningfungicides_outliersEC50DC.csv")
-#combining %>% combining %>% unique()
-
-combiningfungicides_outliersEC50DC <- rbind(data_for_plots_bos2, data_for_plots_pico2, data_for_plots_tetra2)
-#write.csv(combiningfungicides_outliersEC50DC, file = "combiningfungicides_outliersEC50DC2.csv") It must be the same object was saved now with 2 because it reliasing differnet data
- 
-
-  combiningfungicides_outliersEC50DC_2 <- combiningfungicides_outliersEC50DC %>% 
-   mutate( Origin_Host_Fungicide = paste( Origin, Host, Fungicide)) %>% 
-   select(ID, Origin_Host_Fungicide) %>% group_by(Origin_Host_Fungicide) %>% 
-   summarize(n=n()) %>% 
-   arrange(desc(n))
-
-```
-
-#  Different grouping plots
-##  Boscalid
-```{r}
-data_for_plots_bos_2 <- boscalid_complete %>% 
-  group_by(ID) %>% 
-  mutate(group = ifelse(
-    ID %in% bean_isolates_exposed_to_fungicides,
-    "Dry bean","Soybean"
-    ))
-
-data_for_plots_bos_2$group <- as_factor(data_for_plots_bos_2$group)
-
-
-plot_bos_2 <- data_for_plots_bos_2%>%
-  ggplot(aes(x = group, y = Estimate.50DC)) +
-  geom_jitter(
-    width = .1,
-    height = 0,
-    shape = 21,
-    color = "black",
-    fill = "chartreuse2",
-    size = 2,
-    alpha = 3 / 4
-  ) + stat_summary(
-    fun.y = mean,
-    geom = "point",
-    shape = 95,
-    size = 22,
-    color = "black"
-  ) +
-  theme_minimal() +
-  labs( x = "Group", y = "EC50D (ppm)") + theme(
-        axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
-    axis.text = element_text(
-      face = "bold",
-      size = 7,
-      family = "Verdana"
-    ),
-    panel.background = element_rect(fill = "white", colour = "grey50")
-  )
-plot_bos_2
-
-```
-##  Picoxystrobin
-```{r}
-data_for_plots_pico_2 <- picoxystrobin_complete %>% 
-  group_by(ID) %>% 
-  mutate(group = ifelse(
-    ID %in% bean_isolates_exposed_to_fungicides,
-    "Dry bean","Soybean"
-    ))
-
-data_for_plots_pico_2$group <- as_factor(data_for_plots_pico_2$group)
-
-
-plot_pico_2 <- data_for_plots_pico_2%>%
-  ggplot(aes(x = group, y = Estimate.50DC)) +
-  geom_jitter(
-    width = .1,
-    height = 0,
-    shape = 21,
-    color = "black",
-    fill = "chocolate1",
-    size = 2,
-    alpha = 3 / 4
-  ) + stat_summary(
-    fun.y = mean,
-    geom = "point",
-    shape = 95,
-    size = 22,
-    color = "black"
-  ) +
-  theme_minimal() +
-  labs( x = "Group", y = "EC50D (ppm)") + theme(
-        axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
-    axis.text = element_text(
-      face = "bold",
-      size = 7,
-      family = "Verdana"
-    ),
-    panel.background = element_rect(fill = "white", colour = "grey50")
-  )
-plot_pico_2
-
-
-```
-##  Tetraconazole
-```{r}
-data_for_plots_tetra_2 <- tetraconazole_complete %>% 
-  group_by(ID) %>% 
-  mutate(group = ifelse(
-    ID %in% bean_isolates_exposed_to_fungicides,
-    "Dry bean","Soybean"
-          ))
-  
-data_for_plots_tetra_2$group <- as_factor(data_for_plots_tetra_2$group)
-
-
-plot_tetra_2 <- data_for_plots_tetra_2%>%
-  ggplot(aes(x = group, y = Estimate.50DC)) +
-  geom_jitter(
-    width = .1,
-    height = 0.5,
-    shape = 21,
-    color = "black",
-    fill = "deepskyblue",
-    size = 2,
-    alpha = 3 / 4
-  ) + stat_summary(
-    fun.y = mean,
-    geom = "point",
-    shape = 95,
-    size = 22,
-    color = "black"
-  ) +
-  theme_minimal() +
-  labs( x = "Group", y = "EC50D (ppm)") + theme(
-        axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
-    axis.text = element_text(
-      face = "bold",
-      size = 7,
-      family = "Verdana"
-    ),
-    panel.background = element_rect(fill = "white", colour = "grey50")
-  )
-plot_tetra_2
-```
-##  Grid
-```{r}
-plot_grid(plot_tetra_2, plot_pico_2, plot_bos_2)
-
-```
-#  Different grouping plots
-
-##  Boscalid
-```{r}
-data_for_plots_bos_3 <- boscalid_complete %>% 
-  group_by(ID) %>% 
-  mutate(group = ifelse(
-    ID %in% soybean_WI,
-    "Soybean WI",
-    ifelse(
-      ID %in% soybean_IA,
-      "Soybean IA","Soybean MI"
-    )))
-
-data_for_plots_bos_3$group <- as_factor(data_for_plots_bos_3$group)
-
-
-plot_bos_3 <- data_for_plots_bos_3%>%
-  ggplot(aes(x = group, y = Estimate.50DC)) +
-  geom_jitter(
-    width = .1,
-    height = 0,
-    shape = 21,
-    color = "black",
-    fill = "chartreuse2",
-    size = 1,
-    alpha = 3 / 4
-  ) + stat_summary(
-    fun.y = mean,
-    geom = "point",
-    shape = 95,
-    size = 12,
-    color = "black"
-  ) +
-  theme_minimal() +
-  labs(title = "Boscalid", x = "Group", y = "EC50D (ppm)") + theme(
-    plot.title = element_text(
-      size = 10,
-      face = "bold",
-      hjust = 0.5,
-      family = "Verdana"
-    ),
-    axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
-    axis.text = element_text(
-      face = "bold",
-      size = 7,
-      family = "Verdana"
-    ),
-    panel.background = element_rect(fill = "white", colour = "grey50")
-  )
-plot_bos_3
-
-```
-##  Picoxystrobin
-```{r}
-data_for_plots_pico_3 <- picoxystrobin_complete %>% 
-  group_by(ID) %>% 
-  mutate(group = ifelse(
-    ID %in% soybean_WI,
-    "Soybean WI",
-    ifelse(
-      ID %in% soybean_IA,
-      "Soybean IA","Soybean MI"
-    )))
-
-data_for_plots_pico_3$group <- as_factor(data_for_plots_pico_3$group)
-
-
-plot_pico_3 <- data_for_plots_pico_3%>%
-  ggplot(aes(x = group, y = Estimate.50DC)) +
-  geom_jitter(
-    width = .1,
-    height = 0,
-    shape = 21,
-    color = "black",
-    fill = "chocolate1",
-    size = 1,
-    alpha = 3 / 4
-  ) + stat_summary(
-    fun.y = mean,
-    geom = "point",
-    shape = 95,
-    size = 12,
-    color = "black"
-  ) +
-  theme_minimal() +
-  labs(title = "Picoxystrobin", x = "Group", y = "EC50D (ppm)") + theme(
-    plot.title = element_text(
-      size = 10,
-      face = "bold",
-      hjust = 0.5,
-      family = "Verdana"
-    ),
-    axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
-    axis.text = element_text(
-      face = "bold",
-      size = 7,
-      family = "Verdana"
-    ),
-    panel.background = element_rect(fill = "white", colour = "grey50")
-  )
-plot_pico_3
-
-
-```
-##  Tetraconazole
-```{r}
-data_for_plots_tetra_3 <- tetraconazole_complete %>% 
-  group_by(ID) %>% 
-  mutate(group = ifelse(
-    ID %in% soybean_WI,
-    "Soybean WI",
-    ifelse(
-      ID %in% soybean_IA,
-      "Soybean IA","Soybean MI"
-      )))
-  
-data_for_plots_tetra_3$group <- as_factor(data_for_plots_tetra_3$group)
-
-
-plot_tetra_3 <- data_for_plots_tetra_3%>%
-  ggplot(aes(x = group, y = Estimate.50DC)) +
-  geom_jitter(
-    width = .1,
-    height = 0,
-    shape = 21,
-    color = "black",
-    fill = "deepskyblue",
-    size = 1,
-    alpha = 3 / 4
-  ) + stat_summary(
-    fun.y = mean,
-    geom = "point",
-    shape = 95,
-    size = 12,
-    color = "black"
-  ) +
-  theme_minimal() +
-  labs(title = "Tetraconazole", x = "Group", y = "EC50D (ppm)") + theme(
-    plot.title = element_text(
-      size = 10,
-      face = "bold",
-      hjust = 0.5,
-      family = "Verdana"
-    ),
-    axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
-    axis.text = element_text(
-      face = "bold",
-      size = 7,
-      family = "Verdana"
-    ),
-    panel.background = element_rect(fill = "white", colour = "grey50")
-  )
-plot_tetra_3
-```
-##  Grid
-```{r}
-plot_grid(plot_tetra_3, plot_pico_3, plot_bos_3)
 
 ```
