@@ -2507,7 +2507,7 @@ field_ID_data <- data_for_plots_bos2 %>%
   rename(N_isolates =Num_original_isolates) %>% 
   select(-outlier) %>% 
   arrange(ID) %>% 
-  group_by (Origin, Host) %>% 
+  group_by (Origin, Host,State) %>% 
              summarize(N_isol = n())
          
      
