@@ -2464,12 +2464,14 @@ WM <- read.csv("data/WM-fixingproductnamesID2573_modifyingforactiveingredient_6.
 
 glimpse (data_for_plots_bos)
 
+data_for_plots_bos <- unique(data_for_plots_bos)### Watach OuT!
+
 data_for_plots_bos2<- data_for_plots_bos%>% 
 group_by(Origin)%>%
 mutate(Estimate_50DC_outlier = list(get_range2(Estimate.50DC)))%>%
 unnest() %>% 
 filter(Estimate.50DC >=  outlier) %>% ungroup() %>%  
-  filter(Origin == "FFT"|Origin =="FF" ) %>% 
+  #filter(Origin == "FFT"|Origin =="FF" ) %>% 
 #, group =="Farmer fields")
   #, group == "Fungicide field trials", group =="Farmer fields" )%>%
 ungroup()        %>% 
@@ -2504,26 +2506,52 @@ field_ID_data <- data_for_plots_bos2 %>%
   arrange(ID)  %>% 
   rename(N_isolates =Num_original_isolates) %>% 
   select(-outlier) %>% 
-  arrange(ID)
+  arrange(ID) %>% 
+  group_by (Origin, Host) %>% 
+             summarize(N_isol = n())
          
      
 
 
 
 #For repeated
-data_for_plots_bos2$ID[duplicated(data_for_plots_bos2$ID)]
+
 
 #creating the table in pdf
 field_ID_data %>% 
   kable(format = "markdown") %>%    write2pdf("boscalid_outliers.pdf")
   
-#Picoxystrobin
+#working on data_for_plots_bos for summarize an combining with WM
+
+data_for_plots_bos$ID <- as.factor(data_for_plots_bos$ID)
+
+ x <- data_for_plots_bos %>% inner_join(WM, by = c(ID = "Collection_ID")) %>% rename(Origin = "Origin.x") %>% select(colnames(data_for_plots_bos),   Host, Year, State) %>% arrange(desc(ID)) %>% 
+  group_by(Origin, Year, State) %>% summarize(N_isolates= n())
+ 
+ #
+ x_ <- (data_for_plots_bos) %>% unique() %>% 
+   inner_join(WM, by = c(ID = "Collection_ID")) %>% rename(Origin = "Origin.x") %>% select(colnames(data_for_plots_bos),   Host, Year, State) %>% arrange(desc(ID)) %>% 
+  group_by(Host) %>% summarize(N_isolates= n())
+ 
+ x_1 <- (data_for_plots_bos) %>% unique() %>% 
+   inner_join(WM, by = c(ID = "Collection_ID")) %>% rename(Origin = "Origin.x") %>% select(colnames(data_for_plots_bos),   Host, Year, State) %>% arrange(desc(ID)) %>% filter(Host=="drybeans") %>% 
+  group_by(State) %>% summarize(N_isolates= n()) %>% arrange(desc(N_isolates))
+ 
+ x_2 <- (data_for_plots_bos) %>% unique() %>% 
+   inner_join(WM, by = c(ID = "Collection_ID")) %>% rename(Origin = "Origin.x") %>% select(colnames(data_for_plots_bos),   Host, Year, State) %>% arrange(desc(ID)) %>% filter(Host=="soybeans") %>% 
+  group_by(State) %>% summarize(N_isolates= n()) %>% arrange(desc(N_isolates))
+ 
+ x_3 <- (data_for_plots_bos) %>% unique() %>% 
+   inner_join(WM, by = c(ID = "Collection_ID")) %>% rename(Origin = "Origin.x") %>% select(colnames(data_for_plots_bos),   Host, Year, State) %>% arrange(desc(ID)) %>% filter(Host=="soybeans"|State == "NE")
+ 
+
+ #Picoxystrobin
 data_for_plots_pico2<- data_for_plots_pico%>% 
 group_by(Origin)%>%
 mutate(Estimate_50DC_outlier = list(get_range2(Estimate.50DC)))%>%
 unnest() %>% 
 filter(Estimate.50DC >=  outlier) %>% ungroup() %>%  
-  filter(Origin == "Fungicide field trials"|Origin =="Farmer fields" ) %>% 
+  #filter(Origin == "Fungicide field trials"|Origin =="Farmer fields" ) %>% 
 #, group =="Farmer fields")
   #, group == "Fungicide field trials", group =="Farmer fields" )%>%
 ungroup()  %>% 
@@ -2533,6 +2561,36 @@ ungroup()  %>%
     "Dry bean","Soybean"
     )) #%>% 
   #mutate(MOA = "Group_11")%>% ungroup()
+
+summary_field_original <- WM %>% 
+  select(Field, Collection_ID) %>% 
+  unique() %>% 
+  group_by(Field) %>% 
+  summarize(Num_original_isolates = n()) %>% 
+  mutate(Empty_field = (Field == "")) %>% 
+  filter(Empty_field == FALSE) %>% 
+  select(-Empty_field)  
+
+unique(data_for_plots_pico2$ID) #46 IDs
+
+data_for_plots_pico2$ID <- as.factor(data_for_plots_pico2$ID)
+
+field_ID_data <- data_for_plots_pico2 %>% 
+  left_join(WM, by = c(ID = "Collection_ID")) %>% 
+  rename(Origin = "Origin.x", Host = "Host.x") %>% 
+    select(colnames(data_for_plots_pico2), Field,  Year, State) %>% 
+  left_join(summary_field_original)  %>% 
+  arrange(ID)  %>% 
+  rename(N_isolates =Num_original_isolates) %>% 
+  select(-outlier) %>% 
+  arrange(ID) %>% 
+  group_by (Origin, Host) %>% 
+             summarize(N_isol = n())
+         
+
+
+
+
 
 #Transforming ID in character
 data_for_plots_pico2$ID <- as.character(data_for_plots_pico2$ID)
@@ -2564,7 +2622,7 @@ group_by(Origin)%>%
 mutate(Estimate_50DC_outlier = list(get_range2(Estimate.50DC)))%>%
 unnest() %>% 
 filter(Estimate.50DC >=  outlier) %>% ungroup() %>%  
-  filter(Origin == "Fungicide field trials"|Origin =="Farmer fields" ) %>% 
+ # filter(Origin == "Fungicide field trials"|Origin =="Farmer fields" ) %>% 
 #, group =="Farmer fields")
   #, group == "Fungicide field trials", group =="Farmer fields" )%>%
 ungroup() %>%
@@ -2575,6 +2633,35 @@ ungroup() %>%
     )) %>% 
     mutate(MOA = "Group_3")%>% ungroup()
     
+summary_field_original <- WM %>% 
+  select(Field, Collection_ID) %>% 
+  unique() %>% 
+  group_by(Field) %>% 
+  summarize(Num_original_isolates = n()) %>% 
+  mutate(Empty_field = (Field == "")) %>% 
+  filter(Empty_field == FALSE) %>% 
+  select(-Empty_field)  
+
+unique(data_for_plots_tetra2$ID) #46 IDs
+
+data_for_plots_tetra2$ID <- as.factor(data_for_plots_tetra2$ID)
+
+field_ID_data <- data_for_plots_tetra2 %>% 
+  left_join(WM, by = c(ID = "Collection_ID")) %>% 
+  rename(Origin = "Origin.x", Host = "Host.x") %>% 
+    select(colnames(data_for_plots_tetra2), Field,  Year, State) %>% 
+  left_join(summary_field_original)  %>% 
+  arrange(ID)  %>% 
+  rename(N_isolates =Num_original_isolates) %>% 
+  select(-outlier) %>% 
+  arrange(ID) %>% 
+  group_by (Origin, Host) %>% 
+             summarize(N_isol = n())
+         
+
+
+
+
     #Transforming ID in character
     data_for_plots_tetra2$ID <- as.character(data_for_plots_tetra2$ID)
 #Replacing from form ID to Inventory ID
@@ -2675,3 +2762,108 @@ data_for_plots_TM2 %>%
 
 
 ```
+# grouping by origin
+```{r}
+###########Boscalid
+
+data_for_plots_bos
+##NORMALITY TEST-Shapiro_test
+
+shapiro.test_boscal <- data_for_plots_bos %>%
+  group_by(Origin) %>%
+  do(tidy(shapiro.test(.$Estimate.50DC)))
+shapiro.test_boscal  
+
+ #NO NORMALILTY thats is why  krusKal
+
+
+kruskal.test(Estimate.50DC ~ Origin, data = data_for_plots_bos)
+
+#There is difference p-value = 0.0002899
+
+dunnTest(Estimate.50DC ~ Origin, data = data_for_plots_bos, method = "bonferroni")
+
+
+
+####### pico
+
+##NORMALITY TEST-Shapiro_test,
+shapiro.test_pico <- 
+data_for_plots_pico %>%
+  group_by(Origin) %>%
+  do(tidy(shapiro.test(.$Estimate.50DC)))
+shapiro.test_pico
+
+
+
+#NO NORMALILTY thats is why  krusKal
+
+
+kruskal.test(Estimate.50DC ~ Origin, data = data_for_plots_pico)
+
+#There is difference p-value = 0.03845
+
+dunnTest(Estimate.50DC ~ Origin, data = data_for_plots_pico, method = "bonferroni")
+
+
+
+
+#########tetra
+##NORMALITY TEST-Shapiro_test
+shapiro.test_tetra <- 
+data_for_plots_tetra %>%
+  group_by(Origin) %>%
+  do(tidy(shapiro.test(.$Estimate.50DC)))
+shapiro.test_tetra
+
+#NO NORMALILTY thats is why  krusKal
+
+kruskal.test(Estimate.50DC ~ Origin, data = data_for_plots_tetra)
+
+#There is NO difference p-value = 0.2738
+
+
+
+
+
+
+
+
+
+
+```
+```{r}
+###########Boscalid
+
+data_for_plots_bos2
+
+
+ #NO NORMALILTY thats is why  krusKal
+
+
+kruskal.test(Estimate.50DC ~ group, data = data_for_plots_bos_2)
+
+#There is difference p-value = 0.0001098
+
+
+
+
+#NO NORMALILTY thats is why  krusKal
+
+
+kruskal.test(Estimate.50DC ~ group, data = data_for_plots_pico_2)
+
+#There is NO difference p-value = 0.29
+
+
+#########tetra
+
+
+#NO NORMALILTY thats is why  krusKal
+
+kruskal.test(Estimate.50DC ~ group, data = data_for_plots_tetra_2)
+
+#There is NO difference p-value = 0.5193
+
+```
+
