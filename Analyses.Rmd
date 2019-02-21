@@ -456,7 +456,10 @@ treatmentyear2016_[c(1,4,6)]
 
 
 ```
-##  Procedure to get the Discrimantory Concentration (DC) 
+##  Procedure to get the Discrimantory Concentration (DC)  
+
+#  Boscalid  
+
 ```{r}
 ##Getting relative growth column at each dose where RG = Relative Growth, eg. RG0.025 = Relative Growth at 0.025 ppm##
 RG <-
@@ -569,7 +572,7 @@ ggplot(final_boscalid_DC_0.2, aes(x = Estimate.50, y = Estimate.50DC)) +  theme(
 #dev.off()
 
 ```
-#  BOSCALID WITH SURVEY(PRE-TEST FUNGICIDE) inlcuding Farmer fields and Fungicide field trials
+##  Boscalid with survey (pre-test Fungicide) inlcuding Farmer fields and Fungicide field trials
 ```{r}
 boscalid_data <- survey_data %>%
   select(ID,
@@ -737,6 +740,7 @@ summary(treatmentyear2016)
 
 ```
 ##  Procedure to get the Discriminatory Concentration (DC) 
+#  Picoxystrobin
 ```{r}
 
 #Getting relative growth column at each dose where RG= Relative Growth, eg. RG0.01= Relative Growth at 0.01 ppm
@@ -859,7 +863,7 @@ ggplot(final_picoxystrobin_DC_0.01,
 
 ```
 
-#  PICOXYSTROBIN WITH SURVEY(PRE-TEST FUNGICIDE) include Farmer fields and Fungicide field trials
+#  Picoxystrobin With Survey(Pre-Test Fungicide) include Farmer fields and Fungicide field trials
 
 ```{r}
 picoxystrobin_data <- survey_data %>%
@@ -1035,6 +1039,7 @@ summary(treatmentyear2016)
 
 ```
 ##  Procedure to get the Discrimanatory Concentration (DC) 
+#  Tetraconazole
 ```{r}
 RG <-
   tetraconazole_filtered %>% 
@@ -1149,7 +1154,7 @@ ggplot(final_tetraconazole_DC_2,
 
 
 ```
-#  TETRACONAZOLE WITH SURVEY(PRE-TEST FUNGICIDE) included Farmer fields and Fungicide field trials
+#  Tetraconazole With Survey(Pre-Test Fungicide) included Farmer fields and Fungicide field trials
 
 ```{r}
 
@@ -1257,7 +1262,7 @@ summary(soybean_treatmentyear_MI_2017$Estimate.50DC)
 
 ```
 ##  Analysis by fungicide
-#  TM
+#  Thiophanate methyl
 ```{r}
 TM_filtered <- TMdata %>%
   group_by(ID, dose) %>%
@@ -1379,7 +1384,7 @@ ggplot(final_TM_DD_10, aes(x = EC50, y = Estimate.50DD)) +  theme(plot.title = e
 
 
 ```
-#  TM WITH SURVEY(PRE-TEST FUNGICIDE)
+#  Thiophanate methyl with Survey(Pre-Test Fungicide)
 
 ```{r}
 TM_data <- survey_data %>%
@@ -1879,12 +1884,8 @@ data_for_plots_TM$Origin <- as_factor(data_for_plots_TM$Origin)
 
 ```
 
-```{r}
 
-unique(data_for_plots_bos$ID)
-data_for_plots_bos2$ID[duplicated(data_for_plots_bos2$ID)]
 
-```
 
 ##  Boscalid Plots
 
@@ -2185,6 +2186,7 @@ plot_bos_2 <- data_for_plots_bos_2%>%
 plot_bos_2
 
 ```
+#  Different grouping plots
 ##  Picoxystrobin
 ```{r}
 data_for_plots_pico_2 <- picoxystrobin_complete %>% 
@@ -2229,6 +2231,7 @@ plot_pico_2
 
 
 ```
+#  Different grouping plots
 ##  Tetraconazole
 ```{r}
 data_for_plots_tetra_2 <- tetraconazole_complete %>% 
@@ -2330,6 +2333,7 @@ plot_bos_3 <- data_for_plots_bos_3%>%
 plot_bos_3
 
 ```
+#  Different grouping plots
 ##  Picoxystrobin
 ```{r}
 data_for_plots_pico_3 <- picoxystrobin_complete %>% 
@@ -2382,6 +2386,7 @@ plot_pico_3
 
 
 ```
+#  Different grouping plots
 ##  Tetraconazole
 ```{r}
 data_for_plots_tetra_3 <- tetraconazole_complete %>% 
@@ -2463,6 +2468,7 @@ WM <- read.csv("data/WM-fixingproductnamesID2573_modifyingforactiveingredient_6.
 # Boscalid                                     
 
 glimpse (data_for_plots_bos)
+a <- data_for_plots_bos[!duplicated(data_for_plots_bos),]
 
 data_for_plots_bos <- unique(data_for_plots_bos)### Watach OuT!
 
@@ -2498,7 +2504,7 @@ unique(data_for_plots_bos2$ID) #46 IDs
 
 data_for_plots_bos2$ID <- as.factor(data_for_plots_bos2$ID)
 
-field_ID_data <- data_for_plots_bos2 %>% 
+field_ID_data_bos <- data_for_plots_bos2 %>% 
   left_join(WM, by = c(ID = "Collection_ID")) %>% 
   rename(Origin = "Origin.x", Host = "Host.x") %>% 
     select(colnames(data_for_plots_bos2), Field,  Year, State) %>% 
@@ -2511,9 +2517,13 @@ field_ID_data <- data_for_plots_bos2 %>%
              summarize(N_isol = n())
          
      
+field_ID_data_bos <- unique(field_ID_data_bos)
+anyDuplicated(field_ID_data_bos
+              $ID)
 
-
-
+field_ID_data$ID[duplicated(field_ID_data$ID)]
+#"1029" "1033" "2220" "564"
+field_ID_data[!duplicated(field_ID_data),]
 #For repeated
 
 
