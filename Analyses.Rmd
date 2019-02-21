@@ -2500,17 +2500,18 @@ summary_field_original <- WM %>%
   filter(Empty_field == FALSE) %>% 
   select(-Empty_field)  
 
-unique(data_for_plots_bos2$ID) #46 IDs
+unique(data_for_plots_bos2$ID) #55 IDs
 
 data_for_plots_bos2$ID <- as.factor(data_for_plots_bos2$ID)
 
 field_ID_data_bos <- data_for_plots_bos2 %>% 
   left_join(WM, by = c(ID = "Collection_ID")) %>% 
-  rename(Origin = "Origin.x", Host = "Host.x") %>% 
-    select(colnames(data_for_plots_bos2), Field,  Year, State) %>% 
+  rename(Origin = "Origin.x", Host = "Host.x") %>%     select(colnames(data_for_plots_bos2), Field,  Year, State, molecule.s._current_season) %>% 
   left_join(summary_field_original)  %>% 
+  mutate(molecule.s._current_season = na_if(molecule.s._current_season, "")) %>% 
+    arrange(ID) %>% rename(Funcide = molecule.s._current_season) %>% 
   arrange(ID)  %>% 
-  rename(N_isolates_perfield =Num_original_isolates) %>%   select(-outlier)
+  rename(N_iso_perfield =Num_original_isolates) %>%   select(-c(outlier, Estimate.50DC) )
 #first transforming ID variable to charater and then to numeric
 field_ID_data_bos$ID <- as.numeric(  as.character(field_ID_data_bos$ID))
 
@@ -2547,6 +2548,10 @@ field_ID_data_bos_summary2 <- field_ID_data_bos %>%
              ungroup() %>% 
               add_row(Host = "Total", N_isol = sum(.$N_isol))
 
+field_ID_data_bos_summary2 %>% 
+  kable(format = "markdown") %>%    write2pdf("boscalid_outliers_summary_by_hosts.pdf")
+
+
 # Summarizing 3  BY STATE
 field_ID_data_bos_summary3 <- field_ID_data_bos %>% 
   group_by ( State) %>% 
@@ -2554,6 +2559,11 @@ field_ID_data_bos_summary3 <- field_ID_data_bos %>%
              ungroup() %>%
               arrange(desc(N_isol)) %>% 
               add_row(State = "Total", N_isol = sum(.$N_isol))
+
+#creating the table in pdf
+field_ID_data_bos_summary3 %>% 
+  kable(format = "markdown") %>%    write2pdf("boscalid_outliers_summary_by_states.pdf")
+
 
 # Summarizing 4  BY STATE  NE and host soybeans
 field_ID_data_bos_summary4 <- field_ID_data_bos %>% 
@@ -2568,186 +2578,16 @@ field_ID_data_bos_summary4 <- field_ID_data_bos %>%
 
 
 
-
-#working on data_for_plots_bos for summarize an combining with WM
-
-data_for_plots_bos$ID <- as.factor(data_for_plots_bos$ID)
-
- x <- data_for_plots_bos %>% inner_join(WM, by = c(ID = "Collection_ID")) %>% rename(Origin = "Origin.x") %>% select(colnames(data_for_plots_bos),   Host, Year, State) %>% arrange(desc(ID)) %>% 
-  group_by(Origin, Year, State) %>% summarize(N_isolates= n())
- 
- #
- x_ <- (data_for_plots_bos) %>% unique() %>% 
-   inner_join(WM, by = c(ID = "Collection_ID")) %>% rename(Origin = "Origin.x") %>% select(colnames(data_for_plots_bos),   Host, Year, State) %>% arrange(desc(ID)) %>% 
-  group_by(Host) %>% summarize(N_isolates= n())
- 
- x_1 <- (data_for_plots_bos) %>% unique() %>% 
-   inner_join(WM, by = c(ID = "Collection_ID")) %>% rename(Origin = "Origin.x") %>% select(colnames(data_for_plots_bos),   Host, Year, State) %>% arrange(desc(ID)) %>% filter(Host=="drybeans") %>% 
-  group_by(State) %>% summarize(N_isolates= n()) %>% arrange(desc(N_isolates))
- 
- x_2 <- (data_for_plots_bos) %>% unique() %>% 
-   inner_join(WM, by = c(ID = "Collection_ID")) %>% rename(Origin = "Origin.x") %>% select(colnames(data_for_plots_bos),   Host, Year, State) %>% arrange(desc(ID)) %>% filter(Host=="soybeans") %>% 
-  group_by(State) %>% summarize(N_isolates= n()) %>% arrange(desc(N_isolates))
- 
- x_3 <- (data_for_plots_bos) %>% unique() %>% 
-   inner_join(WM, by = c(ID = "Collection_ID")) %>% rename(Origin = "Origin.x") %>% select(colnames(data_for_plots_bos),   Host, Year, State) %>% arrange(desc(ID)) %>% filter(Host=="soybeans"|State == "NE")
- 
-
  #Picoxystrobin
+
+data_for_plots_pico <- unique(data_for_plots_pico)### Watach OuT!
+
 data_for_plots_pico2<- data_for_plots_pico%>% 
 group_by(Origin)%>%
 mutate(Estimate_50DC_outlier = list(get_range2(Estimate.50DC)))%>%
 unnest() %>% 
 filter(Estimate.50DC >=  outlier) %>% ungroup() %>%  
-  #filter(Origin == "Fungicide field trials"|Origin =="Farmer fields" ) %>% 
-#, group =="Farmer fields")
-  #, group == "Fungicide field trials", group =="Farmer fields" )%>%
-ungroup()  %>% 
-  #group_by(ID) %>% 
-  mutate(Host = ifelse(
-    ID %in% bean_isolates_exposed_to_fungicides,
-    "Dry bean","Soybean"
-    )) #%>% 
-  #mutate(MOA = "Group_11")%>% ungroup()
-
-summary_field_original <- WM %>% 
-  select(Field, Collection_ID) %>% 
-  unique() %>% 
-  group_by(Field) %>% 
-  summarize(Num_original_isolates = n()) %>% 
-  mutate(Empty_field = (Field == "")) %>% 
-  filter(Empty_field == FALSE) %>% 
-  select(-Empty_field)  
-
-unique(data_for_plots_pico2$ID) #46 IDs
-
-data_for_plots_pico2$ID <- as.factor(data_for_plots_pico2$ID)
-
-field_ID_data <- data_for_plots_pico2 %>% 
-  left_join(WM, by = c(ID = "Collection_ID")) %>% 
-  rename(Origin = "Origin.x", Host = "Host.x") %>% 
-    select(colnames(data_for_plots_pico2), Field,  Year, State) %>% 
-  left_join(summary_field_original)  %>% 
-  arrange(ID)  %>% 
-  rename(N_isolates =Num_original_isolates) %>% 
-  select(-outlier) %>% 
-  arrange(ID) %>% 
-  group_by (Origin, Host) %>% 
-             summarize(N_isol = n())
-         
-
-
-
-
-
-#Transforming ID in character
-data_for_plots_pico2$ID <- as.character(data_for_plots_pico2$ID)
-#Replacing from form ID to Inventory ID
-data_for_plots_pico2$ID[data_for_plots_pico2$ID == "H-03"] <- "2222"
-data_for_plots_pico2$ID[data_for_plots_pico2$ID == "51C"] <- "2449"
-data_for_plots_pico2$ID[data_for_plots_pico2$ID == "53B"] <- "2536"
-data_for_plots_pico2$ID[data_for_plots_pico2$ID == "54C"] <- "2453"
-data_for_plots_pico2$ID[data_for_plots_pico2$ID == "71B"] <-
-"2505"
-data_for_plots_pico2$ID[data_for_plots_pico2$ID=="318"]  <- "2390"
-data_for_plots_pico2$ID[data_for_plots_pico2$ID =="413"]  <- "2386"
-data_for_plots_pico2$ID[data_for_plots_pico2$ID =="12B"]  <- "12"
-data_for_plots_pico2$ID[data_for_plots_pico2$ID =="74"]  <- "74"
-data_for_plots_pico2$ID[data_for_plots_pico2$ID =="419"]  <- "2385"
-#Transforming ID in number
-data_for_plots_pico2$ID <- as.numeric(data_for_plots_pico2$ID)
-
-
-
-
-#creating the table in pdf
-data_for_plots_pico2 %>% 
-kable(format = "markdown") %>%    write2pdf("picoxystrobin_outliers.pdf")
-
-#Tetraconazole
-data_for_plots_tetra2<- data_for_plots_tetra%>% 
-group_by(Origin)%>%
-mutate(Estimate_50DC_outlier = list(get_range2(Estimate.50DC)))%>%
-unnest() %>% 
-filter(Estimate.50DC >=  outlier) %>% ungroup() %>%  
- # filter(Origin == "Fungicide field trials"|Origin =="Farmer fields" ) %>% 
-#, group =="Farmer fields")
-  #, group == "Fungicide field trials", group =="Farmer fields" )%>%
-ungroup() %>%
-#select(c(ID, group, Estimate_50DC_outlier))
-  mutate(Host = ifelse(
-    ID %in% bean_isolates_exposed_to_fungicides,
-    "Dry bean","Soybean"
-    )) %>% 
-    mutate(MOA = "Group_3")%>% ungroup()
-    
-summary_field_original <- WM %>% 
-  select(Field, Collection_ID) %>% 
-  unique() %>% 
-  group_by(Field) %>% 
-  summarize(Num_original_isolates = n()) %>% 
-  mutate(Empty_field = (Field == "")) %>% 
-  filter(Empty_field == FALSE) %>% 
-  select(-Empty_field)  
-
-unique(data_for_plots_tetra2$ID) #46 IDs
-
-data_for_plots_tetra2$ID <- as.factor(data_for_plots_tetra2$ID)
-
-field_ID_data <- data_for_plots_tetra2 %>% 
-  left_join(WM, by = c(ID = "Collection_ID")) %>% 
-  rename(Origin = "Origin.x", Host = "Host.x") %>% 
-    select(colnames(data_for_plots_tetra2), Field,  Year, State) %>% 
-  left_join(summary_field_original)  %>% 
-  arrange(ID)  %>% 
-  rename(N_isolates =Num_original_isolates) %>% 
-  select(-outlier) %>% 
-  arrange(ID) %>% 
-  group_by (Origin, Host) %>% 
-             summarize(N_isol = n())
-         
-
-
-
-
-    #Transforming ID in character
-    data_for_plots_tetra2$ID <- as.character(data_for_plots_tetra2$ID)
-#Replacing from form ID to Inventory ID
-data_for_plots_tetra2$ID[data_for_plots_tetra2$ID == "78-02"] <- "2140"
-data_for_plots_tetra2$ID[data_for_plots_tetra2$ID == "78-05"] <- "2143"
-data_for_plots_tetra2$ID[data_for_plots_tetra2$ID == "I-20"] <- "2362"
-data_for_plots_tetra2$ID[data_for_plots_tetra2$ID == "S-01"] <- "2320"
-data_for_plots_tetra2$ID[data_for_plots_tetra2$ID == "54C"] <- "2453"
-data_for_plots_tetra2$ID[data_for_plots_tetra2$ID == "65B"] <- "2528"
-data_for_plots_tetra2$ID[data_for_plots_tetra2$ID =="419"]  <- "2385"
-data_for_plots_tetra2$ID[data_for_plots_tetra2$ID =="12B"]  <- "12"
-#Transforming ID in number
-data_for_plots_tetra2$ID <- as.numeric(data_for_plots_tetra2$ID)
-
-field_ID_data <- data_for_plots_TM2 %>% 
-  left_join(WM, by = c(ID = "Collection_ID")) %>% 
-  rename(Origin = "Origin.x", Host = "Host.x") %>% 
-    select(colnames(data_for_plots_bos2), Field, molecule.s._current_season, Year, State) %>% 
-  left_join(summary_field_original)  %>% 
-mutate(molecule.s._current_season = na_if(molecule.s._current_season, "")) %>% 
-  filter(molecule.s._current_season == "thiophanate_methyl"| is.na(molecule.s._current_season)) %>%  arrange(ID) %>% rename(Fungicide = molecule.s._current_season) %>% 
-  rename(N_isolates =Num_original_isolates) %>% 
-  select(-outlier)
-
-
-#Creating the table in pdf
-data_for_plots_tetra2 %>% 
-kable(format = "markdown") %>%    write2pdf("tetraconazole_outliers.pdf")
-
-
-# TM
-
-data_for_plots_TM2<- data_for_plots_TM%>% 
-group_by(Origin)%>%
-mutate(Estimate_50DC_outlier = list(get_range2(Estimate.50DC)))%>%
-unnest() %>% 
-filter(Estimate.50DC >=  outlier) %>% ungroup() %>%  
-  filter(Origin == "Fungicide field trials"|Origin =="Farmer fields" ) %>% 
+  #filter(Origin == "FFT"|Origin =="FF" ) %>% 
 #, group =="Farmer fields")
   #, group == "Fungicide field trials", group =="Farmer fields" )%>%
 ungroup()        %>% 
@@ -2755,58 +2595,291 @@ ungroup()        %>%
   mutate(Host = ifelse(
     ID %in% bean_isolates_exposed_to_fungicides,
     "Dry bean","Soybean"
-    )) %>% 
-  mutate(MOA = "Group_7")%>% ungroup() 
- #Transforming ID in character
-  data_for_plots_TM2$ID <- as.character(data_for_plots_TM2$ID)
-  #Replacing from form ID to Inventory ID
-  data_for_plots_TM2$ID[data_for_plots_TM2$ID == "H-01"]  <- "2220"
-  data_for_plots_TM2$ID[data_for_plots_TM2$ID == "H-03"]  <- "2222"
-  data_for_plots_TM2$ID[data_for_plots_TM2$ID == "H-04"]  <- "2223"
-    data_for_plots_TM2$ID[data_for_plots_TM2$ID == "62-02"] <- "2098"
-     data_for_plots_TM2$ID[data_for_plots_TM2$ID == "62-03"] <- "2099"
-      data_for_plots_TM2$ID[data_for_plots_TM2$ID == "62-04"] <- "2100"
-data_for_plots_TM2$ID[data_for_plots_TM2$ID == "78-01"] <- "2139"
-      data_for_plots_TM2$ID[data_for_plots_TM2$ID == "78-02"] <- "2140"
-data_for_plots_TM2$ID[data_for_plots_TM2$ID == "78-05"]  <- "2143"
-data_for_plots_TM2$ID[data_for_plots_TM2$ID =="65B"]  <- "2528"
- data_for_plots_TM2$ID[data_for_plots_TM2$ID =="51C"]  <- "2449"
- data_for_plots_TM2$ID[data_for_plots_TM2$ID =="53B"]  <- "2536"
- data_for_plots_TM2$ID[data_for_plots_TM2$ID =="54C"]  <- "2453"
- data_for_plots_TM2$ID[data_for_plots_TM2$ID =="74"]  <- "74"
-data_for_plots_TM2$ID[data_for_plots_TM2$ID =="I-20"]  <- "2362"
-data_for_plots_TM2$ID[data_for_plots_TM2$ID =="S-01"]  <- "2320"
-data_for_plots_TM2$ID[data_for_plots_TM2$ID =="W212"]  <- "2388"
-data_for_plots_TM2$ID[data_for_plots_TM2$ID =="318"]  <- "2390"
-data_for_plots_TM2$ID[data_for_plots_TM2$ID =="413"]  <- "2386"
-data_for_plots_TM2$ID[data_for_plots_TM2$ID =="419"]  <- "2385"
-#Transforming ID in numeric  
-data_for_plots_TM2$ID <- as.numeric(data_for_plots_TM2$ID)  
+    ))
+#%>% 
+  #mutate(MOA = "Group_7")%>% ungroup() 
 
 
-summary_field_original <- WM %>% 
-  select(Field, Collection_ID,molecule.s._current_season ) %>% 
-  unique() %>% 
-  group_by(Field, molecule.s._current_season) %>% 
-  summarize(Num_original_isolates = n()) %>% 
-  mutate(Empty_field = (Field == "")) %>% 
-  filter(Empty_field == FALSE) %>% 
-  select(-Empty_field)  
+ 
+unique(data_for_plots_pico2$ID) #58 IDs
+
+data_for_plots_pico2$ID <- as.factor(data_for_plots_pico2$ID)
+
+field_ID_data_pico <- data_for_plots_pico2 %>% 
+  left_join(WM, by = c(ID = "Collection_ID")) %>% 
+  rename(Origin = "Origin.x", Host = "Host.x") %>%     select(colnames(data_for_plots_pico2), Field,  Year, State, molecule.s._current_season) %>% 
+  left_join(summary_field_original)  %>% 
+  mutate(molecule.s._current_season = na_if(molecule.s._current_season, "")) %>% 
+    arrange(ID) %>% rename(Funcide = molecule.s._current_season) %>%   arrange(ID)  %>% 
+  rename(N_iso_perfield =Num_original_isolates) %>%   select(-c(outlier, Estimate.50DC) )
+#first transforming ID variable to charater and then to numeric
+field_ID_data_pico$ID <- as.numeric(  as.character(field_ID_data_pico$ID))
+
+# ordering the 
+field_ID_data_pico <- field_ID_data_pico%>% 
+  arrange(ID) 
+     
+ unique(field_ID_data_pico)
+anyDuplicated(field_ID_data_pico
+              $ID)
+
+field_ID_data_pico$ID[duplicated(field_ID_data_pico$ID)]
+#"645" "800" 
+field_ID_data_pico[!duplicated(field_ID_data_pico),]
+#taking out the repeats
+field_ID_data_pico <- field_ID_data_pico[-c(8, 15), ]
+## 58 entries
+
+#creating the table in pdf
+field_ID_data_pico %>% 
+  kable(format = "markdown") %>%    write2pdf("picoxystrobin_outliers.pdf")
+  
+# Summarizing 1
+field_ID_data_pico_summary1 <- field_ID_data_pico %>% 
+  group_by (Origin, Host,State) %>% 
+             summarize(N_isol = n()) %>% 
+             ungroup() %>% 
+              add_row(Origin = "Total", N_isol = sum(.$N_isol))
+    
+
+     
+# Summarizing 2
+field_ID_data_pico_summary2 <- field_ID_data_pico %>% 
+  group_by ( Host) %>% 
+             summarize(N_isol = n()) %>% 
+             ungroup() %>% 
+              add_row(Host = "Total", N_isol = sum(.$N_isol))
+
+field_ID_data_bos_summary2 %>% 
+  kable(format = "markdown") %>%    write2pdf("picoxystrobin_outliers_summary_by_hosts.pdf")
+# Summarizing 3  BY STATE
+field_ID_data_pico_summary3 <- field_ID_data_pico %>% 
+  group_by ( State) %>% 
+             summarize(N_isol = n()) %>% 
+             ungroup() %>%
+              arrange(desc(N_isol)) %>% 
+              add_row(State = "Total", N_isol = sum(.$N_isol))
+
+#creating the table in pdf
+field_ID_data_pico_summary3 %>% 
+  kable(format = "markdown") %>%    write2pdf("picoxystrobin_outliers_summary_bystates.pdf")
+
+
+# Summarizing 4  BY STATE  NE and host soybeans
+field_ID_data_pico_summary4 <- field_ID_data_pico %>% 
+  group_by (Origin, Host,State) %>% 
+             summarize(N_isol = n()) %>% 
+             ungroup() %>%
+              arrange(desc(N_isol)) %>% 
+              filter(Host=="soybeans"|State == "NE") %>% 
+              add_row(Origin = "Total", N_isol = sum(.$N_isol))
+
+
+#Tetraconazole
+
+data_for_plots_tetra <- unique(data_for_plots_tetra)### Watach OuT!
+
+data_for_plots_tetra2<- data_for_plots_tetra%>% 
+group_by(Origin)%>%
+mutate(Estimate_50DC_outlier = list(get_range2(Estimate.50DC)))%>%
+unnest() %>% 
+filter(Estimate.50DC >=  outlier) %>% ungroup() %>%  
+  #filter(Origin == "FFT"|Origin =="FF" ) %>% 
+#, group =="Farmer fields")
+  #, group == "Fungicide field trials", group =="Farmer fields" )%>%
+ungroup()        %>% 
+     #group_by(ID) %>% 
+  mutate(Host = ifelse(
+    ID %in% bean_isolates_exposed_to_fungicides,
+    "Dry bean","Soybean"
+    ))
+#%>% 
+  #mutate(MOA = "Group_7")%>% ungroup() 
+
+
+ 
+unique(data_for_plots_tetra2$ID) #55 IDs
+
+data_for_plots_tetra2$ID <- as.factor(data_for_plots_tetra2$ID)
+
+field_ID_data_tetra <- data_for_plots_tetra2 %>% 
+  left_join(WM, by = c(ID = "Collection_ID")) %>% 
+  rename(Origin = "Origin.x", Host = "Host.x") %>%     select(colnames(data_for_plots_tetra2), Field,  Year, State, molecule.s._current_season) %>% 
+  left_join(summary_field_original)  %>% 
+  mutate(molecule.s._current_season = na_if(molecule.s._current_season, "")) %>% 
+    arrange(ID) %>% rename(Funcide = molecule.s._current_season) %>% 
+  arrange(ID)  %>% 
+  rename(N_iso_perfield =Num_original_isolates) %>%   select(-c(outlier, Estimate.50DC) )
+#first transforming ID variable to charater and then to numeric
+field_ID_data_tetra$ID <- as.numeric(  as.character(field_ID_data_tetra$ID))
+
+# ordering the 
+field_ID_data_tetra <- field_ID_data_tetra%>% 
+  arrange(ID) 
+     
+ unique(field_ID_data_tetra)
+anyDuplicated(field_ID_data_tetra
+              $ID)
+
+field_ID_data_tetra$ID[duplicated(field_ID_data_tetra$ID)]
+#"2320" "2385" "87"
+field_ID_data_tetra[!duplicated(field_ID_data_tetra),]
+#taking out the repeats
+field_ID_data_tetra <- field_ID_data_tetra[-c(5, 53, 56), ]
+## 56 entries
+
+#creating the table in pdf
+field_ID_data_tetra %>% 
+  kable(format = "markdown") %>%    write2pdf("tetraconazole_outliers.pdf")
+  
+# Summarizing 1
+field_ID_data_tetra_summary1 <- field_ID_data_tetra %>% 
+  group_by (Origin, Host,State) %>% 
+             summarize(N_isol = n()) %>% 
+             ungroup() %>% 
+              add_row(Origin = "Total", N_isol = sum(.$N_isol))
+         
+# Summarizing 2
+field_ID_data_tetra_summary2 <- field_ID_data_tetra %>% 
+  group_by ( Host) %>% 
+             summarize(N_isol = n()) %>% 
+             ungroup() %>% 
+              add_row(Host = "Total", N_isol = sum(.$N_isol))
+
+field_ID_data_tetra_summary2 %>% 
+  kable(format = "markdown") %>%    write2pdf("tetraconazole_outliers_summary_by_hosts.pdf")
+
+
+# Summarizing 3  BY STATE
+field_ID_data_tetra_summary3 <- field_ID_data_tetra %>% 
+  group_by ( State) %>% 
+             summarize(N_isol = n()) %>% 
+             ungroup() %>%
+              arrange(desc(N_isol)) %>% 
+              add_row(State = "Total", N_isol = sum(.$N_isol))
+
+#creating the table in pdf
+field_ID_data_tetra_summary3 %>% 
+  kable(format = "markdown") %>%    write2pdf("tetraconazole_outliers_summary_by_states.pdf")
+
+
+# Summarizing 4  BY STATE  NE and host soybeans
+field_ID_data_tetra_summary4 <- field_ID_data_tetra %>% 
+  group_by (Origin, Host,State) %>% 
+             summarize(N_isol = n()) %>% 
+             ungroup() %>%
+              arrange(desc(N_isol)) %>% 
+              filter(Host=="soybeans"|State == "NE") %>% 
+              add_row(Origin = "Total", N_isol = sum(.$N_isol))
 
 
 
-unique(data_for_plots_TM2$ID) #49 IDs
+
+
+
+# TM
+
+data_for_plots_TM <- unique(data_for_plots_TM)### Watach OuT!
+
+data_for_plots_TM2<- data_for_plots_TM%>% 
+group_by(Origin)%>%
+mutate(Estimate_50DC_outlier = list(get_range2(Estimate.50DC)))%>%
+unnest() %>% 
+filter(Estimate.50DC >=  outlier) %>% ungroup() %>%  
+  #filter(Origin == "FFT"|Origin =="FF" ) %>% 
+#, group =="Farmer fields")
+  #, group == "Fungicide field trials", group =="Farmer fields" )%>%
+ungroup()        %>% 
+     #group_by(ID) %>% 
+  mutate(Host = ifelse(
+    ID %in% bean_isolates_exposed_to_fungicides,
+    "Dry bean","Soybean"
+    ))
+#%>% 
+  #mutate(MOA = "Group_7")%>% ungroup() 
+
+
+ 
+
+unique(data_for_plots_TM2$ID) #55 IDs
 
 data_for_plots_TM2$ID <- as.factor(data_for_plots_TM2$ID)
 
+field_ID_data_TM <- data_for_plots_TM2 %>% 
+  left_join(WM, by = c(ID = "Collection_ID")) %>% 
+  rename(Origin = "Origin.x", Host = "Host.x") %>%     select(colnames(data_for_plots_TM2), Field,  Year, State, molecule.s._current_season) %>% 
+  left_join(summary_field_original)  %>% 
+  mutate(molecule.s._current_season = na_if(molecule.s._current_season, "")) %>% 
+    arrange(ID) %>% rename(Funcide = molecule.s._current_season) %>% 
+  arrange(ID)  %>% 
+  rename(N_iso_perfield =Num_original_isolates) %>%   select(-c(outlier, Estimate.50DC) )
+#first transforming ID variable to charater and then to numeric
+field_ID_data_TM$ID <- as.numeric(  as.character(field_ID_data_TM$ID))
 
-#For repeated
-data_for_plots_TM2$ID[duplicated(data_for_plots_TM2$ID)]
+# ordering the 
+field_ID_data_TM <- field_ID_data_TM%>% 
+  arrange(ID) 
+     
+ unique(field_ID_data_TM)
+anyDuplicated(field_ID_data_TM
+              $ID)
+
+field_ID_data_TM$ID[duplicated(field_ID_data_TM$ID)]
+#"1029"  "2220" 
+field_ID_data_TM[!duplicated(field_ID_data_TM),]
+#taking out the repeats
+field_ID_data_TM <- field_ID_data_TM[-c(25, 46), ]
+## 56 entries
+
 #creating the table in pdf
-data_for_plots_TM2 %>% 
-  kable(format = "markdown") %>%  
-  write2pdf("TM_outliers.pdf")
+field_ID_data_TM %>% 
+  kable(format = "markdown") %>%    write2pdf("TM_outliers.pdf")
   
+# Summarizing 1
+field_ID_data_TM_summary1 <- field_ID_data_TM %>% 
+  group_by (Origin, Host,State) %>% 
+             summarize(N_isol = n()) %>% 
+             ungroup() %>% 
+              add_row(Origin = "Total", N_isol = sum(.$N_isol))
+         
+# Summarizing 2
+field_ID_data_TM_summary2 <- field_ID_data_TM %>% 
+  group_by ( Host) %>% 
+             summarize(N_isol = n()) %>% 
+             ungroup() %>% 
+              add_row(Host = "Total", N_isol = sum(.$N_isol))
+
+field_ID_data_TM_summary2 %>% 
+  kable(format = "markdown") %>%    write2pdf("TM_outliers_summary_by_hosts.pdf")
+
+
+# Summarizing 3  BY STATE
+field_ID_data_TM_summary3 <- field_ID_data_TM %>% 
+  group_by ( State) %>% 
+             summarize(N_isol = n()) %>% 
+             ungroup() %>%
+              arrange(desc(N_isol)) %>% 
+              add_row(State = "Total", N_isol = sum(.$N_isol))
+
+#creating the table in pdf
+field_ID_data_TM_summary3 %>% 
+  kable(format = "markdown") %>%    write2pdf("TM_outliers_summary_by_states.pdf")
+
+
+# Summarizing 4  BY STATE  NE and host soybeans
+field_ID_data_TM_summary4 <- field_ID_data_TM %>% 
+  group_by (Origin, Host,State) %>% 
+             summarize(N_isol = n()) %>% 
+             ungroup() %>%
+              arrange(desc(N_isol)) %>% 
+              filter(Host=="soybeans"|State == "NE") %>% 
+              add_row(Origin = "Total", N_isol = sum(.$N_isol))
+
+
+
+
+
+
 
 
 ```
