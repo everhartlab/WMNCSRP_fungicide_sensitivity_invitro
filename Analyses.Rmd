@@ -2536,12 +2536,38 @@ field_ID_data_bos %>%
 # Summarizing 1
 field_ID_data_bos_summary1 <- field_ID_data_bos %>% 
   group_by (Origin, Host,State) %>% 
-             summarize(N_isol = n())
+             summarize(N_isol = n()) %>% 
+             ungroup() %>% 
+              add_row(Origin = "Total", N_isol = sum(.$N_isol))
          
 # Summarizing 2
 field_ID_data_bos_summary2 <- field_ID_data_bos %>% 
   group_by ( Host) %>% 
-             summarize(N_isol = n())
+             summarize(N_isol = n()) %>% 
+             ungroup() %>% 
+              add_row(Host = "Total", N_isol = sum(.$N_isol))
+
+# Summarizing 3  BY STATE
+field_ID_data_bos_summary3 <- field_ID_data_bos %>% 
+  group_by ( State) %>% 
+             summarize(N_isol = n()) %>% 
+             ungroup() %>%
+              arrange(desc(N_isol)) %>% 
+              add_row(State = "Total", N_isol = sum(.$N_isol))
+
+# Summarizing 4  BY STATE  NE and host soybeans
+field_ID_data_bos_summary4 <- field_ID_data_bos %>% 
+  group_by (Origin, Host,State) %>% 
+             summarize(N_isol = n()) %>% 
+             ungroup() %>%
+              arrange(desc(N_isol)) %>% 
+              filter(Host=="soybeans"|State == "NE") %>% 
+              add_row(Origin = "Total", N_isol = sum(.$N_isol))
+
+
+
+
+
 
 #working on data_for_plots_bos for summarize an combining with WM
 
