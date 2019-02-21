@@ -2510,27 +2510,39 @@ field_ID_data_bos <- data_for_plots_bos2 %>%
     select(colnames(data_for_plots_bos2), Field,  Year, State) %>% 
   left_join(summary_field_original)  %>% 
   arrange(ID)  %>% 
-  rename(N_isolates =Num_original_isolates) %>% 
-  select(-outlier) %>% 
-  arrange(ID) %>% 
-  group_by (Origin, Host,State) %>% 
-             summarize(N_isol = n())
-         
+  rename(N_isolates_perfield =Num_original_isolates) %>%   select(-outlier)
+#first transforming ID variable to charater and then to numeric
+field_ID_data_bos$ID <- as.numeric(  as.character(field_ID_data_bos$ID))
+
+# ordering the 
+field_ID_data_bos <- field_ID_data_bos%>% 
+  arrange(ID) 
      
-field_ID_data_bos <- unique(field_ID_data_bos)
+ unique(field_ID_data_bos)
 anyDuplicated(field_ID_data_bos
               $ID)
 
-field_ID_data$ID[duplicated(field_ID_data$ID)]
+field_ID_data_bos$ID[duplicated(field_ID_data_bos$ID)]
 #"1029" "1033" "2220" "564"
-field_ID_data[!duplicated(field_ID_data),]
-#For repeated
-
+field_ID_data_bos[!duplicated(field_ID_data_bos),]
+#taking out the repeats
+field_ID_data_bos <- field_ID_data_bos[-c(9, 27, 29,56), ]
+## 55 entries
 
 #creating the table in pdf
-field_ID_data %>% 
+field_ID_data_bos %>% 
   kable(format = "markdown") %>%    write2pdf("boscalid_outliers.pdf")
   
+# Summarizing 1
+field_ID_data_bos_summary1 <- field_ID_data_bos %>% 
+  group_by (Origin, Host,State) %>% 
+             summarize(N_isol = n())
+         
+# Summarizing 2
+field_ID_data_bos_summary2 <- field_ID_data_bos %>% 
+  group_by ( Host) %>% 
+             summarize(N_isol = n())
+
 #working on data_for_plots_bos for summarize an combining with WM
 
 data_for_plots_bos$ID <- as.factor(data_for_plots_bos$ID)
