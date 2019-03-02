@@ -360,6 +360,9 @@ Fungicide_field_trials <-
 Farmer_fields2 <- c(136:442, 455, 456, 466, 468, 470, 471, 478:554, 602:610, 612:635, 671, 672, 682:690, 695:797, 810:823, 834, 835, 848:1024, 1255: 1326, 1491: 1500, 1661:1670, 1831: 2246, 2303: 2342,2362: 2381, 2393: 2573)
 
 baseline_isolates2 <- c(1: 136, 444: 454, 457: 465, 467, 469, 472:477, 555:601, 611, 636:670, 673: 680, 691:694 , 798: 809,  824: 833, 836: 847)
+
+Drybean <- c()
+
 ```
 ##  Creating a function for using the outputs of boxplot.stats function and notice the outliers
 
@@ -797,14 +800,14 @@ ggplot(finalRG0.06, aes(x = RG0.06, y = logEC50)) +  geom_point() + geom_smooth(
 ##################################################################################
 #Dose chosen as DC
 # Linear model of log EC50 and relative growth at 0.01 ppm, check normality and homogeneity of variances
-pdf("picoxystrobin_assumptions_linearmodel_dosechoseasDC_with_outlayers.pdf")
+#pdf("picoxystrobin_assumptions_linearmodel_dosechoseasDC_with_outlayers.pdf")
 finalRG0.01 <- lm(logEC50 ~ RG0.01, final_picoxystrobin)
 summary(finalRG0.01)
 plot(finalRG0.01)
 #check_assumptions(finalRG0.01)
 #dev.off()
 ##taking out outlayers from Q-Q PLOT $ LEVERAGE TEST, ISOLATES # 1032 from treatment, 558 & 581 from baseline##
-pdf("picoxystrobin_assumptions_linearmodel_dosechoseasDC.pdf")
+#pdf("picoxystrobin_assumptions_linearmodel_dosechoseasDC.pdf")
 final_picoxystrobin_clean <- final_picoxystrobin %>% filter( !ID == "1032",!ID == "558", !ID == "581" ) 
 finalRG0.01 <- lm(logEC50 ~ RG0.01, final_picoxystrobin_clean)
 summary(finalRG0.01)
@@ -839,7 +842,7 @@ final_picoxystrobin_DC_0.01 <- lm (Estimate.50DC ~ Estimate.50, final_picoxystro
 summary(final_picoxystrobin_DC_0.01 )
 plot(final_picoxystrobin_DC_0.01)
 #check_assumptions(final_picoxystrobin_DC_0.01 )
-pdf("Linear regression of picoxystrobin 0.01 ppm.pdf")  
+#pdf("Linear regression of picoxystrobin 0.01 ppm.pdf")  
 # Linear Regression graph of EC50 and EC50DC
 ggplot(final_picoxystrobin_DC_0.01,
        aes(x = Estimate.50, y = Estimate.50DC)) +  theme(
@@ -1100,14 +1103,14 @@ ggplot(finalRG5, aes(x = RG5, y =  logEC50)) +  theme(plot.title = element_text(
 ################################################################################
 #Dose chosen as DC
 # Linear model of log EC50 and relative growth at 2 ppm, check normality and homogeneity of variances
-pdf("tetraconazole_assumptions_linearmodel_dosechoseasDC_with_outlayers.pdf")
+#pdf("tetraconazole_assumptions_linearmodel_dosechoseasDC_with_outlayers.pdf")
 finalRG2 <- lm(logEC50 ~ RG2, final_tetraconazole)
 summary(finalRG2)
 plot(finalRG2)
 #check_assumptions(finalRG2)
 #dev.off()
 ##taking out outlayers from Q-Q PLOT & LEVERAGE TEST, ISOLATES #  21 , 558 & 667 from baseline##
-pdf("tetraconazole_assumptions_linearmodel_dosechoseasDC.pdf")
+#pdf("tetraconazole_assumptions_linearmodel_dosechoseasDC.pdf")
 final_tetraconazole_clean <- final_tetraconazole %>% filter( !ID == "21",!ID == "558", !ID == "667" ) 
 finalRG2 <- lm(logEC50 ~ RG2, final_tetraconazole_clean)
 summary(finalRG2)
@@ -1126,7 +1129,7 @@ final_tetraconazole_DC_2 <- lm (Estimate.50DC ~ Estimate.50, final_tetraconazole
 summary(final_tetraconazole_DC_2)
 plot(final_tetraconazole_DC_2)
 #check_assumptions(final_tetraconazole_DC_2)
-pdf("Linear regression of tetraconazole 2 ppm.pdf")   
+#pdf("Linear regression of tetraconazole 2 ppm.pdf")   
 # Linear Regression graph of EC50 and EC50DC
 ggplot(final_tetraconazole_DC_2,
        aes(x = Estimate.50, y = Estimate.50DC)) +  theme(
@@ -1376,7 +1379,7 @@ final_TM_DD_10 <- lm (Estimate.50DD ~ EC50, final_TM_DD)
 summary(final_TM_DD_10)
 plot(final_TM_DD_10)
 #check_assumptions(final_TM_DD_10)
-pdf("Linear regression of thiophanate methyl 10 ppm.pdf")   
+#pdf("Linear regression of thiophanate methyl 10 ppm.pdf")   
 ## Linear Regression graph of EC50 and EC50DD
 ggplot(final_TM_DD_10, aes(x = EC50, y = Estimate.50DD)) +  theme(plot.title = element_text(size = 16, face = "bold", hjust = 1)) + labs(title = "Linear regression of thiophanate methyl 10 ppm", x ="EC50 (ppm)", y = "EC50DD (ppm)" ) + geom_point() + geom_smooth(method = "lm")
 
@@ -1551,7 +1554,7 @@ final_TM_DD_2.5 <- lm (Estimate.50DD ~ EC50, final_TM_DD1)
 summary(final_TM_DD_2.5)
 plot(final_TM_DD_2.5)
 #check_assumptions(final_TM_DD_10)
-pdf("Linear regression of thiophanate methyl 10 ppm.pdf")   
+#pdf("Linear regression of thiophanate methyl 10 ppm.pdf")   
 ## Linear Regression graph of EC50 and EC50DD
 ggplot(final_TM_DD_2.5, aes(x = EC50, y = Estimate.50DD)) +  theme(plot.title = element_text(size = 16, face = "bold", hjust = 1)) + labs(title = "Linear regression of thiophanate methyl 10 ppm", x ="EC50 (ppm)", y = "EC50DD (ppm)" ) + geom_point() + geom_smooth(method = "lm")
 
@@ -1676,8 +1679,8 @@ boscalid_complete$ID <- as.character(boscalid_complete$ID)
   
   boscalid_complete$ID[ boscalid_complete$ID == "51C"] <- "2449"
  boscalid_complete$ID[ boscalid_complete$ID == "53B"] <- "2536"
-boscalid_complete$ID[ boscalid_complete$ID == "54C"] <- "2559"
-boscalid_complete$ID[ boscalid_complete$ID == "60A"] <- ""
+boscalid_complete$ID[ boscalid_complete$ID == "54C"] <- "2453"
+boscalid_complete$ID[ boscalid_complete$ID == "60A"] <- "2559"
 
 boscalid_complete$ID[ boscalid_complete$ID == "64D"] <- "2518"
  boscalid_complete$ID[ boscalid_complete$ID == "65B"]  <- "2528"
@@ -1736,8 +1739,8 @@ picoxystrobin_complete$ID <- as.character(picoxystrobin_complete$ID)
   
   picoxystrobin_complete$ID[ picoxystrobin_complete$ID == "51C"] <- "2449"
  picoxystrobin_complete$ID[ picoxystrobin_complete$ID == "53B"] <- "2536"
-picoxystrobin_complete$ID[ picoxystrobin_complete$ID == "54C"] <- "2559"
-picoxystrobin_complete$ID[ picoxystrobin_complete$ID == "60A"] <- ""
+picoxystrobin_complete$ID[ picoxystrobin_complete$ID == "54C"] <- "2453"
+picoxystrobin_complete$ID[ picoxystrobin_complete$ID == "60A"] <- "2559"
 
 picoxystrobin_complete$ID[ picoxystrobin_complete$ID == "64D"] <- "2518"
  picoxystrobin_complete$ID[ picoxystrobin_complete$ID == "65B"]  <- "2528"
@@ -1793,8 +1796,8 @@ tetraconazole_complete$ID[ tetraconazole_complete$ID == "H-04"] <- "2223"
   
   tetraconazole_complete$ID[ tetraconazole_complete$ID == "51C"] <- "2449"
  tetraconazole_complete$ID[ tetraconazole_complete$ID == "53B"] <- "2536"
-tetraconazole_complete$ID[ tetraconazole_complete$ID == "54C"] <- "2559"
-tetraconazole_complete$ID[ tetraconazole_complete$ID == "60A"] <- ""
+tetraconazole_complete$ID[ tetraconazole_complete$ID == "54C"] <- "2453"
+tetraconazole_complete$ID[ tetraconazole_complete$ID == "60A"] <- "2559"
 
 tetraconazole_complete$ID[ tetraconazole_complete$ID == "64D"] <- "2518"
  tetraconazole_complete$ID[ tetraconazole_complete$ID == "65B"]  <- "2528"
@@ -1835,9 +1838,7 @@ TM_complete$ID <- as.character(TM_complete$ID)
   TM_complete$ID[ TM_complete$ID == "62-02"] <- "2098"
    TM_complete$ID[ TM_complete$ID == "62-03"] <- "2099"
     TM_complete$ID[ TM_complete$ID == "62-04"] <- "2100"
- #TM_complete[ TM_complete$ID =="74SS1"]  <- "74"
-
- TM_complete$ID[ TM_complete$ID == "78-01"] <- "2139"
+   TM_complete$ID[ TM_complete$ID == "78-01"] <- "2139"
   TM_complete$ID[ TM_complete$ID == "78-02"] <- "2140"
 
 
@@ -1852,8 +1853,8 @@ TM_complete$ID[ TM_complete$ID == "H-04"] <- "2223"
   
   TM_complete$ID[ TM_complete$ID == "51C"] <- "2449"
  TM_complete$ID[ TM_complete$ID == "53B"] <- "2536"
-TM_complete$ID[ TM_complete$ID == "54C"] <- "2559"
-TM_complete$ID[ TM_complete$ID == "60A"] <- ""
+TM_complete$ID[ TM_complete$ID == "54C"] <- "2453"
+TM_complete$ID[ TM_complete$ID == "60A"] <- "2559"
 
 TM_complete$ID[ TM_complete$ID == "64D"] <- "2518"
  TM_complete$ID[ TM_complete$ID == "65B"]  <- "2528"
@@ -2125,20 +2126,6 @@ plot_TM2
 ```{r}
 plot_grid(plot_tetra, plot_pico, plot_bos)
 plot_grid(plot_tetra2, plot_pico2, plot_bos2)
-#creating the tables
-combiningfungicides_outliersEC50DC <- rbind(data_for_plots_bos2, data_for_plots_pico2, data_for_plots_tetra2)
-#write.csv(combiningfungicides_outliersEC50DC, file = "combiningfungicides_outliersEC50DC.csv")
-#combining %>% combining %>% unique()
-
-combiningfungicides_outliersEC50DC <- rbind(data_for_plots_bos2, data_for_plots_pico2, data_for_plots_tetra2)
-#write.csv(combiningfungicides_outliersEC50DC, file = "combiningfungicides_outliersEC50DC2.csv") It must be the same object was saved now with 2 because it reliasing differnet data
- 
-
-  combiningfungicides_outliersEC50DC_2 <- combiningfungicides_outliersEC50DC %>% 
-   mutate( Origin_Host_Fungicide = paste( Origin, Host, Fungicide)) %>% 
-   select(ID, Origin_Host_Fungicide) %>% group_by(Origin_Host_Fungicide) %>% 
-   summarize(n=n()) %>% 
-   arrange(desc(n))
 
 ```
 
@@ -2149,7 +2136,7 @@ data_for_plots_bos_2 <- boscalid_complete %>%
   group_by(ID) %>% 
   mutate(group = ifelse(
     ID %in% bean_isolates_exposed_to_fungicides,
-    "Dry bean","Soybean"
+    "Dry bean","Soybean"## check this out
     ))
 
 data_for_plots_bos_2$group <- as_factor(data_for_plots_bos_2$group)
@@ -2445,7 +2432,8 @@ plot_grid(plot_tetra_3, plot_pico_3, plot_bos_3)
 #reading new dataset
 ```{r}
 #Edgar: Look here
-WM <- read.csv("data/WM-fixingproductnamesID2573_modifyingforactiveingredient_6.csv", stringsAsFactors = TRUE)
+WM <- read.csv("data/WM-fixingproductnamesID2573_modifyingforactiveingredient_7.csv", stringsAsFactors = TRUE)
+WM$Collection_ID <- str_squish(WM$Collection_ID)
 ```
 
 # Using the function to detect outliers considered since the third quantil
@@ -2480,13 +2468,13 @@ filter(Estimate.50DC >=  outlier) %>% ungroup() %>%
   #filter(Origin == "FFT"|Origin =="FF" ) %>% 
 #, group =="Farmer fields")
   #, group == "Fungicide field trials", group =="Farmer fields" )%>%
-ungroup()        %>% 
+  ungroup()        #%>% 
      #group_by(ID) %>% 
-  mutate(Host = ifelse(
-    ID %in% bean_isolates_exposed_to_fungicides,
-    "Dry bean","Soybean"
-    ))
-#%>% 
+#   mutate(Host = ifelse(
+#     ID %in% bean_isolates_exposed_to_fungicides,
+#     "Dry bean","Soybean"
+#     ))
+# #%>% 
   #mutate(MOA = "Group_7")%>% ungroup() 
 
 
@@ -2504,79 +2492,77 @@ unique(data_for_plots_bos2$ID) #55 IDs
 
 data_for_plots_bos2$ID <- as.factor(data_for_plots_bos2$ID)
 
-field_ID_data_bos <- data_for_plots_bos2 %>% 
+field_ID_data_boscalid <- data_for_plots_bos2 %>% 
   left_join(WM, by = c(ID = "Collection_ID")) %>% 
-  rename(Origin = "Origin.x", Host = "Host.x") %>%     select(colnames(data_for_plots_bos2), Field,  Year, State, molecule.s._current_season) %>% 
+  rename(Origin = "Origin.x") %>%     select(colnames(data_for_plots_bos2), Field,  Year, State, molecule.s._current_season, Host) %>% 
   left_join(summary_field_original)  %>% 
   mutate(molecule.s._current_season = na_if(molecule.s._current_season, "")) %>% 
     arrange(ID) %>% rename(Funcide = molecule.s._current_season) %>% 
   arrange(ID)  %>% 
   rename(N_iso_perfield =Num_original_isolates) %>%   select(-c(outlier, Estimate.50DC) )
 #first transforming ID variable to charater and then to numeric
-field_ID_data_bos$ID <- as.numeric(  as.character(field_ID_data_bos$ID))
+field_ID_data_boscalid$ID <- as.numeric(  as.character(field_ID_data_boscalid$ID))
 
 # ordering the 
-field_ID_data_bos <- field_ID_data_bos%>% 
+field_ID_data_boscalid <- field_ID_data_boscalid%>% 
   arrange(ID) 
      
- unique(field_ID_data_bos)
-anyDuplicated(field_ID_data_bos
+ unique(field_ID_data_boscalid)
+anyDuplicated(field_ID_data_boscalid
               $ID)
 
-field_ID_data_bos$ID[duplicated(field_ID_data_bos$ID)]
+field_ID_data_boscalid$ID[duplicated(field_ID_data_boscalid$ID)]
 #"1029" "1033" "2220" "564"
-field_ID_data_bos[!duplicated(field_ID_data_bos),]
+field_ID_data_boscalid[!duplicated(field_ID_data_boscalid),]
 #taking out the repeats
-field_ID_data_bos <- field_ID_data_bos[-c(9, 27, 29,56), ]
-## 55 entries
+field_ID_data_boscalid <- field_ID_data_boscalid[-c(9, 27, 29,55), ]
+## 54 entries
 
 #creating the table in pdf
-field_ID_data_bos %>% 
-  kable(format = "markdown") %>%    write2pdf("boscalid_outliers.pdf")
+# field_ID_data_bos %>%
+# kable(format = "markdown") %>%    write2pdf("boscalid_outliers.pdf")
   
-# Summarizing 1
-field_ID_data_bos_summary1 <- field_ID_data_bos %>% 
-  group_by (Origin, Host,State) %>% 
-             summarize(N_isol = n()) %>% 
+# Summarizing 1 BY ORIGIN
+field_ID_data_bos_summary1 <- field_ID_data_boscalid %>% 
+  group_by (Origin) %>% 
+             summarize(N_isol = n(), Percent = round(100 * n() / nrow(.), digits = 1)) %>% 
              ungroup() %>% 
               add_row(Origin = "Total", N_isol = sum(.$N_isol))
-         
-# Summarizing 2
-field_ID_data_bos_summary2 <- field_ID_data_bos %>% 
+# creating the table in pdf
+# field_ID_data_bos_summary1 %>%
+#   kable(format = "markdown") %>%    write2pdf("boscalid_outliers_summary_by_origin.pdf")
+# Summarizing 2 by host
+field_ID_data_bos_summary2 <- field_ID_data_boscalid %>% 
   group_by ( Host) %>% 
-             summarize(N_isol = n()) %>% 
-             ungroup() %>% 
+             summarize(N_isol = n(), Percent = round(100 * n() / nrow(.), digits = 1))  %>% 
+    ungroup() %>% 
               add_row(Host = "Total", N_isol = sum(.$N_isol))
-
-field_ID_data_bos_summary2 %>% 
-  kable(format = "markdown") %>%    write2pdf("boscalid_outliers_summary_by_hosts.pdf")
+#creating the table in pdf
+# field_ID_data_bos_summary2 %>%
+#   kable(format = "markdown") %>%    write2pdf("boscalid_outliers_summary_by_hosts.pdf")
 
 
 # Summarizing 3  BY STATE
-field_ID_data_bos_summary3 <- field_ID_data_bos %>% 
+field_ID_data_bos_summary3 <- field_ID_data_boscalid %>% 
   group_by ( State) %>% 
-             summarize(N_isol = n()) %>% 
+             summarize(N_isol = n(), Percent = round(100 * n() / nrow(.), digits = 1)) %>% 
              ungroup() %>%
               arrange(desc(N_isol)) %>% 
               add_row(State = "Total", N_isol = sum(.$N_isol))
 
 #creating the table in pdf
-field_ID_data_bos_summary3 %>% 
-  kable(format = "markdown") %>%    write2pdf("boscalid_outliers_summary_by_states.pdf")
+# field_ID_data_bos_summary3 %>%
+#   kable(format = "markdown") %>%    write2pdf("boscalid_outliers_summary_by_states.pdf")
 
 
 # Summarizing 4  BY STATE  NE and host soybeans
-field_ID_data_bos_summary4 <- field_ID_data_bos %>% 
+field_ID_data_bos_summary4 <- field_ID_data_boscalid %>% 
   group_by (Origin, Host,State) %>% 
              summarize(N_isol = n()) %>% 
              ungroup() %>%
               arrange(desc(N_isol)) %>% 
               filter(Host=="soybeans"|State == "NE") %>% 
               add_row(Origin = "Total", N_isol = sum(.$N_isol))
-
-
-
-
 
  #Picoxystrobin
 
@@ -2590,13 +2576,13 @@ filter(Estimate.50DC >=  outlier) %>% ungroup() %>%
   #filter(Origin == "FFT"|Origin =="FF" ) %>% 
 #, group =="Farmer fields")
   #, group == "Fungicide field trials", group =="Farmer fields" )%>%
-ungroup()        %>% 
+ungroup()        #%>% 
      #group_by(ID) %>% 
-  mutate(Host = ifelse(
-    ID %in% bean_isolates_exposed_to_fungicides,
-    "Dry bean","Soybean"
-    ))
-#%>% 
+#   mutate(Host = ifelse(
+#     ID %in% bean_isolates_exposed_to_fungicides,
+#     "Dry bean","Soybean"## error
+#     ))
+# #%>% 
   #mutate(MOA = "Group_7")%>% ungroup() 
 
 
@@ -2607,7 +2593,7 @@ data_for_plots_pico2$ID <- as.factor(data_for_plots_pico2$ID)
 
 field_ID_data_pico <- data_for_plots_pico2 %>% 
   left_join(WM, by = c(ID = "Collection_ID")) %>% 
-  rename(Origin = "Origin.x", Host = "Host.x") %>%     select(colnames(data_for_plots_pico2), Field,  Year, State, molecule.s._current_season) %>% 
+  rename(Origin = "Origin.x") %>%     select(colnames(data_for_plots_pico2), Field,  Year, State, molecule.s._current_season, Host) %>% 
   left_join(summary_field_original)  %>% 
   mutate(molecule.s._current_season = na_if(molecule.s._current_season, "")) %>% 
     arrange(ID) %>% rename(Funcide = molecule.s._current_season) %>%   arrange(ID)  %>% 
@@ -2631,38 +2617,39 @@ field_ID_data_pico <- field_ID_data_pico[-c(8, 15), ]
 ## 58 entries
 
 #creating the table in pdf
-field_ID_data_pico %>% 
-  kable(format = "markdown") %>%    write2pdf("picoxystrobin_outliers.pdf")
+# field_ID_data_pico %>%
+#   kable(format = "markdown") %>%    write2pdf("picoxystrobin_outliers.pdf")
   
-# Summarizing 1
+# Summarizing 1 BY ORIGIN
 field_ID_data_pico_summary1 <- field_ID_data_pico %>% 
-  group_by (Origin, Host,State) %>% 
-             summarize(N_isol = n()) %>% 
+  group_by (Origin) %>% 
+             summarize(N_isol = n(), Percent = round(100 * n() / nrow(.), digits = 1)) %>% 
              ungroup() %>% 
               add_row(Origin = "Total", N_isol = sum(.$N_isol))
-    
-
+    #creating the table in pdf
+# field_ID_data_pico_summary1 %>% 
+#   kable(format = "markdown") %>%    write2pdf("picoxystrobin_outliers_summary_by_origin_.pdf")
      
 # Summarizing 2
 field_ID_data_pico_summary2 <- field_ID_data_pico %>% 
   group_by ( Host) %>% 
-             summarize(N_isol = n()) %>% 
+             summarize(N_isol = n(), Percent = round(100 * n() / nrow(.), digits = 1)) %>% 
              ungroup() %>% 
               add_row(Host = "Total", N_isol = sum(.$N_isol))
-
-field_ID_data_bos_summary2 %>% 
-  kable(format = "markdown") %>%    write2pdf("picoxystrobin_outliers_summary_by_hosts.pdf")
+#creating the table in pdf
+# field_ID_data_pico_summary2 %>% 
+#   kable(format = "markdown") %>%    write2pdf("picoxystrobin_outliers_summary_by_hosts.pdf")
 # Summarizing 3  BY STATE
 field_ID_data_pico_summary3 <- field_ID_data_pico %>% 
   group_by ( State) %>% 
-             summarize(N_isol = n()) %>% 
+             summarize(N_isol = n(), Percent = round(100 * n() / nrow(.), digits = 1)) %>% 
              ungroup() %>%
               arrange(desc(N_isol)) %>% 
               add_row(State = "Total", N_isol = sum(.$N_isol))
 
 #creating the table in pdf
-field_ID_data_pico_summary3 %>% 
-  kable(format = "markdown") %>%    write2pdf("picoxystrobin_outliers_summary_bystates.pdf")
+# field_ID_data_pico_summary3 %>% 
+#   kable(format = "markdown") %>%    write2pdf("picoxystrobin_outliers_summary_by_states.pdf")
 
 
 # Summarizing 4  BY STATE  NE and host soybeans
@@ -2687,13 +2674,13 @@ filter(Estimate.50DC >=  outlier) %>% ungroup() %>%
   #filter(Origin == "FFT"|Origin =="FF" ) %>% 
 #, group =="Farmer fields")
   #, group == "Fungicide field trials", group =="Farmer fields" )%>%
-ungroup()        %>% 
+ungroup()       # %>% 
      #group_by(ID) %>% 
-  mutate(Host = ifelse(
-    ID %in% bean_isolates_exposed_to_fungicides,
-    "Dry bean","Soybean"
-    ))
-#%>% 
+#   mutate(Host = ifelse(
+#     ID %in% bean_isolates_exposed_to_fungicides,
+#     "Dry bean","Soybean"
+#     ))
+# #%>% 
   #mutate(MOA = "Group_7")%>% ungroup() 
 
 
@@ -2702,9 +2689,10 @@ unique(data_for_plots_tetra2$ID) #55 IDs
 
 data_for_plots_tetra2$ID <- as.factor(data_for_plots_tetra2$ID)
 
+
 field_ID_data_tetra <- data_for_plots_tetra2 %>% 
   left_join(WM, by = c(ID = "Collection_ID")) %>% 
-  rename(Origin = "Origin.x", Host = "Host.x") %>%     select(colnames(data_for_plots_tetra2), Field,  Year, State, molecule.s._current_season) %>% 
+  rename(Origin = "Origin.x" ) %>%     select(colnames(data_for_plots_tetra2), Field,  Year, State, molecule.s._current_season, Host) %>% 
   left_join(summary_field_original)  %>% 
   mutate(molecule.s._current_season = na_if(molecule.s._current_season, "")) %>% 
     arrange(ID) %>% rename(Funcide = molecule.s._current_season) %>% 
@@ -2725,42 +2713,50 @@ field_ID_data_tetra$ID[duplicated(field_ID_data_tetra$ID)]
 #"2320" "2385" "87"
 field_ID_data_tetra[!duplicated(field_ID_data_tetra),]
 #taking out the repeats
-field_ID_data_tetra <- field_ID_data_tetra[-c(5, 53, 56), ]
-## 56 entries
+field_ID_data_tetra <- field_ID_data_tetra[-c(5, 53, 55, 56), ]
+## 55 entries
 
 #creating the table in pdf
-field_ID_data_tetra %>% 
-  kable(format = "markdown") %>%    write2pdf("tetraconazole_outliers.pdf")
+# field_ID_data_tetra %>% 
+#   kable(format = "markdown") %>%    write2pdf("tetraconazole_outliers.pdf")
   
 # Summarizing 1
 field_ID_data_tetra_summary1 <- field_ID_data_tetra %>% 
-  group_by (Origin, Host,State) %>% 
-             summarize(N_isol = n()) %>% 
+  group_by (Origin) %>% 
+             summarize(N_isol = n(), Percent = round(100 * n() / nrow(.), digits = 1)) %>% 
              ungroup() %>% 
-              add_row(Origin = "Total", N_isol = sum(.$N_isol))
-         
-# Summarizing 2
+               add_row(Origin = "Total", N_isol = sum(.$N_isol))
+#creating the table in pdf      
+# field_ID_data_tetra_summary1 %>% 
+#   kable(format = "markdown") %>%    write2pdf("tetraconazole_outliers_summary_by_origin.pdf")
+
+
+# Summarizing 2 by host
 field_ID_data_tetra_summary2 <- field_ID_data_tetra %>% 
   group_by ( Host) %>% 
-             summarize(N_isol = n()) %>% 
-             ungroup() %>% 
-              add_row(Host = "Total", N_isol = sum(.$N_isol))
+             summarize(N_isol = n()
+, Percent = round(100 * n() / nrow(.), digits = 1)) %>% 
+      
+        
+  ungroup() %>% 
+                add_row(Host = "Total", N_isol = sum(.$N_isol))
 
-field_ID_data_tetra_summary2 %>% 
-  kable(format = "markdown") %>%    write2pdf("tetraconazole_outliers_summary_by_hosts.pdf")
+  #creating the table in pdf
+# field_ID_data_tetra_summary2 %>% 
+#   kable(format = "markdown") %>%    write2pdf("tetraconazole_outliers_summary_by_hosts.pdf")
 
 
 # Summarizing 3  BY STATE
 field_ID_data_tetra_summary3 <- field_ID_data_tetra %>% 
   group_by ( State) %>% 
-             summarize(N_isol = n()) %>% 
+             summarize(N_isol = n(), Percent = round(100 * n() / nrow(.), digits = 1)) %>% 
              ungroup() %>%
               arrange(desc(N_isol)) %>% 
               add_row(State = "Total", N_isol = sum(.$N_isol))
 
 #creating the table in pdf
-field_ID_data_tetra_summary3 %>% 
-  kable(format = "markdown") %>%    write2pdf("tetraconazole_outliers_summary_by_states.pdf")
+# field_ID_data_tetra_summary3 %>% 
+#   kable(format = "markdown") %>%    write2pdf("tetraconazole_outliers_summary_by_states.pdf")
 
 
 # Summarizing 4  BY STATE  NE and host soybeans
@@ -2789,13 +2785,13 @@ filter(Estimate.50DC >=  outlier) %>% ungroup() %>%
   #filter(Origin == "FFT"|Origin =="FF" ) %>% 
 #, group =="Farmer fields")
   #, group == "Fungicide field trials", group =="Farmer fields" )%>%
-ungroup()        %>% 
+ungroup()        
      #group_by(ID) %>% 
-  mutate(Host = ifelse(
-    ID %in% bean_isolates_exposed_to_fungicides,
-    "Dry bean","Soybean"
-    ))
-#%>% 
+#   mutate(Host = ifelse(
+#     ID %in% bean_isolates_exposed_to_fungicides,
+#     "Dry bean","Soybean"
+#     ))
+# #%>% 
   #mutate(MOA = "Group_7")%>% ungroup() 
 
 
@@ -2807,7 +2803,7 @@ data_for_plots_TM2$ID <- as.factor(data_for_plots_TM2$ID)
 
 field_ID_data_TM <- data_for_plots_TM2 %>% 
   left_join(WM, by = c(ID = "Collection_ID")) %>% 
-  rename(Origin = "Origin.x", Host = "Host.x") %>%     select(colnames(data_for_plots_TM2), Field,  Year, State, molecule.s._current_season) %>% 
+  rename(Origin = "Origin.x") %>%     select(colnames(data_for_plots_TM2), Field,  Year, State, molecule.s._current_season, Host) %>% 
   left_join(summary_field_original)  %>% 
   mutate(molecule.s._current_season = na_if(molecule.s._current_season, "")) %>% 
     arrange(ID) %>% rename(Funcide = molecule.s._current_season) %>% 
@@ -2828,42 +2824,46 @@ field_ID_data_TM$ID[duplicated(field_ID_data_TM$ID)]
 #"1029"  "2220" 
 field_ID_data_TM[!duplicated(field_ID_data_TM),]
 #taking out the repeats
-field_ID_data_TM <- field_ID_data_TM[-c(25, 46), ]
+field_ID_data_TM <- field_ID_data_TM[-c(25, 46, 59), ]
 ## 56 entries
 
-#creating the table in pdf
-field_ID_data_TM %>% 
-  kable(format = "markdown") %>%    write2pdf("TM_outliers.pdf")
+#creating the table in pdf 
+# field_ID_data_TM %>%
+#   kable(format = "markdown") %>%    write2pdf("TM_outliers.pdf")
   
-# Summarizing 1
+# Summarizing 1 by Origin
 field_ID_data_TM_summary1 <- field_ID_data_TM %>% 
-  group_by (Origin, Host,State) %>% 
-             summarize(N_isol = n()) %>% 
+  group_by (Origin) %>% 
+             summarize(N_isol = n(), Percent = round(100 * n() / nrow(.), digits = 1)) %>% 
              ungroup() %>% 
               add_row(Origin = "Total", N_isol = sum(.$N_isol))
          
-# Summarizing 2
+#creating the table in pdf
+# field_ID_data_TM_summary1 %>% 
+#   kable(format = "markdown") %>%    write2pdf("TM_outliers_summary_by_origin.pdf")
+
+# Summarizing 2 by Host
 field_ID_data_TM_summary2 <- field_ID_data_TM %>% 
   group_by ( Host) %>% 
-             summarize(N_isol = n()) %>% 
+             summarize(N_isol = n(), Percent = round(100 * n() / nrow(.), digits = 1)) %>% 
              ungroup() %>% 
               add_row(Host = "Total", N_isol = sum(.$N_isol))
-
-field_ID_data_TM_summary2 %>% 
-  kable(format = "markdown") %>%    write2pdf("TM_outliers_summary_by_hosts.pdf")
+#creating a table
+# field_ID_data_TM_summary2 %>% 
+#   kable(format = "markdown") %>%    write2pdf("TM_outliers_summary_by_hosts.pdf")
 
 
 # Summarizing 3  BY STATE
 field_ID_data_TM_summary3 <- field_ID_data_TM %>% 
   group_by ( State) %>% 
-             summarize(N_isol = n()) %>% 
+             summarize(N_isol = n(), Percent = round(100 * n() / nrow(.), digits = 1)) %>% 
              ungroup() %>%
               arrange(desc(N_isol)) %>% 
               add_row(State = "Total", N_isol = sum(.$N_isol))
 
 #creating the table in pdf
-field_ID_data_TM_summary3 %>% 
-  kable(format = "markdown") %>%    write2pdf("TM_outliers_summary_by_states.pdf")
+# field_ID_data_TM_summary3 %>% 
+#   kable(format = "markdown") %>%    write2pdf("TM_outliers_summary_by_states.pdf")
 
 
 # Summarizing 4  BY STATE  NE and host soybeans
@@ -2883,11 +2883,301 @@ field_ID_data_TM_summary4 <- field_ID_data_TM %>%
 
 
 ```
-# grouping by origin
+
+```{r}
+#BOSACLID doing the table required from Sydney
+
+#Fungicides single mode of action
+Group_one <- c("thiophanate_methyl")
+Group_3 <- c( "prothioconazole", "tetraconazole", "flutriafol", "propiconazole", "tebuconazole", "difenoconazole")
+Group_7 <- c("fluxapyroxad", "boscalid")
+Group_11 <- c("picoxystrobin", "azoxystrobin", "fluoxastrobin", "pyraclostrobin", "trifloxystrobin")
+
+not_considered <- c("potassium phosphite")
+
+#Mixxes of fungicides IN COMERCIAL PRODUCTS
+
+ Group_3_Group_11 <-  c(
+   "flutriafol + fluoxastrobin",
+   "tetraconazole + pyraclostrobin", #there 2 fungicides: single MOA(tetraconazole) + single MOA( pyraclostrobin) #Put attention for the mixxes analyses with 2 single MOA!!
+   "propiconazole + azoxystrobin",
+"prothioconazole + trifloxystrobin", 
+"tetraconazole + fluatriafol + fluxastrobin", #there 2 fungicides: single MOA(tetraconazole) + mix( flutriafol + fluxastrobin) #Put attention for the mixxes mixxes analyses with 2 single MOA!!
+"difenoconazole + azoxystrobin")
+ 
+Group_7_Group_11 <- c(
+  "fluxapyroxad + pyraclostrobin", 
+  "pyraclostrobin + fluxapyroxad + pyraclostrobin")  #there 2 fungicides: single MOA(pyraclostrobin) + mix( fluxapyroxad + pyraclostrobin) #Put attention for the mixxes mixxes analyses with 2 single MOA!!                     
+                     
+ Group_3_not_considered <- "tebuconazole + potassium phosphite"
+ 
+  unknown <- c("No_info")
+ 
+ 
+levels(WM$Fungicide_current_season)[levels(WM$Fungicide_current_season) == "No_info"] <- "unknown"
+
+levels(WM$molecule.s._current_season)[levels(WM$molecule.s._current_season) == ""] <- "unknown"
+
+levels(WM$Fungicide_previous_seasons)[levels(WM$Fungicide_previous_seasons) == ""] <- "unknown"
+
+
+levels(WM$molecule.s._previous_seasons)[levels(WM$molecule.s._previous_seasons) == ""] <- "unknown"
+
+
+WM$molecule.s._current_season <- as.character(WM$molecule.s._current_season)
+WM_ <- WM%>%
+  mutate(
+    Group_MOA_current_season = case_when(
+       molecule.s._current_season%in% Group_one ~ "Group_one",# filtering and naming "the name of the group" in case of in
+       molecule.s._current_season%in% Group_3~ "Group_3",
+       molecule.s._current_season%in% Group_7 ~ "Group_7",
+       molecule.s._current_season%in% Group_11 ~ "Group_11", molecule.s._current_season%in% Group_3_Group_11~ "Group_3&Group_11",
+       molecule.s._current_season%in% Group_7_Group_11~ "Group_7&Group_11",
+       molecule.s._current_season%in% Group_3_not_considered~ "Group_3&not_considered",
+       molecule.s._current_season%in% unknown~ "unknown",
+             TRUE ~ "unknown"# in case of not, naming "not_selected""
+    )
+  )   
+    
+            
+
+
+
+
+            
+
+
+
+ 
+  
+  data_for_plots_bos$ID[duplicated(data_for_plots_bos$ID)]
+  #1, 1026, 1027, 1029, 1033, 118, 123, 20, 2098, 21, 2385(2), 2386, 2388, 467,558, 564, 581, 2140, 8, 87, 2220, 2362, NA
+  
+  data_for_plots_TOTAL <- data_for_plots_bos[-c(1,3,4,5,6,7,8,11,12,14,15,18,20,21,23,2429,31,33,34,35,36,38,134, 229 ), ]
+  #tested
+  data_for_plots_TOTAL$ID
+  
+  
+  
+  
+  
+  ##
+  glimpse (data_for_plots_bos)
+  a <- data_for_plots_bos[!duplicated(data_for_plots_bos),]
+  
+  data_for_plots_bos <- unique(data_for_plots_bos)### Watach OuT!
+  
+  data_for_plots_bos2<- data_for_plots_bos%>% 
+  group_by(Origin)%>%
+  mutate(Estimate_50DC_outlier = list(get_range2(Estimate.50DC)))%>%
+  unnest() %>% 
+  filter(Estimate.50DC >=  outlier) %>% ungroup() %>%  
+    #filter(Origin == "FFT"|Origin =="FF" ) %>% 
+  #, group =="Farmer fields")
+    #, group == "Fungicide field trials", group =="Farmer fields" )%>%
+    ungroup()        
+       #group_by(ID) %>% 
+  #   mutate(Host = ifelse(
+  #     ID %in% bean_isolates_exposed_to_fungicides,
+  #     "Dry bean","Soybean"
+  #     ))
+  # #%>% 
+    #mutate(MOA = "Group_7")%>% ungroup() 
+  
+  
+   
+  summary_field_original <- WM %>% 
+    select(Field, Collection_ID) %>% 
+    unique() %>% 
+    group_by(Field) %>% 
+    summarize(Num_original_isolates = n()) %>% 
+    mutate(Empty_field = (Field == "")) %>% 
+    filter(Empty_field == FALSE) %>% 
+    select(-Empty_field)  
+  
+  unique(data_for_plots_bos2$ID) #55 IDs
+  
+  data_for_plots_bos2$ID <- as.factor(data_for_plots_bos2$ID)
+  
+  field_ID_data_bos <- data_for_plots_bos2 %>% 
+    full_join(WM_, by = c(ID = "Collection_ID")) %>% 
+    rename(Origin = "Origin.x") %>%     select(colnames(data_for_plots_bos2), Field,  Year, State, Group_MOA_current_season, Host) %>%
+     ungroup() %>%
+    rename(Group =Group_MOA_current_season) %>% 
+    group_by(Origin, Field,Year, State,Group, Host) %>% 
+    mutate (N_isolperfield = n())      %>%  
+    ungroup() %>% 
+    select(-c(outlier, Estimate.50DC) ) %>% 
+        mutate(Origin = ifelse(
+    ID %in% baseline_isolates2,
+    "Baseline",
+    ifelse(
+      ID %in% Farmer_fields2,
+      "FF","FFT"
+    ))) %>% 
+    select(ID, State, Field, Year, Origin, Group, Host, N_isolperfield)
+ # ordering the 
+  field_ID_data_bos$ID <- as.numeric( field_ID_data_bos$ID)    field_ID_data_bos <- field_ID_data_bos %>% arrange(ID)
+  
+  
+  #first transforming ID variable to charater and then to numeric
+  # field_ID_data_bos$ID <- as.numeric(  as.character(field_ID_data_bos$ID))
+  
+ 
+ 
+       
+   unique(field_ID_data_bos)
+  anyDuplicated(field_ID_data_bos
+                $ID)
+  
+  data_for_plots_bos2$ID[duplicated(data_for_plots_bos2$ID)]
+  #"1029" "1033" "2220" "564"
+ data_for_plots_bos2[!duplicated(data_for_plots_bos2),]
+  #taking out the repeats
+  data_for_plots_bos2 <- data_for_plots_bos2[-c(9, 27, 29,55), ]
+  ## 54 entries
+  #outliersBOSCALID
+   data_for_plots_bos2$ID  #54
+  #tested
+  data_for_plots_TOTAL$ID #207
+  
+  
+  
+ 
+  
+  
+notoutlierbuttested_bos <-( data_for_plots_TOTAL$ID[! data_for_plots_TOTAL$ID %in% data_for_plots_bos2$ID])
+
+notoutlierbuttested_pico <-( data_for_plots_TOTAL$ID[! data_for_plots_TOTAL$ID %in% data_for_plots_bos2$ID])
+
+notoutlierbuttested_tetra <-( data_for_plots_TOTAL$ID[! data_for_plots_TOTAL$ID %in% data_for_plots_bos2$ID])
+
+notoutlierbuttested_TM <-( data_for_plots_TOTAL$ID[! data_for_plots_TOTAL$ID %in% data_for_plots_bos2$ID])
+
+# fieldSS$ID <- as.numeric(fieldSS$ID)
+# fieldSS <- fieldSS %>% arrange(ID)
+
+
+ 
+
+field_ID_data_bos$ID <- as.numeric(field_ID_data_bos$ID)
+
+nottested <- field_ID_data_bos$ID[! field_ID_data_bos$ID %in% data_for_plots_TOTAL$ID]
+  
+    
+
+FieldSS<- field_ID_data_bos %>%
+mutate(bos= case_when(
+ID%in% data_for_plots_bos2$ID ~ 1,
+ID%in% notoutlierbuttested_bos~ 0,
+ID%in% nottested ~NA_real_ , 
+TRUE ~ NA_real_),
+pico= case_when(
+ID%in% field_ID_data_pico$ID ~ 1,
+ID%in% notoutlierbuttested_pico ~ 0,
+ID%in% nottested ~NA_real_ ,
+TRUE ~ NA_real_), 
+tetra= case_when(
+ID%in% field_ID_data_tetra$ID ~ 1,
+ID%in% notoutlierbuttested_tetra ~ 0,
+ID%in% nottested ~NA_real_ , 
+TRUE ~ NA_real_), 
+TM= case_when(
+ID%in% field_ID_data_TM$ID ~ 1,
+ID%in% notoutlierbuttested_TM ~ 0,
+ID%in% nottested ~NA_real_ , 
+TRUE ~ NA_real_)) 
+ 
+  hello <- FieldSS %>%   filter(Group== "Group_one"|Group=="Group_3"|Group=="Group_7"|Group=="Group_11")
+ 
+
+bye <- apply(hello, 1, sum)
+#water <- cbind(hello, bye)
+fusarium <- water %>% filter(bye>=2) %>% arrange(bye) 
+hello2 <- FieldSS %>%  select(bos, pico, tetra, TM)
+bye2 <- apply(hello2, 1, sum)
+hello3 <- FieldSS 
+water2 <- cbind(hello3, bye2)
+fusarium2 <- water2 %>% filter(bye2>=2) %>% arrange(bye2) 
+View(fusarium2
+    )
+fusarium%>%
+  write_csv("clean data/table_ouliers_together.csv")
+
+Groupone <- FieldSS %>% filter(Group== "Group_one")
+Groupone %>%
+kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>% 
+  write2pdf("Group_one.pdf")
+
+Group3 <- FieldSS %>% filter(Group== "Group_3")
+Group3 %>% 
+kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>% 
+  write2pdf("Group_3.pdf")
+Group7 <- FieldSS %>% filter(Group== "Group_7")
+Group7 %>% 
+kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>% 
+  write2pdf("Group_7.pdf")
+Group11 <- FieldSS %>% filter(Group== "Group_11")
+Group11 %>% 
+kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>% 
+  write2pdf("Group_11.pdf")
+
+       #creating the table in pdf
+FieldSS_ %>%
+kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%   
+  kable_styling(font_size = 5, full_width = 10, ) %>% 
+  write2pdf("summary_ouliers.pdf")
+
+FieldSS_ <- FieldSS_ %>% ungroup
+pdf( "summary_outliers.pdf")
+FieldSS_ <- FieldSS_ %>% ungroup
+dev.off()
+
+write.csv(FieldSS_, "clean data/summary_outliers.csv")
+
+
+
+```
+
+```{r}
+#BOSACLID
+
+data_for_plots_BOS <- data_for_plots_bos[!duplicated(data_for_plots_bos),]
+
+data_for_plots_bos$ID[duplicated(data_for_plots_bos$ID)]
+#1, 1026, 1027, 1029, 1033, 118, 123, 20, 2098, 21, 2385(2), 2386, 2388, 467,558, 564, 581, 2140, 8, 87, 2220, 2362
+
+data_for_plots_BOS <- data_for_plots_bos[-c(1,3,4,5,6,7,8,11,12,14,15,18,20,21,23,24,31,33,34,35,36,38,134 ), ]
+
+data_for_plots_BOS <- data_for_plots_BOS %>% ungroup()
+
+#207 entries
+data_for_plots_TM2$ID <- as.factor(data_for_plots_TM2$ID)
+
+
+
+
+
+# Summarizing 1 by Origin
+data_for_plots_summary1 <- data_for_plots_BOS %>% 
+  group_by (Origin) %>% 
+             summarize(N_isol = n(), Percent = round(100 * n() / nrow(.), digits = 1)) %>% 
+             ungroup() %>% 
+              add_row(Origin = "Total", N_isol = sum(.$N_isol))
+         
+#creating the table in pdf
+# data_for_plots_summary1 %>%
+#   kable(format = "markdown") %>%    write2pdf("summary_by_origin.pdf")
+
+
+```
+
+# ANOVA
 ```{r}
 ###########Boscalid
 
-data_for_plots_bos
+data_for_plots_bos# check this out
+data_for_plots_bos$ID[duplicated(data_for_plots_bos$ID)]
 ##NORMALITY TEST-Shapiro_test
 
 shapiro.test_boscal <- data_for_plots_bos %>%
