@@ -16,6 +16,8 @@ library(cowplot)
 library(gridExtra)
 library(kableExtra)
 library(arsenal)
+library(DescTools)
+
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
@@ -413,9 +415,9 @@ boscalidfinal <-
   #View(boscalidfinal)
 
 ## Since no normality, make Wilcox test for no parametric data to assess whether their population mean ranks differ##
-wilcox_boscalid <- boscalidfinal %>%
-  group_by(ID, dose) %>%
-  do(tidy(wilcox.test(.$`1`, .$`2`, paired = TRUE)))
+# wilcox_boscalid <- boscalidfinal %>%
+#   group_by(ID, dose) %>%
+#   do(tidy(wilcox.test(.$`1`, .$`2`, paired = TRUE)))
   #View(wilcox_boscalid)
 ##Anyways making linear model since the only required is normality of the errors once the results##
 # Getting EC50 by EC_table 
@@ -685,9 +687,9 @@ picoxystrobinfinal <- left_join (shapiro.test_picoxystrobin, picoxystrobin_filte
 #View(picoxystrobinfinal)
 
 ##Since no normality, make Wilcox test for no parametric data to assess whether their population mean ranks differ##
-wilcox_picoxystrobin<- picoxystrobinfinal%>%
-  group_by(ID, dose) %>%
-  do(tidy(wilcox.test(.$`1`, .$`2`, paired=TRUE)))
+# wilcox_picoxystrobin<- picoxystrobinfinal%>%
+#   group_by(ID, dose) %>%
+#   do(tidy(wilcox.test(.$`1`, .$`2`, paired=TRUE)))
 #View(wilcox_picoxystrobin)
 
 #Anyways making linear model since the only required is normality of the errors once the results#
@@ -983,9 +985,9 @@ tetraconazolefinal <- left_join (shapiro.test_tetraconazole, tetraconazole_filte
   na.omit() 
 #View(tetraconazolefinal)
 ##Since no normality, make Wilcox test for no parametric data to assess whether their population mean ranks differ##
-wilcox_tetraconazole<- tetraconazolefinal%>%
-  group_by(ID, dose) %>%
-  do(tidy(wilcox.test(.$`1`, .$`2`, paired=TRUE)))
+# wilcox_tetraconazole<- tetraconazolefinal%>%
+#   group_by(ID, dose) %>%
+#   do(tidy(wilcox.test(.$`1`, .$`2`, paired=TRUE)))
 #View(wilcox_tetraconazole)
 
 ##Anyways making linear model since the only required is normality of the errors once the results##
@@ -3101,40 +3103,40 @@ water2 <- cbind(hello3, bye2)
 fusarium2 <- water2 %>% filter(bye2>=2) %>% arrange(bye2) 
 View(fusarium2
     )
-fusarium%>%
-  write_csv("clean data/table_ouliers_together.csv")
+# fusarium%>%
+#   write_csv("clean data/table_ouliers_together.csv")
 
-Groupone <- FieldSS %>% filter(Group== "Group_one")
-Groupone %>%
-kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>% 
-  write2pdf("Group_one.pdf")
-
-Group3 <- FieldSS %>% filter(Group== "Group_3")
-Group3 %>% 
-kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>% 
-  write2pdf("Group_3.pdf")
-Group7 <- FieldSS %>% filter(Group== "Group_7")
-Group7 %>% 
-kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>% 
-  write2pdf("Group_7.pdf")
-Group11 <- FieldSS %>% filter(Group== "Group_11")
-Group11 %>% 
-kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>% 
-  write2pdf("Group_11.pdf")
-
-       #creating the table in pdf
-FieldSS_ %>%
-kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%   
-  kable_styling(font_size = 5, full_width = 10, ) %>% 
-  write2pdf("summary_ouliers.pdf")
-
-FieldSS_ <- FieldSS_ %>% ungroup
-pdf( "summary_outliers.pdf")
-FieldSS_ <- FieldSS_ %>% ungroup
-dev.off()
-
-write.csv(FieldSS_, "clean data/summary_outliers.csv")
-
+# Groupone <- FieldSS %>% filter(Group== "Group_one")
+# Groupone %>%
+# kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>% 
+#   write2pdf("Group_one.pdf")
+# 
+# Group3 <- FieldSS %>% filter(Group== "Group_3")
+# Group3 %>% 
+# kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>% 
+#   write2pdf("Group_3.pdf")
+# Group7 <- FieldSS %>% filter(Group== "Group_7")
+# Group7 %>% 
+# kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>% 
+#   write2pdf("Group_7.pdf")
+# Group11 <- FieldSS %>% filter(Group== "Group_11")
+# Group11 %>% 
+# kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>% 
+#   write2pdf("Group_11.pdf")
+# 
+#        #creating the table in pdf
+# FieldSS_ %>%
+# kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%   
+#   kable_styling(font_size = 5, full_width = 10 ) %>% 
+#   write2pdf("summary_ouliers.pdf")
+# 
+# FieldSS_ <- FieldSS_ %>% ungroup
+# pdf( "summary_outliers.pdf")
+# FieldSS_ <- FieldSS_ %>% ungroup
+# dev.off()
+# 
+# write.csv(FieldSS_, "clean data/summary_outliers.csv")
+# 
 
 
 ```
@@ -3176,14 +3178,19 @@ data_for_plots_summary1 <- data_for_plots_BOS %>%
 ```{r}
 ###########Boscalid
 
-data_for_plots_bos# check this out
-data_for_plots_bos$ID[duplicated(data_for_plots_bos$ID)]
+data_for_plots_BOS# check this out
+data_for_plots_BOS$ID[duplicated(data_for_plots_BOS$ID)]
 ##NORMALITY TEST-Shapiro_test
 
 shapiro.test_boscal <- data_for_plots_bos %>%
   group_by(Origin) %>%
   do(tidy(shapiro.test(.$Estimate.50DC)))
-shapiro.test_boscal  
+shapiro.test_boscal 
+
+shapiro.test_boscal <- data_for_plots_BOS %>%
+  group_by(Origin) %>%
+  do(tidy(shapiro.test(.$Estimate.50DC)))
+shapiro.test_boscal 
 
  #NO NORMALILTY thats is why  krusKal
 
@@ -3192,15 +3199,31 @@ kruskal.test(Estimate.50DC ~ Origin, data = data_for_plots_bos)
 
 #There is difference p-value = 0.0002899
 
-dunnTest(Estimate.50DC ~ Origin, data = data_for_plots_bos, method = "bonferroni")
+kruskal.test(Estimate.50DC ~ Origin, data = data_for_plots_BOS)
+#There is difference p-value 0.0009201
+
+DunnTest(Estimate.50DC ~ Origin, data = data_for_plots_bos, method = "bonferroni")
+#P VALUE 0.0148 * FF-Baseline
+
+DunnTest(Estimate.50DC ~ Origin, data = data_for_plots_BOS, method = "bonferroni")
+#FF-FFT            -32.97727 0.0023 **
 
 
-
+data_for_plots_BOS %>% group_by(Origin) %>% summarize(mean(Estimate.50DC))
 ####### pico
+
+
+
+data_for_plots_pico$ID[duplicated(data_for_plots_pico$ID)]
+#1, 1026, 1027, 1029, 118, 123, 20, 2098, 21, 2385(2), 2386, 2388, 2390, 467, 475, 2100, 645, NA,  2140, 2143, 8, 800,87, 2220, 2222,2223
+
+data_for_plots_PICO <- data_for_plots_pico[-c(1,3,4,5,7,8,11,22,  12, 15, 134,14, 15,13, 18, 19, 24, 25, 29, 30, 31, 32, 33, 34, 35, 36,39), ]
+
+data_for_plots_PICO$ID[duplicated(data_for_plots_PICO$ID)]
 
 ##NORMALITY TEST-Shapiro_test,
 shapiro.test_pico <- 
-data_for_plots_pico %>%
+data_for_plots_PICO %>%
   group_by(Origin) %>%
   do(tidy(shapiro.test(.$Estimate.50DC)))
 shapiro.test_pico
@@ -3211,18 +3234,32 @@ shapiro.test_pico
 
 
 kruskal.test(Estimate.50DC ~ Origin, data = data_for_plots_pico)
-
 #There is difference p-value = 0.03845
+#There is no difference p-value = 0.06641
 
-dunnTest(Estimate.50DC ~ Origin, data = data_for_plots_pico, method = "bonferroni")
+kruskal.test(Estimate.50DC ~ Origin, data = data_for_plots_PICO)
+#There is no difference p-value = 0.157
+
+# dunnTest(Estimate.50DC ~ Origin, data = data_for_plots_pico, method = "bonferroni")
 
 
 
 
 #########tetra
+
+data_for_plots_tetra$ID[duplicated(data_for_plots_tetra$ID)]
+
+#1, 1026, 1027, 1029, 1033,118, 123, 20, 2098, 2385(2),2386(2), 2388,467,581,2098,2139,2140,2143,8,87,2220,2222,2320
+
+data_for_plots_TETRA <- data_for_plots_tetra[-c(1,3,4,5,7,8, 9, 12, 23, 15, 134, 
+                                                135, 142, 
+                                                
+                                                136,145,22,23,28, 29, 30, 31,33, 34, 35, 38,111 ), ]
+
+data_for_plots_TETRA$ID[duplicated(data_for_plots_TETRA$ID)]
 ##NORMALITY TEST-Shapiro_test
 shapiro.test_tetra <- 
-data_for_plots_tetra %>%
+data_for_plots_TETRA %>%
   group_by(Origin) %>%
   do(tidy(shapiro.test(.$Estimate.50DC)))
 shapiro.test_tetra
@@ -3233,7 +3270,7 @@ kruskal.test(Estimate.50DC ~ Origin, data = data_for_plots_tetra)
 
 #There is NO difference p-value = 0.2738
 
-
+#There is NO difference p-value = 0.1537
 
 
 
@@ -3243,38 +3280,57 @@ kruskal.test(Estimate.50DC ~ Origin, data = data_for_plots_tetra)
 
 
 ```
+#  ANOVA By hosts
 ```{r}
 ###########Boscalid
 
-data_for_plots_bos2
+data_for_plots_BOS$ID <- as.character(data_for_plots_BOS$ID)
 
-
- #NO NORMALILTY thats is why  krusKal
-
-
-kruskal.test(Estimate.50DC ~ group, data = data_for_plots_bos_2)
-
-#There is difference p-value = 0.0001098
-
-
-
-
+xxx<- data_for_plots_BOS %>% 
+left_join(WM, by = c(ID = "Collection_ID")) %>% 
+rename(Origin = "Origin.x") %>% select(ID, Estimate.50DC, Origin, Host)
+   
 #NO NORMALILTY thats is why  krusKal
 
 
-kruskal.test(Estimate.50DC ~ group, data = data_for_plots_pico_2)
+kruskal.test(Estimate.50DC ~ Host, data = xxx)
 
-#There is NO difference p-value = 0.29
+#There is NO difference p-value =  0.07177
+
+
+
+
+
+
+
+###########Pico
+
+data_for_plots_PICO$ID <- as.character(data_for_plots_PICO$ID)
+
+
+zzz<- data_for_plots_PICO %>% 
+left_join(WM, by = c(ID = "Collection_ID")) %>% 
+rename(Origin = "Origin.x") %>% select(ID, Estimate.50DC, Origin, Host)
+#NO NORMALILTY thats is why  krusKal
+#There is NO difference p-value = 0.3658
+
+kruskal.test(Estimate.50DC ~ Host, data = zzz)
+
 
 
 #########tetra
 
+data_for_plots_TETRA$ID <- as.character(data_for_plots_TETRA$ID)
 
+aaa<- data_for_plots_TETRA %>% 
+left_join(WM, by = c(ID = "Collection_ID")) %>% 
+rename(Origin = "Origin.x") %>% select(ID, Estimate.50DC, Origin, Host)
 #NO NORMALILTY thats is why  krusKal
 
-kruskal.test(Estimate.50DC ~ group, data = data_for_plots_tetra_2)
+#There is NO difference p-value = 0.1462
+kruskal.test(Estimate.50DC ~ Origin, data = aaa)
 
-#There is NO difference p-value = 0.5193
+
 
 ```
 
