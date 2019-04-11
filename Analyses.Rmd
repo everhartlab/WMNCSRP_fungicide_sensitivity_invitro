@@ -363,9 +363,10 @@ Farmer_fields2 <- c(136:442, 455, 456, 466, 468, 470, 471, 478:554, 602:610, 612
 
 baseline_isolates2 <- c(1: 136, 444: 454, 457: 465, 467, 469, 472:477, 555:601, 611, 636:670, 673: 680, 691:694 , 798: 809,  824: 833, 836: 847)
 
-Drybean <- c()
+drybean <- c(1, 5, 12,13:118, 123:128, 133:135, 145, 146, 152, 155:160, 182: 185, 194:200, 205, 220, 223, 248, 253:255, 274, 279, 280, 290, 294, 304: 309, 323, 358, 393, 395, 396, 397, 400:402, 405, 408, 409, 434, 443:465, 467, 469: 493, 495:505, 555:613, 615: 760, 762: 819, 824:833, 835:855, 858:921, 966: 971, 980, 981, 985: 996, 998: 1009, 1220:1225 , 1857: 1940, 2242: 2569)
 
-```
+soybean <- c(143, 147, 181, 187, 188, 189,202, 257: 259, 264:268, 276, 281, 289, 293, 295, 310 , 399, 412:417, 419, 425:427, 439, 440, 494, 506:554, 834, 972:979, 982, 997, 1010: 1022, 1025:1219, 1229: 1856, 1941: 2241 )
+``` 
 ##  Creating a function for using the outputs of boxplot.stats function and notice the outliers
 
 ```{r}
@@ -385,7 +386,7 @@ get_range <- function(mynumber) {
 #Boscalid fungicide taking the outliers from the 8 observations of each one, it reduces from to #
 boscalid_filtered  <- boscaliddata %>%
   group_by(ID, dose) %>%
-  mutate(growth_range = list(get_range(growth))) %>%
+  mutate(growth_range = list(get_range(growth))) %>%# a function that i create before
   unnest() %>%
   filter(growth <= upper & growth >= lower) %>%
   rename(response = growth) %>%
@@ -585,15 +586,18 @@ boscalid_data <- survey_data %>%
          experimental_replicate,
          boscalid.growth,
          control.growth) %>%
-  rename(response = boscalid.growth, control = control.growth)
-boscalid_data$ID <- as.character(boscalid_data$ID)
-###
-alga <-  boscalid_filtered %>% filter(dose== 0.2 | dose== 0) %>%  spread(dose, response) %>% rename(control= '0',  response = '0.2') %>% select(ID, repeats, experimental_replicate,  response,control )
-alga$ID <- as.character(alga$ID)
+  rename(response = boscalid.growth, control = control.growth) %>% 
+  mutate(ID= as.character(ID))
 
-##
+
+###
+alga <-  boscalid_filtered %>% filter(dose== 0.2 | dose== 0) %>%  spread(dose, response) %>% rename(control= '0',  response = '0.2') %>% select(ID, repeats, experimental_replicate,  response,control) %>% 
+  mutate(ID= as.character(ID))
+
+
+## That wa using the EC50D of the serial dilution but Iam going to use Real EC50 of those
  
- boscalid_data <- boscalid_data %>% full_join (alga)
+ #boscalid_data <- boscalid_data %>% full_join (alga)
  
 # Using the previous  function in order to take out the outliers
 boscalid_filtered_survey <- boscalid_data %>%
@@ -880,16 +884,18 @@ picoxystrobin_data <- survey_data %>%
   sham.growth,
   control.growth
   ) %>%
-  rename(response = picoxystrobin.growth, control = sham.growth) %>% select(-control.growth)
+  rename(response = picoxystrobin.growth, control = sham.growth) %>% select(-control.growth) %>% 
+  mutate(ID= as.character(ID))
   
-picoxystrobin_data$ID <- as.character(picoxystrobin_data$ID)
-###
-protozoa <-  picoxystrobin_filtered %>% filter(dose== 0.01 | dose== 0) %>%  spread(dose, response) %>% rename(control= '0',  response = '0.01') %>% select(ID, repeats, experimental_replicate,  response,control )
-protozoa$ID <- as.character(protozoa$ID)
 
-##
+###
+protozoa <-  picoxystrobin_filtered %>% filter(dose== 0.01 | dose== 0) %>%  spread(dose, response) %>% rename(control= '0',  response = '0.01') %>% select(ID, repeats, experimental_replicate,  response,control ) %>% 
+  mutate(ID= as.character(ID))
+
+
+# That was using the EC50D of the serial dilution but Iam going to use Real EC50 of those
  
- picoxystrobin_data <- picoxystrobin_data %>% full_join (protozoa)
+ # picoxystrobin_data <- picoxystrobin_data %>% full_join (protozoa)
  
 
 # Using the function in order to take out the outliers
@@ -1169,15 +1175,18 @@ tetraconazole_data <- survey_data %>%
   experimental_replicate,
   tetraconazole.growth,
   control.growth) %>%
-  rename(response = tetraconazole.growth, control = control.growth)
-  tetraconazole_data$ID <- as.character(tetraconazole_data$ID)
-###
-amibae <-  tetraconazole_filtered %>% filter(dose== 2 | dose== 0) %>%  spread(dose, response) %>% rename(control= '0',  response = '2') %>% select(ID, repeats, experimental_replicate,  response,control )
-protozoa$ID <- as.character(protozoa$ID)
-
-##
+  rename(response = tetraconazole.growth, control = control.growth) %>% 
+  mutate(ID = as.character(ID))
  
- tetraconazole_data <- tetraconazole_data %>% full_join (amibae)
+###
+amibae <-  tetraconazole_filtered %>% filter(dose== 2 | dose== 0) %>%  spread(dose, response) %>% rename(control= '0',  response = '2') %>% select(ID, repeats, experimental_replicate,  response,control ) %>% 
+    mutate(ID = as.character(ID))
+
+
+
+## That was using the EC50D of the serial dilution but Iam going to use Real EC50 of those
+ 
+ # tetraconazole_data <- tetraconazole_data %>% full_join (amibae)
  
 
 # Using the function in order to take out the outliers#
@@ -1275,7 +1284,8 @@ TM_filtered <- TMdata %>%
   unnest() %>%
   filter(growth <= upper & growth >= lower) %>%
   rename(response = growth) %>% 
-  ungroup()
+  ungroup() 
+  
 
 ## Discarding all experimental replicate 1 due not consistence in results## anyways it was not consistence in those ones
 TM_filtered <- TM_filtered %>%
@@ -1296,7 +1306,6 @@ shapiro.test_TM <- TM_filtered %>%
 TMfinal <- left_join (shapiro.test_TM, TM_filtered) %>% 
   mutate(normality = ifelse(p.value >0.05, "normal", "nonormal")) %>% 
   spread(experimental_replicate, response)
-View(TMfinal)
 
 ##WILCOX TEST##
 #wilcox_TM<- TMfinal%>%
@@ -1394,7 +1403,8 @@ ggplot(final_TM_DD_10, aes(x = EC50, y = Estimate.50DD)) +  theme(plot.title = e
 ```{r}
 TM_data <- survey_data %>%
   select(ID, repeats, experimental_replicate, TM.growth, control.growth) %>% 
-  rename(response = TM.growth, control = control.growth) 
+  rename(response = TM.growth, control = control.growth)%>%  
+  mutate(ID= as.character(ID))
 
 TM_data <- TM_data %>% 
   group_by(ID) %>% 
@@ -1567,7 +1577,8 @@ ggplot(final_TM_DD_2.5, aes(x = EC50, y = Estimate.50DD)) +  theme(plot.title = 
 
 TM_data <- survey_data %>%
   select(ID, repeats, experimental_replicate, TM.growth, control.growth) %>% 
-  rename(response = TM.growth, control = control.growth) 
+  rename(response = TM.growth, control = control.growth)%>%
+  mutate(ID= as.character(ID))
 
 # Using the function in order to take out the outliers#
 TM_data_filtered_survey <- TM_data %>%
@@ -1580,7 +1591,7 @@ TM_data_filtered_survey <- TM_data %>%
   ungroup()%>% 
   select(c(ID, experimental_replicate, repeats, response, control))
 
-##PLus baseline
+##USind the model
 TM_filtered_ <- TM_data_filtered_survey %>%
   group_by(ID) %>% 
   summarise(mean_response =mean(response, na.rm = TRUE), mean_control =mean(control, na.rm = TRUE)) %>% 
@@ -1621,17 +1632,990 @@ levels(boscalid_xx$group)[levels(boscalid_xx$group) == "baseline"] <-"Baseline"
 
 ```
 
+```{r}
+
+#Transforming before in characters
+boscalid_xx$ID <- as.character(boscalid_xx$ID)
+#Replacing the ID from the inventory ID
+ boscalid_xx$ID[ boscalid_xx$ID =="12B"]  <- "12"
+ boscalid_xx$ID[ boscalid_xx$ID=="318"]  <- "2390"
+ boscalid_xx$ID[ boscalid_xx$ID =="413"]  <- "2386"
+ boscalid_xx$ID[ boscalid_xx$ID =="419"]  <- "2385"
+  boscalid_xx$ID[ boscalid_xx$ID == "62-01"] <- "2097"  
+  boscalid_xx$ID[ boscalid_xx$ID == "62-02"] <- "2098"
+   boscalid_xx$ID[ boscalid_xx$ID == "62-03"] <- "2099"
+    boscalid_xx$ID[ boscalid_xx$ID == "62-04"] <- "2100"
+ boscalid_xx$ID[ boscalid_xx$ID =="74SS1"]  <- "74"
+
+ boscalid_xx$ID[ boscalid_xx$ID == "78-01"] <- "2139"
+  boscalid_xx$ID[ boscalid_xx$ID == "78-02"] <- "2140"
+
+
+ boscalid_xx$ID[ boscalid_xx$ID == "78-05"]  <- "2143"
+ 
+ boscalid_xx$ID[ boscalid_xx$ID == "H-01"]  <- "2220"
+ boscalid_xx$ID[ boscalid_xx$ID == "H-03"] <- "2222"
+ boscalid_xx$ID[ boscalid_xx$ID == "H-04"] <- "2223"
+  boscalid_xx$ID[ boscalid_xx$ID == "I-20"] <- "2362"
+     boscalid_xx$ID[ boscalid_xx$ID =="W212"]  <- "2388"
+
+  
+  boscalid_xx$ID[ boscalid_xx$ID == "51C"] <- "2449"
+ boscalid_xx$ID[ boscalid_xx$ID == "53B"] <- "2536"
+boscalid_xx$ID[ boscalid_xx$ID == "54C"] <- "2453"
+boscalid_xx$ID[ boscalid_xx$ID == "60A"] <- "2559"
+
+boscalid_xx$ID[ boscalid_xx$ID == "64D"] <- "2518"
+ boscalid_xx$ID[ boscalid_xx$ID == "65B"]  <- "2528"
+ boscalid_xx$ID[ boscalid_xx$ID == "71B"] <-
+"2505"
+
+ 
+ boscalid_xx$ID[ boscalid_xx$ID == "S-01"] <- "2320"
+
+ 
+ 
+ ###
+ 
+ #Transforming before in characters
+boscalid_filtered_$ID <- as.character(boscalid_filtered_$ID)
+#Replacing the ID from the inventory ID
+ boscalid_filtered_$ID[ boscalid_filtered_$ID =="12B"]  <- "12"
+ boscalid_filtered_$ID[ boscalid_filtered_$ID=="318"]  <- "2390"
+ boscalid_filtered_$ID[ boscalid_filtered_$ID =="413"]  <- "2386"
+ boscalid_filtered_$ID[ boscalid_filtered_$ID =="419"]  <- "2385"
+  boscalid_filtered_$ID[ boscalid_filtered_$ID == "62-01"] <- "2097"  
+  boscalid_filtered_$ID[ boscalid_filtered_$ID == "62-02"] <- "2098"
+   boscalid_filtered_$ID[ boscalid_filtered_$ID == "62-03"] <- "2099"
+    boscalid_filtered_$ID[ boscalid_filtered_$ID == "62-04"] <- "2100"
+ boscalid_filtered_$ID[ boscalid_filtered_$ID =="74SS1"]  <- "74"
+
+ boscalid_filtered_$ID[ boscalid_filtered_$ID == "78-01"] <- "2139"
+  boscalid_filtered_$ID[ boscalid_filtered_$ID == "78-02"] <- "2140"
+
+
+ boscalid_filtered_$ID[ boscalid_filtered_$ID == "78-05"]  <- "2143"
+ 
+ boscalid_filtered_$ID[ boscalid_filtered_$ID == "H-01"]  <- "2220"
+ boscalid_filtered_$ID[ boscalid_filtered_$ID == "H-03"] <- "2222"
+
+  boscalid_filtered_$ID[ boscalid_filtered_$ID == "I-20"] <- "2362"
+     boscalid_filtered_$ID[ boscalid_filtered_$ID =="W212"]  <- "2388"
+
+  
+  boscalid_filtered_$ID[ boscalid_filtered_$ID == "51C"] <- "2449"
+ boscalid_filtered_$ID[ boscalid_filtered_$ID == "53B"] <- "2536"
+boscalid_filtered_$ID[ boscalid_filtered_$ID == "54C"] <- "2453"
+boscalid_filtered_$ID[ boscalid_filtered_$ID == "60A"] <- "2559"
+
+boscalid_filtered_$ID[ boscalid_filtered_$ID == "64D"] <- "2518"
+ boscalid_filtered_$ID[ boscalid_filtered_$ID == "65B"]  <- "2528"
+ boscalid_filtered_$ID[ boscalid_filtered_$ID == "71B"] <-
+"2505"
+
+ 
+ boscalid_filtered_$ID[ boscalid_filtered_$ID == "S-01"] <- "2320"
+
+ 
+ ####
+ 
+ picoxystrobin_yy$ID <- as.character(picoxystrobin_yy$ID)
+#Replacing the ID from the inventory ID
+ picoxystrobin_yy$ID[ picoxystrobin_yy$ID =="12B"]  <- "12"
+ picoxystrobin_yy$ID[ picoxystrobin_yy$ID=="318"]  <- "2390"
+ picoxystrobin_yy$ID[ picoxystrobin_yy$ID =="413"]  <- "2386"
+ picoxystrobin_yy$ID[ picoxystrobin_yy$ID =="419"]  <- "2385"
+  picoxystrobin_yy$ID[ picoxystrobin_yy$ID == "62-01"] <- "2097"  
+  picoxystrobin_yy$ID[ picoxystrobin_yy$ID == "62-02"] <- "2098"
+   picoxystrobin_yy$ID[ picoxystrobin_yy$ID == "62-03"] <- "2099"
+    picoxystrobin_yy$ID[ picoxystrobin_yy$ID == "62-04"] <- "2100"
+ picoxystrobin_yy$ID[ picoxystrobin_yy$ID =="74SS1"]  <- "74"
+
+ picoxystrobin_yy$ID[ picoxystrobin_yy$ID == "78-01"] <- "2139"
+  picoxystrobin_yy$ID[ picoxystrobin_yy$ID == "78-02"] <- "2140"
+
+
+ picoxystrobin_yy$ID[ picoxystrobin_yy$ID == "78-05"]  <- "2143"
+ 
+ picoxystrobin_yy$ID[ picoxystrobin_yy$ID == "H-01"]  <- "2220"
+ picoxystrobin_yy$ID[ picoxystrobin_yy$ID == "H-03"] <- "2222"
+  picoxystrobin_yy$ID[ picoxystrobin_yy$ID == "H-04"] <- "2223"
+
+  picoxystrobin_yy$ID[ picoxystrobin_yy$ID == "I-20"] <- "2362"
+     picoxystrobin_yy$ID[ picoxystrobin_yy$ID =="W212"]  <- "2388"
+
+  
+  picoxystrobin_yy$ID[ picoxystrobin_yy$ID == "51C"] <- "2449"
+ picoxystrobin_yy$ID[ picoxystrobin_yy$ID == "53B"] <- "2536"
+picoxystrobin_yy$ID[ picoxystrobin_yy$ID == "54C"] <- "2453"
+picoxystrobin_yy$ID[ picoxystrobin_yy$ID == "60A"] <- "2559"
+
+picoxystrobin_yy$ID[ picoxystrobin_yy$ID == "64D"] <- "2518"
+ picoxystrobin_yy$ID[ picoxystrobin_yy$ID == "65B"]  <- "2528"
+ picoxystrobin_yy$ID[ picoxystrobin_yy$ID == "71B"] <-
+"2505"
+
+ 
+ picoxystrobin_yy$ID[ picoxystrobin_yy$ID == "S-01"] <- "2320"
+
+##
+  picoxystrobin_filtered_$ID <- as.character(picoxystrobin_filtered_$ID)
+ 
+ picoxystrobin_filtered_$ID[ picoxystrobin_filtered_$ID =="12B"]  <- "12"
+ picoxystrobin_filtered_$ID[ picoxystrobin_filtered_$ID=="318"]  <- "2390"
+ picoxystrobin_filtered_$ID[ picoxystrobin_filtered_$ID =="413"]  <- "2386"
+ picoxystrobin_filtered_$ID[ picoxystrobin_filtered_$ID =="419"]  <- "2385"
+  picoxystrobin_filtered_$ID[ picoxystrobin_filtered_$ID == "62-01"] <- "2097"  
+  picoxystrobin_filtered_$ID[ picoxystrobin_filtered_$ID == "62-02"] <- "2098"
+   picoxystrobin_filtered_$ID[ picoxystrobin_filtered_$ID == "62-03"] <- "2099"
+    picoxystrobin_filtered_$ID[ picoxystrobin_filtered_$ID == "62-04"] <- "2100"
+ picoxystrobin_filtered_$ID[ picoxystrobin_filtered_$ID =="74SS1"]  <- "74"
+
+ picoxystrobin_filtered_$ID[ picoxystrobin_filtered_$ID == "78-01"] <- "2139"
+  picoxystrobin_filtered_$ID[ picoxystrobin_filtered_$ID == "78-02"] <- "2140"
+
+
+ picoxystrobin_filtered_$ID[ picoxystrobin_filtered_$ID == "78-05"]  <- "2143"
+ 
+ picoxystrobin_filtered_$ID[ picoxystrobin_filtered_$ID == "H-01"]  <- "2220"
+ picoxystrobin_filtered_$ID[ picoxystrobin_filtered_$ID == "H-03"] <- "2222"
+  picoxystrobin_filtered_$ID[ picoxystrobin_filtered_$ID == "H-04"] <- "2223"
+
+  picoxystrobin_filtered_$ID[ picoxystrobin_filtered_$ID == "I-20"] <- "2362"
+     picoxystrobin_filtered_$ID[ picoxystrobin_filtered_$ID =="W212"]  <- "2388"
+
+  
+  picoxystrobin_filtered_$ID[ picoxystrobin_filtered_$ID == "51C"] <- "2449"
+ picoxystrobin_filtered_$ID[ picoxystrobin_filtered_$ID == "53B"] <- "2536"
+picoxystrobin_filtered_$ID[ picoxystrobin_filtered_$ID == "54C"] <- "2453"
+picoxystrobin_filtered_$ID[ picoxystrobin_filtered_$ID == "60A"] <- "2559"
+
+picoxystrobin_filtered_$ID[ picoxystrobin_filtered_$ID == "64D"] <- "2518"
+ picoxystrobin_filtered_$ID[ picoxystrobin_filtered_$ID == "65B"]  <- "2528"
+ picoxystrobin_filtered_$ID[ picoxystrobin_filtered_$ID == "71B"] <-
+"2505"
+
+ 
+ picoxystrobin_filtered_$ID[ picoxystrobin_filtered_$ID == "S-01"] <- "2320"
+ 
+ ####
+ 
+ ##########tetraconazole#######
+
+tetraconazole_bb$ID <- as.character(tetraconazole_bb$ID)
+#Replacing the ID from the inventory ID
+ tetraconazole_bb$ID[ tetraconazole_bb$ID =="12B"]  <- "12"
+ tetraconazole_bb$ID[ tetraconazole_bb$ID=="318"]  <- "2390"
+ tetraconazole_bb$ID[ tetraconazole_bb$ID =="413"]  <- "2386"
+ tetraconazole_bb$ID[ tetraconazole_bb$ID =="419"]  <- "2385"
+  tetraconazole_bb$ID[ tetraconazole_bb$ID == "62-01"] <- "2097"  
+  tetraconazole_bb$ID[ tetraconazole_bb$ID == "62-02"] <- "2098"
+   tetraconazole_bb$ID[ tetraconazole_bb$ID == "62-03"] <- "2099"
+    tetraconazole_bb$ID[ tetraconazole_bb$ID == "62-04"] <- "2100"
+ tetraconazole_bb$ID[ tetraconazole_bb$ID =="74SS1"]  <- "74"
+
+ tetraconazole_bb$ID[ tetraconazole_bb$ID == "78-01"] <- "2139"
+  tetraconazole_bb$ID[ tetraconazole_bb$ID == "78-02"] <- "2140"
+
+
+ tetraconazole_bb$ID[ tetraconazole_bb$ID == "78-05"]  <- "2143"
+ 
+ tetraconazole_bb$ID[ tetraconazole_bb$ID == "H-01"]  <- "2220"
+ tetraconazole_bb$ID[ tetraconazole_bb$ID == "H-03"] <- "2222"
+tetraconazole_bb$ID[ tetraconazole_bb$ID == "H-04"] <- "2223"
+  tetraconazole_bb$ID[ tetraconazole_bb$ID == "I-20"] <- "2362"
+     tetraconazole_bb$ID[ tetraconazole_bb$ID =="W212"]  <- "2388"
+
+  
+  tetraconazole_bb$ID[ tetraconazole_bb$ID == "51C"] <- "2449"
+ tetraconazole_bb$ID[ tetraconazole_bb$ID == "53B"] <- "2536"
+tetraconazole_bb$ID[ tetraconazole_bb$ID == "54C"] <- "2453"
+tetraconazole_bb$ID[ tetraconazole_bb$ID == "60A"] <- "2559"
+
+tetraconazole_bb$ID[ tetraconazole_bb$ID == "64D"] <- "2518"
+ tetraconazole_bb$ID[ tetraconazole_bb$ID == "65B"]  <- "2528"
+ tetraconazole_bb$ID[ tetraconazole_bb$ID == "71B"] <-
+"2505"
+
+ 
+ tetraconazole_bb$ID[ tetraconazole_bb$ID == "S-01"] <- "2320"
+
+#Transformin now to numeric
+  tetraconazole_bb$ID <- as.numeric(tetraconazole_bb$ID)
+
+ ########
+  
+tetraconazole_filtered_$ID <- as.character(tetraconazole_filtered_$ID)
+#Replacing the ID from the inventory ID
+ tetraconazole_filtered_$ID[ tetraconazole_filtered_$ID =="12B"]  <- "12"
+ tetraconazole_filtered_$ID[ tetraconazole_filtered_$ID=="318"]  <- "2390"
+ tetraconazole_filtered_$ID[ tetraconazole_filtered_$ID =="413"]  <- "2386"
+ tetraconazole_filtered_$ID[ tetraconazole_filtered_$ID =="419"]  <- "2385"
+  tetraconazole_filtered_$ID[ tetraconazole_filtered_$ID == "62-01"] <- "2097"  
+  tetraconazole_filtered_$ID[ tetraconazole_filtered_$ID == "62-02"] <- "2098"
+   tetraconazole_filtered_$ID[ tetraconazole_filtered_$ID == "62-03"] <- "2099"
+    tetraconazole_filtered_$ID[ tetraconazole_filtered_$ID == "62-04"] <- "2100"
+ tetraconazole_filtered_$ID[ tetraconazole_filtered_$ID =="74SS1"]  <- "74"
+
+ tetraconazole_filtered_$ID[ tetraconazole_filtered_$ID == "78-01"] <- "2139"
+  tetraconazole_filtered_$ID[ tetraconazole_filtered_$ID == "78-02"] <- "2140"
+
+
+ tetraconazole_filtered_$ID[ tetraconazole_filtered_$ID == "78-05"]  <- "2143"
+ 
+ tetraconazole_filtered_$ID[ tetraconazole_filtered_$ID == "H-01"]  <- "2220"
+ tetraconazole_filtered_$ID[ tetraconazole_filtered_$ID == "H-03"] <- "2222"
+tetraconazole_filtered_$ID[ tetraconazole_filtered_$ID == "H-04"] <- "2223"
+  tetraconazole_filtered_$ID[ tetraconazole_filtered_$ID == "I-20"] <- "2362"
+     tetraconazole_filtered_$ID[ tetraconazole_filtered_$ID =="W212"]  <- "2388"
+
+  
+  tetraconazole_filtered_$ID[ tetraconazole_filtered_$ID == "51C"] <- "2449"
+ tetraconazole_filtered_$ID[ tetraconazole_filtered_$ID == "53B"] <- "2536"
+tetraconazole_filtered_$ID[ tetraconazole_filtered_$ID == "54C"] <- "2453"
+tetraconazole_filtered_$ID[ tetraconazole_filtered_$ID == "60A"] <- "2559"
+
+tetraconazole_filtered_$ID[ tetraconazole_filtered_$ID == "64D"] <- "2518"
+ tetraconazole_filtered_$ID[ tetraconazole_filtered_$ID == "65B"]  <- "2528"
+ tetraconazole_filtered_$ID[ tetraconazole_filtered_$ID == "71B"] <-
+"2505"
+
+ 
+ tetraconazole_filtered_$ID[ tetraconazole_filtered_$ID == "S-01"] <- "2320"
+
+#Transformin now to numeric
+  tetraconazole_filtered_$ID <- as.numeric(tetraconazole_filtered_$ID)
+  
+  ##########TM#######
+
+#Transforming before in characters
+TM_zz$ID <- as.character(TM_zz$ID)
+#Replacing the ID from the inventory ID
+ TM_zz$ID[ TM_zz$ID =="12B"]  <- "12"
+ TM_zz$ID[ TM_zz$ID=="318"]  <- "2390"
+ TM_zz$ID[ TM_zz$ID =="413"]  <- "2386"
+ TM_zz$ID[ TM_zz$ID =="419"]  <- "2385"
+  TM_zz$ID[ TM_zz$ID == "62-01"] <- "2097"  
+  TM_zz$ID[ TM_zz$ID == "62-02"] <- "2098"
+   TM_zz$ID[ TM_zz$ID == "62-03"] <- "2099"
+    TM_zz$ID[ TM_zz$ID == "62-04"] <- "2100"
+   TM_zz$ID[ TM_zz$ID == "78-01"] <- "2139"
+  TM_zz$ID[ TM_zz$ID == "78-02"] <- "2140"
+
+
+ TM_zz$ID[ TM_zz$ID == "78-05"]  <- "2143"
+ 
+ TM_zz$ID[ TM_zz$ID == "H-01"]  <- "2220"
+ TM_zz$ID[ TM_zz$ID == "H-03"] <- "2222"
+TM_zz$ID[ TM_zz$ID == "H-04"] <- "2223"
+  TM_zz$ID[ TM_zz$ID == "I-20"] <- "2362"
+     TM_zz$ID[ TM_zz$ID =="W212"]  <- "2388"
+
+  
+  TM_zz$ID[ TM_zz$ID == "51C"] <- "2449"
+ TM_zz$ID[ TM_zz$ID == "53B"] <- "2536"
+TM_zz$ID[ TM_zz$ID == "54C"] <- "2453"
+TM_zz$ID[ TM_zz$ID == "60A"] <- "2559"
+
+TM_zz$ID[ TM_zz$ID == "64D"] <- "2518"
+ TM_zz$ID[ TM_zz$ID == "65B"]  <- "2528"
+ TM_zz$ID[ TM_zz$ID == "71B"] <-
+"2505"
+
+ 
+ TM_zz$ID[ TM_zz$ID == "S-01"] <- "2320"
+
+#Transformin now to numeric
+  TM_zz$ID <- as.numeric(TM_zz$ID)
+
+  ##########
+  
+  #Transforming before in characters
+TM_filtered_$ID <- as.character(TM_filtered_$ID)
+#Replacing the ID from the inventory ID
+ TM_filtered_$ID[ TM_filtered_$ID =="12B"]  <- "12"
+ TM_filtered_$ID[ TM_filtered_$ID=="318"]  <- "2390"
+ TM_filtered_$ID[ TM_filtered_$ID =="413"]  <- "2386"
+ TM_filtered_$ID[ TM_filtered_$ID =="419"]  <- "2385"
+  TM_filtered_$ID[ TM_filtered_$ID == "62-01"] <- "2097"  
+  TM_filtered_$ID[ TM_filtered_$ID == "62-02"] <- "2098"
+   TM_filtered_$ID[ TM_filtered_$ID == "62-03"] <- "2099"
+    TM_filtered_$ID[ TM_filtered_$ID == "62-04"] <- "2100"
+   TM_filtered_$ID[ TM_filtered_$ID == "78-01"] <- "2139"
+  TM_filtered_$ID[ TM_filtered_$ID == "78-02"] <- "2140"
+
+
+ TM_filtered_$ID[ TM_filtered_$ID == "78-05"]  <- "2143"
+ 
+ TM_filtered_$ID[ TM_filtered_$ID == "H-01"]  <- "2220"
+ TM_filtered_$ID[ TM_filtered_$ID == "H-03"] <- "2222"
+TM_filtered_$ID[ TM_filtered_$ID == "H-04"] <- "2223"
+  TM_filtered_$ID[ TM_filtered_$ID == "I-20"] <- "2362"
+     TM_filtered_$ID[ TM_filtered_$ID =="W212"]  <- "2388"
+
+  
+  TM_filtered_$ID[ TM_filtered_$ID == "51C"] <- "2449"
+ TM_filtered_$ID[ TM_filtered_$ID == "53B"] <- "2536"
+TM_filtered_$ID[ TM_filtered_$ID == "54C"] <- "2453"
+TM_filtered_$ID[ TM_filtered_$ID == "60A"] <- "2559"
+
+TM_filtered_$ID[ TM_filtered_$ID == "64D"] <- "2518"
+ TM_filtered_$ID[ TM_filtered_$ID == "65B"]  <- "2528"
+ TM_filtered_$ID[ TM_filtered_$ID == "71B"] <-
+"2505"
+
+ 
+ TM_filtered_$ID[ TM_filtered_$ID == "S-01"] <- "2320"
+
+#Transformin now to numeric
+  TM_filtered_$ID <- as.numeric(TM_filtered_$ID)
+
+  
+  
+```
+
+
 ##  Ordering for each fungicide
 ```{r}
 
-final_boscalid_DC <- final_boscalid_DC %>% select(ID, Estimate.50DC)
-boscalid_complete <-  rbind.data.frame(final_boscalid_DC, boscalid_filtered_)
+boscalid_xx2 <- boscalid_xx %>% 
+  select(ID, EC50)
+#No more this
+# final_boscalid_DC <- final_boscalid_DC %>% select(ID, Estimate.50DC)
+####WATCH OUT, Iam naming EC50 although for boscalide filtered realy is EC50D
+boscalid_filtered_2 <- boscalid_filtered_ %>% 
+rename( EC50 =  Estimate.50DC) %>% 
+  mutate(ID = as.numeric(ID))
+boscalid_complete <-  rbind.data.frame(boscalid_xx2, boscalid_filtered_2)
 boscalid_complete <- ungroup(boscalid_complete)
+boscalid_complete$ID <- as.numeric(as.character(boscalid_complete$ID) ) 
+baby <- boscalid_complete$ID[duplicated(boscalid_complete$ID)]
+
+#now I will take these repeats from the DC test coming
+
+boscalid_filtered_3 <- boscalid_filtered_2 %>% filter(!ID %in% baby )
+
+#Now substitute
+boscalid_complete_2 <-  rbind.data.frame(boscalid_xx2, boscalid_filtered_3)
+##look for repetition#
+ boscalid_complete_2$ID[duplicated(boscalid_complete_2$ID)]
+
+boscalid_complete_3 <- boscalid_complete_2 %>% 
+    mutate(Origin = ifelse(
+    ID %in% baseline_isolates2,
+    "Baseline",
+    ifelse(
+      ID %in% Farmer_fields2,
+      "FF","FFT"
+    )), Host = ifelse(
+    ID %in% drybean,
+    "Drybean", ifelse(
+      ID %in% soybean,
+      "Soybean","different_host"
+    ))) %>% 
+    mutate(Origin = as.factor(Origin), Host= as.factor(Host))
+
+
+ #####PICOXYSTROBIN##
+
+ picoxystrobin_yy2 <- picoxystrobin_yy %>% 
+  select(ID, EC50)
+#No more this
+# final_picoxystrobin_DC <- final_picoxystrobin_DC %>% select(ID, Estimate.50DC)
+####WATCH OUT, Iam naming EC50 although for picoxystrobine filtered realy is EC50D
+picoxystrobin_filtered_2 <- picoxystrobin_filtered_ %>% 
+rename( EC50 =  Estimate.50DC) %>% 
+  mutate(ID = as.numeric(ID))
+picoxystrobin_complete <-  rbind.data.frame(picoxystrobin_yy2, picoxystrobin_filtered_2)
+picoxystrobin_complete <- ungroup(picoxystrobin_complete)
+picoxystrobin_complete$ID <- as.numeric(as.character(picoxystrobin_complete$ID) ) 
+ball <- picoxystrobin_complete$ID[duplicated(picoxystrobin_complete$ID)]
+
+#now I will take these repeats from the DC test coming
+
+picoxystrobin_filtered_3 <- picoxystrobin_filtered_2 %>% filter(!ID %in% ball )
+
+#Now substitute
+picoxystrobin_complete_2 <-  rbind.data.frame(picoxystrobin_yy2, picoxystrobin_filtered_3)
+##look for repetition#
+ picoxystrobin_complete_2$ID[duplicated(picoxystrobin_complete_2$ID)]
+
+picoxystrobin_complete_3 <- picoxystrobin_complete_2 %>% 
+    mutate(Origin = ifelse(
+    ID %in% baseline_isolates2,
+    "Baseline",
+    ifelse(
+      ID %in% Farmer_fields2,
+      "FF","FFT"
+    )), Host = ifelse(
+    ID %in% drybean,
+    "Drybean", ifelse(
+      ID %in% soybean,
+      "Soybean","different_host"
+    ))) %>% 
+    mutate(Origin = as.factor(Origin), Host= as.factor(Host))
+
+
+
+#######TETRACONAZOLE##
+ 
+ tetraconazole_bb2 <- tetraconazole_bb %>% 
+  select(ID, EC50) 
+   
+# final_tetraconazole_DC <- final_tetraconazole_DC %>% select(ID, Estimate.50DC)
+####WATCH OUT, Iam naming EC50 although for tetraconazolee filtered realy is EC50D
+tetraconazole_filtered_2 <- tetraconazole_filtered_ %>% 
+rename( EC50 =  Estimate.50DC) %>% 
+  mutate(ID = as.numeric(ID))
+tetraconazole_complete <-  rbind.data.frame(tetraconazole_bb2, tetraconazole_filtered_2)
+tetraconazole_complete <- ungroup(tetraconazole_complete)
+tetraconazole_complete$ID <- as.numeric(as.character(tetraconazole_complete$ID) ) 
+shoes <- tetraconazole_complete$ID[duplicated(tetraconazole_complete$ID)]
+
+#now I will take these repeats from the DC test coming
+
+tetraconazole_filtered_3 <- tetraconazole_filtered_2 %>% filter(!ID %in% shoes )
+
+#Now substitute
+tetraconazole_complete_2 <-  rbind.data.frame(tetraconazole_bb2, tetraconazole_filtered_3)
+##look for repetition#
+ tetraconazole_complete_2$ID[duplicated(tetraconazole_complete_2$ID)]
+
+ tetraconazole_complete_3 <- tetraconazole_complete_2 %>% 
+    mutate(Origin = ifelse(
+    ID %in% baseline_isolates2,
+    "Baseline",
+    ifelse(
+      ID %in% Farmer_fields2,
+      "FF","FFT"
+    )), Host = ifelse(
+    ID %in% drybean,
+    "Drybean", ifelse(
+      ID %in% soybean,
+      "Soybean","different_host"
+    )))%>% 
+    mutate(Origin = as.factor(Origin), Host= as.factor(Host))
 
 
 
 
 
+##TM#######
+
+ TM_zz2 <- TM_zz %>% 
+  select(ID, Estimate.50) %>% 
+   rename(EC50= Estimate.50)
+#No more this
+# final_TM_DC <- final_TM_DC %>% select(ID, Estimate.50DC)
+####WATCH OUT, Iam naming EC50 although for TMe filtered realy is EC50D
+TM_filtered_2 <- TM_filtered_ %>% 
+rename( EC50 =  Estimate.50DC) %>% 
+mutate(ID = as.numeric(ID))
+
+TM_complete <-  rbind.data.frame(TM_zz2, TM_filtered_2)
+TM_complete <- ungroup(TM_complete)
+TM_complete$ID <- as.numeric(as.character(TM_complete$ID) ) 
+orange <- TM_complete$ID[duplicated(TM_complete$ID)]
+
+#now I will take these repeats from the DC test coming
+
+TM_filtered_3 <- TM_filtered_2 %>% filter(!ID %in% orange )
+
+#Now substitute
+TM_complete_2 <-  rbind.data.frame(TM_zz2, TM_filtered_3)
+##look for repetition#
+ TM_complete_2$ID[duplicated(TM_complete_2$ID)]
+
+ TM_complete_3 <- TM_complete_2 %>% 
+    mutate(Origin = ifelse(
+    ID %in% baseline_isolates2,
+    "Baseline",
+    ifelse(
+      ID %in% Farmer_fields2,
+      "FF","FFT"
+    )), Host = ifelse(
+    ID %in% drybean,
+    "Drybean", ifelse(
+      ID %in% soybean,
+      "Soybean","different_host"
+    )))%>% 
+    mutate(Origin = as.factor(Origin), Host= as.factor(Host))
+
+
+
+```
+# ANOVA
+```{r}
+###########Boscalid
+
+
+##NORMALITY TEST-Shapiro_test
+
+shapiro.test_boscal <- boscalid_complete_3 %>%
+  group_by(Origin) %>%
+  do(tidy(shapiro.test(.$EC50)))
+shapiro.test_boscal 
+# No normals
+shapiro.test_boscal_2 <- boscalid_complete_3 %>%
+  group_by(Host) %>%
+  do(tidy(shapiro.test(.$EC50)))
+shapiro.test_boscal_2
+
+ #NO NORMALILTY thats is why  krusKal
+#by origin
+
+kruskal.test(EC50 ~ Origin, data = boscalid_complete_3)
+
+#There is difference p-value = 0.00001203
+
+DunnTest(EC50 ~ Origin, data = boscalid_complete_3, method = "bonferroni")
+#P VALUE 0.00050 *** FF-Baseline
+#P VALUE 0.00093 *** FFT-FF
+
+
+#by hosts
+
+kruskal.test(EC50 ~ Host, data = boscalid_complete_3)
+#There is NO difference p-value 0.1529
+
+
+
+
+####### pico
+
+##NORMALITY TEST-Shapiro_test
+
+shapiro.test_pico <-picoxystrobin_complete_3 %>%
+  group_by(Origin) %>%
+  do(tidy(shapiro.test(.$EC50)))
+shapiro.test_pico 
+  ##NO normals
+shapiro.test_pico.2 <-picoxystrobin_complete_3 %>%
+  group_by(Host) %>%
+  do(tidy(shapiro.test(.$EC50)))
+shapiro.test_pico.2
+
+ #NO NORMALILTY thats is why  krusKal
+#by origin
+
+kruskal.test(EC50 ~ Origin, data = picoxystrobin_complete_3)
+
+#There is NO difference p-value = 0.296
+
+
+#by hosts
+
+kruskal.test(EC50 ~ Host, data = picoxystrobin_complete_3)
+#There is NO difference p-value 0.7074
+
+
+
+
+
+
+#########tetra
+
+##NORMALITY TEST-Shapiro_test
+
+shapiro.test_tetra <- tetraconazole_complete_3 %>%
+  group_by(Origin) %>%
+  do(tidy(shapiro.test(.$EC50)))
+shapiro.test_tetra 
+# No normals
+shapiro.test_tetra_2 <- tetraconazole_complete_3 %>%
+  group_by(Host) %>%
+  do(tidy(shapiro.test(.$EC50)))
+shapiro.test_tetra_2
+
+ #NO NORMALILTY thats is why  krusKal
+#by origin
+
+kruskal.test(EC50 ~ Origin, data = tetraconazole_complete_3)
+
+#There NO difference p-value = 0.04619
+
+DunnTest(EC50 ~ Origin, data = tetraconazole_complete_3, method = "bonferroni")
+#There is difference at 0.1 then is not difference
+
+
+#by hosts
+
+kruskal.test(EC50 ~ Host, data = tetraconazole_complete_3)
+#There is NO difference p-value 0.
+
+
+
+
+
+```
+#  ANOVA By hosts
+```{r}
+###########Boscalid
+
+data_for_plots_BOS$ID <- as.character(data_for_plots_BOS$ID)
+
+xxx<- data_for_plots_BOS %>% 
+left_join(WM, by = c(ID = "Collection_ID")) %>% 
+rename(Origin = "Origin.x") %>% select(ID, Estimate.50DC, Origin, Host)
+   
+#NO NORMALILTY thats is why  krusKal
+
+
+kruskal.test(Estimate.50DC ~ Host, data = xxx)
+
+#There is NO difference p-value =  0.07177
+
+
+
+
+
+
+
+###########Pico
+
+data_for_plots_PICO$ID <- as.character(data_for_plots_PICO$ID)
+
+
+zzz<- data_for_plots_PICO %>% 
+left_join(WM, by = c(ID = "Collection_ID")) %>% 
+rename(Origin = "Origin.x") %>% select(ID, Estimate.50DC, Origin, Host)
+#NO NORMALILTY thats is why  krusKal
+#There is NO difference p-value = 0.3658
+
+kruskal.test(Estimate.50DC ~ Host, data = zzz)
+
+
+
+#########tetra
+
+data_for_plots_TETRA$ID <- as.character(data_for_plots_TETRA$ID)
+
+aaa<- data_for_plots_TETRA %>% 
+left_join(WM, by = c(ID = "Collection_ID")) %>% 
+rename(Origin = "Origin.x") %>% select(ID, Estimate.50DC, Origin, Host)
+#NO NORMALILTY thats is why  krusKal
+
+#There is NO difference p-value = 0.1462
+kruskal.test(Estimate.50DC ~ Origin, data = aaa)
+
+
+
+```
+
+```{r}
+plot_bos <- boscalid_complete_3%>%
+  ggplot(aes(x = Origin, y = EC50)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 21,
+    color = "black",
+    fill = "chartreuse2",
+    size = 2,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 22,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs( x = "Origin", y = "EC50D (ppm)") + theme(
+    panel.border = element_rect(colour = "black", fill=NA, size=1),
+    axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 14,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50" )
+  )
+
+plot_bos
+
+##
+plot_pico <- picoxystrobin_complete_3%>%
+  ggplot(aes(x = Origin, y = EC50)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 21,
+    color = "black",
+    fill = "chocolate1",
+    size = 2,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 22,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs(x = "Origin", y = "EC50D (ppm)") + theme(panel.border = element_rect(colour = "black", fill=NA, size=1),
+        axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 14,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+plot_pico
+####
+plot_tetra <- tetraconazole_complete_3%>%
+  ggplot(aes(x = Origin, y = EC50)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 21,
+    color = "black",
+    fill = "deepskyblue",
+    size = 2,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 22,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs( x = "Origin", y = "EC50D (ppm)") + theme(panel.border = element_rect(colour = "black", fill=NA, size=1),
+        axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 14,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+plot_tetra
+
+
+
+```
+
+```{r}
+boscalid_complete_4 <- boscalid_complete_3 %>% filter(!ID == "8" & !ID == "129")
+plot_bos_2 <- boscalid_complete_4%>%
+  ggplot(aes(x = Host, y = EC50)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 21,
+    color = "black",
+    fill = "chartreuse2",
+    size = 2,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 22,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs( x = "Host", y = "EC50D (ppm)") + theme(
+    panel.border = element_rect(colour = "black", fill=NA, size=1),
+        axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 14,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+plot_bos_2
+
+picoxystrobin_complete_4 <- picoxystrobin_complete_3 %>% filter(!ID == "8"&!ID == "129"  )
+
+plot_pico_2 <- picoxystrobin_complete_4%>%
+  ggplot(aes(x = Host, y = EC50)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 21,
+    color = "black",
+    fill = "chocolate1",
+    size = 2,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 22,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs( x = "Host", y = "EC50D (ppm)") + theme(
+    panel.border = element_rect(colour = "black", fill=NA, size=1),
+        axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 14,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+plot_pico_2
+
+tetraconazole_complete_4 <- tetraconazole_complete_3 %>% filter(!ID == "8"&!ID == "129"  )
+
+plot_tetra_2 <- tetraconazole_complete_4%>%
+  ggplot(aes(x = Host, y = EC50)) +
+  geom_jitter(
+    width = .1,
+    height = 0.5,
+    shape = 21,
+    color = "black",
+    fill = "deepskyblue",
+    size = 2,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 22,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs( x = "Host", y = "EC50D (ppm)") + theme(
+        panel.border = element_rect(colour = "black", fill=NA, size=1),
+
+        axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 14,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+plot_tetra_2
+
+
+```
+
+
+
+
+
+```{r}
+
+#Transforming before in characters
+boscalid_xx$ID <- as.character(boscalid_xx$ID)
+#Replacing the ID from the inventory ID
+ boscalid_xx$ID[ boscalid_xx$ID =="12B"]  <- "12"
+ boscalid_xx$ID[ boscalid_xx$ID=="318"]  <- "2390"
+ boscalid_xx$ID[ boscalid_xx$ID =="413"]  <- "2386"
+ boscalid_xx$ID[ boscalid_xx$ID =="419"]  <- "2385"
+  boscalid_xx$ID[ boscalid_xx$ID == "62-01"] <- "2097"  
+  boscalid_xx$ID[ boscalid_xx$ID == "62-02"] <- "2098"
+   boscalid_xx$ID[ boscalid_xx$ID == "62-03"] <- "2099"
+    boscalid_xx$ID[ boscalid_xx$ID == "62-04"] <- "2100"
+ boscalid_xx$ID[ boscalid_xx$ID =="74SS1"]  <- "74"
+
+ boscalid_xx$ID[ boscalid_xx$ID == "78-01"] <- "2139"
+  boscalid_xx$ID[ boscalid_xx$ID == "78-02"] <- "2140"
+
+
+ boscalid_xx$ID[ boscalid_xx$ID == "78-05"]  <- "2143"
+ 
+ boscalid_xx$ID[ boscalid_xx$ID == "H-01"]  <- "2220"
+ boscalid_xx$ID[ boscalid_xx$ID == "H-03"] <- "2222"
+ boscalid_xx$ID[ boscalid_xx$ID == "H-04"] <- "2223"
+  boscalid_xx$ID[ boscalid_xx$ID == "I-20"] <- "2362"
+     boscalid_xx$ID[ boscalid_xx$ID =="W212"]  <- "2388"
+
+  
+  boscalid_xx$ID[ boscalid_xx$ID == "51C"] <- "2449"
+ boscalid_xx$ID[ boscalid_xx$ID == "53B"] <- "2536"
+boscalid_xx$ID[ boscalid_xx$ID == "54C"] <- "2453"
+boscalid_xx$ID[ boscalid_xx$ID == "60A"] <- "2559"
+
+boscalid_xx$ID[ boscalid_xx$ID == "64D"] <- "2518"
+ boscalid_xx$ID[ boscalid_xx$ID == "65B"]  <- "2528"
+ boscalid_xx$ID[ boscalid_xx$ID == "71B"] <-
+"2505"
+
+ 
+ boscalid_xx$ID[ boscalid_xx$ID == "S-01"] <- "2320"
+
+ 
+ 
+ ###
+ 
+ #Transforming before in characters
+boscalid_filtered_$ID <- as.character(boscalid_filtered_$ID)
+#Replacing the ID from the inventory ID
+ boscalid_filtered_$ID[ boscalid_filtered_$ID =="12B"]  <- "12"
+ boscalid_filtered_$ID[ boscalid_filtered_$ID=="318"]  <- "2390"
+ boscalid_filtered_$ID[ boscalid_filtered_$ID =="413"]  <- "2386"
+ boscalid_filtered_$ID[ boscalid_filtered_$ID =="419"]  <- "2385"
+  boscalid_filtered_$ID[ boscalid_filtered_$ID == "62-01"] <- "2097"  
+  boscalid_filtered_$ID[ boscalid_filtered_$ID == "62-02"] <- "2098"
+   boscalid_filtered_$ID[ boscalid_filtered_$ID == "62-03"] <- "2099"
+    boscalid_filtered_$ID[ boscalid_filtered_$ID == "62-04"] <- "2100"
+ boscalid_filtered_$ID[ boscalid_filtered_$ID =="74SS1"]  <- "74"
+
+ boscalid_filtered_$ID[ boscalid_filtered_$ID == "78-01"] <- "2139"
+  boscalid_filtered_$ID[ boscalid_filtered_$ID == "78-02"] <- "2140"
+
+
+ boscalid_filtered_$ID[ boscalid_filtered_$ID == "78-05"]  <- "2143"
+ 
+ boscalid_filtered_$ID[ boscalid_filtered_$ID == "H-01"]  <- "2220"
+ boscalid_filtered_$ID[ boscalid_filtered_$ID == "H-03"] <- "2222"
+
+  boscalid_filtered_$ID[ boscalid_filtered_$ID == "I-20"] <- "2362"
+     boscalid_filtered_$ID[ boscalid_filtered_$ID =="W212"]  <- "2388"
+
+  
+  boscalid_filtered_$ID[ boscalid_filtered_$ID == "51C"] <- "2449"
+ boscalid_filtered_$ID[ boscalid_filtered_$ID == "53B"] <- "2536"
+boscalid_filtered_$ID[ boscalid_filtered_$ID == "54C"] <- "2453"
+boscalid_filtered_$ID[ boscalid_filtered_$ID == "60A"] <- "2559"
+
+boscalid_filtered_$ID[ boscalid_filtered_$ID == "64D"] <- "2518"
+ boscalid_filtered_$ID[ boscalid_filtered_$ID == "65B"]  <- "2528"
+ boscalid_filtered_$ID[ boscalid_filtered_$ID == "71B"] <-
+"2505"
+
+ 
+ boscalid_filtered_$ID[ boscalid_filtered_$ID == "S-01"] <- "2320"
+
+ 
+ 
+
+ 
+ 
+```
+
+
+##  Ordering for each fungicide
+```{r}
+
+boscalid_xx2 <- boscalid_xx %>% 
+  select(ID, EC50)
+#No more this
+# final_boscalid_DC <- final_boscalid_DC %>% select(ID, Estimate.50DC)
+####WATCH OUT, Iam naming EC50 although for boscalide filtered realy is EC50D
+boscalid_filtered_2 <- boscalid_filtered_ %>% 
+rename( EC50 =  Estimate.50DC)
+boscalid_complete <-  rbind.data.frame(boscalid_xx2, boscalid_filtered_2)
+boscalid_complete <- ungroup(boscalid_complete)
+boscalid_complete$ID <- as.numeric(as.character(boscalid_complete$ID) ) 
+baby <- boscalid_complete$ID[duplicated(boscalid_complete$ID)]
+
+#now I will take these repeats from the DC test coming
+
+boscalid_filtered_3 <- boscalid_filtered_2 %>% filter(!ID %in% baby )
+
+#Now substitute
+boscalid_complete_2 <-  rbind.data.frame(boscalid_xx2, boscalid_filtered_3)
+##
+ boscalid_complete_2$ID[duplicated(boscalid_complete_2$ID)]
 
 #####
 final_picoxystrobin_DC <- final_picoxystrobin_DC %>% select(ID, Estimate.50DC)
@@ -1653,44 +2637,6 @@ TM_complete <- ungroup(TM_complete)
 
 # ordering the dataframes
 ```{r}
-#Transforming before in characters
-boscalid_complete$ID <- as.character(boscalid_complete$ID)
-#Replacing the ID from the inventory ID
- boscalid_complete$ID[ boscalid_complete$ID =="12B"]  <- "12"
- boscalid_complete$ID[ boscalid_complete$ID=="318"]  <- "2390"
- boscalid_complete$ID[ boscalid_complete$ID =="413"]  <- "2386"
- boscalid_complete$ID[ boscalid_complete$ID =="419"]  <- "2385"
-  boscalid_complete$ID[ boscalid_complete$ID == "62-01"] <- "2097"  
-  boscalid_complete$ID[ boscalid_complete$ID == "62-02"] <- "2098"
-   boscalid_complete$ID[ boscalid_complete$ID == "62-03"] <- "2099"
-    boscalid_complete$ID[ boscalid_complete$ID == "62-04"] <- "2100"
- #boscalid_complete[ boscalid_complete$ID =="74SS1"]  <- "74"
-
- boscalid_complete$ID[ boscalid_complete$ID == "78-01"] <- "2139"
-  boscalid_complete$ID[ boscalid_complete$ID == "78-02"] <- "2140"
-
-
- boscalid_complete$ID[ boscalid_complete$ID == "78-05"]  <- "2143"
- 
- boscalid_complete$ID[ boscalid_complete$ID == "H-01"]  <- "2220"
- boscalid_complete$ID[ boscalid_complete$ID == "H-03"] <- "2222"
-
-  boscalid_complete$ID[ boscalid_complete$ID == "I-20"] <- "2362"
-     boscalid_complete$ID[ boscalid_complete$ID =="W212"]  <- "2388"
-
-  
-  boscalid_complete$ID[ boscalid_complete$ID == "51C"] <- "2449"
- boscalid_complete$ID[ boscalid_complete$ID == "53B"] <- "2536"
-boscalid_complete$ID[ boscalid_complete$ID == "54C"] <- "2453"
-boscalid_complete$ID[ boscalid_complete$ID == "60A"] <- "2559"
-
-boscalid_complete$ID[ boscalid_complete$ID == "64D"] <- "2518"
- boscalid_complete$ID[ boscalid_complete$ID == "65B"]  <- "2528"
- boscalid_complete$ID[ boscalid_complete$ID == "71B"] <-
-"2505"
-
- 
- boscalid_complete$ID[ boscalid_complete$ID == "S-01"] <- "2320"
 
 #Transformin now to numeric
   boscalid_complete$ID <- as.numeric(boscalid_complete$ID)
@@ -1889,548 +2835,6 @@ data_for_plots_TM$Origin <- as_factor(data_for_plots_TM$Origin)
 
 
 
-
-##  Boscalid Plots
-
-```{r}
-
-plot_bos <- data_for_plots_bos%>%
-  ggplot(aes(x = Origin, y = Estimate.50DC)) +
-  geom_jitter(
-    width = .1,
-    height = 0,
-    shape = 21,
-    color = "black",
-    fill = "chartreuse2",
-    size = 2,
-    alpha = 3 / 4
-  ) + stat_summary(
-    fun.y = mean,
-    geom = "point",
-    shape = 95,
-    size = 22,
-    color = "black"
-  ) +
-  theme_minimal() +
-  labs( x = "Origin", y = "EC50D (ppm)") + theme(
-    panel.border = element_rect(colour = "black", fill=NA, size=1),
-    axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
-    axis.text = element_text(
-      face = "bold",
-      size = 7,
-      family = "Verdana"
-    ),
-    panel.background = element_rect(fill = "white", colour = "grey50" )
-  )
-
-plot_bos
-plot_bos2 <- 
-  ggplot(data_for_plots_bos , aes(x = Origin, y = Estimate.50DC))  +  geom_boxplot(notch = TRUE,
-                                                                                  outlier.colour = "chartreuse2",
-                                                                                  outlier.size = 2)+
-  theme_minimal() +
-  labs(title = "Boscalid", x = "Origin", y = "EC50D (ppm)") + theme(
-    plot.title = element_text(
-      size = 10,
-      face = "bold",
-      hjust = 0.5,
-      family = "Verdana"
-    ),
-    axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
-    axis.text = element_text(
-      face = "bold",
-      size = 7,
-      family = "Verdana"
-    ),
-    panel.background = element_rect(fill = "white", colour = "grey50")
-  )
-
-      plot_bos2
-      
-   
-  
-```
-##  Picoxystrobin Plots
-```{r}
-
-plot_pico <- data_for_plots_pico%>%
-  ggplot(aes(x = Origin, y = Estimate.50DC)) +
-  geom_jitter(
-    width = .1,
-    height = 0,
-    shape = 21,
-    color = "black",
-    fill = "chocolate1",
-    size = 2,
-    alpha = 3 / 4
-  ) + stat_summary(
-    fun.y = mean,
-    geom = "point",
-    shape = 95,
-    size = 22,
-    color = "black"
-  ) +
-  theme_minimal() +
-  labs(x = "Origin", y = "EC50D (ppm)") + theme(panel.border = element_rect(colour = "black", fill=NA, size=1),
-        axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
-    axis.text = element_text(
-      face = "bold",
-      size = 7,
-      family = "Verdana"
-    ),
-    panel.background = element_rect(fill = "white", colour = "grey50")
-  )
-plot_pico
-plot_pico2 <- 
-ggplot(data_for_plots_pico , aes(x = Origin, y = Estimate.50DC))  +  geom_boxplot(notch = TRUE,
-                                                                                  outlier.colour = "chocolate1",
-                                                                                  outlier.size = 2) +theme_minimal() +
-  labs(title = "Picoxystrobin", x = "Origin", y = "EC50D (ppm)") + theme(
-    plot.title = element_text(
-      size = 10,
-      face = "bold",
-      hjust = 0.5,
-      family = "Verdana"
-    ),
-    axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
-    axis.text = element_text(
-      face = "bold",
-      size = 7,
-      family = "Verdana"
-    ),
-    panel.background = element_rect(fill = "white", colour = "grey50")
-  )
-plot_pico2
-```
-##  Tetraconazole Plots
-```{r}
-
-plot_tetra <- data_for_plots_tetra%>%
-  ggplot(aes(x = Origin, y = Estimate.50DC)) +
-  geom_jitter(
-    width = .1,
-    height = 0,
-    shape = 21,
-    color = "black",
-    fill = "deepskyblue",
-    size = 2,
-    alpha = 3 / 4
-  ) + stat_summary(
-    fun.y = mean,
-    geom = "point",
-    shape = 95,
-    size = 22,
-    color = "black"
-  ) +
-  theme_minimal() +
-  labs( x = "Origin", y = "EC50D (ppm)") + theme(panel.border = element_rect(colour = "black", fill=NA, size=1),
-        axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
-    axis.text = element_text(
-      face = "bold",
-      size = 7,
-      family = "Verdana"
-    ),
-    panel.background = element_rect(fill = "white", colour = "grey50")
-  )
-plot_tetra
-plot_tetra2 <- 
-ggplot(data_for_plots_tetra , aes(x = Origin, y = Estimate.50DC))  +  geom_boxplot(notch = TRUE,
-                                                                                  outlier.colour = "deepskyblue",
-                                                                                  outlier.size = 2) + theme_minimal() +
-  labs(title = "Tetraconazole", x = "Origin", y = "EC50D (ppm)") + theme(
-    plot.title = element_text(
-      size = 10,
-      face = "bold",
-      hjust = 0.5,
-      family = "Verdana"
-    ),
-    axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
-    axis.text = element_text(
-      face = "bold",
-      size = 7,
-      family = "Verdana"
-    ),
-    panel.background = element_rect(fill = "white", colour = "grey50")
-  )
-plot_tetra2
-
-
-```
-
-# TM plots
-
-```{r}
-
-
-plot_TM <- data_for_plots_TM%>%
-  ggplot(aes(x = Origin, y = Estimate.50DC)) +
-  geom_jitter(
-    width = .1,
-    height = 0,
-    shape = 21,
-    color = "black",
-    fill = "deepskyblue",
-    size = 2,
-    alpha = 3 / 4
-  ) + stat_summary(
-    fun.y = mean,
-    geom = "point",
-    shape = 95,
-    size = 22,
-    color = "black"
-  ) +
-  theme_minimal() +
-  labs(title = "TM", x = "Origin", y = "EC50D (ppm)") + theme(
-    plot.title = element_text(
-      size = 16,
-      face = "bold",
-      hjust = 0.5,
-      family = "Verdana"
-    ),
-    axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
-    axis.text = element_text(
-      face = "bold",
-      size = 7,
-      family = "Verdana"
-    ),
-    panel.background = element_rect(fill = "white", colour = "grey50")
-  )
-plot_TM
-plot_TM2 <- 
-ggplot(data_for_plots_TM, aes(x = Origin, y = Estimate.50DC))  +  geom_boxplot(notch = TRUE,
-                                                                                  outlier.colour = "deepskyblue",
-                                                                                  outlier.size = 2) + theme_minimal() +
-  labs(title = "TM", x = "Origin", y = "EC50D (ppm)") + theme(
-    plot.title = element_text(
-      size = 10,
-      face = "bold",
-      hjust = 0.5,
-      family = "Verdana"
-    ),
-    axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
-    axis.text = element_text(
-      face = "bold",
-      size = 7,
-      family = "Verdana"
-    ),
-    panel.background = element_rect(fill = "white", colour = "grey50")
-  )
-plot_TM2
-
-
-
-```
-
-
-
-
-##  Grid
-```{r}
-plot_grid(plot_tetra, plot_pico, plot_bos)
-plot_grid(plot_tetra2, plot_pico2, plot_bos2)
-
-```
-
-#  Different grouping plots
-##  Boscalid
-```{r}
-data_for_plots_bos_2 <- boscalid_complete %>% 
-  group_by(ID) %>% 
-  mutate(group = ifelse(
-    ID %in% bean_isolates_exposed_to_fungicides,
-    "Dry bean","Soybean"## check this out
-    ))
-
-data_for_plots_bos_2$group <- as_factor(data_for_plots_bos_2$group)
-
-
-plot_bos_2 <- data_for_plots_bos_2%>%
-  ggplot(aes(x = group, y = Estimate.50DC)) +
-  geom_jitter(
-    width = .1,
-    height = 0,
-    shape = 21,
-    color = "black",
-    fill = "chartreuse2",
-    size = 2,
-    alpha = 3 / 4
-  ) + stat_summary(
-    fun.y = mean,
-    geom = "point",
-    shape = 95,
-    size = 22,
-    color = "black"
-  ) +
-  theme_minimal() +
-  labs( x = "Group", y = "EC50D (ppm)") + theme(
-    panel.border = element_rect(colour = "black", fill=NA, size=1),
-        axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
-    axis.text = element_text(
-      face = "bold",
-      size = 7,
-      family = "Verdana"
-    ),
-    panel.background = element_rect(fill = "white", colour = "grey50")
-  )
-plot_bos_2
-
-```
-#  Different grouping plots
-##  Picoxystrobin
-```{r}
-data_for_plots_pico_2 <- picoxystrobin_complete %>% 
-  group_by(ID) %>% 
-  mutate(group = ifelse(
-    ID %in% bean_isolates_exposed_to_fungicides,
-    "Dry bean","Soybean"
-    ))
-
-data_for_plots_pico_2$group <- as_factor(data_for_plots_pico_2$group)
-
-
-plot_pico_2 <- data_for_plots_pico_2%>%
-  ggplot(aes(x = group, y = Estimate.50DC)) +
-  geom_jitter(
-    width = .1,
-    height = 0,
-    shape = 21,
-    color = "black",
-    fill = "chocolate1",
-    size = 2,
-    alpha = 3 / 4
-  ) + stat_summary(
-    fun.y = mean,
-    geom = "point",
-    shape = 95,
-    size = 22,
-    color = "black"
-  ) +
-  theme_minimal() +
-  labs( x = "Group", y = "EC50D (ppm)") + theme(
-    panel.border = element_rect(colour = "black", fill=NA, size=1),
-        axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
-    axis.text = element_text(
-      face = "bold",
-      size = 7,
-      family = "Verdana"
-    ),
-    panel.background = element_rect(fill = "white", colour = "grey50")
-  )
-plot_pico_2
-
-
-```
-#  Different grouping plots
-##  Tetraconazole
-```{r}
-data_for_plots_tetra_2 <- tetraconazole_complete %>% 
-  group_by(ID) %>% 
-  mutate(group = ifelse(
-    ID %in% bean_isolates_exposed_to_fungicides,
-    "Dry bean","Soybean"
-          ))
-  
-data_for_plots_tetra_2$group <- as_factor(data_for_plots_tetra_2$group)
-
-
-plot_tetra_2 <- data_for_plots_tetra_2%>%
-  ggplot(aes(x = group, y = Estimate.50DC)) +
-  geom_jitter(
-    width = .1,
-    height = 0.5,
-    shape = 21,
-    color = "black",
-    fill = "deepskyblue",
-    size = 2,
-    alpha = 3 / 4
-  ) + stat_summary(
-    fun.y = mean,
-    geom = "point",
-    shape = 95,
-    size = 22,
-    color = "black"
-  ) +
-  theme_minimal() +
-  labs( x = "Group", y = "EC50D (ppm)") + theme(
-        panel.border = element_rect(colour = "black", fill=NA, size=1),
-
-        axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
-    axis.text = element_text(
-      face = "bold",
-      size = 7,
-      family = "Verdana"
-    ),
-    panel.background = element_rect(fill = "white", colour = "grey50")
-  )
-plot_tetra_2
-```
-##  Grid
-```{r}
-plot_grid(plot_tetra_2, plot_pico_2, plot_bos_2)
-
-```
-#  Different grouping plots
-
-##  Boscalid
-```{r}
-data_for_plots_bos_3 <- boscalid_complete %>% 
-  group_by(ID) %>% 
-  mutate(group = ifelse(
-    ID %in% soybean_WI,
-    "Soybean WI",
-    ifelse(
-      ID %in% soybean_IA,
-      "Soybean IA","Soybean MI"
-    )))
-
-data_for_plots_bos_3$group <- as_factor(data_for_plots_bos_3$group)
-
-
-plot_bos_3 <- data_for_plots_bos_3%>%
-  ggplot(aes(x = group, y = Estimate.50DC)) +
-  geom_jitter(
-    width = .1,
-    height = 0,
-    shape = 21,
-    color = "black",
-    fill = "chartreuse2",
-    size = 1,
-    alpha = 3 / 4
-  ) + stat_summary(
-    fun.y = mean,
-    geom = "point",
-    shape = 95,
-    size = 12,
-    color = "black"
-  ) +
-  theme_minimal() +
-  labs(title = "Boscalid", x = "Group", y = "EC50D (ppm)") + theme(
-    plot.title = element_text(
-      size = 10,
-      face = "bold",
-      hjust = 0.5,
-      family = "Verdana"
-    ),
-    axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
-    axis.text = element_text(
-      face = "bold",
-      size = 7,
-      family = "Verdana"
-    ),
-    panel.background = element_rect(fill = "white", colour = "grey50")
-  )
-plot_bos_3
-
-```
-#  Different grouping plots
-##  Picoxystrobin
-```{r}
-data_for_plots_pico_3 <- picoxystrobin_complete %>% 
-  group_by(ID) %>% 
-  mutate(group = ifelse(
-    ID %in% soybean_WI,
-    "Soybean WI",
-    ifelse(
-      ID %in% soybean_IA,
-      "Soybean IA","Soybean MI"
-    )))
-
-data_for_plots_pico_3$group <- as_factor(data_for_plots_pico_3$group)
-
-
-plot_pico_3 <- data_for_plots_pico_3%>%
-  ggplot(aes(x = group, y = Estimate.50DC)) +
-  geom_jitter(
-    width = .1,
-    height = 0,
-    shape = 21,
-    color = "black",
-    fill = "chocolate1",
-    size = 1,
-    alpha = 3 / 4
-  ) + stat_summary(
-    fun.y = mean,
-    geom = "point",
-    shape = 95,
-    size = 12,
-    color = "black"
-  ) +
-  theme_minimal() +
-  labs(title = "Picoxystrobin", x = "Group", y = "EC50D (ppm)") + theme(
-    plot.title = element_text(
-      size = 10,
-      face = "bold",
-      hjust = 0.5,
-      family = "Verdana"
-    ),
-    axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
-    axis.text = element_text(
-      face = "bold",
-      size = 7,
-      family = "Verdana"
-    ),
-    panel.background = element_rect(fill = "white", colour = "grey50")
-  )
-plot_pico_3
-
-
-```
-#  Different grouping plots
-##  Tetraconazole
-```{r}
-data_for_plots_tetra_3 <- tetraconazole_complete %>% 
-  group_by(ID) %>% 
-  mutate(group = ifelse(
-    ID %in% soybean_WI,
-    "Soybean WI",
-    ifelse(
-      ID %in% soybean_IA,
-      "Soybean IA","Soybean MI"
-      )))
-  
-data_for_plots_tetra_3$group <- as_factor(data_for_plots_tetra_3$group)
-
-
-plot_tetra_3 <- data_for_plots_tetra_3%>%
-  ggplot(aes(x = group, y = Estimate.50DC)) +
-  geom_jitter(
-    width = .1,
-    height = 0,
-    shape = 21,
-    color = "black",
-    fill = "deepskyblue",
-    size = 1,
-    alpha = 3 / 4
-  ) + stat_summary(
-    fun.y = mean,
-    geom = "point",
-    shape = 95,
-    size = 12,
-    color = "black"
-  ) +
-  theme_minimal() +
-  labs(title = "Tetraconazole", x = "Group", y = "EC50D (ppm)") + theme(
-    plot.title = element_text(
-      size = 10,
-      face = "bold",
-      hjust = 0.5,
-      family = "Verdana"
-    ),
-    axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
-    axis.text = element_text(
-      face = "bold",
-      size = 7,
-      family = "Verdana"
-    ),
-    panel.background = element_rect(fill = "white", colour = "grey50")
-  )
-plot_tetra_3
-```
-##  Grid
-```{r}
-plot_grid(plot_tetra_3, plot_pico_3, plot_bos_3)
-
-```
 #reading new dataset
 ```{r}
 #Edgar: Look here
@@ -3332,3 +3736,551 @@ kruskal.test(Estimate.50DC ~ Origin, data = aaa)
 
 ```
 
+
+
+
+
+
+
+
+##  Boscalid Plots
+
+```{r}
+
+plot_bos <- data_for_plots_bos%>%
+  ggplot(aes(x = Origin, y = Estimate.50DC)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 21,
+    color = "black",
+    fill = "chartreuse2",
+    size = 2,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 22,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs( x = "Origin", y = "EC50D (ppm)") + theme(
+    panel.border = element_rect(colour = "black", fill=NA, size=1),
+    axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 7,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50" )
+  )
+
+plot_bos
+plot_bos2 <- 
+  ggplot(data_for_plots_bos , aes(x = Origin, y = Estimate.50DC))  +  geom_boxplot(notch = TRUE,
+                                                                                  outlier.colour = "chartreuse2",
+                                                                                  outlier.size = 2)+
+  theme_minimal() +
+  labs(title = "Boscalid", x = "Origin", y = "EC50D (ppm)") + theme(
+    plot.title = element_text(
+      size = 10,
+      face = "bold",
+      hjust = 0.5,
+      family = "Verdana"
+    ),
+    axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 7,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+
+      plot_bos2
+      
+   
+  
+```
+##  Picoxystrobin Plots
+```{r}
+
+plot_pico <- data_for_plots_pico%>%
+  ggplot(aes(x = Origin, y = Estimate.50DC)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 21,
+    color = "black",
+    fill = "chocolate1",
+    size = 2,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 22,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs(x = "Origin", y = "EC50D (ppm)") + theme(panel.border = element_rect(colour = "black", fill=NA, size=1),
+        axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 7,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+plot_pico
+plot_pico2 <- 
+ggplot(data_for_plots_pico , aes(x = Origin, y = Estimate.50DC))  +  geom_boxplot(notch = TRUE,
+                                                                                  outlier.colour = "chocolate1",
+                                                                                  outlier.size = 2) +theme_minimal() +
+  labs(title = "Picoxystrobin", x = "Origin", y = "EC50D (ppm)") + theme(
+    plot.title = element_text(
+      size = 10,
+      face = "bold",
+      hjust = 0.5,
+      family = "Verdana"
+    ),
+    axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 7,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+plot_pico2
+```
+##  Tetraconazole Plots
+```{r}
+
+plot_tetra <- data_for_plots_tetra%>%
+  ggplot(aes(x = Origin, y = Estimate.50DC)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 21,
+    color = "black",
+    fill = "deepskyblue",
+    size = 2,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 22,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs( x = "Origin", y = "EC50D (ppm)") + theme(panel.border = element_rect(colour = "black", fill=NA, size=1),
+        axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 7,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+plot_tetra
+plot_tetra2 <- 
+ggplot(data_for_plots_tetra , aes(x = Origin, y = Estimate.50DC))  +  geom_boxplot(notch = TRUE,
+                                                                                  outlier.colour = "deepskyblue",
+                                                                                  outlier.size = 2) + theme_minimal() +
+  labs(title = "Tetraconazole", x = "Origin", y = "EC50D (ppm)") + theme(
+    plot.title = element_text(
+      size = 10,
+      face = "bold",
+      hjust = 0.5,
+      family = "Verdana"
+    ),
+    axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 7,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+plot_tetra2
+
+
+```
+
+# TM plots
+
+```{r}
+
+
+plot_TM <- data_for_plots_TM%>%
+  ggplot(aes(x = Origin, y = Estimate.50DC)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 21,
+    color = "black",
+    fill = "deepskyblue",
+    size = 2,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 22,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs(title = "TM", x = "Origin", y = "EC50D (ppm)") + theme(
+    plot.title = element_text(
+      size = 16,
+      face = "bold",
+      hjust = 0.5,
+      family = "Verdana"
+    ),
+    axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 7,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+plot_TM
+plot_TM2 <- 
+ggplot(data_for_plots_TM, aes(x = Origin, y = Estimate.50DC))  +  geom_boxplot(notch = TRUE,
+                                                                                  outlier.colour = "deepskyblue",
+                                                                                  outlier.size = 2) + theme_minimal() +
+  labs(title = "TM", x = "Origin", y = "EC50D (ppm)") + theme(
+    plot.title = element_text(
+      size = 10,
+      face = "bold",
+      hjust = 0.5,
+      family = "Verdana"
+    ),
+    axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 7,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+plot_TM2
+
+
+
+```
+
+
+
+
+##  Grid
+```{r}
+plot_grid(plot_tetra, plot_pico, plot_bos)
+plot_grid(plot_tetra2, plot_pico2, plot_bos2)
+
+```
+
+#  Different grouping plots
+##  Boscalid
+```{r}
+data_for_plots_bos_2 <- boscalid_complete %>% 
+  group_by(ID) %>% 
+  mutate(group = ifelse(
+    ID %in% bean_isolates_exposed_to_fungicides,
+    "Dry bean","Soybean"## check this out
+    ))
+
+data_for_plots_bos_2$group <- as_factor(data_for_plots_bos_2$group)
+
+
+plot_bos_2 <- data_for_plots_bos_2%>%
+  ggplot(aes(x = group, y = Estimate.50DC)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 21,
+    color = "black",
+    fill = "chartreuse2",
+    size = 2,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 22,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs( x = "Group", y = "EC50D (ppm)") + theme(
+    panel.border = element_rect(colour = "black", fill=NA, size=1),
+        axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 7,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+plot_bos_2
+
+```
+#  Different grouping plots
+##  Picoxystrobin
+```{r}
+data_for_plots_pico_2 <- picoxystrobin_complete %>% 
+  group_by(ID) %>% 
+  mutate(group = ifelse(
+    ID %in% bean_isolates_exposed_to_fungicides,
+    "Dry bean","Soybean"
+    ))
+
+data_for_plots_pico_2$group <- as_factor(data_for_plots_pico_2$group)
+
+
+plot_pico_2 <- data_for_plots_pico_2%>%
+  ggplot(aes(x = group, y = Estimate.50DC)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 21,
+    color = "black",
+    fill = "chocolate1",
+    size = 2,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 22,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs( x = "Group", y = "EC50D (ppm)") + theme(
+    panel.border = element_rect(colour = "black", fill=NA, size=1),
+        axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 7,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+plot_pico_2
+
+
+```
+#  Different grouping plots
+##  Tetraconazole
+```{r}
+data_for_plots_tetra_2 <- tetraconazole_complete %>% 
+  group_by(ID) %>% 
+  mutate(group = ifelse(
+    ID %in% bean_isolates_exposed_to_fungicides,
+    "Dry bean","Soybean"
+          ))
+  
+data_for_plots_tetra_2$group <- as_factor(data_for_plots_tetra_2$group)
+
+
+plot_tetra_2 <- data_for_plots_tetra_2%>%
+  ggplot(aes(x = group, y = Estimate.50DC)) +
+  geom_jitter(
+    width = .1,
+    height = 0.5,
+    shape = 21,
+    color = "black",
+    fill = "deepskyblue",
+    size = 2,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 22,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs( x = "Group", y = "EC50D (ppm)") + theme(
+        panel.border = element_rect(colour = "black", fill=NA, size=1),
+
+        axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 7,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+plot_tetra_2
+```
+##  Grid
+```{r}
+plot_grid(plot_tetra_2, plot_pico_2, plot_bos_2)
+
+```
+#  Different grouping plots
+
+##  Boscalid
+```{r}
+data_for_plots_bos_3 <- boscalid_complete %>% 
+  group_by(ID) %>% 
+  mutate(group = ifelse(
+    ID %in% soybean_WI,
+    "Soybean WI",
+    ifelse(
+      ID %in% soybean_IA,
+      "Soybean IA","Soybean MI"
+    )))
+
+data_for_plots_bos_3$group <- as_factor(data_for_plots_bos_3$group)
+
+
+plot_bos_3 <- data_for_plots_bos_3%>%
+  ggplot(aes(x = group, y = Estimate.50DC)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 21,
+    color = "black",
+    fill = "chartreuse2",
+    size = 1,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 12,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs(title = "Boscalid", x = "Group", y = "EC50D (ppm)") + theme(
+    plot.title = element_text(
+      size = 10,
+      face = "bold",
+      hjust = 0.5,
+      family = "Verdana"
+    ),
+    axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 7,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+plot_bos_3
+
+```
+#  Different grouping plots
+##  Picoxystrobin
+```{r}
+data_for_plots_pico_3 <- picoxystrobin_complete %>% 
+  group_by(ID) %>% 
+  mutate(group = ifelse(
+    ID %in% soybean_WI,
+    "Soybean WI",
+    ifelse(
+      ID %in% soybean_IA,
+      "Soybean IA","Soybean MI"
+    )))
+
+data_for_plots_pico_3$group <- as_factor(data_for_plots_pico_3$group)
+
+
+plot_pico_3 <- data_for_plots_pico_3%>%
+  ggplot(aes(x = group, y = Estimate.50DC)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 21,
+    color = "black",
+    fill = "chocolate1",
+    size = 1,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 12,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs(title = "Picoxystrobin", x = "Group", y = "EC50D (ppm)") + theme(
+    plot.title = element_text(
+      size = 10,
+      face = "bold",
+      hjust = 0.5,
+      family = "Verdana"
+    ),
+    axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 7,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+plot_pico_3
+
+
+```
+#  Different grouping plots
+##  Tetraconazole
+```{r}
+data_for_plots_tetra_3 <- tetraconazole_complete %>% 
+  group_by(ID) %>% 
+  mutate(group = ifelse(
+    ID %in% soybean_WI,
+    "Soybean WI",
+    ifelse(
+      ID %in% soybean_IA,
+      "Soybean IA","Soybean MI"
+      )))
+  
+data_for_plots_tetra_3$group <- as_factor(data_for_plots_tetra_3$group)
+
+
+plot_tetra_3 <- data_for_plots_tetra_3%>%
+  ggplot(aes(x = group, y = Estimate.50DC)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 21,
+    color = "black",
+    fill = "deepskyblue",
+    size = 1,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 12,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs(title = "Tetraconazole", x = "Group", y = "EC50D (ppm)") + theme(
+    plot.title = element_text(
+      size = 10,
+      face = "bold",
+      hjust = 0.5,
+      family = "Verdana"
+    ),
+    axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 7,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+plot_tetra_3
+```
+##  Grid
+```{r}
+plot_grid(plot_tetra_3, plot_pico_3, plot_bos_3)
+
+```
