@@ -27,7 +27,7 @@ knitr::opts_chunk$set(echo = TRUE)
 boscalid.data <-
   read.csv("data/boscalid_serialdilution_baseline(validationdata).csv")
   boscalid.data <- subset(boscalid.data, select = -X)
-  boscalid.data$repeats <- rep_len(1:4, length.out = 2184)
+  boscalid.data$repeats <- rep_len(1:4, length.out = nrow(boscalid.data))
   boscalid.data$ID <- as.character(boscalid.data$ID)
   # renaming ID for the current names
  boscalid.data$ID[ boscalid.data$ID =="12B"]  <- "12" 
@@ -49,28 +49,34 @@ boscalid.data <-
  boscalid.data$ID[ boscalid.data$ID =="W212"]  <- "2388"
  boscalid.data$ID[ boscalid.data$ID =="318"]  <- "2390"
 
-  ## Discarding dose at 0.4 ppm and isolate 800 because it has just one experimental replication ##
+  ####Transforming to $ID to numeric
+ boscalid.data$ID <- as.numeric(boscalid.data$ID)
+ ## Discarding dose at 0.4 ppm and isolate 800 because it has just one experimental replication ##
+ # Filter out the control observations that have less than 5 cm growth
   boscalid.data <- boscalid.data %>%
     filter(!dose ==  0.4 & !ID == 800) %>%
     group_by(ID, experimental_replicate, dose, ecuatorial, polar, repeats) %>%
     filter(
-    !ID == "I-20" |
+    !ID == 2362 |
     !experimental_replicate == 2 |
     !dose == 0 |
     !repeats == 3 ,
     !ID == 1033 |
-    !experimental_replicate == 2 | !dose == 0 | !repeats == 4
+    !experimental_replicate == 2 | 
+    !dose == 0 |
+    !repeats == 4
     ) %>%
     mutate(growth = ((ecuatorial + polar) / 2))
     
 #Reading and subsetting data picoxystrobin
   picoxystrobin.data <-
     read.csv("data/picoxystrobin_serialdi_BL-WMN_survey-WMNCSRP(validationdata).csv")
-    picoxystrobin.data$repeats <- rep_len(1:4, length.out = 2016)
+    picoxystrobin.data$repeats <- rep_len(1:4, nrow(picoxystrobin.data))
     picoxystrobin.data$ID <- as.character(picoxystrobin.data$ID)
     # renaming ID for the current names
+    
  picoxystrobin.data$ID[ picoxystrobin.data$ID =="12B"]  <- "12" 
- #Although 74SS1 belong to # 74 the hat I used was specifically this, 74SS1
+ #Although 74SS1 belong to # 74 the that I used was specifically this, 74SS1
  picoxystrobin.data$ID[ picoxystrobin.data$ID =="74SS1"]  <- "74" 
  picoxystrobin.data$ID[ picoxystrobin.data$ID =="62-02"]  <- "2098" 
  picoxystrobin.data$ID[ picoxystrobin.data$ID =="62-03"]  <- "2099" 
@@ -88,19 +94,22 @@ boscalid.data <-
  picoxystrobin.data$ID[ picoxystrobin.data$ID =="W212"]  <- "2388"
  picoxystrobin.data$ID[ picoxystrobin.data$ID =="318"]  <- "2390"
 
-    ##Discarding some isolates due to they are not there##
+   ####Transforming to $ID to numeric
+picoxystrobin.data$ID <- as.numeric(picoxystrobin.data$ID)
+   
+  #Filter out the control observations that have less than 5 cm growth
     picoxystrobin.data <- picoxystrobin.data %>%
       group_by(ID, experimental_replicate, dose, ecuatorial, polar, repeats) %>%
       filter(
-      !ID == "2143" |
+      !ID == 2143 |
       !experimental_replicate == 1 |
       !dose == 0 |
       !repeats == 2 ,
-      !ID == "2100" |
+      !ID == 2100 |
       !experimental_replicate == 2 |
       !dose == 0 |
       !repeats == 3,
-      !ID == "2223" |
+      !ID == 2223 |
       !experimental_replicate == 2 | !dose == 0 | !repeats == 2
       ) %>%
       mutate(growth = ((ecuatorial + polar) / 2))
@@ -109,7 +118,7 @@ boscalid.data <-
 tetraconazole.data <-
   read.csv("data/tetraconazole_serialdi_BL-WMN_survey-WMNCSRP(validationdata).csv")
   tetraconazole.data <- subset(tetraconazole.data, select = -(X:X.1))
-  tetraconazole.data$repeats <- rep_len(1:4, length.out = 2016)
+  tetraconazole.data$repeats <- rep_len(1:4, length.out = nrow(tetraconazole.data))
   tetraconazole.data$ID <- as.character(tetraconazole.data$ID) 
   # renaming ID for the current names
  tetraconazole.data$ID[ tetraconazole.data$ID =="12B"]  <- "12" 
@@ -131,31 +140,36 @@ tetraconazole.data <-
  tetraconazole.data$ID[ tetraconazole.data$ID =="W212"]  <- "2388"
  tetraconazole.data$ID[ tetraconazole.data$ID =="318"]  <- "2390"
 
-  
-   ##Discarding some isolates due to they were not there##
+    ####Transforming to $ID to numeric
+tetraconazole.data$ID <- as.numeric(tetraconazole.data$ID)
+   # Filter out the control observations that have less than 5 cm growth
   tetraconazole.data <- tetraconazole.data %>%
     group_by(ID, experimental_replicate, dose, ecuatorial, polar, repeats) %>%
     filter(
-    !ID == "2139" |
+    !ID == 2139 |
     !experimental_replicate == 1 |
     !dose == 0.5 ,
-    !ID == "2139" |
+    !ID == 2139 |
     !experimental_replicate == 1 |
     !dose == 1 ,
-    !ID == "2139" |
-    !experimental_replicate == 1 | !dose == 2
-    ) %>%
+    !ID == 2139 |
+    !experimental_replicate == 1 | !dose == 2,
+    !ID == 2139 |
+    !experimental_replicate == 1 | !dose == 3,
+    !ID == 2139 |
+    !experimental_replicate == 1 | !dose == 5
+    )   %>%
     mutate(growth = ((ecuatorial + polar) / 2))
 #Reading and subsetting data TM
   TMdata <-
     read.csv("data/TM_serialdi_BL-WMN_survey-WMNCSRP(validationdata).csv")
     TMdata <- subset(TMdata, select = -(X:X.6))
-    TMdata$repeats <- rep_len(1:4, length.out = 3192)
+    TMdata$repeats <- rep_len(1:4, length.out = nrow(TMdata))
     TMdata$ID <- as.character(TMdata$ID)
-   
-    
- TMdata$ID[ TMdata$ID =="12B"]  <- "12" 
- TMdata$ID[ TMdata$ID =="74SS1"]  <- "74" 
+   # renaming ID for the current names
+  TMdata$ID[ TMdata$ID =="12B"]  <- "12" 
+ #Although 74SS1 belong to # 74 the hat I used was specifically this, 74SS1
+  TMdata$ID[ TMdata$ID =="74SS1"]  <- "74" 
  TMdata$ID[ TMdata$ID =="62-02"]  <- "2098" 
  TMdata$ID[ TMdata$ID =="62-03"]  <- "2099" 
  TMdata$ID[ TMdata$ID =="62-04"]  <- "2100" 
@@ -172,11 +186,13 @@ tetraconazole.data <-
  TMdata$ID[ TMdata$ID =="W212"]  <- "2388"
  TMdata$ID[ TMdata$ID =="318"]  <- "2390"
 
-     ## Discarding some isolates due to they are not there##
+ ####Transforming to $ID to numeric
+TMdata$ID <- as.numeric(TMdata$ID)   
+  #Filter out the control observations that have less than 5 cm growth
     TMdata <- TMdata %>%
       group_by(ID, experimental_replicate, dose, ecuatorial, polar, repeats) %>%
       filter(!experimental_replicate == 1 |
-      !dose == 1.5 | !repeats == 3) %>%
+      !dose == 1.5 | !repeats == 3) %>% # something weird happened with the peats 3 so Iam revoming those
       mutate(growth = ((ecuatorial + polar) / 2))
       
 #Reading and subsetting data discriminatory dose use
@@ -215,7 +231,8 @@ tetraconazole.data <-
     
     survey.data.2 <- survey.data
      survey.data.2$ID <- as.character(survey.data.2$ID)
-    survey.data.2$ID[ survey.data.2$ID =="54C"]  <- "2453"
+     # renaming ID for the current names
+     survey.data.2$ID[ survey.data.2$ID =="54C"]  <- "2453"
      survey.data.2$ID[ survey.data.2$ID =="65B"]  <- "2528"
       survey.data.2$ID[ survey.data.2$ID =="51C"]  <- "2449"
        survey.data.2$ID[ survey.data.2$ID =="71B"]  <- "2505"
@@ -228,8 +245,10 @@ tetraconazole.data <-
               survey.data.2$ID[ survey.data.2$ID =="78-02"]  <- "2140"
 
              survey.data.3 <- survey.data.2 %>% mutate(ID = as.numeric(ID))
-               WM <- read.csv("data/WM-fixingproductnamesID2573_modifyingforactiveingredient_8.csv", stringsAsFactors = TRUE)
+# reading the inventory Sclerotinia collection
+                            WM <- read.csv("data/WM-fixingproductnamesID2573_modifyingforactiveingredient_8.csv", stringsAsFactors = TRUE)
 WM$Collection_ID <- str_squish(WM$Collection_ID)
+# removing those isolates that are repated and have subsequent ID number becasue they are coming from the previous isolates, for example, 5 & 5A, removing then 5A
 WM2 <- 
 WM %>% filter(
   !Collection_ID == "5A",
@@ -436,9 +455,10 @@ WM %>% filter(
   !Collection_ID == "973D"
   ) %>% 
   rename(ID= Collection_ID)
-  
+  # Changing the names because they were not 12, it goes directly to 12B, s this 12B is gonna be the 12 now
 WM2$ID[ WM2$ID =="12B"]  <- "12"
 WM2$ID[ WM2$ID =="13B"]  <- "13"
+ #Although 74SS1 belong to # 74 the that I used was specifically this, 74SS1
 WM2$ID[ WM2$ID =="74-SS-1"]  <- "74"
 WM2$ID[ WM2$ID =="125 SS-4"]  <- "125"
 WM2$ID[ WM2$ID =="232A"]  <- "232"
@@ -552,7 +572,7 @@ get_range <- function(mynumber) {
 ##  Analysis by fungicide
 #  Boscalid
 ```{r}
-#Boscalid fungicide taking the outliers from the 8 observations of each one, it reduces from to #
+#Boscalid fungicide taking the outliers from the 8 observations of each one USING THE FUCTION 
 boscalid.filtered  <- boscalid.data %>%
   group_by(ID, dose) %>%
   mutate(growth_range = list(get_range(growth))) %>%
@@ -563,7 +583,7 @@ boscalid.filtered  <- boscalid.data %>%
   select(c(ID, experimental_replicate, repeats, dose, response))
 
 #Boxplot by experimental replicate,  I would need to remove one replicate from 2d experimental replicate for ID= 1032, one replicate from each experimental replicate for ID = 2222 and one repeat from 2nd experimental replicate for ID= 1032
-#Boxplot by repeats,   I would need to remove For ID= 1032, the 4th repeat, and For ID= H-03,  the repeat 3,
+#Boxplot by repeats,   I would need to remove For ID= 1032, the 4th repeat, and For ID= 2222,  the repeat 3,
 xx <- EC_table(boscalid.filtered, form = response ~ dose)
 boscalid.xx <-
   xx %>% rename(ID = sample ) %>%
@@ -578,7 +598,8 @@ boscalid.xx <-
       "treatmentyear2016_isolates"
       ))) %>% ungroup() %>% 
      mutate(fungicide = "Boscalid") %>% 
-  mutate(group = recode(group, survey_isolates = "Farmer fields", treatmentyear2016_isolates = "Fungicide field trials", baseline = "Baseline")) %>% mutate(group = as.factor(group))
+  mutate(group = recode(group, survey_isolates = "Farmer fields", treatmentyear2016_isolates = "Fungicide field trials", baseline = "Baseline")) %>% mutate(group = as.factor(group)) %>% 
+  ungroup()
 
 ```
 
@@ -595,30 +616,29 @@ RG <-
         mutate(RG0.05 = ((`0.05` / `0`) * 100)) %>%  
           mutate(RG0.1 = ((`0.1` / `0`) * 100)) %>%
             mutate(RG0.2 = ((`0.2` / `0`) * 100)) %>%
-              mutate(RG0.8 = ((`0.8` / `0`) * 100))
-#Since here EC50 is known as Estimate EC50 from EC50 table 
+              mutate(RG0.8 = ((`0.8` / `0`) * 100)) %>% 
+  ungroup()
+#Since here EC50 is known as Estimate EC50 from EC50 table and normalizing data
 final.boscalid <-#joining
-  left_join (RG, boscalid.xx) %>% mutate(logEC50 = (log(EC50))) %>% rename(Estimate.50 = EC50)
+  left_join (RG, boscalid.xx) %>% # normalizing data
+  mutate(logEC50 = (log(EC50))) %>% 
+rename(Estimate.50 = EC50)
 
 ####################################################################################
-###Dose chosen as DC. Although there is one dose with higher r2, there is no differnec between and this was selected
+###Dose chosen as DC. Although there is one dose with higher r2, there is no difference between and this was selected
 # Linear model of log EC50 and relative growth at 0.2 ppm, check normality and homogeneity of variances
-#pdf("boscalid_assumptions_linearmodel_dosechoseasDC_with_outlayers.pdf")
 finalRG0.2 <- lm(logEC50 ~ RG0.2, final.boscalid)
 summary(finalRG0.2)
 plot(finalRG0.2)
-#check_assumptions(finalRG0.2)
-#dev.off()
-##taking out outliers from Q-Q PLOT $ LEVERAGE TEST, ISOLATES # 1032 from treatment, 2222 & 2223 from survey##
-#pdf("boscalid_assumptions_linearmodel_dosechoseasDC.pdf")
+
+##taking out outliers from Q-Q PLOT $ LEVERAGE TEST, ISOLATES # 1032 from treatment, 2222 & 2223 from Farmer fields##
 final.boscalid.clean <-
   final.boscalid %>% filter(!ID == "1032", !ID == "2222",!ID == "2223")
  
  finalRG0.2 <- lm(logEC50 ~ RG0.2, final.boscalid.clean)
   summary(finalRG0.2)
   plot(finalRG0.2)
-  #check_assumptions(finalRG0.2)
-  #dev.off()
+  
 # Linear Regression graph of log EC50 and relative growth at 0.2 ppm
 
   ggplot(finalRG0.2, aes(x = RG0.2, y = logEC50)) +  geom_point() + geom_smooth(method = "lm") +  theme(
@@ -644,12 +664,14 @@ final.boscalid.DC <-
   final.boscalid.clean %>% mutate(Estimate.50DC = exp((finalRG0.2[[1]][[1]]) + ((finalRG0.2[[1]][[2]]) * RG0.2))) %>%# here I need to do this dynamic
   select(ID, Estimate.50DC, Estimate.50)
 
-# Linear model of EC50  and EC50DC, check normality and homogeneity of variances
+
+# Linear model of EC50  and EC50DC just to corroborate is a GOOD RELATIONSHIP, check normality and homogeneity of variances
 final.boscalid.DC.0.2 <- lm (Estimate.50DC ~ Estimate.50, final.boscalid.DC ) 
 summary(final.boscalid.DC.0.2)
 plot(final.boscalid.DC.0.2)
-#check_assumptions(final_boscalid_DC_0.2)
-# Linear Regression graph of EC50 and EC50DC
+
+
+
 #pdf("Linear regression of boscalid 0.2 ppm.pdf")  
 ggplot(final.boscalid.DC.0.2, aes(x = Estimate.50, y = Estimate.50DC)) +  theme(
   plot.title = element_text(
@@ -672,27 +694,27 @@ ggplot(final.boscalid.DC.0.2, aes(x = Estimate.50, y = Estimate.50DC)) +  theme(
 ```
 ##  Boscalid with survey (pre-test Fungicide) inlcuding Farmer fields and Fungicide field trials
 ```{r}
-boscalid.data <- survey.data.3 %>%
+boscalid_data <- survey.data.3 %>%
   select(ID,
          repeats,
          experimental_replicate,
          boscalid.growth,
          control.growth) %>%
-  rename(response = boscalid.growth, control = control.growth) %>% 
-  mutate(ID= as.character(ID))
+  rename(response = boscalid.growth, control = control.growth) #%>% 
+  #mutate(ID= as.character(ID))
 
 
 ###
-alga <-  boscalid.filtered %>% filter(dose== 0.2 | dose== 0) %>%  spread(dose, response) %>% rename(control= '0',  response = '0.2') %>% select(ID, repeats, experimental_replicate,  response,control) %>% 
-  mutate(ID= as.character(ID))
+#alga <-  boscalid.filtered %>% filter(dose== 0.2 | dose== 0) %>%  spread(dose, response) %>% rename(control= '0',  response = '0.2') %>% select(ID, repeats, experimental_replicate,  response,control) %>% 
+ # mutate(ID= as.character(ID))
 
 
-## That wa using the EC50D of the serial dilution but Iam going to use Real EC50 of those
+## That was using the EC50D of the serial dilution 
  
- #boscalid_data <- boscalid_data %>% full_join (alga)
+ #boscalid_data <- boscalid.data %>% full_join (alga)
  
 # Using the previous  function in order to take out the outliers
-boscalid.filtered.survey <- boscalid.data %>%
+boscalid.filtered.survey <- boscalid_data %>%
   group_by(ID) %>%
   mutate(response_range = list(get_range(response))) %>%
   unnest() %>%
@@ -712,8 +734,10 @@ boscalid.filtered. <- boscalid.filtered.survey %>%
   mean_control = mean(control, na.rm = TRUE)
   ) %>%
   mutate(RG = (mean_response / mean_control) * 100) %>%
-  mutate(Estimate.50DC = exp (finalRG0.2[[1]][[1]] + finalRG0.2[[1]][[2]] * RG)) %>%
-  select(c(ID, Estimate.50DC))
+  mutate(Estimate.50DC = exp (finalRG0.2[[1]][[1]] + finalRG0.2[[1]][[2]] * RG)) %>% ungroup() %>% 
+  rename(EC50DC= Estimate.50DC) %>% 
+  mutate(ID = as.numeric(ID)) %>% 
+   select(c(ID, EC50DC)) 
 
 ```
 ##  Analysis by fungicide
@@ -1192,25 +1216,27 @@ select(c(ID, Estimate.50DC)) %>%
 ```
 ##  Ordering for each fungicide
 ```{r}
-boscalid.xx2 <- boscalid.xx %>% 
-  select(ID, EC50)
-#No more this
-# final_boscalid_DC <- final_boscalid_DC %>% select(ID, Estimate.50DC)
-####WATCH OUT, Iam naming EC50 although for boscalide filtered realy is EC50D
-boscalid.filtered.2 <- boscalid.filtered. %>% 
-rename( EC50 =  Estimate.50DC) %>% 
-  mutate(ID = as.numeric(ID))
-boscalid.complete <-  rbind.data.frame(boscalid.xx2, boscalid.filtered.2)
-boscalid.complete <- ungroup(boscalid.complete)
-boscalid.complete$ID <- as.numeric(as.character(boscalid.complete$ID) ) 
+
+#Selecting the EC50D from the serial dilution
+final.boscalid.DC_2 <- final.boscalid.DC %>% 
+  rename(EC50DC = Estimate.50DC) %>% 
+  select(ID, EC50DC) 
+####WATCH OUT, Based on EC50D
+
+boscalid.complete <-  rbind.data.frame(final.boscalid.DC_2, boscalid.filtered.)
+
+boscalid.complete <- boscalid.complete %>% 
+ungroup(boscalid.complete) %>%  mutate( ID= as.numeric(ID))
+
+
 baby <- boscalid.complete$ID[duplicated(boscalid.complete$ID)]
 
 #now I will take these repeats from the DC test coming
 
-boscalid.filtered.3 <- boscalid.filtered.2 %>% filter(!ID %in% baby )
+boscalid.filtered.2 <- boscalid.filtered. %>% filter(!ID %in% baby )
 
 #Now substitute
-boscalid.complete.2 <-  rbind.data.frame(boscalid.xx2, boscalid.filtered.3)
+boscalid.complete.2 <-  rbind.data.frame(final.boscalid.DC_2, boscalid.filtered.2)
 ##look for repetition#
  boscalid.complete.2$ID[duplicated(boscalid.complete.2$ID)]
 
@@ -1363,29 +1389,29 @@ TM.complete.3 <- TM.complete.2 %>%
 
 shapiro.test.boscal <- boscalid.complete.4 %>%
   group_by(Origin) %>%
-  do(tidy(shapiro.test(.$EC50)))
+  do(tidy(shapiro.test(.$EC50DC)))
 shapiro.test.boscal 
 # No normals
 shapiro.test.boscal.2 <- boscalid.complete.4 %>%
   group_by(Host) %>%
-  do(tidy(shapiro.test(.$EC50)))
+  do(tidy(shapiro.test(.$EC50DC)))
 shapiro.test.boscal.2
 
  #NO NORMALILTY thats is why  krusKal
 #by origin
 
-kruskal.test(EC50 ~ Origin, data = boscalid.complete.4)
+kruskal.test(EC50DC ~ Origin, data = boscalid.complete.4)
 
 #There is difference p-value = 1.25 *10 -05
 
-DunnTest(EC50 ~ Origin, data = boscalid.complete.4, method = "bonferroni")
+DunnTest(EC50DC ~ Origin, data = boscalid.complete.4, method = "bonferroni")
 #P VALUE 0.00057 *** FF-Baseline
 #P VALUE 0.00093 *** FFT-FF
 
 
 #by hosts
 
-kruskal.test(EC50 ~ Host, data = boscalid.complete.4)
+kruskal.test(EC50DC ~ Host, data = boscalid.complete.4)
 #There is NO difference p-value 0.06043
 
 
