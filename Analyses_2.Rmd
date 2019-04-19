@@ -700,19 +700,8 @@ boscalid_data <- survey.data.3 %>%
          experimental_replicate,
          boscalid.growth,
          control.growth) %>%
-  rename(response = boscalid.growth, control = control.growth) #%>% 
-  #mutate(ID= as.character(ID))
+  rename(response = boscalid.growth, control = control.growth) 
 
-
-###
-#alga <-  boscalid.filtered %>% filter(dose== 0.2 | dose== 0) %>%  spread(dose, response) %>% rename(control= '0',  response = '0.2') %>% select(ID, repeats, experimental_replicate,  response,control) %>% 
- # mutate(ID= as.character(ID))
-
-
-## That was using the EC50D of the serial dilution 
- 
- #boscalid_data <- boscalid.data %>% full_join (alga)
- 
 # Using the previous  function in order to take out the outliers
 boscalid.filtered.survey <- boscalid_data %>%
   group_by(ID) %>%
@@ -743,7 +732,7 @@ boscalid.filtered. <- boscalid.filtered.survey %>%
 ##  Analysis by fungicide
 #  Picoxystrobin
 ```{r}
-#Picoxystrobin  fungicide taking the outlayers from the 8 observations of each one, it reduces from 2013 to 1959 
+#Picoxystrobin  fungicide taking the outlayers from the 8 observations of each one USING THE FUCTION
 picoxystrobin.filtered <- picoxystrobin.data %>%
   group_by(ID, dose) %>%
   mutate(growth_range = list(get_range(growth))) %>%
@@ -760,7 +749,8 @@ yy <- EC_table(picoxystrobin.filtered, form = response ~ dose)
 picoxystrobin.yy <-
   yy %>% rename(ID = sample ) %>%
   rename(EC50 = Estimate.50)%>%
-  select(c("ID", "EC50")) %>% group_by(ID, EC50) %>% mutate(group = ifelse(
+   group_by(ID, EC50) %>% 
+  mutate(group = ifelse(
   ID %in% baseline_isolates,
   "baseline",
   ifelse(
@@ -768,10 +758,10 @@ picoxystrobin.yy <-
   "survey_isolates",
   "treatmentyear2016_isolates"
   )
-  )) %>% ungroup() %>% mutate(fungicide = "Picoxystrobin") %>%   mutate(group = recode(group, survey_isolates = "Farmer fields", treatmentyear2016_isolates = "Fungicide field trials", baseline = "Baseline")) %>% mutate(group = as.factor(group))
-
-  
-
+  )) %>% ungroup() %>%
+  mutate(fungicide = "Picoxystrobin") %>%   mutate(group = recode(group, survey_isolates = "Farmer fields", treatmentyear2016_isolates = "Fungicide field trials", baseline = "Baseline")) %>%
+  mutate(group = as.factor(group))%>% 
+  ungroup()
 
 ```
 ##  Procedure to get the Discriminatory Concentration (DC) 
@@ -785,8 +775,12 @@ RG <-
       mutate(RG0.04 = ((`0.04` / `0`) * 100)) %>%
         mutate(RG0.06 = ((`0.06` / `0`) * 100)) %>%
           mutate(RG0.1 = ((`0.1` / `0`) * 100))
+  #Since here EC50 is known as Estimate EC50 from EC50 table and normalizing data
+
 final.picoxystrobin <- #joining table
-  left_join (RG, picoxystrobin.yy) %>% mutate(logEC50 = (log(EC50))) %>% rename(Estimate.50 = EC50)
+  left_join (RG, picoxystrobin.yy) %>%
+  mutate(logEC50 = (log(EC50))) %>% # normalizing data
+  rename(Estimate.50 = EC50)
 
 ##################################################################################
 #Dose chosen as DC
@@ -806,9 +800,12 @@ plot(finalRG0.01)
 
 # Getting the EC50DC according to the model
 final.picoxystrobin.DC <-
-  final.picoxystrobin.clean %>% mutate(Estimate.50DC = exp(finalRG0.01[[1]][[1]] + finalRG0.01[[1]][[2]] *
-  RG0.01)) %>% select(ID, Estimate.50DC, Estimate.50)
-  # Linear model of EC50  and EC50DC, check normality and homogeneity of variances
+  final.picoxystrobin.clean %>% 
+  mutate(Estimate.50DC = exp(finalRG0.01[[1]][[1]] + finalRG0.01[[1]][[2]] *
+  RG0.01)) %>% # here I need to do this dynamic
+  select(ID, Estimate.50DC, Estimate.50)
+  
+# Linear model of EC50  and EC50DC just to corroborate is a GOOD RELATIONSHIP, check normality and homogeneity of variances
 final.picoxystrobin.DC.0.01 <- lm (Estimate.50DC ~ Estimate.50, final.picoxystrobin.DC)
 summary(final.picoxystrobin.DC.0.01 )
 plot(final.picoxystrobin.DC.0.01)
@@ -838,7 +835,7 @@ ggplot(final.picoxystrobin.DC.0.01,
 ```
 #  Picoxystrobin With Survey(Pre-Test Fungicide) include Farmer fields and Fungicide field trials
 ```{r}
-picoxystrobin.data <- survey.data.3 %>%
+picoxystrobin_data <- survey.data.3 %>%
   select(
   ID,
   repeats,
@@ -847,30 +844,22 @@ picoxystrobin.data <- survey.data.3 %>%
   sham.growth,
   control.growth
   ) %>%
-  rename(response = picoxystrobin.growth, control = sham.growth) %>% select(-control.growth) %>% 
-  mutate(ID= as.character(ID))
-###
-protozoa <-  picoxystrobin.filtered %>% filter(dose== 0.01 | dose== 0) %>%  spread(dose, response) %>% rename(control= '0',  response = '0.01') %>% select(ID, repeats, experimental_replicate,  response,control ) %>% 
-  mutate(ID= as.character(ID))
-
-
-# That was using the EC50D of the serial dilution but Iam going to use Real EC50 of those
- 
- 
+  rename(response = picoxystrobin.growth, control = sham.growth) %>% select(-control.growth) 
 
 # Using the function in order to take out the outliers
-picoxystrobin.filtered.survey <- picoxystrobin.data %>%
-  group_by(ID) %>%
-    mutate(response_range = list(get_range(response))) %>%
-      unnest() %>%
-        mutate(control_range = list(get_range(control))) %>%
-          unnest() %>%
-            filter(response <= upper &
-                response >= lower,
-                    control <= upper1 & control >= lower1) %>%
-                      ungroup() %>%
-                        select(c(ID, experimental_replicate, repeats, response, control))
-  #picoxystrobin_filtered_survey_plusbaseline
+picoxystrobin.filtered.survey <- picoxystrobin_data %>%
+group_by(ID) %>%
+mutate(response_range = list(get_range(response))) %>%
+unnest() %>%
+mutate(control_range = list(get_range(control))) %>%
+unnest() %>%
+filter(response <= upper &
+response >= lower,
+control <= upper1 & control >= lower1) %>%
+ungroup() %>%
+select(c(ID, experimental_replicate, repeats, response, control))
+  
+#  Becasue of that taking outlayers by and then
 picoxystrobin.filtered. <- picoxystrobin.filtered.survey %>%
   group_by(ID) %>%
     summarise(
@@ -879,14 +868,18 @@ picoxystrobin.filtered. <- picoxystrobin.filtered.survey %>%
        ) %>%
          mutate(RG = (mean_response / mean_control) * 100) %>%
            mutate(Estimate.50DC = exp (finalRG0.01[[1]][[1]] + finalRG0.01[[1]][[2]] * RG)) %>%
-             select(c(ID, Estimate.50DC)) %>%
-               ungroup()
- 
+  ungroup() %>%
+  rename(EC50DC= Estimate.50DC) %>% 
+  mutate(ID = as.numeric(ID)) %>% 
+   select(c(ID, EC50DC)) 
+             
 
 ```
 ##  Analysis by fungicide
 #  Tetraconazole
 ```{r}
+#Tetraconzaole  fungicide taking the outlayers from the 8 observations of each one USING THE FUCTION
+
 tetraconazole.filtered <- tetraconazole.data %>%
   rename(response = growth) %>%
   group_by(ID, dose) %>%
@@ -901,7 +894,8 @@ bb<- EC_table(tetraconazole.filtered, form = response ~ dose)
 tetraconazole.bb <-
   bb %>% rename(ID = sample ) %>%
   rename(EC50 = Estimate.50)%>%
-  select(c("ID", "EC50")) %>%  group_by(ID, EC50) %>% mutate(group = ifelse(
+  group_by(ID, EC50) %>% 
+  mutate(group = ifelse(
     ID %in% baseline_isolates,
     "baseline",
     ifelse(
@@ -909,7 +903,10 @@ tetraconazole.bb <-
     "survey_isolates",
     "treatmentyear2016_isolates"
     )
-    )) %>% ungroup() %>% mutate(fungicide = "Tetraconazole") %>% mutate(group = recode(group, survey_isolates = "Farmer fields", treatmentyear2016_isolates = "Fungicide field trials", baseline = "Baseline")) %>% mutate(group = as.factor(group))
+    )) %>% ungroup() %>% 
+  mutate(fungicide = "Tetraconazole") %>% mutate(group = recode(group, survey_isolates = "Farmer fields", treatmentyear2016_isolates = "Fungicide field trials", baseline = "Baseline")) %>% 
+  mutate(group = as.factor(group)) %>% 
+  ungroup()
 ```
 ##  Procedure to get the Discrimanatory Concentration (DC) 
 #  Tetraconazole
@@ -923,14 +920,13 @@ RG <-
   mutate(RG3 = ((`3` / `0`) * 100)) %>% 
   mutate(RG5 =((`5` / `0`) * 100)) 
 
-#Since here EC50 is known as Estimate EC50 from EC50 table
+#Since here EC50 is known as Estimate EC50 from EC50 table and normalizing data
 
-# #Ordering the table##
-#tetraconazole_bb <-  bb %>%
- # select(-Estimate.10, -SE.10, -Estimate.90, -SE.90)
-#names(tetraconazole_bb)[names(tetraconazole_bb) == "sample"] <- "ID"
+
 final.tetraconazole <-#joining
-  left_join (RG, tetraconazole.bb) %>% mutate(logEC50 = (log(EC50))) %>% rename(Estimate.50 = EC50)
+  left_join (RG, tetraconazole.bb) %>% # normalizing data
+  mutate(logEC50 = (log(EC50))) %>% 
+  rename(Estimate.50 = EC50)
 #pdf("tetraconazole_assumptions_linearmodel_each_dose&Linear_regression_with_best_model.pdf")
 
 
@@ -958,8 +954,9 @@ ggplot(finalRG2, aes(x = RG2, y =  logEC50)) +  theme(plot.title = element_text(
                                                                                                                                 theme(axis.text.x = element_text(size = 12)) + theme(axis.text.y = element_text(size = 12)) + theme (axis.line = element_line(colour = "grey50", size = 1)) +
                                                                                                                                 geom_point() + geom_smooth(method = "lm")
                                                                               # Getting the EC50DC according to the model
-final.tetraconazole.DC <- final.tetraconazole.clean %>% mutate(Estimate.50DC = exp(finalRG2[[1]][[1]] + finalRG2[[1]][[2]]*RG2)) %>% select(ID, Estimate.50DC, Estimate.50)
-# Linear model of EC50  and EC50DC, check normality and homogeneity of variances
+final.tetraconazole.DC <- final.tetraconazole.clean %>% mutate(Estimate.50DC = exp(finalRG2[[1]][[1]] + finalRG2[[1]][[2]]*RG2)) %>% # here I need to do this dynamic
+  select(ID, Estimate.50DC, Estimate.50)
+# Linear model of EC50  and EC50DC just to corroborate is a GOOD RELATIONSHIP, check normality and homogeneity of variances
 final.tetraconazole.DC.2 <- lm (Estimate.50DC ~ Estimate.50, final.tetraconazole.DC)
 summary(final.tetraconazole.DC.2)
 plot(final.tetraconazole.DC.2)
@@ -990,27 +987,17 @@ ggplot(final.tetraconazole.DC.2,
 ```
 #  Tetraconazole With Survey(Pre-Test Fungicide) included Farmer fields and Fungicide field trials
 ```{r}
-tetraconazole.data <- survey.data.3 %>%
+tetraconazole_data <- survey.data.3 %>%
   select(ID,
   repeats,
   experimental_replicate,
   tetraconazole.growth,
   control.growth) %>%
-  rename(response = tetraconazole.growth, control = control.growth) %>% 
-  mutate(ID = as.character(ID))
+  rename(response = tetraconazole.growth, control = control.growth) 
  
-###
-amibae <-  tetraconazole.filtered %>% filter(dose== 2 | dose== 0) %>%  spread(dose, response) %>% rename(control= '0',  response = '2') %>% select(ID, repeats, experimental_replicate,  response,control ) %>% 
-    mutate(ID = as.character(ID))
-
-
-
-## That was using the EC50D of the serial dilution but Iam going to use Real EC50 of those
- 
-
-
 # Using the function in order to take out the outliers#
-tetraconazole.filtered.survey <- tetraconazole.data %>%
+
+tetraconazole.filtered.survey <- tetraconazole_data %>%
   group_by(ID) %>%
   mutate(response_range = list(get_range(response))) %>%
   unnest() %>%
@@ -1020,14 +1007,16 @@ tetraconazole.filtered.survey <- tetraconazole.data %>%
   ungroup()%>% 
   select(c(ID, experimental_replicate, repeats, response, control))
 
-##PLus baseline
+#  Becasue of that taking outlayers by and then
 tetraconazole.filtered. <- tetraconazole.filtered.survey %>%
   group_by(ID) %>% 
   summarise(mean_response =mean(response, na.rm = TRUE), mean_control =mean(control, na.rm = TRUE)) %>% 
   mutate(RG= (mean_response/mean_control)*100) %>% 
   mutate(Estimate.50DC = exp (finalRG2[[1]][[1]] + finalRG2[[1]][[2]]*RG)) %>% 
-select(c(ID, Estimate.50DC)) %>% 
-  ungroup()
+ungroup() %>% 
+  rename(EC50DC= Estimate.50DC) %>% 
+  mutate(ID = as.numeric(ID)) %>% 
+   select(c(ID, EC50DC))
 
 
 
@@ -1041,13 +1030,10 @@ TM.filtered <- TMdata %>%
   unnest() %>%
   filter(growth <= upper & growth >= lower) %>%
   rename(response = growth) %>% 
-  ungroup() 
-  
-
-## Discarding all experimental replicate 1 due not consistence in results## anyways it was not consistence in those ones
-TM.filtered <- TM.filtered %>%
+  ungroup() %>% 
+  select(c(ID, experimental_replicate, repeats, dose, response))%>%
   group_by (ID, dose, repeats, response) %>%
-  filter(experimental_replicate==2 | experimental_replicate==3)
+  filter(experimental_replicate==2 | experimental_replicate==3) ## Discarding all experimental replicate 1 due not consistence in results## anyways it was not consistence in those ones
 
 zz <- EC_table(TM.filtered, form = response ~ dose)
  RG <- TM.filtered %>% group_by(ID,dose) %>% summarise(mean_response=mean(response,na.rm=TRUE)) %>% spread(dose,mean_response) %>%  mutate(RG0.75=((`0.75`/`0`)*100)) %>% mutate(RG1=((`1`/`0`)*100)) %>% mutate(RG1.5=((`1.5`/`0`)*100)) %>% mutate(RG2=((`2`/`0`)*100)) %>% mutate(RG2.5=((`2.5`/`0`)*100)) %>%  mutate(RG10=((`10`/`0`)*100))
@@ -1058,7 +1044,7 @@ zz <- EC_table(TM.filtered, form = response ~ dose)
 
 TM.zz <-   zz%>% rename(ID = sample ) %>%
   rename(EC50 = Estimate.50)%>%
-  select(c("ID", "EC50")) %>%  group_by(ID, EC50) %>% mutate(group = ifelse(
+  group_by(ID, EC50) %>% mutate(group = ifelse(
     ID %in% baseline_isolates,
     "baseline",
     ifelse(
@@ -1066,9 +1052,15 @@ TM.zz <-   zz%>% rename(ID = sample ) %>%
     "survey_isolates",
     "treatmentyear2016_isolates"
     )
-    )) %>% ungroup() %>% mutate(fungicide = "TM") %>% mutate(group = recode(group, survey_isolates = "Farmer fields", treatmentyear2016_isolates = "Fungicide field trials", baseline = "Baseline")) %>% mutate(group = as.factor(group))
+    )) %>% ungroup() %>% mutate(fungicide = "TM") %>% mutate(group = recode(group, survey_isolates = "Farmer fields", treatmentyear2016_isolates = "Fungicide field trials", baseline = "Baseline")) %>% mutate(group = as.factor(group)) %>% 
+  ungroup()
+  
+#Since here EC50 is known as Estimate EC50 from EC50 table and normalizing data
 
- final.TM<-left_join (RG, TM.zz) %>% mutate(logEC50=(log(EC50))) 
+ final.TM<-#joining
+   left_join (RG, TM.zz) %>% #normalizing data
+   mutate(logEC50=(log(EC50))) %>% 
+   rename(Estimate.50 = EC50)
 
  
  
@@ -1083,27 +1075,25 @@ ggplot(finalRG10, aes(x = RG10, y = logEC50)) +  geom_point() + geom_smooth()
 
 # Getting the EC50DD according to the model
 
-final.TM.DD <- final.TM %>% mutate(Estimate.50DD = exp(finalRG10[[1]][[1]] - finalRG10[[1]][[2]]*RG10))
-# Linear model of EC50  and EC50DD, check normality and homogeneity of variances
-final.TM.DD.10 <- lm (Estimate.50DD ~ EC50, final.TM.DD)
+final.TM.DD <- final.TM %>% mutate(Estimate.50DC = exp(finalRG10[[1]][[1]] - finalRG10[[1]][[2]]*RG10)) %>% # here I need to do this dynamic 
+  select(ID, Estimate.50DC, Estimate.50)
+# Linear model of EC50  and EC50DD just to corroborate is a GOOD RELATIONSHIP, check normality and homogeneity of variances
+final.TM.DD.10 <- lm (Estimate.50DC ~ Estimate.50, final.TM.DD)
 summary(final.TM.DD.10)
 plot(final.TM.DD.10)
 #check_assumptions(final_TM_DD_10)
 #pdf("Linear regression of thiophanate methyl 10 ppm.pdf")   
 ## Linear Regression graph of EC50 and EC50DD
-ggplot(final.TM.DD.10, aes(x = EC50, y = Estimate.50DD)) +  theme(plot.title = element_text(size = 16, face = "bold", hjust = 1)) + labs(title = "Linear regression of thiophanate methyl 10 ppm", x ="EC50 (ppm)", y = "EC50DD (ppm)" ) + geom_point() + geom_smooth(method = "lm")
+ggplot(final.TM.DD.10, aes(x = Estimate.50, y = Estimate.50DC)) +  theme(plot.title = element_text(size = 16, face = "bold", hjust = 1)) + labs(title = "Linear regression of thiophanate methyl 10 ppm", x ="EC50 (ppm)", y = "EC50DD (ppm)" ) + geom_point() + geom_smooth(method = "lm")
 
 
 
 ```
 #  Thiophanate methyl with Survey(Pre-Test Fungicide)
 ```{r}
-TM.data <- survey.data.3 %>%
+TM_data <- survey.data.3 %>%
   select(ID, repeats, experimental_replicate, TM.growth, control.growth) %>% 
   rename(response = TM.growth, control = control.growth)%>%  
-  mutate(ID= as.character(ID))
-
-TM.data <- TM.data %>% 
   group_by(ID) %>% 
   summarise(mean_response =mean(response, na.rm = TRUE), mean_control =mean(control, na.rm = TRUE)) %>% 
   mutate(RG= (mean_response/mean_control)*100)  %>% 
@@ -1114,26 +1104,15 @@ mutate(resistance = ifelse(RG >24,#more or equal to 25%,
 ```
 #  Another approach with TM to pick the probably isolates with high at EC50 of the model with the best model
 ```{r}
+
 # Picking the best fit model
 
-TM.filtered <- TMdata %>%
-  group_by(ID, dose) %>%
-  mutate(growth_range = list(get_range(growth))) %>%
-  unnest() %>%
-  filter(growth <= upper & growth >= lower) %>%
-  rename(response = growth) %>% 
-  ungroup()
 
-## Discarding all experimental replicate 1 due not consistence in results## anyways it was not consistence in those ones
-TM.filtered1 <- TM.filtered %>%
-  group_by (ID, dose, repeats, response) %>%
-  filter(experimental_replicate==2 | experimental_replicate==3)
-
-zz1 <- EC_table(TM.filtered1, form = response ~ dose)
+zz1 <- EC_table(TM.filtered, form = response ~ dose)
 
 TM.zz1 <-   zz1%>% rename(ID = sample )%>%
  rename(EC50 = Estimate.50)%>%
-  select(c("ID", "EC50")) %>%  group_by(ID, EC50) %>% mutate(group = ifelse(
+  group_by(ID, EC50) %>% mutate(group = ifelse(
     ID %in% baseline_isolates,
     "baseline",
     ifelse(
@@ -1141,20 +1120,23 @@ TM.zz1 <-   zz1%>% rename(ID = sample )%>%
     "survey_isolates",
     "treatmentyear2016_isolates"
     )
-    )) %>% ungroup() %>% mutate(fungicide = "TM") %>% mutate(group = recode(group, survey_isolates = "Farmer fields", treatmentyear2016_isolates = "Fungicide field trials", baseline = "Baseline")) %>% mutate(group = as.factor(group))
+    )) %>% ungroup() %>% mutate(fungicide = "TM") %>% mutate(group = recode(group, survey_isolates = "Farmer fields", treatmentyear2016_isolates = "Fungicide field trials", baseline = "Baseline")) %>% mutate(group = as.factor(group)) %>% 
+  ungroup()
 
  
 
 #Procedure to get Discriminatory conecntration
 
-
- RG <- TM.filtered1 %>% group_by(ID,dose) %>% summarise(mean_response=mean(response,na.rm=TRUE)) %>% spread(dose,mean_response) %>%  mutate(RG0.75=((`0.75`/`0`)*100)) %>% mutate(RG1=((`1`/`0`)*100)) %>% mutate(RG1.5=((`1.5`/`0`)*100)) %>% mutate(RG2=((`2`/`0`)*100)) %>% mutate(RG2.5=((`2.5`/`0`)*100)) %>% 
+ RG <- TM.filtered %>% group_by(ID,dose) %>% summarise(mean_response=mean(response,na.rm=TRUE)) %>% spread(dose,mean_response) %>%  mutate(RG0.75=((`0.75`/`0`)*100)) %>% mutate(RG1=((`1`/`0`)*100)) %>% mutate(RG1.5=((`1.5`/`0`)*100)) %>% mutate(RG2=((`2`/`0`)*100)) %>% mutate(RG2.5=((`2.5`/`0`)*100)) %>% 
    mutate(RG10=((`10`/`0`)*100))
 # 
 #Since here EC50 is known as Estimate EC50 from EC50 table 
  
 
-final.TM1<-left_join (RG, TM.zz1) %>% mutate(logEC50=(log(EC50))) 
+final.TM1<-#joining
+  left_join (RG, TM.zz1) %>%
+    mutate(logEC50=(log(EC50))) %>% # normalizing data
+rename(Estimate.50 = EC50)
 
  #Dose chosen as  potential DD
 
@@ -1169,15 +1151,16 @@ ggplot(finalRG2.5.1, aes(x = RG2.5, y = logEC50)) +  geom_point() + geom_smooth(
 
 
 # Getting the EC50DD according to the model
-final.TM.DD1 <- final.TM1 %>% mutate(Estimate.50DD = exp(finalRG2.5.1[[1]][[1]] + finalRG2.5.1[[1]][[2]]*RG2.5))
+final.TM.DD1 <- final.TM1 %>% mutate(Estimate.50DC = exp(finalRG2.5.1[[1]][[1]] + finalRG2.5.1[[1]][[2]]*RG2.5)) %>% # here I need to do this dynamic
+  select(ID, Estimate.50DC, Estimate.50)
 # Linear model of EC50  and EC50DD, check normality and homogeneity of variances
-final.TM.DD.2.5 <- lm (Estimate.50DD ~ EC50, final.TM.DD1)
+final.TM.DD.2.5 <- lm (Estimate.50DC ~ Estimate.50, final.TM.DD1)
 summary(final.TM.DD.2.5)
 plot(final.TM.DD.2.5)
 #check_assumptions(final_TM_DD_10)
 #pdf("Linear regression of thiophanate methyl 10 ppm.pdf")   
 ## Linear Regression graph of EC50 and EC50DD
-ggplot(final.TM.DD.2.5, aes(x = EC50, y = Estimate.50DD)) +  theme(plot.title = element_text(size = 16, face = "bold", hjust = 1)) + labs(title = "Linear regression of thiophanate methyl 10 ppm", x ="EC50 (ppm)", y = "EC50DD (ppm)" ) + geom_point() + geom_smooth(method = "lm")
+ggplot(final.TM.DD.2.5, aes(x = Estimate.50, y = Estimate.50DC)) +  theme(plot.title = element_text(size = 16, face = "bold", hjust = 1)) + labs(title = "Linear regression of thiophanate methyl 10 ppm", x ="EC50 (ppm)", y = "EC50DD (ppm)" ) + geom_point() + geom_smooth(method = "lm")
 
 #dev.off()
 
@@ -1186,8 +1169,8 @@ ggplot(final.TM.DD.2.5, aes(x = EC50, y = Estimate.50DD)) +  theme(plot.title = 
 
 TM.data <- survey.data.3 %>%
   select(ID, repeats, experimental_replicate, TM.growth, control.growth) %>% 
-  rename(response = TM.growth, control = control.growth)%>%
-  mutate(ID= as.character(ID))
+  rename(response = TM.growth, control = control.growth)
+ 
 
 # Using the function in order to take out the outliers#
 TM.data.filtered.survey <- TM.data %>%
@@ -1200,14 +1183,17 @@ TM.data.filtered.survey <- TM.data %>%
   ungroup()%>% 
   select(c(ID, experimental_replicate, repeats, response, control))
 
-##USind the model
+#  Becasue of that taking outlayers by and ##USind the model
 TM.filtered. <- TM.data.filtered.survey %>%
   group_by(ID) %>% 
   summarise(mean_response =mean(response, na.rm = TRUE), mean_control =mean(control, na.rm = TRUE)) %>% 
   mutate(RG= (mean_response/mean_control)*100) %>% 
   mutate(Estimate.50DC = exp (finalRG2.5.1[[1]][[1]] + finalRG2.5.1[[1]][[2]]*RG)) %>% 
-select(c(ID, Estimate.50DC)) %>% 
-  ungroup()
+ungroup() %>% 
+  rename(EC50DC= Estimate.50DC) %>% 
+  mutate(ID = as.numeric(ID)) %>% 
+   select(c(ID, EC50DC)) 
+
 
 
 
@@ -1221,7 +1207,7 @@ select(c(ID, Estimate.50DC)) %>%
 final.boscalid.DC_2 <- final.boscalid.DC %>% 
   rename(EC50DC = Estimate.50DC) %>% 
   select(ID, EC50DC) 
-####WATCH OUT, Based on EC50D
+####WATCH OUT, Based on EC50DC
 
 boscalid.complete <-  rbind.data.frame(final.boscalid.DC_2, boscalid.filtered.)
 
@@ -1257,25 +1243,27 @@ boscalid.complete.3 <- boscalid.complete.2 %>%
 
 
  #####PICOXYSTROBIN##
-picoxystrobin.yy2 <- picoxystrobin.yy %>% 
-  select(ID, EC50)
-#No more this
-# final_picoxystrobin_DC <- final_picoxystrobin_DC %>% select(ID, Estimate.50DC)
-####WATCH OUT, Iam naming EC50 although for picoxystrobine filtered realy is EC50D
-picoxystrobin.filtered.2 <- picoxystrobin.filtered. %>% 
-rename( EC50 =  Estimate.50DC) %>% 
-  mutate(ID = as.numeric(ID))
-picoxystrobin.complete <-  rbind.data.frame(picoxystrobin.yy2, picoxystrobin.filtered.2)
-picoxystrobin.complete <- ungroup(picoxystrobin.complete)
-picoxystrobin.complete$ID <- as.numeric(as.character(picoxystrobin.complete$ID) ) 
-balon <- picoxystrobin.complete$ID[duplicated(picoxystrobin.complete$ID)]
+
+#Selecting the EC50D from the serial dilution
+final.picoxystrobin.DC_2 <- final.picoxystrobin.DC %>% 
+  rename(EC50DC = Estimate.50DC) %>% 
+  select(ID, EC50DC) 
+####WATCH OUT, Based on EC50DC
+
+picoxystrobin.complete <-  rbind.data.frame(final.picoxystrobin.DC_2, picoxystrobin.filtered.)
+
+picoxystrobin.complete <- picoxystrobin.complete %>% 
+ungroup(picoxystrobin.complete) %>%  mutate( ID= as.numeric(ID))
+
+
+baby <- picoxystrobin.complete$ID[duplicated(picoxystrobin.complete$ID)]
 
 #now I will take these repeats from the DC test coming
 
-picoxystrobin.filtered.3 <- picoxystrobin.filtered.2 %>% filter(!ID %in% balon )
+picoxystrobin.filtered.2 <- picoxystrobin.filtered. %>% filter(!ID %in% baby )
 
 #Now substitute
-picoxystrobin.complete.2 <-  rbind.data.frame(picoxystrobin.yy2, picoxystrobin.filtered.3)
+picoxystrobin.complete.2 <-  rbind.data.frame(final.picoxystrobin.DC_2, picoxystrobin.filtered.2)
 ##look for repetition#
  picoxystrobin.complete.2$ID[duplicated(picoxystrobin.complete.2$ID)]
 
@@ -1295,29 +1283,28 @@ picoxystrobin.complete.3 <- picoxystrobin.complete.2 %>%
     mutate(Origin = as.factor(Origin), Host= as.factor(Host))
 
 
-
- 
 #######TETRACONAZOLE##
  
- tetraconazole.bb2 <- tetraconazole.bb %>% 
-  select(ID, EC50)
-#No more this
-# final_tetraconazole_DC <- final_tetraconazole_DC %>% select(ID, Estimate.50DC)
-####WATCH OUT, Iam naming EC50 although for tetraconazolee filtered realy is EC50D
-tetraconazole.filtered.2 <- tetraconazole.filtered. %>% 
-rename( EC50 =  Estimate.50DC) %>% 
-  mutate(ID = as.numeric(ID))
-tetraconazole.complete <-  rbind.data.frame(tetraconazole.bb2, tetraconazole.filtered.2)
-tetraconazole.complete <- ungroup(tetraconazole.complete)
-tetraconazole.complete$ID <- as.numeric(as.character(tetraconazole.complete$ID) ) 
-casa <- tetraconazole.complete$ID[duplicated(tetraconazole.complete$ID)]
+ #Selecting the EC50D from the serial dilution
+final.tetraconazole.DC_2 <- final.tetraconazole.DC %>% 
+  rename(EC50DC = Estimate.50DC) %>% 
+  select(ID, EC50DC) 
+####WATCH OUT, Based on EC50DC
+
+tetraconazole.complete <-  rbind.data.frame(final.tetraconazole.DC_2, tetraconazole.filtered.)
+
+tetraconazole.complete <- tetraconazole.complete %>% 
+ungroup(tetraconazole.complete) %>%  mutate( ID= as.numeric(ID))
+
+
+baby <- tetraconazole.complete$ID[duplicated(tetraconazole.complete$ID)]
 
 #now I will take these repeats from the DC test coming
 
-tetraconazole.filtered.3 <- tetraconazole.filtered.2 %>% filter(!ID %in% casa )
+tetraconazole.filtered.2 <- tetraconazole.filtered. %>% filter(!ID %in% baby )
 
 #Now substitute
-tetraconazole.complete.2 <-  rbind.data.frame(tetraconazole.bb2, tetraconazole.filtered.3)
+tetraconazole.complete.2 <-  rbind.data.frame(final.tetraconazole.DC_2, tetraconazole.filtered.2)
 ##look for repetition#
  tetraconazole.complete.2$ID[duplicated(tetraconazole.complete.2$ID)]
 
@@ -1335,7 +1322,6 @@ tetraconazole.complete.3 <- tetraconazole.complete.2 %>%
       "Soybean","different_host"
     ))) %>% 
     mutate(Origin = as.factor(Origin), Host= as.factor(Host))
-
 
 
 ##TM#######
@@ -1487,7 +1473,7 @@ kruskal.test(EC50 ~ Host, data = tetraconazole.complete.4)
 ##  Boscalid Plots
 ```{r}
 plot.bos <- boscalid.complete.4%>%
-  ggplot(aes(x = Origin, y = EC50)) +
+  ggplot(aes(x = Origin, y = EC50DC)) +
   geom_jitter(
     width = .1,
     height = 0,
@@ -1688,6 +1674,17 @@ plot.tetra.2
 ```
 
 ```{r}
+
+# Using the function
+
+boscalid.complete.5<- boscalid.complete.4%>% 
+group_by(Origin)%>%
+mutate(EC50DC_outlier = list(get_range2(EC50DC)))%>%
+unnest() %>% 
+filter(EC50DC >=  outlier) %>% ungroup() %>% 
+  select(ID, EC50DC,Origin, Host)
+
+#
 summary.field.original <- WM3 %>% 
   select(Field, ID) %>% 
   unique() %>% 
@@ -1697,22 +1694,124 @@ summary.field.original <- WM3 %>%
   filter(Empty_field == FALSE) %>% 
   select(-Empty_field)  
 
-boscalid.complete.5<- boscalid.complete.4%>% 
-group_by(Origin)%>%
-mutate(Estimate_50DC_outlier = list(get_range2(EC50)))%>%
-unnest() %>% 
-filter(EC50 >=  outlier) %>% ungroup()
 
-# field.ID.data.boscalid <- boscalid.complete.5 %>% 
-#   left_join(WM3, by = c(ID = "Collection_ID", Origin, Host )) %>% 
-#   rename(Origin = "Origin.x") %>%     select(colnames(data_for_plots_bos2), Field,  Year, State, molecule.s._current_season, Host) %>% 
-#   left_join(summary_field_original)  %>% 
-#   mutate(molecule.s._current_season = na_if(molecule.s._current_season, "")) %>% 
-#     arrange(ID) %>% rename(Funcide = molecule.s._current_season) %>% 
-#   arrange(ID)  %>% 
-#   rename(N_iso_perfield =Num_original_isolates) %>%   select(-c(outlier, Estimate.50DC) )
-# #first transforming ID variable to charater and then to numeric
-# field_ID_data_boscalid$ID <- as.numeric(  as.character(field_ID_data_boscalid$ID))
+mu <- boscalid.complete.5 %>%
+  full_join(WM3, by = "ID") %>%
+  rename(Origin = "Origin.x", Host = "Host.x") %>%     select(colnames(boscalid.complete.5), Field,  Year, State, molecule.s._current_season, Host) %>%
+   left_join(summary.field.original)  %>%
+   mutate(molecule.s._current_season = na_if(molecule.s._current_season, "")) %>%
+     arrange(ID) %>% rename(Funcide = molecule.s._current_season) %>%
+   arrange(ID)  %>%
+   rename(N_iso_perfield =Num_original_isolates) %>%   select(-EC50DC) 
+  
+anyDuplicated(mu$ID)
+
+# Summarizing 1 BY ORIGIN
+mu_summary1 <- mu %>% 
+  group_by (Origin) %>% 
+             summarize(N_isol = n(), Percent = round(100 * n() / nrow(.), digits = 1)) %>% 
+             ungroup() %>% 
+              add_row(Origin = "Total", N_isol = sum(.$N_isol), Percent = sum(.$Percent))
+# creating the table in pdf
+# field_ID_data_bos_summary1 %>%
+#   kable(format = "markdown") %>%    write2pdf("boscalid_outliers_summary_by_origin.pdf")
+# Summarizing 2 by host
+mu_summary2 <- mu %>% 
+  group_by ( Host) %>% 
+             summarize(N_isol = n(), Percent = round(100 * n() / nrow(.), digits = 1))  %>% 
+    ungroup() %>% 
+              add_row(Host = "Total", N_isol = sum(.$N_isol), Percent = sum(.$Percent))
+#creating the table in pdf
+# field_ID_data_bos_summary2 %>%
+#   kable(format = "markdown") %>%    write2pdf("boscalid_outliers_summary_by_hosts.pdf")
+
+
+# Summarizing 3  BY STATE
+mu_summary3 <- mu %>% 
+  group_by ( State) %>% 
+             summarize(N_isol = n(), Percent = round(100 * n() / nrow(.), digits = 1)) %>% 
+             ungroup() %>%
+              arrange(desc(N_isol)) %>% 
+              add_row(State = "Total", N_isol = sum(.$N_isol), Percent = sum(.$Percent))
+
+#creating the table in pdf
+# field_ID_data_bos_summary3 %>%
+#   kable(format = "markdown") %>%    write2pdf("boscalid_outliers_summary_by_states.pdf")
+
+
+# Summarizing 4  BY STATE  NE and host soybeans
+mu_summary4 <- mu %>% 
+  group_by (Origin, Host,State) %>% 
+             summarize(N_isol = n()) %>% 
+             ungroup() %>%
+              arrange(desc(N_isol)) %>% 
+              filter(Host=="soybeans"|State == "NE") %>% 
+              add_row(Origin = "Total", N_isol = sum(.$N_isol))
+
+
+
+```
+
+# doing the table required from Sydney
+
+```{r}
+
+boscalid.complete.4
+  #tested
+  boscalid.complete.4$ID #202
+
+#outliersBOSCALID
+   mu$ID  #52
+
+#boscalid.complete.TOTAL$ID
+#150
+notoutlierbuttested_bos <-boscalid.complete.4$ID[! boscalid.complete.4$ID %in% boscalid.complete.5$ID  ]
+
+notoutlierbuttested_pico <-( data_for_plots_TOTAL$ID[! data_for_plots_TOTAL$ID %in% data_for_plots_bos2$ID])
+
+notoutlierbuttested_tetra <-( data_for_plots_TOTAL$ID[! data_for_plots_TOTAL$ID %in% data_for_plots_bos2$ID])
+
+notoutlierbuttested_TM <-( data_for_plots_TOTAL$ID[! data_for_plots_TOTAL$ID %in% data_for_plots_bos2$ID])
+
+no_tested <-mu$ID[! mu$ID %in% boscalid.complete.4$ID ]
+  
+
+FieldSS<- mu %>%
+mutate(bos= case_when(
+ID%in% data_for_plots_bos2$ID ~ 1,
+ID%in% notoutlierbuttested_bos~ 0,
+ID%in% nottested ~NA_real_ , 
+TRUE ~ NA_real_),
+pico= case_when(
+ID%in% field_ID_data_pico$ID ~ 1,
+ID%in% notoutlierbuttested_pico ~ 0,
+ID%in% nottested ~NA_real_ ,
+TRUE ~ NA_real_), 
+tetra= case_when(
+ID%in% field_ID_data_tetra$ID ~ 1,
+ID%in% notoutlierbuttested_tetra ~ 0,
+ID%in% nottested ~NA_real_ , 
+TRUE ~ NA_real_), 
+TM= case_when(
+ID%in% field_ID_data_TM$ID ~ 1,
+ID%in% notoutlierbuttested_TM ~ 0,
+ID%in% nottested ~NA_real_ , 
+TRUE ~ NA_real_)) 
+ 
+  hello <- FieldSS %>%   filter(Group== "Group_one"|Group=="Group_3"|Group=="Group_7"|Group=="Group_11")
+ 
+
+bye <- apply(hello, 1, sum)
+#water <- cbind(hello, bye)
+fusarium <- water %>% filter(bye>=2) %>% arrange(bye) 
+hello2 <- FieldSS %>%  select(bos, pico, tetra, TM)
+bye2 <- apply(hello2, 1, sum)
+hello3 <- FieldSS 
+water2 <- cbind(hello3, bye2)
+fusarium2 <- water2 %>% filter(bye2>=2) %>% arrange(bye2) 
+View(fusarium2
+    )
+
 
 
 ```
