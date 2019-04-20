@@ -22,7 +22,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-```{r}
+```{r read_data}
 ##  Reading and subsetting data 
 boscalid.data <-
   read.csv("data/boscalid_serialdilution_baseline(validationdata).csv")
@@ -549,7 +549,7 @@ WM3_ <- WM3%>%
        molecule.s._current_season%in% Group_11 ~ "Group_11", molecule.s._current_season%in% Group_3_Group_11~ "Group_3&Group_11",
        molecule.s._current_season%in% Group_7_Group_11~ "Group_7&Group_11",
        molecule.s._current_season%in% Group_3_not_considered~ "Group_3&not_considered",
-       molecule.s._current_season%in% unknown~ "unknown",
+       molecule.s._current_season%in% unknown~ "unknown", #this consider the control CHECK this out
              TRUE ~ "unknown"# in case of not, naming "not_selected""
     )
   )   
@@ -716,7 +716,7 @@ boscalid.filtered.survey <- boscalid_data %>%
   ungroup() %>%
   select(c(ID, experimental_replicate, repeats, response, control))
 
-#  Becasue of that taking outlayers by and then
+#  Becasue of that taking outliers by and then
 boscalid.filtered. <- boscalid.filtered.survey %>%
   group_by(ID) %>%
   summarise(
@@ -1025,6 +1025,7 @@ ungroup() %>%
 ##  Analysis by fungicide
 #  Thiophanate methyl
 ```{r}
+#function of taking outliers
 TM.filtered <- TMdata %>%
   group_by(ID, dose) %>%
   mutate(growth_range = list(get_range(growth))) %>%
@@ -1103,13 +1104,13 @@ mutate(resistance = ifelse(RG >24,#more or equal to 25%,
 
 
 ```
-#  Another approach with TM to pick the probably isolates with high at EC50 of the model with the best model
+#  Another approach with TM to pick the probably isolates with high EC50 of the model with the best model
 ```{r}
 
 # Picking the best fit model
 
 
-zz1 <- EC_table(TM.filtered, form = response ~ dose)
+#zz1 <- EC_table(TM.filtered, form = response ~ dose)
 
 TM.zz1 <-   zz1%>% rename(ID = sample )%>%
  rename(EC50 = Estimate.50)%>%
@@ -1126,7 +1127,7 @@ TM.zz1 <-   zz1%>% rename(ID = sample )%>%
 
  
 
-#Procedure to get Discriminatory conecntration
+#Procedure to get Discriminatory concentration
 
  RG <- TM.filtered %>% group_by(ID,dose) %>% summarise(mean_response=mean(response,na.rm=TRUE)) %>% spread(dose,mean_response) %>%  mutate(RG0.75=((`0.75`/`0`)*100)) %>% mutate(RG1=((`1`/`0`)*100)) %>% mutate(RG1.5=((`1.5`/`0`)*100)) %>% mutate(RG2=((`2`/`0`)*100)) %>% mutate(RG2.5=((`2.5`/`0`)*100)) %>% 
    mutate(RG10=((`10`/`0`)*100))
@@ -1686,10 +1687,10 @@ filter(EC50DC >=  outlier) %>% ungroup() %>%
   select(ID, EC50DC,Origin, Host)
 
 #
-summary.field.original <- WM3 %>% 
-  select(Field, ID) %>% 
+summary.field.original <- WM3_ %>% 
+  select(Field, ID, Group_MOA_current_season ) %>% #
   unique() %>% 
-  group_by(Field) %>% 
+  group_by(Field, Group_MOA_current_season ) %>% #
   summarize(Num_original_isolates = n()) %>% 
   mutate(Empty_field = (Field == "")) %>% 
   filter(Empty_field == FALSE) %>% 
@@ -1702,8 +1703,9 @@ mu <- boscalid.complete.5 %>%
    left_join(summary.field.original)  %>%
    mutate(Group_MOA_current_season = na_if(Group_MOA_current_season, "")) %>%
      arrange(ID) %>% 
-   
-   rename(N_iso_perfield =Num_original_isolates) %>%   select(-EC50DC) 
+   #
+   rename(N_iso_perfield =Num_original_isolates, Group= Group_MOA_current_season) %>%  
+  select(-EC50DC) 
   
 anyDuplicated(mu$ID)
 
@@ -1760,16 +1762,6 @@ unnest() %>%
 filter(EC50DC >=  outlier) %>% ungroup() %>% 
   select(ID, EC50DC,Origin, Host)
 
-#
-summary.field.original <- WM3 %>% 
-  select(Field, ID) %>% 
-  unique() %>% 
-  group_by(Field) %>% 
-  summarize(Num_original_isolates = n()) %>% 
-  mutate(Empty_field = (Field == "")) %>% 
-  filter(Empty_field == FALSE) %>% 
-  select(-Empty_field)  
-
 
 alpha <- picoxystrobin.complete.5 %>%
   full_join(WM3_, by = "ID") %>%
@@ -1778,7 +1770,7 @@ alpha <- picoxystrobin.complete.5 %>%
    mutate(Group_MOA_current_season = na_if(Group_MOA_current_season, "")) %>%
      arrange(ID) %>% 
    
-   rename(N_iso_perfield =Num_original_isolates) %>%   select(-EC50DC) 
+   rename(N_iso_perfield =Num_original_isolates, Group= Group_MOA_current_season) %>%   select(-EC50DC) 
   
 anyDuplicated(alpha$ID)
 
@@ -1834,16 +1826,6 @@ unnest() %>%
 filter(EC50DC >=  outlier) %>% ungroup() %>% 
   select(ID, EC50DC,Origin, Host)
 
-#
-summary.field.original <- WM3 %>% 
-  select(Field, ID) %>% 
-  unique() %>% 
-  group_by(Field) %>% 
-  summarize(Num_original_isolates = n()) %>% 
-  mutate(Empty_field = (Field == "")) %>% 
-  filter(Empty_field == FALSE) %>% 
-  select(-Empty_field)  
-
 
 gamma <- tetraconazole.complete.5 %>%
   full_join(WM3_, by = "ID") %>%
@@ -1852,7 +1834,7 @@ gamma <- tetraconazole.complete.5 %>%
    mutate(Group_MOA_current_season = na_if(Group_MOA_current_season, "")) %>%
      arrange(ID) %>% 
    
-   rename(N_iso_perfield =Num_original_isolates) %>%   select(-EC50DC) 
+   rename(N_iso_perfield =Num_original_isolates,  Group= Group_MOA_current_season) %>%   select(-EC50DC) 
 
 anyDuplicated(gamma$ID)
 
@@ -1909,16 +1891,6 @@ unnest() %>%
 filter(EC50DC >=  outlier) %>% ungroup() %>% 
   select(ID, EC50DC,Origin, Host)
 
-#
-summary.field.original <- WM3 %>% 
-  select(Field, ID) %>% 
-  unique() %>% 
-  group_by(Field) %>% 
-  summarize(Num_original_isolates = n()) %>% 
-  mutate(Empty_field = (Field == "")) %>% 
-  filter(Empty_field == FALSE) %>% 
-  select(-Empty_field)  
-
 
 angle <- TM.complete.5 %>%
   full_join(WM3_, by = "ID") %>%
@@ -1927,7 +1899,7 @@ angle <- TM.complete.5 %>%
    mutate(Group_MOA_current_season = na_if(Group_MOA_current_season, "")) %>%
      arrange(ID) %>% 
    
-   rename(N_iso_perfield =Num_original_isolates) %>%   select(-EC50DC) 
+   rename(N_iso_perfield =Num_original_isolates, Group= Group_MOA_current_season) %>%   select(-EC50DC) 
 
 anyDuplicated(angle$ID)
 
@@ -2068,23 +2040,59 @@ ID%in% TM.complete.5$ID ~ 1,
 ID%in% notoutlierbuttested_TM ~ 0,
 ID%in% no_tested_bos ~NA_real_ , 
 TRUE ~ NA_real_)) %>% 
-  rename(Group= Group_MOA_current_season) %>% 
-  filter(Group== "Group_one"|Group=="Group_3"|Group=="Group_7"|Group=="Group_11")
+   filter(Group== "Group_one"|Group=="Group_3"|Group=="Group_7"|Group=="Group_11")
 
  # hello <- FieldSS %>%   filter(Funcide== "Group_one"|Funcide=="Group_3"|Funcide=="Group_7"|Funcide=="Group_11")
  
+glimpse(FieldSS)
+hello <- FieldSS %>%  select(bos, pico, tetra, TM)
+water <- cbind(hello, bye)
+fusarium <- water %>% filter(bye>=2) %>% arrange(bye) 
+
 
 bye <- apply(hello, 1, sum)
-#water <- cbind(hello, bye)
-fusarium <- water %>% filter(bye>=2) %>% arrange(bye) 
-hello2 <- FieldSS %>%  select(bos, pico, tetra, TM)
-bye2 <- apply(hello2, 1, sum)
+
+
 hello3 <- FieldSS 
 water2 <- cbind(hello3, bye2)
 fusarium2 <- water2 %>% filter(bye2>=2) %>% arrange(bye2) 
 View(fusarium2
     )
 
+# fusarium%>%
+#   write_csv("clean data/table_ouliers_together.csv")
+
+Groupone <- FieldSS %>% filter(Group== "Group_one")
+Groupone %>%
+kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
+  write2pdf("Group_one.pdf")
+# 
+Group3 <- FieldSS %>% filter(Group== "Group_3")
+Group3 %>%
+kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
+  write2pdf("Group_3.pdf")
+Group7 <- FieldSS %>% filter(Group== "Group_7")
+Group7 %>%
+kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
+  write2pdf("Group_7.pdf")
+ Group11 <- FieldSS %>% filter(Group== "Group_11")
+Group11 %>%
+kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
+  write2pdf("Group_11.pdf")
+# 
+#        #creating the table in pdf
+# FieldSS_ %>%
+# kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%   
+#   kable_styling(font_size = 5, full_width = 10 ) %>% 
+#   write2pdf("summary_ouliers.pdf")
+# 
+# FieldSS_ <- FieldSS_ %>% ungroup
+# pdf( "summary_outliers.pdf")
+# FieldSS_ <- FieldSS_ %>% ungroup
+# dev.off()
+# 
+# write.csv(FieldSS_, "clean data/summary_outliers.csv")
+# 
 
 
 ```
