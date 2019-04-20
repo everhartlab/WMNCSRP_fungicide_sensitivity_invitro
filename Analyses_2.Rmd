@@ -494,7 +494,7 @@ survey_isolates <-  c( 2385, 2386, 2098, 2099, 2100, 2139, 2140, 2143, 2220, 222
 
 Farmer_fields <- c(136:442, 455, 456, 466, 468, 470, 471, 478:554, 602:610, 612:635, 671, 672, 682:690, 695:797, 810:823, 834, 835, 848:1024, 1255: 1326, 1491: 1500, 1661:1670, 1831: 2246, 2303: 2342,2362: 2381, 2393: 2573)
 
-baseline_isolates <- c(1: 136, 444: 454, 457: 465, 467, 469, 472:477, 555:601, 611, 636:670, 673: 680, 691:694 , 798: 809,  824: 833, 836: 847)
+baseline_isolates_2 <- c(1: 136, 444: 454, 457: 465, 467, 469, 472:477, 555:601, 611, 636:670, 673: 680, 691:694 , 798: 809,  824: 833, 836: 847)
 
 drybean <- c(1, 5, 12,13:118, 123:128, 133:135, 145, 146, 152, 155:160, 182: 185, 194:200, 205, 220, 223, 248, 253:255, 274, 279, 280, 290, 294, 304: 309, 323, 358, 393, 395, 396, 397, 400:402, 405, 408, 409, 434, 443:465, 467, 469: 493, 495:505, 555:613, 615: 760, 762: 819, 824:833, 835:855, 858:921, 966: 971, 980, 981, 985: 996, 998: 1009, 1220:1225 , 1857: 1940, 2242: 2569)
 
@@ -538,7 +538,8 @@ levels(WM3$Fungicide_previous_seasons)[levels(WM3$Fungicide_previous_seasons) ==
 levels(WM3$molecule.s._previous_seasons)[levels(WM3$molecule.s._previous_seasons) == ""] <- "unknown"
 
 
-WM3$molecule.s._current_season <- as.character(WM3$molecule.s._current_season)
+ WM3$molecule.s._current_season <- as.character(WM3$molecule.s._current_season)
+
 WM3_ <- WM3%>%
   mutate(
     Group_MOA_current_season = case_when(
@@ -1228,7 +1229,7 @@ boscalid.complete.2 <-  rbind.data.frame(final.boscalid.DC_2, boscalid.filtered.
 
 boscalid.complete.3 <- boscalid.complete.2 %>% 
     mutate(Origin = ifelse(
-    ID %in% baseline_isolates,
+    ID %in% baseline_isolates_2,
     "Baseline",
     ifelse(
       ID %in% Farmer_fields,
@@ -1247,7 +1248,7 @@ boscalid.complete.3 <- boscalid.complete.2 %>%
 #Selecting the EC50D from the serial dilution
 final.picoxystrobin.DC_2 <- final.picoxystrobin.DC %>% 
   rename(EC50DC = Estimate.50DC) %>% 
-  select(ID, EC50DC) 
+  select(ID, EC50DC) %>% ungroup() # that is the diffrenece
 ####WATCH OUT, Based on EC50DC
 
 picoxystrobin.complete <-  rbind.data.frame(final.picoxystrobin.DC_2, picoxystrobin.filtered.)
@@ -1256,11 +1257,11 @@ picoxystrobin.complete <- picoxystrobin.complete %>%
 ungroup(picoxystrobin.complete) %>%  mutate( ID= as.numeric(ID))
 
 
-baby <- picoxystrobin.complete$ID[duplicated(picoxystrobin.complete$ID)]
+ball <- picoxystrobin.complete$ID[duplicated(picoxystrobin.complete$ID)]
 
 #now I will take these repeats from the DC test coming
 
-picoxystrobin.filtered.2 <- picoxystrobin.filtered. %>% filter(!ID %in% baby )
+picoxystrobin.filtered.2 <- picoxystrobin.filtered. %>% filter(!ID %in% ball )
 
 #Now substitute
 picoxystrobin.complete.2 <-  rbind.data.frame(final.picoxystrobin.DC_2, picoxystrobin.filtered.2)
@@ -1269,7 +1270,7 @@ picoxystrobin.complete.2 <-  rbind.data.frame(final.picoxystrobin.DC_2, picoxyst
 
 picoxystrobin.complete.3 <- picoxystrobin.complete.2 %>% 
     mutate(Origin = ifelse(
-    ID %in% baseline_isolates,
+    ID %in% baseline_isolates_2,
     "Baseline",
     ifelse(
       ID %in% Farmer_fields,
@@ -1288,7 +1289,7 @@ picoxystrobin.complete.3 <- picoxystrobin.complete.2 %>%
  #Selecting the EC50D from the serial dilution
 final.tetraconazole.DC_2 <- final.tetraconazole.DC %>% 
   rename(EC50DC = Estimate.50DC) %>% 
-  select(ID, EC50DC) 
+  select(ID, EC50DC) %>% ungroup() # that is the diffrenece
 ####WATCH OUT, Based on EC50DC
 
 tetraconazole.complete <-  rbind.data.frame(final.tetraconazole.DC_2, tetraconazole.filtered.)
@@ -1297,11 +1298,11 @@ tetraconazole.complete <- tetraconazole.complete %>%
 ungroup(tetraconazole.complete) %>%  mutate( ID= as.numeric(ID))
 
 
-baby <- tetraconazole.complete$ID[duplicated(tetraconazole.complete$ID)]
+pool <- tetraconazole.complete$ID[duplicated(tetraconazole.complete$ID)]
 
 #now I will take these repeats from the DC test coming
 
-tetraconazole.filtered.2 <- tetraconazole.filtered. %>% filter(!ID %in% baby )
+tetraconazole.filtered.2 <- tetraconazole.filtered. %>% filter(!ID %in% pool )
 
 #Now substitute
 tetraconazole.complete.2 <-  rbind.data.frame(final.tetraconazole.DC_2, tetraconazole.filtered.2)
@@ -1310,7 +1311,7 @@ tetraconazole.complete.2 <-  rbind.data.frame(final.tetraconazole.DC_2, tetracon
 
 tetraconazole.complete.3 <- tetraconazole.complete.2 %>% 
     mutate(Origin = ifelse(
-    ID %in% baseline_isolates,
+    ID %in% baseline_isolates_2,
     "Baseline",
     ifelse(
       ID %in% Farmer_fields,
@@ -1325,31 +1326,32 @@ tetraconazole.complete.3 <- tetraconazole.complete.2 %>%
 
 
 ##TM#######
-    TM.zz2 <- TM.zz%>% 
-  select(ID, EC50)
-#No more this
-# final_boscalid_DC <- final_boscalid_DC %>% select(ID, Estimate.50DC)
-####WATCH OUT, Iam naming EC50 although for boscalide filtered realy is EC50D
-TM.filtered.2 <- TM.filtered. %>% 
-rename( EC50 =  Estimate.50DC) %>% 
-  mutate(ID = as.numeric(ID))
-TM.complete <-  rbind.data.frame(TM.zz2, TM.filtered.2)
-TM.complete <- ungroup(TM.complete)
-TM.complete$ID <- as.numeric(as.character(TM.complete$ID) ) 
-poste <- TM.complete$ID[duplicated(TM.complete$ID)]
+    #Selecting the EC50D from the serial dilution
+final.TM.DC_2 <- final.TM.DD1 %>% 
+  rename(EC50DC = Estimate.50DC) %>% 
+  select(ID, EC50DC) %>% ungroup()
+####WATCH OUT, Based on EC50DC
+
+TM.complete <-  rbind.data.frame(final.TM.DC_2, TM.filtered.)
+
+TM.complete <- TM.complete %>% 
+ungroup(TM.complete) %>%  mutate( ID= as.numeric(ID))
+
+
+halo <- TM.complete$ID[duplicated(TM.complete$ID)]
 
 #now I will take these repeats from the DC test coming
 
-TM.filtered.3 <- TM.filtered.2 %>% filter(!ID %in% poste )
+TM.filtered.2 <- TM.filtered. %>% filter(!ID %in% halo )
 
 #Now substitute
-TM.complete.2 <-  rbind.data.frame(TM.zz2, TM.filtered.3)
+TM.complete.2 <-  rbind.data.frame(final.TM.DC_2, TM.filtered.2)
 ##look for repetition#
  TM.complete.2$ID[duplicated(TM.complete.2$ID)]
 
 TM.complete.3 <- TM.complete.2 %>% 
     mutate(Origin = ifelse(
-    ID %in% baseline_isolates,
+    ID %in% baseline_isolates_2,
     "Baseline",
     ifelse(
       ID %in% Farmer_fields,
@@ -1361,7 +1363,6 @@ TM.complete.3 <- TM.complete.2 %>%
       "Soybean","different_host"
     ))) %>% 
     mutate(Origin = as.factor(Origin), Host= as.factor(Host))
-
 
 
 ```
@@ -1409,25 +1410,25 @@ kruskal.test(EC50DC ~ Host, data = boscalid.complete.4)
 
 shapiro.test.pico <-picoxystrobin.complete.4 %>%
   group_by(Origin) %>%
-  do(tidy(shapiro.test(.$EC50)))
+  do(tidy(shapiro.test(.$EC50DC)))
 shapiro.test.pico 
   ##NO normals
 shapiro.test.pico.2 <-picoxystrobin.complete.4 %>%
   group_by(Host) %>%
-  do(tidy(shapiro.test(.$EC50)))
+  do(tidy(shapiro.test(.$EC50DC)))
 shapiro.test.pico.2
 
  #NO NORMALILTY thats is why  krusKal
 #by origin
 
-kruskal.test(EC50 ~ Origin, data = picoxystrobin.complete.4)
+kruskal.test(EC50DC ~ Origin, data = picoxystrobin.complete.4)
 
 #There is NO difference p-value = 0.3702
 
 
 #by hosts
 
-kruskal.test(EC50 ~ Host, data = picoxystrobin.complete.4)
+kruskal.test(EC50DC ~ Host, data = picoxystrobin.complete.4)
 #There is NO difference p-value 0.6842
 
 
@@ -1442,18 +1443,18 @@ kruskal.test(EC50 ~ Host, data = picoxystrobin.complete.4)
 
 shapiro.test.tetra <- tetraconazole.complete.4 %>%
   group_by(Origin) %>%
-  do(tidy(shapiro.test(.$EC50)))
+  do(tidy(shapiro.test(.$EC50DC)))
 shapiro.test.tetra 
 # No normals
 shapiro.test.tetra.2 <- tetraconazole.complete.4 %>%
   group_by(Host) %>%
-  do(tidy(shapiro.test(.$EC50)))
+  do(tidy(shapiro.test(.$EC50DC)))
 shapiro.test.tetra.2
 
  #NO NORMALILTY thats is why  krusKal
 #by origin
 
-kruskal.test(EC50 ~ Origin, data = tetraconazole.complete.4)
+kruskal.test(EC50DC ~ Origin, data = tetraconazole.complete.4)
 
 #There NO difference p-value = 0.05979
 
@@ -1462,11 +1463,11 @@ kruskal.test(EC50 ~ Origin, data = tetraconazole.complete.4)
 
 #by hosts
 
-kruskal.test(EC50 ~ Host, data = tetraconazole.complete.4)
+kruskal.test(EC50DC ~ Host, data = tetraconazole.complete.4)
 #There is NO difference p-value 0.4241
 
 
-
+TM.complete.4 <- TM.complete.3%>% filter(!ID == 8,!ID == 129 )
 
 ```
 
@@ -1504,7 +1505,7 @@ plot.bos <- boscalid.complete.4%>%
 plot.bos
 
 plot.pico <- picoxystrobin.complete.4%>%
-  ggplot(aes(x = Origin, y = EC50)) +
+  ggplot(aes(x = Origin, y = EC50DC)) +
   geom_jitter(
     width = .1,
     height = 0,
@@ -1534,7 +1535,7 @@ plot.pico
 
 
 plot.tetra <- tetraconazole.complete.4%>%
-  ggplot(aes(x = Origin, y = EC50)) +
+  ggplot(aes(x = Origin, y = EC50DC)) +
   geom_jitter(
     width = .1,
     height = 0,
@@ -1568,7 +1569,7 @@ plot.tetra
 ##  Boscalid
 ```{r}
 plot.bos.2 <- boscalid.complete.4%>%
-  ggplot(aes(x = Host, y = EC50)) +
+  ggplot(aes(x = Host, y = EC50DC)) +
   geom_jitter(
     width = .1,
     height = 0,
@@ -1598,7 +1599,7 @@ plot.bos.2 <- boscalid.complete.4%>%
 plot.bos.2
 
 plot.pico.2 <- picoxystrobin.complete.4%>%
-  ggplot(aes(x = Host, y = EC50)) +
+  ggplot(aes(x = Host, y = EC50DC)) +
   geom_jitter(
     width = .1,
     height = 0,
@@ -1629,7 +1630,7 @@ plot.pico.2
 
 
 plot.tetra.2 <- tetraconazole.complete.4%>%
-  ggplot(aes(x = Host, y = EC50)) +
+  ggplot(aes(x = Host, y = EC50DC)) +
   geom_jitter(
     width = .1,
     height = 0.5,
@@ -1674,7 +1675,7 @@ plot.tetra.2
 ```
 
 ```{r}
-
+#Boscalid
 # Using the function
 
 boscalid.complete.5<- boscalid.complete.4%>% 
@@ -1696,12 +1697,12 @@ summary.field.original <- WM3 %>%
 
 
 mu <- boscalid.complete.5 %>%
-  full_join(WM3, by = "ID") %>%
-  rename(Origin = "Origin.x", Host = "Host.x") %>%     select(colnames(boscalid.complete.5), Field,  Year, State, molecule.s._current_season, Host) %>%
+  full_join(WM3_, by = "ID") %>%
+  rename(Origin = "Origin.x", Host = "Host.x") %>%     select(colnames(boscalid.complete.5), Field,  Year, State, Group_MOA_current_season, Host) %>%
    left_join(summary.field.original)  %>%
-   mutate(molecule.s._current_season = na_if(molecule.s._current_season, "")) %>%
-     arrange(ID) %>% rename(Funcide = molecule.s._current_season) %>%
-   arrange(ID)  %>%
+   mutate(Group_MOA_current_season = na_if(Group_MOA_current_season, "")) %>%
+     arrange(ID) %>% 
+   
    rename(N_iso_perfield =Num_original_isolates) %>%   select(-EC50DC) 
   
 anyDuplicated(mu$ID)
@@ -1749,6 +1750,232 @@ mu_summary4 <- mu %>%
               add_row(Origin = "Total", N_isol = sum(.$N_isol))
 
 
+#Picoxystrobin
+# Using the function
+
+picoxystrobin.complete.5<- picoxystrobin.complete.4%>% 
+group_by(Origin)%>%
+mutate(EC50DC_outlier = list(get_range2(EC50DC)))%>%
+unnest() %>% 
+filter(EC50DC >=  outlier) %>% ungroup() %>% 
+  select(ID, EC50DC,Origin, Host)
+
+#
+summary.field.original <- WM3 %>% 
+  select(Field, ID) %>% 
+  unique() %>% 
+  group_by(Field) %>% 
+  summarize(Num_original_isolates = n()) %>% 
+  mutate(Empty_field = (Field == "")) %>% 
+  filter(Empty_field == FALSE) %>% 
+  select(-Empty_field)  
+
+
+alpha <- picoxystrobin.complete.5 %>%
+  full_join(WM3_, by = "ID") %>%
+  rename(Origin = "Origin.x", Host = "Host.x") %>%     select(colnames(picoxystrobin.complete.5), Field,  Year, State, Group_MOA_current_season, Host) %>%
+   left_join(summary.field.original)  %>%
+   mutate(Group_MOA_current_season = na_if(Group_MOA_current_season, "")) %>%
+     arrange(ID) %>% 
+   
+   rename(N_iso_perfield =Num_original_isolates) %>%   select(-EC50DC) 
+  
+anyDuplicated(alpha$ID)
+
+# Summarizing 1 BY ORIGIN
+alpha_summary1 <- alpha %>% 
+  group_by (Origin) %>% 
+             summarize(N_isol = n(), Percent = round(100 * n() / nrow(.), digits = 1)) %>% 
+             ungroup() %>% 
+              add_row(Origin = "Total", N_isol = sum(.$N_isol), Percent = sum(.$Percent))
+# creating the table in pdf
+# field_ID_data_bos_summary1 %>%
+#   kable(format = "markdown") %>%    write2pdf("picoxystrobin_outliers_summary_by_origin.pdf")
+# Summarizing 2 by host
+alpha_summary2 <- alpha %>% 
+  group_by ( Host) %>% 
+             summarize(N_isol = n(), Percent = round(100 * n() / nrow(.), digits = 1))  %>% 
+    ungroup() %>% 
+              add_row(Host = "Total", N_isol = sum(.$N_isol), Percent = sum(.$Percent))
+#creating the table in pdf
+# field_ID_data_bos_summary2 %>%
+#   kable(format = "markdown") %>%    write2pdf("picoxystrobin_outliers_summary_by_hosts.pdf")
+
+
+# Summarizing 3  BY STATE
+alpha_summary3 <- alpha %>% 
+  group_by ( State) %>% 
+             summarize(N_isol = n(), Percent = round(100 * n() / nrow(.), digits = 1)) %>% 
+             ungroup() %>%
+              arrange(desc(N_isol)) %>% 
+              add_row(State = "Total", N_isol = sum(.$N_isol), Percent = sum(.$Percent))
+
+#creating the table in pdf
+# field_ID_data_bos_summary3 %>%
+#   kable(format = "markdown") %>%    write2pdf("picoxystrobin_outliers_summary_by_states.pdf")
+
+
+# Summarizing 4  BY STATE  NE and host soybeans
+alpha_summary4 <- alpha %>% 
+  group_by (Origin, Host,State) %>% 
+             summarize(N_isol = n()) %>% 
+             ungroup() %>%
+              arrange(desc(N_isol)) %>% 
+              filter(Host=="soybeans"|State == "NE") %>% 
+              add_row(Origin = "Total", N_isol = sum(.$N_isol))
+
+#Tetraconazole
+# Using the function
+
+tetraconazole.complete.5<- tetraconazole.complete.4%>% 
+group_by(Origin)%>%
+mutate(EC50DC_outlier = list(get_range2(EC50DC)))%>%
+unnest() %>% 
+filter(EC50DC >=  outlier) %>% ungroup() %>% 
+  select(ID, EC50DC,Origin, Host)
+
+#
+summary.field.original <- WM3 %>% 
+  select(Field, ID) %>% 
+  unique() %>% 
+  group_by(Field) %>% 
+  summarize(Num_original_isolates = n()) %>% 
+  mutate(Empty_field = (Field == "")) %>% 
+  filter(Empty_field == FALSE) %>% 
+  select(-Empty_field)  
+
+
+gamma <- tetraconazole.complete.5 %>%
+  full_join(WM3_, by = "ID") %>%
+  rename(Origin = "Origin.x", Host = "Host.x") %>%     select(colnames(tetraconazole.complete.5), Field,  Year, State, Group_MOA_current_season, Host) %>%
+   left_join(summary.field.original)  %>%
+   mutate(Group_MOA_current_season = na_if(Group_MOA_current_season, "")) %>%
+     arrange(ID) %>% 
+   
+   rename(N_iso_perfield =Num_original_isolates) %>%   select(-EC50DC) 
+
+anyDuplicated(gamma$ID)
+
+# Summarizing 1 BY ORIGIN
+gamma_summary1 <- gamma %>% 
+  group_by (Origin) %>% 
+             summarize(N_isol = n(), Percent = round(100 * n() / nrow(.), digits = 1)) %>% 
+             ungroup() %>% 
+              add_row(Origin = "Total", N_isol = sum(.$N_isol), Percent = sum(.$Percent))
+# creating the table in pdf
+# field_ID_data_bos_summary1 %>%
+#   kable(format = "markdown") %>%    write2pdf("tetraconazole_outliers_summary_by_origin.pdf")
+# Summarizing 2 by host
+gamma_summary2 <- gamma %>% 
+  group_by ( Host) %>% 
+             summarize(N_isol = n(), Percent = round(100 * n() / nrow(.), digits = 1))  %>% 
+    ungroup() %>% 
+              add_row(Host = "Total", N_isol = sum(.$N_isol), Percent = sum(.$Percent))
+#creating the table in pdf
+# field_ID_data_bos_summary2 %>%
+#   kable(format = "markdown") %>%    write2pdf("tetraconazole_outliers_summary_by_hosts.pdf")
+
+
+# Summarizing 3  BY STATE
+gamma_summary3 <- gamma %>% 
+  group_by ( State) %>% 
+             summarize(N_isol = n(), Percent = round(100 * n() / nrow(.), digits = 1)) %>% 
+             ungroup() %>%
+              arrange(desc(N_isol)) %>% 
+              add_row(State = "Total", N_isol = sum(.$N_isol), Percent = sum(.$Percent))
+
+#creating the table in pdf
+# field_ID_data_bos_summary3 %>%
+#   kable(format = "markdown") %>%    write2pdf("tetraconazole_outliers_summary_by_states.pdf")
+
+
+# Summarizing 4  BY STATE  NE and host soybeans
+gamma_summary4 <- gamma %>% 
+  group_by (Origin, Host,State) %>% 
+             summarize(N_isol = n()) %>% 
+             ungroup() %>%
+              arrange(desc(N_isol)) %>% 
+              filter(Host=="soybeans"|State == "NE") %>% 
+              add_row(Origin = "Total", N_isol = sum(.$N_isol))
+
+
+#TM
+# Using the function
+
+TM.complete.5<- TM.complete.4%>% 
+group_by(Origin)%>%
+mutate(EC50DC_outlier = list(get_range2(EC50DC)))%>%
+unnest() %>% 
+filter(EC50DC >=  outlier) %>% ungroup() %>% 
+  select(ID, EC50DC,Origin, Host)
+
+#
+summary.field.original <- WM3 %>% 
+  select(Field, ID) %>% 
+  unique() %>% 
+  group_by(Field) %>% 
+  summarize(Num_original_isolates = n()) %>% 
+  mutate(Empty_field = (Field == "")) %>% 
+  filter(Empty_field == FALSE) %>% 
+  select(-Empty_field)  
+
+
+angle <- TM.complete.5 %>%
+  full_join(WM3_, by = "ID") %>%
+  rename(Origin = "Origin.x", Host = "Host.x") %>%     select(colnames(TM.complete.5), Field,  Year, State, Group_MOA_current_season, Host) %>%
+   left_join(summary.field.original)  %>%
+   mutate(Group_MOA_current_season = na_if(Group_MOA_current_season, "")) %>%
+     arrange(ID) %>% 
+   
+   rename(N_iso_perfield =Num_original_isolates) %>%   select(-EC50DC) 
+
+anyDuplicated(angle$ID)
+
+# Summarizing 1 BY ORIGIN
+angle_summary1 <- angle %>% 
+  group_by (Origin) %>% 
+             summarize(N_isol = n(), Percent = round(100 * n() / nrow(.), digits = 1)) %>% 
+             ungroup() %>% 
+              add_row(Origin = "Total", N_isol = sum(.$N_isol), Percent = sum(.$Percent))
+# creating the table in pdf
+# field_ID_data_bos_summary1 %>%
+#   kable(format = "markdown") %>%    write2pdf("TM_outliers_summary_by_origin.pdf")
+# Summarizing 2 by host
+angle_summary2 <- angle %>% 
+  group_by ( Host) %>% 
+             summarize(N_isol = n(), Percent = round(100 * n() / nrow(.), digits = 1))  %>% 
+    ungroup() %>% 
+              add_row(Host = "Total", N_isol = sum(.$N_isol), Percent = sum(.$Percent))
+#creating the table in pdf
+# field_ID_data_bos_summary2 %>%
+#   kable(format = "markdown") %>%    write2pdf("TM_outliers_summary_by_hosts.pdf")
+
+
+# Summarizing 3  BY STATE
+angle_summary3 <- angle %>% 
+  group_by ( State) %>% 
+             summarize(N_isol = n(), Percent = round(100 * n() / nrow(.), digits = 1)) %>% 
+             ungroup() %>%
+              arrange(desc(N_isol)) %>% 
+              add_row(State = "Total", N_isol = sum(.$N_isol), Percent = sum(.$Percent))
+
+#creating the table in pdf
+# field_ID_data_bos_summary3 %>%
+#   kable(format = "markdown") %>%    write2pdf("TM_outliers_summary_by_states.pdf")
+
+
+# Summarizing 4  BY STATE  NE and host soybeans
+angle_summary4 <- angle %>% 
+  group_by (Origin, Host,State) %>% 
+             summarize(N_isol = n()) %>% 
+             ungroup() %>%
+              arrange(desc(N_isol)) %>% 
+              filter(Host=="soybeans"|State == "NE") %>% 
+              add_row(Origin = "Total", N_isol = sum(.$N_isol))
+
+
+
+
 
 ```
 
@@ -1756,49 +1983,95 @@ mu_summary4 <- mu %>%
 
 ```{r}
 
+a <- TM.complete.4$ID %in% tetraconazole.complete.4$ID
+sum(a)
+b<- TM.complete.4$ID %in% picoxystrobin.complete.4$ID
+ sum(b)
+c<- TM.complete.4$ID %in% boscalid.complete.4$ID
+ sum(c)
+#boscalid
 boscalid.complete.4
   #tested
   boscalid.complete.4$ID #202
 
 #outliersBOSCALID
-   mu$ID  #52
+   boscalid.complete.5$ID  #52
 
-#boscalid.complete.TOTAL$ID
-#150
+
 notoutlierbuttested_bos <-boscalid.complete.4$ID[! boscalid.complete.4$ID %in% boscalid.complete.5$ID  ]
 
-notoutlierbuttested_pico <-( data_for_plots_TOTAL$ID[! data_for_plots_TOTAL$ID %in% data_for_plots_bos2$ID])
+no_tested_bos <-mu$ID[! mu$ID %in% boscalid.complete.4$ID ]
 
-notoutlierbuttested_tetra <-( data_for_plots_TOTAL$ID[! data_for_plots_TOTAL$ID %in% data_for_plots_bos2$ID])
-
-notoutlierbuttested_TM <-( data_for_plots_TOTAL$ID[! data_for_plots_TOTAL$ID %in% data_for_plots_bos2$ID])
-
-no_tested <-mu$ID[! mu$ID %in% boscalid.complete.4$ID ]
+# Picoxystrobin
   
+picoxystrobin.complete.4
+  #tested
+  picoxystrobin.complete.4$ID #204
 
-FieldSS<- mu %>%
+#outlierspicoxystrobin
+   picoxystrobin.complete.5$ID  #52
+
+
+notoutlierbuttested_pico <-picoxystrobin.complete.4$ID[! picoxystrobin.complete.4$ID %in% picoxystrobin.complete.5$ID  ]
+
+no_tested_pico <-alpha$ID[! alpha$ID %in% picoxystrobin.complete.4$ID ]
+
+# Tetraconazole
+  
+tetraconazole.complete.4
+  #tested
+  tetraconazole.complete.4$ID #204
+
+#outlierstetraconazole
+   tetraconazole.complete.5$ID  #53
+
+
+notoutlierbuttested_tetra <-tetraconazole.complete.4$ID[! tetraconazole.complete.4$ID %in% tetraconazole.complete.5$ID  ]
+
+no_tested_tetra <-gamma$ID[! gamma$ID %in% tetraconazole.complete.4$ID ]
+
+# TM
+  
+TM.complete.4
+  #tested
+  TM.complete.4$ID #205
+
+#outliersTM
+   TM.complete.5$ID  #53
+
+
+notoutlierbuttested_TM <-TM.complete.4$ID[! TM.complete.4$ID %in% TM.complete.5$ID  ]
+
+no_tested_TM <-angle$ID[! angle$ID %in% TM.complete.4$ID ]
+
+
+
+
+FieldSS<- angle %>%
 mutate(bos= case_when(
-ID%in% data_for_plots_bos2$ID ~ 1,
+ID%in% boscalid.complete.5$ID ~ 1,
 ID%in% notoutlierbuttested_bos~ 0,
-ID%in% nottested ~NA_real_ , 
+ID%in% no_tested_bos  ~NA_real_ , 
 TRUE ~ NA_real_),
 pico= case_when(
-ID%in% field_ID_data_pico$ID ~ 1,
+ID%in% picoxystrobin.complete.5$ID ~ 1,
 ID%in% notoutlierbuttested_pico ~ 0,
-ID%in% nottested ~NA_real_ ,
+ID%in% no_tested_bos ~NA_real_ ,
 TRUE ~ NA_real_), 
 tetra= case_when(
-ID%in% field_ID_data_tetra$ID ~ 1,
+ID%in% tetraconazole.complete.5$ID ~ 1,
 ID%in% notoutlierbuttested_tetra ~ 0,
-ID%in% nottested ~NA_real_ , 
+ID%in% no_tested_bos ~NA_real_ , 
 TRUE ~ NA_real_), 
 TM= case_when(
-ID%in% field_ID_data_TM$ID ~ 1,
+ID%in% TM.complete.5$ID ~ 1,
 ID%in% notoutlierbuttested_TM ~ 0,
-ID%in% nottested ~NA_real_ , 
-TRUE ~ NA_real_)) 
- 
-  hello <- FieldSS %>%   filter(Group== "Group_one"|Group=="Group_3"|Group=="Group_7"|Group=="Group_11")
+ID%in% no_tested_bos ~NA_real_ , 
+TRUE ~ NA_real_)) %>% 
+  rename(Group= Group_MOA_current_season) %>% 
+  filter(Group== "Group_one"|Group=="Group_3"|Group=="Group_7"|Group=="Group_11")
+
+ # hello <- FieldSS %>%   filter(Funcide== "Group_one"|Funcide=="Group_3"|Funcide=="Group_7"|Funcide=="Group_11")
  
 
 bye <- apply(hello, 1, sum)
