@@ -1066,7 +1066,7 @@ TM.zz <-   zz%>% rename(ID = sample ) %>%
 
  
  
-#Dose chosen as DD
+#Dose chosen as DD the highest concentration
 # Linear model of log EC50 and relative growth at 10 ppm, check normality and homogeneity of variances
 finalRG10<- lm(logEC50~RG10,final.TM) 
 summary(finalRG10)
@@ -1107,59 +1107,26 @@ mutate(resistance = ifelse(RG >24,#more or equal to 25%,
 #  Another approach with TM to pick the probably isolates with high EC50 of the model with the best model
 ```{r}
 
-# Picking the best fit model
-
-
-#zz1 <- EC_table(TM.filtered, form = response ~ dose)
-
-TM.zz1 <-   zz1%>% rename(ID = sample )%>%
- rename(EC50 = Estimate.50)%>%
-  group_by(ID, EC50) %>% mutate(group = ifelse(
-    ID %in% baseline_isolates,
-    "baseline",
-    ifelse(
-    ID %in% survey_isolates,
-    "survey_isolates",
-    "treatmentyear2016_isolates"
-    )
-    )) %>% ungroup() %>% mutate(fungicide = "TM") %>% mutate(group = recode(group, survey_isolates = "Farmer fields", treatmentyear2016_isolates = "Fungicide field trials", baseline = "Baseline")) %>% mutate(group = as.factor(group)) %>% 
-  ungroup()
-
- 
-
-#Procedure to get Discriminatory concentration
-
- RG <- TM.filtered %>% group_by(ID,dose) %>% summarise(mean_response=mean(response,na.rm=TRUE)) %>% spread(dose,mean_response) %>%  mutate(RG0.75=((`0.75`/`0`)*100)) %>% mutate(RG1=((`1`/`0`)*100)) %>% mutate(RG1.5=((`1.5`/`0`)*100)) %>% mutate(RG2=((`2`/`0`)*100)) %>% mutate(RG2.5=((`2.5`/`0`)*100)) %>% 
-   mutate(RG10=((`10`/`0`)*100))
-# 
-#Since here EC50 is known as Estimate EC50 from EC50 table 
- 
-
-final.TM1<-#joining
-  left_join (RG, TM.zz1) %>%
-    mutate(logEC50=(log(EC50))) %>% # normalizing data
-rename(Estimate.50 = EC50)
-
- #Dose chosen as  potential DD
+#Dose chosen as  potential DD
 
 # Linear model of log EC50 and relative growth at 2.5 ppm, check normality and homogeneity of variances
 
-finalRG2.5.1<- lm(logEC50~RG2.5,final.TM1) 
-summary(finalRG2.5.1)
-plot(finalRG2.5.1)
+finalRG2.5<- lm(logEC50~RG2.5,final.TM) 
+summary(finalRG2.5)
+plot(finalRG2.5)
 #check_assumptions(finalRG2.5)
       # Linear Regression graph of log EC50 and relative growth at 2.5 ppm
-ggplot(finalRG2.5.1, aes(x = RG2.5, y = logEC50)) +  geom_point() + geom_smooth()
+ggplot(finalRG2.5, aes(x = RG2.5, y = logEC50)) +  geom_point() + geom_smooth()
 
 
 # Getting the EC50DD according to the model
-final.TM.DD1 <- final.TM1 %>% mutate(Estimate.50DC = exp(finalRG2.5.1[[1]][[1]] + finalRG2.5.1[[1]][[2]]*RG2.5)) %>% # here I need to do this dynamic
+final.TM.DD1 <- final.TM %>% mutate(Estimate.50DC = exp(finalRG2.5[[1]][[1]] + finalRG2.5[[1]][[2]]*RG2.5)) %>% # here I need to do this dynamic
   select(ID, Estimate.50DC, Estimate.50)
 # Linear model of EC50  and EC50DD, check normality and homogeneity of variances
 final.TM.DD.2.5 <- lm (Estimate.50DC ~ Estimate.50, final.TM.DD1)
 summary(final.TM.DD.2.5)
 plot(final.TM.DD.2.5)
-#check_assumptions(final_TM_DD_10)
+#check_assumptions(final_TM_DD_2.5)
 #pdf("Linear regression of thiophanate methyl 10 ppm.pdf")   
 ## Linear Regression graph of EC50 and EC50DD
 ggplot(final.TM.DD.2.5, aes(x = Estimate.50, y = Estimate.50DC)) +  theme(plot.title = element_text(size = 16, face = "bold", hjust = 1)) + labs(title = "Linear regression of thiophanate methyl 10 ppm", x ="EC50 (ppm)", y = "EC50DD (ppm)" ) + geom_point() + geom_smooth(method = "lm")
@@ -1167,15 +1134,13 @@ ggplot(final.TM.DD.2.5, aes(x = Estimate.50, y = Estimate.50DC)) +  theme(plot.t
 #dev.off()
 
 #TM WITH SURVEY(PRE-TEST FUNGICIDE)
+#  I cannot use the model because the DC used was 10 ppm, and the model was built based on 2.5 ppm
 
 
 TM.data <- survey.data.3 %>%
   select(ID, repeats, experimental_replicate, TM.growth, control.growth) %>% 
-  rename(response = TM.growth, control = control.growth)
- 
-
-# Using the function in order to take out the outliers#
-TM.data.filtered.survey <- TM.data %>%
+  rename(response = TM.growth, control = control.growth) %>% 
+ # Using the function in order to take out the outliers#
   group_by(ID) %>%
   mutate(response_range = list(get_range(response))) %>%
   unnest() %>%
@@ -1183,21 +1148,16 @@ TM.data.filtered.survey <- TM.data %>%
   unnest() %>%
   filter(response <= upper & response >= lower, control <= upper1 & control >= lower1) %>%
   ungroup()%>% 
-  select(c(ID, experimental_replicate, repeats, response, control))
-
-#  Becasue of that taking outlayers by and ##USind the model
-TM.filtered. <- TM.data.filtered.survey %>%
+  select(c(ID, experimental_replicate, response, control)) %>% 
   group_by(ID) %>% 
   summarise(mean_response =mean(response, na.rm = TRUE), mean_control =mean(control, na.rm = TRUE)) %>% 
   mutate(RG= (mean_response/mean_control)*100) %>% 
-  mutate(Estimate.50DC = exp (finalRG2.5.1[[1]][[1]] + finalRG2.5.1[[1]][[2]]*RG)) %>% 
-ungroup() %>% 
-  rename(EC50DC= Estimate.50DC) %>% 
-  mutate(ID = as.numeric(ID)) %>% 
-   select(c(ID, EC50DC)) 
-
-
-
+ungroup() %>%
+    mutate(ID = as.numeric(ID)) %>%
+   select(c(ID, RG)) %>% 
+  arrange(RG) %>% 
+  filter(RG >20) %>% # More than 20 % arbitrarily selected
+select(ID)
 
   
 
@@ -1206,29 +1166,16 @@ ungroup() %>%
 ```{r}
 
 #Selecting the EC50D from the serial dilution
-final.boscalid.DC_2 <- final.boscalid.DC %>% 
-  rename(EC50DC = Estimate.50DC) %>% 
-  select(ID, EC50DC) 
-####WATCH OUT, Based on EC50DC
-
-boscalid.complete <-  rbind.data.frame(final.boscalid.DC_2, boscalid.filtered.)
-
-boscalid.complete <- boscalid.complete %>% 
-ungroup(boscalid.complete) %>%  mutate( ID= as.numeric(ID))
-
-
-baby <- boscalid.complete$ID[duplicated(boscalid.complete$ID)]
-
-#now I will take these repeats from the DC test coming
-
-boscalid.filtered.2 <- boscalid.filtered. %>% filter(!ID %in% baby )
-
-#Now substitute
-boscalid.complete.2 <-  rbind.data.frame(final.boscalid.DC_2, boscalid.filtered.2)
-##look for repetition#
- boscalid.complete.2$ID[duplicated(boscalid.complete.2$ID)]
-
-boscalid.complete.3 <- boscalid.complete.2 %>% 
+boscalid.complete <- final.boscalid.DC %>% 
+ ####WATCH OUT, Based on EC50DC
+   rename(EC50DC = Estimate.50DC) %>% 
+  select(ID, EC50DC) %>% 
+  bind_rows(boscalid.filtered.) %>% 
+ungroup() %>%  
+  mutate( ID= as.numeric(ID)) %>% 
+  group_by(ID) %>%
+  top_n(1, EC50DC) %>%
+  ungroup() %>% 
     mutate(Origin = ifelse(
     ID %in% baseline_isolates_2,
     "Baseline",
@@ -1241,36 +1188,23 @@ boscalid.complete.3 <- boscalid.complete.2 %>%
       ID %in% soybean,
       "Soybean","different_host"
     ))) %>% 
-    mutate(Origin = as.factor(Origin), Host= as.factor(Host))
-
-
+    mutate(Origin = as.factor(Origin), Host= as.factor(Host)) %>% 
+#taking out "different host" becuse does not belong to drybean nor soybean
+  filter(!ID == 8,!ID == 129 )
  #####PICOXYSTROBIN##
 
 #Selecting the EC50D from the serial dilution
-final.picoxystrobin.DC_2 <- final.picoxystrobin.DC %>% 
-  rename(EC50DC = Estimate.50DC) %>% 
-  select(ID, EC50DC) %>% ungroup() # that is the diffrenece
-####WATCH OUT, Based on EC50DC
-
-picoxystrobin.complete <-  rbind.data.frame(final.picoxystrobin.DC_2, picoxystrobin.filtered.)
-
-picoxystrobin.complete <- picoxystrobin.complete %>% 
-ungroup(picoxystrobin.complete) %>%  mutate( ID= as.numeric(ID))
-
-
-ball <- picoxystrobin.complete$ID[duplicated(picoxystrobin.complete$ID)]
-
-#now I will take these repeats from the DC test coming
-
-picoxystrobin.filtered.2 <- picoxystrobin.filtered. %>% filter(!ID %in% ball )
-
-#Now substitute
-picoxystrobin.complete.2 <-  rbind.data.frame(final.picoxystrobin.DC_2, picoxystrobin.filtered.2)
-##look for repetition#
- picoxystrobin.complete.2$ID[duplicated(picoxystrobin.complete.2$ID)]
-
-picoxystrobin.complete.3 <- picoxystrobin.complete.2 %>% 
-    mutate(Origin = ifelse(
+picoxystrobin.complete <- final.picoxystrobin.DC %>% 
+  ####WATCH OUT, Based on EC50DC
+   rename(EC50DC = Estimate.50DC) %>% 
+  select(ID, EC50DC) %>%
+  bind_rows(picoxystrobin.filtered.) %>% 
+  ungroup() %>%
+  mutate( ID= as.numeric(ID)) %>% 
+  group_by(ID) %>%
+  top_n(1, EC50DC) %>%
+  ungroup() %>% 
+  mutate(Origin = ifelse(
     ID %in% baseline_isolates_2,
     "Baseline",
     ifelse(
@@ -1282,36 +1216,25 @@ picoxystrobin.complete.3 <- picoxystrobin.complete.2 %>%
       ID %in% soybean,
       "Soybean","different_host"
     ))) %>% 
-    mutate(Origin = as.factor(Origin), Host= as.factor(Host))
-
+    mutate(Origin = as.factor(Origin), Host= as.factor(Host)) %>%
+  #taking out "different host" becuse does not belong to drybean nor soybean
+  filter(!ID == 8,!ID == 129 )
+  
 
 #######TETRACONAZOLE##
  
  #Selecting the EC50D from the serial dilution
-final.tetraconazole.DC_2 <- final.tetraconazole.DC %>% 
+tetraconazole.complete <- final.tetraconazole.DC %>% 
+   ####WATCH OUT, Based on EC50DC
   rename(EC50DC = Estimate.50DC) %>% 
-  select(ID, EC50DC) %>% ungroup() # that is the diffrenece
-####WATCH OUT, Based on EC50DC
-
-tetraconazole.complete <-  rbind.data.frame(final.tetraconazole.DC_2, tetraconazole.filtered.)
-
-tetraconazole.complete <- tetraconazole.complete %>% 
-ungroup(tetraconazole.complete) %>%  mutate( ID= as.numeric(ID))
-
-
-pool <- tetraconazole.complete$ID[duplicated(tetraconazole.complete$ID)]
-
-#now I will take these repeats from the DC test coming
-
-tetraconazole.filtered.2 <- tetraconazole.filtered. %>% filter(!ID %in% pool )
-
-#Now substitute
-tetraconazole.complete.2 <-  rbind.data.frame(final.tetraconazole.DC_2, tetraconazole.filtered.2)
-##look for repetition#
- tetraconazole.complete.2$ID[duplicated(tetraconazole.complete.2$ID)]
-
-tetraconazole.complete.3 <- tetraconazole.complete.2 %>% 
-    mutate(Origin = ifelse(
+  select(ID, EC50DC) %>% ungroup() %>% 
+bind_rows(tetraconazole.filtered.) %>% 
+  ungroup() %>%
+  mutate( ID= as.numeric(ID)) %>% 
+  group_by(ID) %>%
+  top_n(1, EC50DC) %>%
+  ungroup() %>% 
+   mutate(Origin = ifelse(
     ID %in% baseline_isolates_2,
     "Baseline",
     ifelse(
@@ -1323,34 +1246,19 @@ tetraconazole.complete.3 <- tetraconazole.complete.2 %>%
       ID %in% soybean,
       "Soybean","different_host"
     ))) %>% 
-    mutate(Origin = as.factor(Origin), Host= as.factor(Host))
-
+    mutate(Origin = as.factor(Origin), Host= as.factor(Host)) %>% #taking out "different host" becuse does not belong to drybean nor soybean
+  filter(!ID == 8,!ID == 129 )
+# that is the diffrenece
+####WATCH OUT, Based on EC50DC
 
 ##TM#######
     #Selecting the EC50D from the serial dilution
-final.TM.DC_2 <- final.TM.DD1 %>% 
+TM.complete<- final.TM.DD1 %>% 
+   ####WATCH OUT, Based on EC50DC
   rename(EC50DC = Estimate.50DC) %>% 
-  select(ID, EC50DC) %>% ungroup()
-####WATCH OUT, Based on EC50DC
-
-TM.complete <-  rbind.data.frame(final.TM.DC_2, TM.filtered.)
-
-TM.complete <- TM.complete %>% 
-ungroup(TM.complete) %>%  mutate( ID= as.numeric(ID))
-
-
-halo <- TM.complete$ID[duplicated(TM.complete$ID)]
-
-#now I will take these repeats from the DC test coming
-
-TM.filtered.2 <- TM.filtered. %>% filter(!ID %in% halo )
-
-#Now substitute
-TM.complete.2 <-  rbind.data.frame(final.TM.DC_2, TM.filtered.2)
-##look for repetition#
- TM.complete.2$ID[duplicated(TM.complete.2$ID)]
-
-TM.complete.3 <- TM.complete.2 %>% 
+  select(ID, EC50DC) %>% 
+  ungroup() %>% 
+mutate( ID= as.numeric(ID)) %>% 
     mutate(Origin = ifelse(
     ID %in% baseline_isolates_2,
     "Baseline",
@@ -1363,24 +1271,23 @@ TM.complete.3 <- TM.complete.2 %>%
       ID %in% soybean,
       "Soybean","different_host"
     ))) %>% 
-    mutate(Origin = as.factor(Origin), Host= as.factor(Host))
+    mutate(Origin = as.factor(Origin), Host= as.factor(Host)) %>% #taking out "different host" becuse does not belong to drybean nor soybean
+  filter(!ID == 8,!ID == 129 )
 
 
 ```
 # ANOVA
 ```{r}
 ###########Boscalid
-#taking out "different host"
 
- boscalid.complete.4 <-  boscalid.complete.3 %>% filter(!ID == 8,!ID == 129 )
 ##NORMALITY TEST-Shapiro_test
 
-shapiro.test.boscal <- boscalid.complete.4 %>%
+shapiro.test.boscal <- boscalid.complete %>%
   group_by(Origin) %>%
   do(tidy(shapiro.test(.$EC50DC)))
 shapiro.test.boscal 
 # No normals
-shapiro.test.boscal.2 <- boscalid.complete.4 %>%
+shapiro.test.boscal.2 <- boscalid.complete%>%
   group_by(Host) %>%
   do(tidy(shapiro.test(.$EC50DC)))
 shapiro.test.boscal.2
@@ -1388,33 +1295,33 @@ shapiro.test.boscal.2
  #NO NORMALILTY thats is why  krusKal
 #by origin
 
-kruskal.test(EC50DC ~ Origin, data = boscalid.complete.4)
+kruskal.test(EC50DC ~ Origin, data = boscalid.complete)
 
 #There is difference p-value = 1.25 *10 -05
 
-DunnTest(EC50DC ~ Origin, data = boscalid.complete.4, method = "bonferroni")
+DunnTest(EC50DC ~ Origin, data = boscalid.complete, method = "bonferroni")
 #P VALUE 0.00057 *** FF-Baseline
 #P VALUE 0.00093 *** FFT-FF
 
 
 #by hosts
 
-kruskal.test(EC50DC ~ Host, data = boscalid.complete.4)
+kruskal.test(EC50DC ~ Host, data = boscalid.complete)
 #There is NO difference p-value 0.06043
 
 
 
 ####### pico
- picoxystrobin.complete.4 <-  picoxystrobin.complete.3 %>% filter(!ID == 8,!ID == 129 )
+
 
 ##NORMALITY TEST-Shapiro_test
 
-shapiro.test.pico <-picoxystrobin.complete.4 %>%
+shapiro.test.pico <-picoxystrobin.complete %>%
   group_by(Origin) %>%
   do(tidy(shapiro.test(.$EC50DC)))
 shapiro.test.pico 
   ##NO normals
-shapiro.test.pico.2 <-picoxystrobin.complete.4 %>%
+shapiro.test.pico.2 <-picoxystrobin.complete %>%
   group_by(Host) %>%
   do(tidy(shapiro.test(.$EC50DC)))
 shapiro.test.pico.2
@@ -1422,14 +1329,14 @@ shapiro.test.pico.2
  #NO NORMALILTY thats is why  krusKal
 #by origin
 
-kruskal.test(EC50DC ~ Origin, data = picoxystrobin.complete.4)
+kruskal.test(EC50DC ~ Origin, data = picoxystrobin.complete)
 
 #There is NO difference p-value = 0.3702
 
 
 #by hosts
 
-kruskal.test(EC50DC ~ Host, data = picoxystrobin.complete.4)
+kruskal.test(EC50DC ~ Host, data = picoxystrobin.complete)
 #There is NO difference p-value 0.6842
 
 
@@ -1438,16 +1345,16 @@ kruskal.test(EC50DC ~ Host, data = picoxystrobin.complete.4)
 
 
 #########tetra
- tetraconazole.complete.4 <-  tetraconazole.complete.3 %>% filter(!ID == 8,!ID == 129 )
+ 
 
 ##NORMALITY TEST-Shapiro_test
 
-shapiro.test.tetra <- tetraconazole.complete.4 %>%
+shapiro.test.tetra <- tetraconazole.complete %>%
   group_by(Origin) %>%
   do(tidy(shapiro.test(.$EC50DC)))
 shapiro.test.tetra 
 # No normals
-shapiro.test.tetra.2 <- tetraconazole.complete.4 %>%
+shapiro.test.tetra.2 <- tetraconazole.complete %>%
   group_by(Host) %>%
   do(tidy(shapiro.test(.$EC50DC)))
 shapiro.test.tetra.2
@@ -1455,7 +1362,7 @@ shapiro.test.tetra.2
  #NO NORMALILTY thats is why  krusKal
 #by origin
 
-kruskal.test(EC50DC ~ Origin, data = tetraconazole.complete.4)
+kruskal.test(EC50DC ~ Origin, data = tetraconazole.complete)
 
 #There NO difference p-value = 0.05979
 
@@ -1464,17 +1371,15 @@ kruskal.test(EC50DC ~ Origin, data = tetraconazole.complete.4)
 
 #by hosts
 
-kruskal.test(EC50DC ~ Host, data = tetraconazole.complete.4)
+kruskal.test(EC50DC ~ Host, data = tetraconazole.complete)
 #There is NO difference p-value 0.4241
 
 
-TM.complete.4 <- TM.complete.3%>% filter(!ID == 8,!ID == 129 )
-
 ```
 
-##  Boscalid Plots
+##   Plots
 ```{r}
-plot.bos <- boscalid.complete.4%>%
+plot.bos <- boscalid.complete%>%
   ggplot(aes(x = Origin, y = EC50DC)) +
   geom_jitter(
     width = .1,
@@ -1505,7 +1410,7 @@ plot.bos <- boscalid.complete.4%>%
 
 plot.bos
 
-plot.pico <- picoxystrobin.complete.4%>%
+plot.pico <- picoxystrobin.complete%>%
   ggplot(aes(x = Origin, y = EC50DC)) +
   geom_jitter(
     width = .1,
@@ -1535,7 +1440,7 @@ plot.pico <- picoxystrobin.complete.4%>%
 plot.pico
 
 
-plot.tetra <- tetraconazole.complete.4%>%
+plot.tetra <- tetraconazole.complete%>%
   ggplot(aes(x = Origin, y = EC50DC)) +
   geom_jitter(
     width = .1,
@@ -1564,12 +1469,45 @@ plot.tetra <- tetraconazole.complete.4%>%
   )
 plot.tetra
 
+
+# Suppose TM
+plot.TM <- TM.complete%>%
+  ggplot(aes(x = Origin, y = EC50DC)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 21,
+    color = "black",
+    fill = "goldenrod",
+    size = 2,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 22,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs( x = "Origin", y = "EC50 (ppm)") + theme(
+    panel.border = element_rect(colour = "black", fill=NA, size=1),
+    axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 7,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50" )
+  )
+
+plot.TM
+
 ```
 
 #  Different grouping plots
-##  Boscalid
+
 ```{r}
-plot.bos.2 <- boscalid.complete.4%>%
+plot.bos.2 <- boscalid.complete%>%
   ggplot(aes(x = Host, y = EC50DC)) +
   geom_jitter(
     width = .1,
@@ -1599,7 +1537,7 @@ plot.bos.2 <- boscalid.complete.4%>%
   )
 plot.bos.2
 
-plot.pico.2 <- picoxystrobin.complete.4%>%
+plot.pico.2 <- picoxystrobin.complete%>%
   ggplot(aes(x = Host, y = EC50DC)) +
   geom_jitter(
     width = .1,
@@ -1630,7 +1568,7 @@ plot.pico.2 <- picoxystrobin.complete.4%>%
 plot.pico.2
 
 
-plot.tetra.2 <- tetraconazole.complete.4%>%
+plot.tetra.2 <- tetraconazole.complete%>%
   ggplot(aes(x = Host, y = EC50DC)) +
   geom_jitter(
     width = .1,
@@ -1661,8 +1599,44 @@ plot.tetra.2 <- tetraconazole.complete.4%>%
   )
 plot.tetra.2
 
+# Suppose TM
+plot.TM.2 <- TM.complete%>%
+  ggplot(aes(x = Host, y = EC50DC)) +
+  geom_jitter(
+    width = .1,
+    height = 0.5,
+    shape = 21,
+    color = "black",
+    fill = "goldenrod",
+    size = 2,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 22,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs( x = "Group", y = "EC50 (ppm)") + theme(
+        panel.border = element_rect(colour = "black", fill=NA, size=1),
+
+        axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 7,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+plot.TM.2
+
+
+
 ```
-# Using the function to detect outliers considered since the third quantil
+
+
+# Using the function to detect outliers considered since the third quantil from the outliers of ecah fungicicde
 
 ```{r}
  #New function to detect outliers of EC50DC en each group for fungicide. These ouliers are considered as equal to the third quantil, i.e. the second max stats
@@ -1674,19 +1648,19 @@ plot.tetra.2
     return(data.frame(outlier = wilt))
 }           
 ```
+etect outliers considered since the third quantil from the outliers of ecah fungicicde
 
 ```{r}
 #Boscalid
-# Using the function
+# Using the function to detect outliers
 
-boscalid.complete.5<- boscalid.complete.4%>% 
+boscalid.complete.2<- boscalid.complete%>% 
 group_by(Origin)%>%
 mutate(EC50DC_outlier = list(get_range2(EC50DC)))%>%
 unnest() %>% 
 filter(EC50DC >=  outlier) %>% ungroup() %>% 
-  select(ID, EC50DC,Origin, Host)
-
-#
+  select(ID)
+         
 summary.field.original <- WM3_ %>% 
   select(Field, ID, Group_MOA_current_season ) %>% #
   unique() %>% 
@@ -1694,18 +1668,28 @@ summary.field.original <- WM3_ %>%
   summarize(Num_original_isolates = n()) %>% 
   mutate(Empty_field = (Field == "")) %>% 
   filter(Empty_field == FALSE) %>% 
-  select(-Empty_field)  
+  select(-Empty_field) %>% 
+  ungroup()
 
 
-mu <- boscalid.complete.5 %>%
+mu <- boscalid.complete.2 %>%
   full_join(WM3_, by = "ID") %>%
-  rename(Origin = "Origin.x", Host = "Host.x") %>%     select(colnames(boscalid.complete.5), Field,  Year, State, Group_MOA_current_season, Host) %>%
+     select(colnames(boscalid.complete.2), Field,  Year, State, Group_MOA_current_season, Host) %>%
    left_join(summary.field.original)  %>%
    mutate(Group_MOA_current_season = na_if(Group_MOA_current_season, "")) %>%
      arrange(ID) %>% 
-   #
-   rename(N_iso_perfield =Num_original_isolates, Group= Group_MOA_current_season) %>%  
-  select(-EC50DC) 
+      rename(N_iso_perfield =Num_original_isolates, Group= Group_MOA_current_season) %>% 
+        mutate(Origin = ifelse(
+    ID %in% baseline_isolates_2,
+    "Baseline",
+    ifelse(
+      ID %in% Farmer_fields,
+      "FF","FFT"
+    ))) %>% 
+    mutate(Origin = as.factor(Origin), Host= as.factor(Host)) 
+
+
+
   
 anyDuplicated(mu$ID)
 
@@ -1755,22 +1739,31 @@ mu_summary4 <- mu %>%
 #Picoxystrobin
 # Using the function
 
-picoxystrobin.complete.5<- picoxystrobin.complete.4%>% 
+picoxystrobin.complete.2<- picoxystrobin.complete%>% 
 group_by(Origin)%>%
 mutate(EC50DC_outlier = list(get_range2(EC50DC)))%>%
 unnest() %>% 
 filter(EC50DC >=  outlier) %>% ungroup() %>% 
-  select(ID, EC50DC,Origin, Host)
+  select(ID)
 
 
-alpha <- picoxystrobin.complete.5 %>%
+alpha <- picoxystrobin.complete.2 %>%
   full_join(WM3_, by = "ID") %>%
-  rename(Origin = "Origin.x", Host = "Host.x") %>%     select(colnames(picoxystrobin.complete.5), Field,  Year, State, Group_MOA_current_season, Host) %>%
+   select(colnames(picoxystrobin.complete.2), Field,  Year, State, Group_MOA_current_season, Host) %>%
    left_join(summary.field.original)  %>%
    mutate(Group_MOA_current_season = na_if(Group_MOA_current_season, "")) %>%
      arrange(ID) %>% 
    
-   rename(N_iso_perfield =Num_original_isolates, Group= Group_MOA_current_season) %>%   select(-EC50DC) 
+   rename(N_iso_perfield =Num_original_isolates, Group= Group_MOA_current_season)  %>% 
+mutate(Origin = ifelse(
+    ID %in% baseline_isolates_2,
+    "Baseline",
+    ifelse(
+      ID %in% Farmer_fields,
+      "FF","FFT"
+    ))) %>% 
+    mutate(Origin = as.factor(Origin), Host= as.factor(Host)) 
+
   
 anyDuplicated(alpha$ID)
 
@@ -1819,7 +1812,7 @@ alpha_summary4 <- alpha %>%
 #Tetraconazole
 # Using the function
 
-tetraconazole.complete.5<- tetraconazole.complete.4%>% 
+tetraconazole.complete.2<- tetraconazole.complete%>% 
 group_by(Origin)%>%
 mutate(EC50DC_outlier = list(get_range2(EC50DC)))%>%
 unnest() %>% 
@@ -1827,14 +1820,23 @@ filter(EC50DC >=  outlier) %>% ungroup() %>%
   select(ID, EC50DC,Origin, Host)
 
 
-gamma <- tetraconazole.complete.5 %>%
+gamma <- tetraconazole.complete.2 %>%
   full_join(WM3_, by = "ID") %>%
-  rename(Origin = "Origin.x", Host = "Host.x") %>%     select(colnames(tetraconazole.complete.5), Field,  Year, State, Group_MOA_current_season, Host) %>%
+       select(colnames(tetraconazole.complete.2), Field,  Year, State, Group_MOA_current_season, Host) %>%
    left_join(summary.field.original)  %>%
    mutate(Group_MOA_current_season = na_if(Group_MOA_current_season, "")) %>%
      arrange(ID) %>% 
    
-   rename(N_iso_perfield =Num_original_isolates,  Group= Group_MOA_current_season) %>%   select(-EC50DC) 
+   rename(N_iso_perfield =Num_original_isolates,  Group= Group_MOA_current_season) %>%   
+  mutate(Origin = ifelse(
+    ID %in% baseline_isolates_2,
+    "Baseline",
+    ifelse(
+      ID %in% Farmer_fields,
+      "FF","FFT"
+    ))) %>% 
+    mutate(Origin = as.factor(Origin), Host= as.factor(Host)) 
+
 
 anyDuplicated(gamma$ID)
 
@@ -1884,22 +1886,26 @@ gamma_summary4 <- gamma %>%
 #TM
 # Using the function
 
-TM.complete.5<- TM.complete.4%>% 
+TM.complete.2<- TM.complete%>% 
 group_by(Origin)%>%
 mutate(EC50DC_outlier = list(get_range2(EC50DC)))%>%
 unnest() %>% 
 filter(EC50DC >=  outlier) %>% ungroup() %>% 
-  select(ID, EC50DC,Origin, Host)
+  select(ID) %>% 
+  bind_rows(TM.data) %>% 
+ungroup() %>% 
+  mutate( ID= as.numeric(ID)) %>% 
+  unique()
 
 
-angle <- TM.complete.5 %>%
-  full_join(WM3_, by = "ID") %>%
-  rename(Origin = "Origin.x", Host = "Host.x") %>%     select(colnames(TM.complete.5), Field,  Year, State, Group_MOA_current_season, Host) %>%
+###
+angle <- TM.complete.2 %>%
+  full_join(WM3_, by = "ID")  %>%    
+  select(colnames(TM.complete.2), Field,  Year, State, Group_MOA_current_season, Host) %>%
    left_join(summary.field.original)  %>%
    mutate(Group_MOA_current_season = na_if(Group_MOA_current_season, "")) %>%
      arrange(ID) %>% 
-   
-   rename(N_iso_perfield =Num_original_isolates, Group= Group_MOA_current_season) %>%   select(-EC50DC) 
+      rename(N_iso_perfield =Num_original_isolates, Group= Group_MOA_current_season)
 
 anyDuplicated(angle$ID)
 
