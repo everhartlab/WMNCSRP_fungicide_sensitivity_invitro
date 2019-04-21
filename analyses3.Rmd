@@ -1336,7 +1336,7 @@ filter(EC50DC >=  outlier) %>% ungroup() %>%
          
 #summary of how many isolates are per field
 summary.field.original <- WM3_ %>% 
-  select(Field, ID, Group_MOA_current_season ) %>% # Important to include Group of fungicides
+  select(Field, ID, Group_MOA_current_season ) %>% # Important to include Group of fungicides 
   unique() %>% 
   group_by(Field, Group_MOA_current_season ) %>% # Group also by fungicides and control's are discard since is established as unknown
   summarize(Num_original_isolates = n()) %>% 
@@ -1438,22 +1438,24 @@ Compendium<- mu %>%
 mutate(bos= case_when(
 ID%in% boscalid.complete.2$ID ~ 1,
 ID%in% notoutlierbuttested_bos~ 0,
-TRUE ~ NA_real_), # I used this "NA_real_" instead of "NA" becasue Iam getting this error: must be a double vector, not a logical vector
+TRUE ~ 3), # I used this "NA_real_" instead of "NA" becasue Iam getting this error: must be a double vector, not a logical vector but now IAM USING instead 3 becasue i could not filter then NA's
+
 pico= case_when(
 ID%in% picoxystrobin.complete.2$ID ~ 1,
 ID%in% notoutlierbuttested_pico ~ 0,
-TRUE ~ NA_real_), 
+TRUE ~ 3), 
 tetra= case_when(
 ID%in% tetraconazole.complete.2$ID ~ 1,
 ID%in% notoutlierbuttested_tetra ~ 0,
-TRUE ~ NA_real_), 
+TRUE ~ 3), 
 TM= case_when(
 ID%in% TM.complete.2$ID ~ 1,
 ID%in% notoutlierbuttested_TM ~ 0,
-TRUE ~ NA_real_)) %>%
-  # Filering by solo group that is current season
+TRUE ~ 3)) %>%
+  # Filering by solo group that at current season BECAUSE mixxes are not taking into account  and not take into account iether previous fungicides even solo becasue there is not completely certain of that.. and also the fungicide trails are not coming for exactly the same plot, satelita image shown 
    filter(Group== "Group_one"|Group=="Group_3"|Group=="Group_7"|Group=="Group_11") %>% 
-  arrange(Group)
+  arrange(Group) %>% 
+  mutate(bos = as.character(bos), pico = as.character(pico), tetra = as.character(tetra), TM = as.character(TM) )
 
  # checking the structure of datframe
 glimpse(Compendium)
@@ -1464,8 +1466,34 @@ water <- cbind(hello, bye)
 #filtering to know how many isolates coincide to be  outliers for at at least 3 fungicicdes
 fusarium <- water %>% filter(bye>=3) %>% arrange(bye) 
 
+#datfarmae for select how many of those to use for test
+hola <- Compendium %>% 
+   filter(N_iso_perfield >= 5) %>% #filtering those greater or eauql than 5 isolates/field
+  filter(bos ==3, pico==3, tetra == 3, TM==3 ) %>% #filter all NO tested, NA or 3
+    group_by(Group, Field) %>% 
+  select(-c( bos, pico, tetra, TM)) %>% 
+mutate(N_iso_tested= n()) %>%# countig those tested
+    mutate(N_iso_perfield = as.numeric(N_iso_perfield)) %>% # converting to numeric
+  mutate(N_iso_tested= N_iso_perfield-N_iso_tested) %>% #subtracting
+      mutate(N_iso_to_pick = ifelse(N_iso_perfield >= 10, 10,  N_iso_perfield  )) %>% #if there is more than 10 converting to t10 if is less than 10, keoin the original number
+  mutate(N_iso_to_pick = N_iso_to_pick - N_iso_tested  )%>% #subtracting
+    select(-c(Host, Origin)) %>% 
+   mutate(N_iso_to_pick_EX =  
+           ifelse( N_iso_perfield  >= (N_iso_to_pick +  3), (N_iso_to_pick + 3), ifelse( N_iso_perfield  >= (N_iso_to_pick +  2), (N_iso_to_pick + 2), N_iso_to_pick )))# adding more extra isolates for the case many times they do not grow from the sclerotia
+ 
+#dataframe the real total to use
+hola2 <- hola %>%  
+  sample_n(size = N_iso_to_pick,replace = T) %>% #randomly sampling
+   arrange(ID) 
+     
+#dataframe with the extra taking in case the sclerotia does not growth
+hola3 <- hola %>%  
+  sample_n(size = N_iso_to_pick_EX,replace = T) %>% #randomly sampling
+  arrange(ID)
+  
 
-
+  
+ 
 # fusarium%>%
 #   write_csv("clean data/table_ouliers_together.csv")
 
@@ -1509,3 +1537,4 @@ picoxystrobin.complete$ID[!picoxystrobin.complete$ID%in% boscalid.complete$ID]
 
 ```
 
+class
