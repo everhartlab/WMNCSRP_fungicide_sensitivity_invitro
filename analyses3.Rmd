@@ -1,15 +1,17 @@
 ---
 title: "R Notebook"
 output:
-  pdf_document: default
-  html_notebook: default
   html_document:
     df_print: paged
+    toc: TRUE
+  html_notebook: default
+  pdf_document: default
+  word_document: default
 ---
 
  
 
-```{r set packages, warning= FALSE}
+```{r set packages, warning= FALSE, include=FALSE}
 library(tidyverse)
 library(ggplot2)
 library(ezec)
@@ -22,7 +24,7 @@ library(kableExtra)
 library(arsenal)
 library(DescTools)
 
-knitr::opts_chunk$set(echo = FALSE)
+
 ```
 
  ## Background   
@@ -34,7 +36,7 @@ Survey fungicide sensitivity of populationss of S. sclerotiorum from soybean
 Knowledge of baseline sensitivity of a pathogen population to fungicides is important for detection of resistance and for achieving effective disease management strategies (Brent and Holloman 2007). QoI, DMI, MBC and SDHI fungicides are used to control _S._ _sclerotiorum_ in an IPM approach in soybean and dry bean in the U.S. DMI fungicides are considered to medium risk of resistance emergence, whereas QoI, SDHI and MBC are high risk (Fungicide Resistance Action Committee 2016). MBC and dicarboximide fungicides are used for white mold in Brazil, wherein resistance to MBC fungicide, Thiophanate methyl, has been reported (Lehner et al. 2015). Fungicide resistance has also been reported in China to the MBC, Carbendazim and dicarboximide, Dimethachlon (Ma et al. 2009). Field application of fungicides in the United States on soybean show control of S. sclerotiorum is low to fair for QoI, DMI and MBC fungicides, and good for SDHI fungicides (The North Central Regional Committee on Soybean Diseases 2015). However, it is unknown whether efficacy is related to reduce sensitivity within populations under study. Therefore, the __hypothesis of this objective is that there are isolates of _S. sclerotiorum_ with low sensitivity to the most commonly used fungicides in the North Central United States.__  
 
 
-```{r read data}
+```{r read data, echo = FALSE}
 ##  Reading and subsetting data 
 boscalid.data <-
   read.csv("data/boscalid_serialdilution_baseline(validationdata).csv")
@@ -497,12 +499,11 @@ WM2$ID[ WM2$ID =="377a"]  <- "377"
 
 WM3 <- WM2 %>% mutate(ID = as.numeric(ID))
 
-knitr::opts_chunk$set(echo = FALSE)
 
 ```
 
 ##  Setting the groups of isolates
-```{r setting objects}
+```{r setting objects, echo = FALSE}
 #replacing with the original ID, for example, instead of 12b, now 12
 baseline_isolates <- c(1, 8, 12, 20, 21, 74, 87, 118, 123, 129, 449, 461, 467, 475, 558, 564, 568, 581, 645, 667, 800)
 
@@ -549,6 +550,8 @@ levels(WM3$Fungicide_current_season)[levels(WM3$Fungicide_current_season) == ""]
 
 levels(WM3$molecule.s._current_season)[levels(WM3$molecule.s._current_season) == ""] <- "unknown"
 
+levels(WM3$molecule.s._current_season)[levels(WM3$molecule.s._current_season) == "No_info"] <- "unknown"
+
 levels(WM3$Fungicide_previous_seasons)[levels(WM3$Fungicide_previous_seasons) == ""] <- "unknown"
 
 
@@ -573,14 +576,13 @@ WM3_ <- WM3%>%
     )
   )   
     
-knitr::opts_chunk$set(echo = FALSE)
 
 ```
 
 
 ##  Creating a function for using the outputs of boxplot.stats function and notice the outliers
 
-```{r function to take outliers from 8 observations}
+```{r function to take outliers from 8 observations, echo = FALSE}
 get_range <- function(mynumber) {
   bb <- boxplot.stats(mynumber)
   cc <- bb$stats
@@ -588,12 +590,11 @@ get_range <- function(mynumber) {
   ee <- min(cc)
   return(data.frame(upper = dd, lower = ee))
 }
-knitr::opts_chunk$set(echo = FALSE)
 ```
 
 ##  Analysis by fungicide
 #  Boscalid
-```{r Serial dilution Boscalid}
+```{r Serial dilution Boscalid, include = FALSE}
 #Boscalid fungicide taking the outliers from the 8 observations of each one USING THE FUCTION 
 boscalid.filtered  <- boscalid.data %>%
   group_by(ID, dose) %>%
@@ -626,8 +627,8 @@ boscalid.xx <-
   mutate(group = recode(group, survey_isolates = "Farmer fields", treatmentyear2016_isolates = "Fungicide field trials", baseline = "Baseline")) %>% mutate(group = as.factor(group)) %>% 
   ungroup()
 
-knitr::opts_chunk$set(echo = FALSE)
 ```
+
 ```{r}
 xx
 ```
@@ -635,7 +636,7 @@ xx
 
 ##  Procedure to get the Discrimantory Concentration (DC)  
 #  Boscalid 
-```{r Calculus of DC Boscalid}
+```{r Calculus of DC Boscalid, echo = FALSE, results= "asis"}
 ##Getting relative growth column at each dose where RG = Relative Growth, eg. RG0.025 = Relative Growth at 0.025 ppm##
 RG.boscalid <-
   boscalid.filtered %>% group_by(ID, dose) %>% summarise(mean_response = mean(response, na.rm = TRUE)) %>%
@@ -692,7 +693,7 @@ final.boscalid.clean <-
 final.boscalid.DC <-
   final.boscalid.clean %>% mutate(Estimate.50DC =
                                      #using the model the intercept and the coefficient of the model
-                                    exp((finalRG0.2[[1]][[1]]) + ((finalRG0.2[[1]][[2]]) * RG0.2))) %>%# here I need to do this dynamic
+                                    exp(finalRG0.2[[1]][[1]] + finalRG0.2[[1]][[2]] * RG0.2)) %>%# here I need to do this dynamic
   select(ID, Estimate.50DC, Estimate.50)
 
 
@@ -719,7 +720,6 @@ fig.1<- ggplot(final.boscalid.DC.0.2, aes(x = Estimate.50, y = Estimate.50DC)) +
   ) + labs(title = "Linear regression between EC50 and EC50(D) values of Boscalid ", x =
   "EC50 (ppm)", y = "EC50(D) (ppm)") + geom_point(shape = 24) + geom_smooth(method = "lm")
  
- knitr::opts_chunk$set(echo = FALSE)
 ```
 
 ```{r}
@@ -729,7 +729,7 @@ fig.1
 ```
 
 ##  Boscalid using the DC inlcuding Farmer fields and Fungicide field trials
-```{r Using the DC Boscalid and the model}
+```{r Using the DC Boscalid and the model, echo = FALSE}
 boscalid_data <- survey.data.3 %>%
   select(ID,
          repeats,
@@ -767,7 +767,6 @@ boscalid.filtered. <- boscalid.filtered.survey %>%
   mutate(ID = as.numeric(ID)) %>% 
    select(c(ID, EC50DC)) 
 
-knitr::opts_chunk$set(echo = FALSE)
 ```
 
 ```{r}
@@ -776,7 +775,7 @@ boscalid.filtered.
 
 ##  Analysis by fungicide
 #  Picoxystrobin
-```{r Serial dilution Picoxystrobin}
+```{r Serial dilution Picoxystrobin, include = FALSE}
 #Picoxystrobin  fungicide taking the outliers from the 8 observations of each one USING THE FUCTION
 picoxystrobin.filtered <- picoxystrobin.data %>%
   group_by(ID, dose) %>%
@@ -808,7 +807,6 @@ picoxystrobin.yy <-
   mutate(group = as.factor(group))%>% 
   ungroup()
 
-knitr::opts_chunk$set(echo = FALSE)
 ```
 
 ```{r}
@@ -817,7 +815,7 @@ yy
 
 ##  Procedure to get the Discriminatory Concentration (DC) 
 #  Picoxystrobin
-```{r Calculus of DC Picoxystrobin}
+```{r Calculus of DC Picoxystrobin, echo = FALSE, results= "hide"}
 #Getting relative growth column at each dose where RG= Relative Growth, eg. RG0.01= Relative Growth at 0.01 ppm
 RG.picoxystrobin <-
   picoxystrobin.filtered %>% group_by(ID, dose) %>% summarise(mean_response = mean(response, na.rm = TRUE)) %>% spread(dose, mean_response) %>%
@@ -836,14 +834,14 @@ final.picoxystrobin <- #joining table
 ##################################################################################
 #Dose chosen as DC
 # Linear model of log EC50 and relative growth at 0.01 ppm, check normality and homogeneity of variances
-#pdf("picoxystrobin_assumptions_linearmodel_dosechoseasDC_with_outlayers.pdf")
+#pdf("picoxystrobin_assumptions_linearmodel_dosincludeseasDC_with_outlayers.pdf")
 finalRG0.01 <- lm(logEC50 ~ RG0.01, final.picoxystrobin)
 summary(finalRG0.01)
 plot(finalRG0.01)
 #check_assumptions(finalRG0.01)
 #dev.off()
 ##taking out outlayers from Q-Q PLOT $ LEVERAGE TEST, ISOLATES # 1032 from treatment, 558 & 581 from baseline##
-#pdf("picoxystrobin_assumptions_linearmodel_dosechoseasDC.pdf")
+#pdf("picoxystrobin_assumptions_linearmodel_dosincludeseasDC.pdf")
 final.picoxystrobin.clean <- final.picoxystrobin %>% filter( !ID == "1032",!ID == "558", !ID == "581" ) 
 finalRG0.01 <- lm(logEC50 ~ RG0.01, final.picoxystrobin.clean)
 summary(finalRG0.01)
@@ -883,7 +881,6 @@ fig.2 <- ggplot(final.picoxystrobin.DC.0.01,
        "EC50 (ppm)", y = "EC50(D) (ppm)") + geom_point() + geom_smooth(method = "lm")
      
 #dev.off()
- knitr::opts_chunk$set(echo = FALSE) 
 ```
 
 ```{r}
@@ -892,7 +889,7 @@ fig.2
 ```
 
 #  Picoxystrobin Using the DC including Farmer fields and Fungicide field trials
-```{r Using the DC Picoxystrobinand the model}
+```{r Using the DC Picoxystrobinand the model, echo = FALSE}
 picoxystrobin_data <- survey.data.3 %>%
   select(
   ID,
@@ -933,7 +930,6 @@ picoxystrobin.filtered. <- picoxystrobin.filtered.survey %>%
   mutate(ID = as.numeric(ID)) %>% 
    select(c(ID, EC50DC)) 
              
-knitr::opts_chunk$set(echo = FALSE)
 
 ```
 
@@ -943,7 +939,7 @@ picoxystrobin.filtered.
 
 ##  Analysis by fungicide
 #  Tetraconazole
-```{r Serial dilution Tetraconazole}
+```{r Serial dilution Tetraconazole, include = FALSE, results= "hide"}
 #Tetraconzaole  fungicide taking the outliers from the 8 observations of each one USING THE FUCTION
 
 tetraconazole.filtered <- tetraconazole.data %>%
@@ -975,7 +971,6 @@ tetraconazole.bb <-
   mutate(group = as.factor(group)) %>% 
   ungroup()
 
-knitr::opts_chunk$set(echo = FALSE)
 ```
 
 ```{r}
@@ -984,7 +979,7 @@ bb
 
 ##  Procedure to get the Discrimanatory Concentration (DC) 
 #  Tetraconazole
-```{r Calculus of DC Tetraconazole}
+```{r Calculus of DC Tetraconazole, echo = FALSE}
 #Getting relative growth column at each dose where RG= Relative Growth, eg. RG0.01= Relative Growth at 0.01 ppm
 
 RG.tetraconazole <-
@@ -1010,14 +1005,14 @@ final.tetraconazole <-#joining
 ################################################################################
 #Dose chosen as DC
 # Linear model of log EC50 and relative growth at 2 ppm, check normality and homogeneity of variances
-#pdf("tetraconazole_assumptions_linearmodel_dosechoseasDC_with_outlayers.pdf")
+#pdf("tetraconazole_assumptions_linearmodel_dosincludeseasDC_with_outlayers.pdf")
 finalRG2 <- lm(logEC50 ~ RG2, final.tetraconazole)
 summary(finalRG2)
 plot(finalRG2)
 #check_assumptions(finalRG2)
 #dev.off()
 ##taking out outlayers from Q-Q PLOT & LEVERAGE TEST, ISOLATES #  21 , 558 & 667 from baseline##
-#pdf("tetraconazole_assumptions_linearmodel_dosechoseasDC.pdf")
+#pdf("tetraconazole_assumptions_linearmodel_dosincludeseasDC.pdf")
 final.tetraconazole.clean <- final.tetraconazole %>% filter( !ID == "21",!ID == "558", !ID == "667" ) 
 finalRG2 <- lm(logEC50 ~ RG2, final.tetraconazole.clean)
 summary(finalRG2)
@@ -1060,7 +1055,6 @@ fig.3 <- ggplot(final.tetraconazole.DC.2,
         panel.background = element_rect(fill = "white",colour = "grey50")) + labs(title= "Linear regression between EC50 and EC50(D) values of Tetraconazole", x =
        "EC50 (ppm)", y = "EC50(D) (ppm)") + geom_point(shape=21) + geom_smooth(method = "lm")
 
-knitr::opts_chunk$set(echo = FALSE)
 
 ```
 
@@ -1070,7 +1064,7 @@ fig.3
 ```
 
 #  Tetraconazole using the DC and the model including Farmer fields and Fungicide field trials
-```{r Using the DC Tetraconazoleand the model}
+```{r Using the DC Tetraconazoleand the model, echo = FALSE}
 tetraconazole_data <- survey.data.3 %>%
   select(ID,
   repeats,
@@ -1104,7 +1098,6 @@ ungroup() %>%
   mutate(ID = as.numeric(ID)) %>% 
    select(c(ID, EC50DC))
 
-knitr::opts_chunk$set(echo = FALSE)
 ```
 
 ```{r}
@@ -1113,7 +1106,7 @@ tetraconazole.filtered.
 
 ##  Analysis by fungicide
 #  Thiophanate methyl
-```{r Serial dilution Thiophanate methyl}
+```{r Serial dilution Thiophanate methyl, include = FALSE}
 #Thiophanate methyl  fungicide taking the outliers from the 8 observations of each one USING THE FUCTION
 TM.filtered <- TMdata %>%
   group_by(ID, dose) %>%
@@ -1144,7 +1137,6 @@ TM.zz <-   zz%>% rename(ID = sample ) %>%
     )) %>% ungroup() %>% mutate(fungicide = "TM") %>% mutate(group = recode(group, survey_isolates = "Farmer fields", treatmentyear2016_isolates = "Fungicide field trials", baseline = "Baseline")) %>% mutate(group = as.factor(group)) %>% 
   ungroup()
 
-knitr::opts_chunk$set(echo = FALSE)
 ```
 
 ```{r}
@@ -1153,7 +1145,7 @@ zz
 
 ##  Procedure to get the Discrimanatory Concentration (DC) 
 #  Thiophanate methyl
-```{r Calculus of DC Thiophanate methyl}
+```{r Calculus of DC Thiophanate methyl, echo = FALSE}
 #Getting relative growth column at each dose where RG= Relative Growth, eg. RG0.01= Relative Growth at 0.01 ppm 
 RG.TM <- TM.filtered %>% group_by(ID,dose) %>% summarise(mean_response=mean(response,na.rm=TRUE)) %>% spread(dose,mean_response) %>%  mutate(RG0.75=((`0.75`/`0`)*100)) %>% mutate(RG1=((`1`/`0`)*100)) %>% mutate(RG1.5=((`1.5`/`0`)*100)) %>% mutate(RG2=((`2`/`0`)*100)) %>% mutate(RG2.5=((`2.5`/`0`)*100)) %>%  mutate(RG10=((`10`/`0`)*100))
 # 
@@ -1193,7 +1185,6 @@ plot(final.TM.DC.10)
 fig.4 <- ggplot(final.TM.DC.10, aes(x = Estimate.50, y = Estimate.50DC)) +  theme(plot.title = element_text(size = 16, face = "bold", hjust = 1)) + labs(title = "Linear regression of thiophanate methyl 10 ppm", x ="EC50 (ppm)", y = "EC50DC (ppm)" ) + geom_point() + geom_smooth(method = "lm")
 
 
-knitr::opts_chunk$set(echo = FALSE)
 ```
 
 ```{r}
@@ -1202,7 +1193,7 @@ fig.4
 ```
 
 #  Thiophanate methyl Using the DC  including Farmer fields and Fungicide field trials
-```{r Using the DC Thiophanate methyl and the model}
+```{r Using the DC Thiophanate methyl and the model, echo = FALSE}
 TM_data <- survey.data.3 %>%
   select(ID, repeats, experimental_replicate, TM.growth, control.growth) %>% 
   rename(response = TM.growth, control = control.growth)%>%  
@@ -1212,11 +1203,12 @@ TM_data <- survey.data.3 %>%
 mutate(resistance = ifelse(RG >24,#more or equal to 25%, in literature is used approx greater than 50 % 
                            "resistant", "nonresistant")) 
 
-knitr::opts_chunk$set(echo = FALSE)
+
 ```
 
+# because we did not get any possible outlier then..
 #  Another approach with TM to pick the probably isolates with high EC50 using a new model of 2.5 ppm, the closest at the EC50
-```{r Selecting outliers of the serial dilution Thiophanate  methyl }
+```{r Selecting outliers of the serial dilution Thiophanate  methyl, echo = FALSE }
 
 #Dose chosen as  potential DC
 
@@ -1230,11 +1222,14 @@ plot(finalRG2.5)
 ggplot(finalRG2.5, aes(x = RG2.5, y = logEC50)) +  geom_point() + geom_smooth()
 
 
-# Getting the EC50DC according to the model
+# Getting the EC50DC according to the model of 2.5   just for the ones from serial dilution
+
 final.TM.DC1 <- final.TM %>% mutate(Estimate.50DC = # exponential is the opposite of log
         #using the model the intercept and the coefficient of the model 
                                       exp(finalRG2.5[[1]][[1]] + finalRG2.5[[1]][[2]]*RG2.5)) %>% # here I need to do this dynamic
   select(ID, Estimate.50DC, Estimate.50)
+
+
 # Linear model of EC50  and EC50DC, check normality and homogeneity of variances
 final.TM.DC.2.5 <- lm (Estimate.50DC ~ Estimate.50, final.TM.DC1)
 summary(final.TM.DC.2.5)
@@ -1246,20 +1241,24 @@ fig.5 <- ggplot(final.TM.DC.2.5, aes(x = Estimate.50, y = Estimate.50DC)) +  the
 
 #dev.off()
 
-knitr::opts_chunk$set(echo = FALSE)
+
 ```
+
 ```{r}
 fig.5
 ```
 
 
 #  Another approach with TM to pick the probably isolates with low sensitivity based on the growth at Discrimantory concentrartion,including farmer fields and fungicide field trials 
-```{r Estimating low sensitivity TM}
+```{r Estimating low sensitivity TM, echo = FALSE}
 #  I cannot use the model because the DC used was 10 ppm, and the model was built based on 2.5 ppm
+
 
 TM.data <- survey.data.3 %>%
   select(ID, repeats, experimental_replicate, TM.growth, control.growth) %>% 
   rename(response = TM.growth, control = control.growth) %>% 
+  
+  
  # Using the function in order to take out the outliers#
   group_by(ID) %>%
   mutate(response_range = list(get_range(response))) %>%
@@ -1278,16 +1277,14 @@ ungroup() %>%
   arrange(RG) %>% 
   filter(RG >19) %>% # More than 20 % arbitrarily selected
 select(ID)
+  
 
-knitr::opts_chunk$set(echo = FALSE)
 ```
 
-```{r}
-TM.data
-```
+
 
 ##  Wrangling datframe for each fungicide
-```{r wrangling fungicides}
+```{r wrangling fungicides, echo = FALSE}
 
 #Selecting the EC50D from the serial dilution
 boscalid.complete <- final.boscalid.DC %>% 
@@ -1398,12 +1395,11 @@ mutate( ID= as.numeric(ID)) %>%
     mutate(Origin = as.factor(Origin), Host= as.factor(Host)) %>% #taking out "different host" becuse does not belong to drybean nor soybean
   filter(!ID == 8,!ID == 129 )
 
-knitr::opts_chunk$set(echo = FALSE)
 ```
 
 # Function to detect outliers considered since the third quantil from the outliers of ecah fungicicde
 
-```{r function to detect outliers includng third quantil}
+```{r function to detect outliers includng third quantil, echo = FALSE}
  #New function to detect outliers of EC50DC en each group for fungicide. These ouliers are considered as equal to the third quantil, i.e. the second max stats
                                                               
  get_range2 <- function(myoutlier) {
@@ -1412,13 +1408,12 @@ knitr::opts_chunk$set(echo = FALSE)
   wilt <- max(necrosis[necrosis!=max(necrosis)])
     return(data.frame(outlier = wilt))
  }  
-knitr::opts_chunk$set(echo = FALSE)
 ```
 # Detection of  outliers (third quantil) using the previous function
 
-```{r Outliers detection}
+```{r Outliers detection, echo = FALSE}
 #Boscalid
-# Using the function to detect outliers
+# Using the function to detect outliers from all tested
 
 boscalid.complete.2<- boscalid.complete%>% 
 group_by(Origin)%>%
@@ -1481,35 +1476,52 @@ filter(EC50DC >=  outlier) %>% ungroup() %>%
   select(ID)
 
 #TM
-# Using the function
 
-TM.complete.2<- TM.complete%>% #this the Id of serial dilution
-    bind_rows(TM.data) %>% # adding the selection of isolates when the DC (the hhishest was used 10 ppm) Whatch out here is much more the really tested that is why it was created another object TM complete
+
+# Using the function fo dtect oulires from serial dilution grouping by origin
+
+TM.complete.2<- TM.complete%>% 
+group_by(Origin)%>%
+mutate(EC50DC_outlier = list(get_range2(EC50DC)))%>%
+unnest() %>% 
+filter(EC50DC >=  outlier) %>% ungroup() %>% 
+  select(ID)
+
+#This "TM.complete.3" can be a total of outliers
+
+TM.complete.3<- TM.complete.2%>% #this the Id of serial dilution
+    bind_rows(TM.data) %>% # this TM.Data adding the selection of isolates when the DC (the hhisgest was used 10 ppm) Whatch out here is much more the really tested that is why it was created another object TM complete
 ungroup() %>% 
   mutate( ID= as.numeric(ID)) %>% 
   select(ID) %>% 
-    distinct() # # corroborrating any duplication in ID
-  # anyDuplicated(TM.complete.2$ID)
+    distinct() 
 
-####
-TM_data.2 <- TM_data %>%  #fisrt I need to do that for beter binding
+# # corroborrating any duplication in ID
+   anyDuplicated(TM.complete.3$ID)
+
+
+###### Anoher  approach for to be used in NA,0 and 1 becuase there were the really tested inlcuding DC teste
+#fisrt I need to do that for beter binding fo use later
+TM_data.2 <- TM_data %>%  
   select(ID)
-#This is to be used in NA,0 and 1
 
-TM.complete.3<- TM.complete%>% 
+#This is now to  to be used in NA,0 and 1
+
+TM.complete.4<- TM.complete%>% 
   select(ID) %>% 
   bind_rows(TM_data.2) %>% 
   ungroup() %>% 
   mutate( ID= as.numeric(ID)) %>% 
   unique()
 
-knitr::opts_chunk$set(echo = FALSE)
+# # corroborrating any duplication in ID
+   anyDuplicated(TM.complete.3$ID)
 ```
 
 
 # Dataframe with with ouliers of boscalid, picoxystrobin, tetraconazole and TM using 0, 1 and NA 
 
-```{r Dataframe of outliers}
+```{r Dataframe of outliers, echo = FALSE}
 
 ### setting the objects
 #Boscalid
@@ -1524,7 +1536,7 @@ notoutlierbuttested_tetra <-tetraconazole.complete$ID[! tetraconazole.complete$I
 
 # TM
   
-notoutlierbuttested_TM <-TM.complete.3$ID[! TM.complete.3$ID %in% TM.complete.2$ID  ]
+notoutlierbuttested_TM <-TM.complete.4$ID[! TM.complete.4$ID %in% TM.complete.3$ID  ]
 
 
 
@@ -1553,7 +1565,7 @@ TRUE ~ 3)) %>%
   mutate(bos = as.character(bos), pico = as.character(pico), tetra = as.character(tetra), TM = as.character(TM) )
 
  # checking the structure of datframe
-glimpse(Compendium)
+#glimpse(Compendium)
 #the following Iam getting the Sum by row but because I dont know how to use apply in dplyr. Iwa screating many objects and doing step by step
 hello <- Compendium %>%  select(  bos, pico, tetra, TM)
 #bye <- apply(hello, 1, sum)
@@ -1638,7 +1650,39 @@ kable(format = "markdown",caption = "Table with outliers for each fungicide, NA=
 
 picoxystrobin.complete$ID[!picoxystrobin.complete$ID%in% boscalid.complete$ID]
 
-knitr::opts_chunk$set(echo = FALSE)
+
+```
+#CREATING SUMMARY LIST
+```{r, include= FALSE }
+casa <-WM3_ %>% # selecting variables more important 
+     select(colnames(boscalid.complete.2), Field,  Year, State, Group_MOA_current_season, Host) %>%
+   left_join(summary.field.original)  %>% # joining with table of summary of how many isolates are per field
+   mutate(Group_MOA_current_season = na_if(Group_MOA_current_season, "")) %>%
+     arrange(ID) %>% 
+      rename(N_iso_perfield =Num_original_isolates, Group= Group_MOA_current_season) %>% 
+        mutate(Origin = ifelse(
+    ID %in% baseline_isolates_2,
+    "Baseline",
+    ifelse(
+      ID %in% Farmer_fields,
+      "FF","FFT"
+    ))) %>% 
+    mutate(Origin = as.factor(Origin), Host= as.factor(Host), Field= as.factor(Field) ) %>% filter(Group== "Group_one"|Group=="Group_3"|Group=="Group_7"|Group=="Group_11")%>% 
+    mutate(Group = recode(Group, Group_one = 1, Group_3 =  3, Group_7 = 7, Group_11 = 11)) %>% 
+group_by(Group, State, Year, Origin, Field) %>% 
+  summarize(Total = n()) %>% 
+  filter(Total >= 5 ) %>% 
+     arrange(Group,Year) 
+  
+  casa[ , "N_to test"] <- ""
+
+#   casa %>% 
+# kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
+#   write2pdf("SUMMARY_LIST.pdf")
+#   
 ```
 
-class
+```{r}
+casa
+```
+
