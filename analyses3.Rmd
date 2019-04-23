@@ -4,8 +4,8 @@ output:
   html_document:
     df_print: paged
     toc: TRUE
-  html_notebook: default
   pdf_document: default
+  html_notebook: default
   word_document: default
 ---
 
@@ -23,11 +23,14 @@ library(gridExtra)
 library(kableExtra)
 library(arsenal)
 library(DescTools)
+library(knitr)
+
 
 
 ```
 
- ## Background   
+#  Background   
+
 Fungicide applications are essential for maintaining healthy, reliable, and high-quality agricultural products. Resistance to fungicides is an increasing threat to this effectiveness and has already been reported for 203 plant pathogenic fungi (Fungicide Resistance Action Committee 2013). Soybean is the second most important crop in the U.S. and contributes significantly to the nation’s economy with annual sales of $38.7 billion, accounting for 10 percent of total U.S. agriculture sales (Census of Agriculture 2012). In the temperate North Central soybean production areas of the United States, the white mold disease can be a significant yield limiting disease, with reported losses more than 10 million bushels per year (Peltier et al. 2012). This yield loss is significant and makes S. sclerotiorum one of the most important pathogens of soybean in the North Central U.S. In Mexico, dry common bean (_Phaseolus vulgaris_) is the second most important crop and is also significantly affected by _S._ _sclerotiorum_. For example, in the State of Sinaloa, _S._ _sclerotiorum_ causes up to 75% yield loss in dry bean and is considered the most important fungal pathogen (Apodaca et al. 2011).
 Lack of adequate levels of host resistance means that fungicides are the primary method of disease control (Bardin and Huang 2001). A major problem is that by the time fungicide resistance is detected by growers, it may be too late to prevent spread of fungicide resistance. Identifying changes in fungicide sensitivity requires knowledge of existing baseline sensitivity to each class of fungicides. Acquisition of fungicide resistance within a completely susceptible population begins with emergence and is followed by selection and adjustment phases. Few studies have addressed the emergence phase and there is a debate about the role of fungicide dose (Van Den Bosch et al. 2011). In the literature, authors speculate that rate of resistance emergence may be directly related to pathogen exposure to low-doses of fungicides (Gressel 2011), which may increase with fewer fungicide applications, such as is recommended in an Integrate Pest Management (IPM) method (Beckerman et al. 2015). This is relevant to soybean production because low-doses of fungicides are likely to occur in the field, whether due to intentional reduction of application rates or unintentionally because of incomplete spray coverage. Other factors related to risk of resistance emergence in fungal plant pathogens is the mechanism of reproduction of the fungus (sexual out-crossing, sexual selfing or asexual reproduction) and population structure of the pathogen. Knowledge of the population structure and spread of _S._ _sclerotiorum_ on soybean and dry bean is needed.  
 
@@ -35,6 +38,11 @@ Survey fungicide sensitivity of populationss of S. sclerotiorum from soybean
 #Backgroundddd
 Knowledge of baseline sensitivity of a pathogen population to fungicides is important for detection of resistance and for achieving effective disease management strategies (Brent and Holloman 2007). QoI, DMI, MBC and SDHI fungicides are used to control _S._ _sclerotiorum_ in an IPM approach in soybean and dry bean in the U.S. DMI fungicides are considered to medium risk of resistance emergence, whereas QoI, SDHI and MBC are high risk (Fungicide Resistance Action Committee 2016). MBC and dicarboximide fungicides are used for white mold in Brazil, wherein resistance to MBC fungicide, Thiophanate methyl, has been reported (Lehner et al. 2015). Fungicide resistance has also been reported in China to the MBC, Carbendazim and dicarboximide, Dimethachlon (Ma et al. 2009). Field application of fungicides in the United States on soybean show control of S. sclerotiorum is low to fair for QoI, DMI and MBC fungicides, and good for SDHI fungicides (The North Central Regional Committee on Soybean Diseases 2015). However, it is unknown whether efficacy is related to reduce sensitivity within populations under study. Therefore, the __hypothesis of this objective is that there are isolates of _S. sclerotiorum_ with low sensitivity to the most commonly used fungicides in the North Central United States.__  
 
+# Fungicides
+## Boscalid
+## Picoxystrobin
+## Tetraconazole
+## Thiophanate methyl
 
 ```{r read data, echo = FALSE}
 ##  Reading and subsetting data 
@@ -66,20 +74,11 @@ boscalid.data <-
   ####Transforming to $ID to numeric
  boscalid.data$ID <- as.numeric(boscalid.data$ID)
  ## Discarding dose at 0.4 ppm and isolate 800 because it has just one experimental replication ##
- # Filter out the control observations that have less than 5 cm  diameter growth
+ 
+ # Filter out 
   boscalid.data <- boscalid.data %>%
-    filter(!dose ==  0.4 & !ID == 800) %>%
+     filter(!dose ==  0.4 & !ID == 800) %>%
     group_by(ID, experimental_replicate, dose, ecuatorial, polar, repeats) %>%
-    filter(
-    !ID == 2362 |
-    !experimental_replicate == 2 |
-    !dose == 0 |
-    !repeats == 3 ,
-    !ID == 1033 |
-    !experimental_replicate == 2 | 
-    !dose == 0 |
-    !repeats == 4
-    ) %>%
     mutate(growth = ((ecuatorial + polar) / 2))
     
 #Reading and subsetting data picoxystrobin
@@ -111,21 +110,9 @@ boscalid.data <-
    ####Transforming to $ID to numeric
 picoxystrobin.data$ID <- as.numeric(picoxystrobin.data$ID)
    
-  #Filter out the control observations that have less than 5 cm diameter growth
+  #Filter out 
     picoxystrobin.data <- picoxystrobin.data %>%
       group_by(ID, experimental_replicate, dose, ecuatorial, polar, repeats) %>%
-      filter(
-      !ID == 2143 |
-      !experimental_replicate == 1 |
-      !dose == 0 |
-      !repeats == 2 ,
-      !ID == 2100 |
-      !experimental_replicate == 2 |
-      !dose == 0 |
-      !repeats == 3,
-      !ID == 2223 |
-      !experimental_replicate == 2 | !dose == 0 | !repeats == 2
-      ) %>%
       mutate(growth = ((ecuatorial + polar) / 2))
       
 #Reading and subsetting data tetraconazole
@@ -156,23 +143,9 @@ tetraconazole.data <-
 
     ####Transforming to $ID to numeric
 tetraconazole.data$ID <- as.numeric(tetraconazole.data$ID)
-   # Filter out the control observations that have less than 5 cm growth
+   # Filter out 
   tetraconazole.data <- tetraconazole.data %>%
     group_by(ID, experimental_replicate, dose, ecuatorial, polar, repeats) %>%
-    filter(
-    !ID == 2139 |
-    !experimental_replicate == 1 |
-    !dose == 0.5 ,
-    !ID == 2139 |
-    !experimental_replicate == 1 |
-    !dose == 1 ,
-    !ID == 2139 |
-    !experimental_replicate == 1 | !dose == 2,
-    !ID == 2139 |
-    !experimental_replicate == 1 | !dose == 3,
-    !ID == 2139 |
-    !experimental_replicate == 1 | !dose == 5
-    )   %>%
     mutate(growth = ((ecuatorial + polar) / 2))
 #Reading and subsetting data TM
   TMdata <-
@@ -202,11 +175,11 @@ tetraconazole.data$ID <- as.numeric(tetraconazole.data$ID)
 
  ####Transforming to $ID to numeric
 TMdata$ID <- as.numeric(TMdata$ID)   
-  #Filter out the control observations that have less than 5 cm growth
+  #Filter out the control observations tomething weird happened with the repeats 3 so Iam revoming those
     TMdata <- TMdata %>%
       group_by(ID, experimental_replicate, dose, ecuatorial, polar, repeats) %>%
       filter(!experimental_replicate == 1 |
-      !dose == 1.5 | !repeats == 3) %>% # something weird happened with the peats 3 so Iam revoming those
+      !dose == 1.5 | !repeats == 3) %>% # something weird happened with the repeats 3 so Iam revoming those
       mutate(growth = ((ecuatorial + polar) / 2))
       
 #Reading and subsetting data of discriminatory dose use
@@ -501,8 +474,8 @@ WM3 <- WM2 %>% mutate(ID = as.numeric(ID))
 
 
 ```
+# Hypothesis
 
-##  Setting the groups of isolates
 ```{r setting objects, echo = FALSE}
 #replacing with the original ID, for example, instead of 12b, now 12
 baseline_isolates <- c(1, 8, 12, 20, 21, 74, 87, 118, 123, 129, 449, 461, 467, 475, 558, 564, 568, 581, 645, 667, 800)
@@ -575,12 +548,11 @@ WM3_ <- WM3%>%
              TRUE ~ "unknown"# in case of not, naming "not_selected""
     )
   )   
-    
+ 
 
 ```
 
 
-##  Creating a function for using the outputs of boxplot.stats function and notice the outliers
 
 ```{r function to take outliers from 8 observations, echo = FALSE}
 get_range <- function(mynumber) {
@@ -592,8 +564,8 @@ get_range <- function(mynumber) {
 }
 ```
 
-##  Analysis by fungicide
-#  Boscalid
+#  Analysis  of Boscalid fungicide
+## Serial dilution
 ```{r Serial dilution Boscalid, include = FALSE}
 #Boscalid fungicide taking the outliers from the 8 observations of each one USING THE FUCTION 
 boscalid.filtered  <- boscalid.data %>%
@@ -634,9 +606,9 @@ xx
 ```
 
 
-##  Procedure to get the Discrimantory Concentration (DC)  
-#  Boscalid 
-```{r Calculus of DC Boscalid, echo = FALSE, results= "asis"}
+## Procedure to get the Discrimantory Concentration (DC)  
+
+```{r Calculus of DC Boscalid, echo = FALSE}
 ##Getting relative growth column at each dose where RG = Relative Growth, eg. RG0.025 = Relative Growth at 0.025 ppm##
 RG.boscalid <-
   boscalid.filtered %>% group_by(ID, dose) %>% summarise(mean_response = mean(response, na.rm = TRUE)) %>%
@@ -700,6 +672,10 @@ final.boscalid.DC <-
 # Linear model of EC50  and EC50DC just to corroborate is a GOOD RELATIONSHIP, check normality and homogeneity of variances
 final.boscalid.DC.0.2 <- lm (Estimate.50DC ~ Estimate.50, final.boscalid.DC ) 
 summary(final.boscalid.DC.0.2)
+ #kable(tidy(final.boscalid.DC.0.2), digits = 3)
+
+kable(tidy(final.boscalid.DC.0.2), digits = 3, format = "markdown", caption = "Table with outliers for each fungicide, NA= never tested , 0=  not an outlier but tested, 1 = outlier", padding = 0, align = "l")
+
 #plot(final.boscalid.DC.0.2)
 
 #pdf("Linear regression of boscalid 0.2 ppm.pdf")  
@@ -719,6 +695,8 @@ fig.1<- ggplot(final.boscalid.DC.0.2, aes(x = Estimate.50, y = Estimate.50DC)) +
   panel.background = element_rect(fill = "white", colour = "grey50")
   ) + labs(title = "Linear regression between EC50 and EC50(D) values of Boscalid ", x =
   "EC50 (ppm)", y = "EC50(D) (ppm)") + geom_point(shape = 24) + geom_smooth(method = "lm")
+
+
  
 ```
 
@@ -728,7 +706,7 @@ final.boscalid.DC
 fig.1
 ```
 
-##  Boscalid using the DC inlcuding Farmer fields and Fungicide field trials
+##  Using the DC 
 ```{r Using the DC Boscalid and the model, echo = FALSE}
 boscalid_data <- survey.data.3 %>%
   select(ID,
@@ -1257,9 +1235,7 @@ fig.5
 TM.data <- survey.data.3 %>%
   select(ID, repeats, experimental_replicate, TM.growth, control.growth) %>% 
   rename(response = TM.growth, control = control.growth) %>% 
-  
-  
- # Using the function in order to take out the outliers#
+   # Using the function in order to take out the outliers#
   group_by(ID) %>%
   mutate(response_range = list(get_range(response))) %>%
   unnest() %>%
@@ -1413,7 +1389,7 @@ mutate( ID= as.numeric(ID)) %>%
 
 ```{r Outliers detection, echo = FALSE}
 #Boscalid
-# Using the function to detect outliers from all tested
+# Using the function to detect outliers from all tested and keep them
 
 boscalid.complete.2<- boscalid.complete%>% 
 group_by(Origin)%>%
@@ -1478,7 +1454,7 @@ filter(EC50DC >=  outlier) %>% ungroup() %>%
 #TM
 
 
-# Using the function fo dtect oulires from serial dilution grouping by origin
+# Using the function fo dtect oulires from serial dilution grouping by origin using the model of 2.5 ppm
 
 TM.complete.2<- TM.complete%>% 
 group_by(Origin)%>%
@@ -1487,7 +1463,7 @@ unnest() %>%
 filter(EC50DC >=  outlier) %>% ungroup() %>% 
   select(ID)
 
-#This "TM.complete.3" can be a total of outliers
+#This "TM.complete.3" it is a total of outliers
 
 TM.complete.3<- TM.complete.2%>% #this the Id of serial dilution
     bind_rows(TM.data) %>% # this TM.Data adding the selection of isolates when the DC (the hhisgest was used 10 ppm) Whatch out here is much more the really tested that is why it was created another object TM complete
@@ -1500,19 +1476,15 @@ ungroup() %>%
    anyDuplicated(TM.complete.3$ID)
 
 
-###### Anoher  approach for to be used in NA,0 and 1 becuase there were the really tested inlcuding DC teste
+###### Anoher  approach to be used at  NA,0 and 1  table (ahead) because there were the really tested** inlcuding DC tested
 #fisrt I need to do that for beter binding fo use later
-TM_data.2 <- TM_data %>%  
-  select(ID)
-
-#This is now to  to be used in NA,0 and 1
-
-TM.complete.4<- TM.complete%>% 
+TM.complete.4 <- TM_data %>%  
   select(ID) %>% 
-  bind_rows(TM_data.2) %>% 
-  ungroup() %>% 
-  mutate( ID= as.numeric(ID)) %>% 
+  full_join(TM.complete) %>% 
+  select(ID) %>% 
   unique()
+
+
 
 # # corroborrating any duplication in ID
    anyDuplicated(TM.complete.3$ID)
@@ -1524,6 +1496,7 @@ TM.complete.4<- TM.complete%>%
 ```{r Dataframe of outliers, echo = FALSE}
 
 ### setting the objects
+##isolate that were tested but are not outliers
 #Boscalid
 notoutlierbuttested_bos <-boscalid.complete$ID[! boscalid.complete$ID %in% boscalid.complete.2$ID  ]
 
@@ -1543,8 +1516,8 @@ notoutlierbuttested_TM <-TM.complete.4$ID[! TM.complete.4$ID %in% TM.complete.3$
 #creating the datafarme
 Compendium<- mu %>%
 mutate(bos= case_when(
-ID%in% boscalid.complete.2$ID ~ 1,
-ID%in% notoutlierbuttested_bos~ 0,
+ID%in% boscalid.complete.2$ID ~ 1, #tested outlier
+ID%in% notoutlierbuttested_bos~ 0, #tested but not outlier
 TRUE ~ 3), # I used this "NA_real_" instead of "NA" becasue Iam getting this error: must be a double vector, not a logical vector but now IAM USING instead 3 becasue i could not filter then NA's
 
 pico= case_when(
@@ -1564,7 +1537,15 @@ TRUE ~ 3)) %>%
   arrange(Group) %>% 
   mutate(bos = as.character(bos), pico = as.character(pico), tetra = as.character(tetra), TM = as.character(TM) )
 
- # checking the structure of datframe
+
+# Groupone <- Compendium %>% filter(Group== "Group_one")
+# Groupone %>%
+# kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
+# write2pdf("Group_XX.pdf")
+
+#checking the structure of datframe
+
+
 #glimpse(Compendium)
 #the following Iam getting the Sum by row but because I dont know how to use apply in dplyr. Iwa screating many objects and doing step by step
 hello <- Compendium %>%  select(  bos, pico, tetra, TM)
@@ -1603,9 +1584,9 @@ hola.3 <- hola %>%
    #randomly sampling
   arrange(ID) %>% rename(Nperfield = N_iso_perfield , Ntested = N_iso_tested,Nselect  = N_iso_to_pick, Nextra= N_iso_to_pick_EX)
  
-hola.2 %>%
-kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
-  write2pdf("List_of_isolates_to_test.pdf")
+# hola.2 %>%
+# kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
+#   write2pdf("List_of_isolates_to_test.pdf")
 
  
  
