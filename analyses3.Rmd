@@ -1,11 +1,15 @@
 ---
 title: "R Notebook"
-output: html_notebook
+output:
+  pdf_document: default
+  html_notebook: default
+  html_document:
+    df_print: paged
 ---
 
  
 
-```{r set packages}
+```{r set packages, warning= FALSE}
 library(tidyverse)
 library(ggplot2)
 library(ezec)
@@ -18,8 +22,16 @@ library(kableExtra)
 library(arsenal)
 library(DescTools)
 
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
 ```
+
+ ## Background   
+Fungicide applications are essential for maintaining healthy, reliable, and high-quality agricultural products. Resistance to fungicides is an increasing threat to this effectiveness and has already been reported for 203 plant pathogenic fungi (Fungicide Resistance Action Committee 2013). Soybean is the second most important crop in the U.S. and contributes significantly to the nation’s economy with annual sales of $38.7 billion, accounting for 10 percent of total U.S. agriculture sales (Census of Agriculture 2012). In the temperate North Central soybean production areas of the United States, the white mold disease can be a significant yield limiting disease, with reported losses more than 10 million bushels per year (Peltier et al. 2012). This yield loss is significant and makes S. sclerotiorum one of the most important pathogens of soybean in the North Central U.S. In Mexico, dry common bean (_Phaseolus vulgaris_) is the second most important crop and is also significantly affected by _S._ _sclerotiorum_. For example, in the State of Sinaloa, _S._ _sclerotiorum_ causes up to 75% yield loss in dry bean and is considered the most important fungal pathogen (Apodaca et al. 2011).
+Lack of adequate levels of host resistance means that fungicides are the primary method of disease control (Bardin and Huang 2001). A major problem is that by the time fungicide resistance is detected by growers, it may be too late to prevent spread of fungicide resistance. Identifying changes in fungicide sensitivity requires knowledge of existing baseline sensitivity to each class of fungicides. Acquisition of fungicide resistance within a completely susceptible population begins with emergence and is followed by selection and adjustment phases. Few studies have addressed the emergence phase and there is a debate about the role of fungicide dose (Van Den Bosch et al. 2011). In the literature, authors speculate that rate of resistance emergence may be directly related to pathogen exposure to low-doses of fungicides (Gressel 2011), which may increase with fewer fungicide applications, such as is recommended in an Integrate Pest Management (IPM) method (Beckerman et al. 2015). This is relevant to soybean production because low-doses of fungicides are likely to occur in the field, whether due to intentional reduction of application rates or unintentionally because of incomplete spray coverage. Other factors related to risk of resistance emergence in fungal plant pathogens is the mechanism of reproduction of the fungus (sexual out-crossing, sexual selfing or asexual reproduction) and population structure of the pathogen. Knowledge of the population structure and spread of _S._ _sclerotiorum_ on soybean and dry bean is needed.  
+
+Survey fungicide sensitivity of populationss of S. sclerotiorum from soybean
+#Backgroundddd
+Knowledge of baseline sensitivity of a pathogen population to fungicides is important for detection of resistance and for achieving effective disease management strategies (Brent and Holloman 2007). QoI, DMI, MBC and SDHI fungicides are used to control _S._ _sclerotiorum_ in an IPM approach in soybean and dry bean in the U.S. DMI fungicides are considered to medium risk of resistance emergence, whereas QoI, SDHI and MBC are high risk (Fungicide Resistance Action Committee 2016). MBC and dicarboximide fungicides are used for white mold in Brazil, wherein resistance to MBC fungicide, Thiophanate methyl, has been reported (Lehner et al. 2015). Fungicide resistance has also been reported in China to the MBC, Carbendazim and dicarboximide, Dimethachlon (Ma et al. 2009). Field application of fungicides in the United States on soybean show control of S. sclerotiorum is low to fair for QoI, DMI and MBC fungicides, and good for SDHI fungicides (The North Central Regional Committee on Soybean Diseases 2015). However, it is unknown whether efficacy is related to reduce sensitivity within populations under study. Therefore, the __hypothesis of this objective is that there are isolates of _S. sclerotiorum_ with low sensitivity to the most commonly used fungicides in the North Central United States.__  
 
 
 ```{r read data}
@@ -484,6 +496,9 @@ WM2$ID[ WM2$ID =="376a"]  <- "376"
 WM2$ID[ WM2$ID =="377a"]  <- "377"
 
 WM3 <- WM2 %>% mutate(ID = as.numeric(ID))
+
+knitr::opts_chunk$set(echo = FALSE)
+
 ```
 
 ##  Setting the groups of isolates
@@ -558,9 +573,11 @@ WM3_ <- WM3%>%
     )
   )   
     
-
+knitr::opts_chunk$set(echo = FALSE)
 
 ```
+
+
 ##  Creating a function for using the outputs of boxplot.stats function and notice the outliers
 
 ```{r function to take outliers from 8 observations}
@@ -571,7 +588,7 @@ get_range <- function(mynumber) {
   ee <- min(cc)
   return(data.frame(upper = dd, lower = ee))
 }
-
+knitr::opts_chunk$set(echo = FALSE)
 ```
 
 ##  Analysis by fungicide
@@ -609,7 +626,12 @@ boscalid.xx <-
   mutate(group = recode(group, survey_isolates = "Farmer fields", treatmentyear2016_isolates = "Fungicide field trials", baseline = "Baseline")) %>% mutate(group = as.factor(group)) %>% 
   ungroup()
 
+knitr::opts_chunk$set(echo = FALSE)
 ```
+```{r}
+xx
+```
+
 
 ##  Procedure to get the Discrimantory Concentration (DC)  
 #  Boscalid 
@@ -636,7 +658,7 @@ rename(Estimate.50 = EC50)# #Since here EC50 is known as Estimate EC50 from EC50
 # Linear model of log EC50 and relative growth at 0.2 ppm, check normality and homogeneity of variances
 finalRG0.2 <- lm(logEC50 ~ RG0.2, final.boscalid)
 summary(finalRG0.2)
-plot(finalRG0.2)
+#plot(finalRG0.2)
 
 ##taking out outliers from Q-Q PLOT $ LEVERAGE TEST, ISOLATES # 1032 from treatment, 2222 & 2223 from Farmer fields##
 final.boscalid.clean <-
@@ -648,7 +670,7 @@ final.boscalid.clean <-
   
 # Linear Regression graph of log EC50 and relative growth at 0.2 ppm
 
-  ggplot(finalRG0.2, aes(x = RG0.2, y = logEC50)) +  geom_point() + geom_smooth(method = "lm") +  theme(
+    ggplot(finalRG0.2, aes(x = RG0.2, y = logEC50)) +  geom_point() + geom_smooth(method = "lm") +  theme(
     plot.title = element_text(
     size = 12,
     face = "bold",
@@ -677,10 +699,10 @@ final.boscalid.DC <-
 # Linear model of EC50  and EC50DC just to corroborate is a GOOD RELATIONSHIP, check normality and homogeneity of variances
 final.boscalid.DC.0.2 <- lm (Estimate.50DC ~ Estimate.50, final.boscalid.DC ) 
 summary(final.boscalid.DC.0.2)
-plot(final.boscalid.DC.0.2)
+#plot(final.boscalid.DC.0.2)
 
 #pdf("Linear regression of boscalid 0.2 ppm.pdf")  
-ggplot(final.boscalid.DC.0.2, aes(x = Estimate.50, y = Estimate.50DC)) +  theme(
+fig.1<- ggplot(final.boscalid.DC.0.2, aes(x = Estimate.50, y = Estimate.50DC)) +  theme(
   plot.title = element_text(
   size = 14,
   face = "bold",
@@ -696,8 +718,16 @@ ggplot(final.boscalid.DC.0.2, aes(x = Estimate.50, y = Estimate.50DC)) +  theme(
   panel.background = element_rect(fill = "white", colour = "grey50")
   ) + labs(title = "Linear regression between EC50 and EC50(D) values of Boscalid ", x =
   "EC50 (ppm)", y = "EC50(D) (ppm)") + geom_point(shape = 24) + geom_smooth(method = "lm")
-  
+ 
+ knitr::opts_chunk$set(echo = FALSE)
 ```
+
+```{r}
+ 
+final.boscalid.DC
+fig.1
+```
+
 ##  Boscalid using the DC inlcuding Farmer fields and Fungicide field trials
 ```{r Using the DC Boscalid and the model}
 boscalid_data <- survey.data.3 %>%
@@ -737,7 +767,13 @@ boscalid.filtered. <- boscalid.filtered.survey %>%
   mutate(ID = as.numeric(ID)) %>% 
    select(c(ID, EC50DC)) 
 
+knitr::opts_chunk$set(echo = FALSE)
 ```
+
+```{r}
+boscalid.filtered.
+```
+
 ##  Analysis by fungicide
 #  Picoxystrobin
 ```{r Serial dilution Picoxystrobin}
@@ -772,7 +808,13 @@ picoxystrobin.yy <-
   mutate(group = as.factor(group))%>% 
   ungroup()
 
+knitr::opts_chunk$set(echo = FALSE)
 ```
+
+```{r}
+yy
+```
+
 ##  Procedure to get the Discriminatory Concentration (DC) 
 #  Picoxystrobin
 ```{r Calculus of DC Picoxystrobin}
@@ -822,7 +864,7 @@ plot(final.picoxystrobin.DC.0.01)
 #check_assumptions(final_picoxystrobin_DC_0.01 )
 #pdf("Linear regression of picoxystrobin 0.01 ppm.pdf")  
 # Linear Regression graph of EC50 and EC50DC
-ggplot(final.picoxystrobin.DC.0.01,
+fig.2 <- ggplot(final.picoxystrobin.DC.0.01,
        aes(x = Estimate.50, y = Estimate.50DC)) +  theme(
        plot.title = element_text(
        size = 14,
@@ -839,10 +881,16 @@ ggplot(final.picoxystrobin.DC.0.01,
        panel.background = element_rect(fill = "white", colour = "grey50")
        ) + labs(title = "Linear regression between EC50 and EC50(D) values of Picoxystrobin ", x =
        "EC50 (ppm)", y = "EC50(D) (ppm)") + geom_point() + geom_smooth(method = "lm")
-       
+     
 #dev.off()
-
+ knitr::opts_chunk$set(echo = FALSE) 
 ```
+
+```{r}
+final.picoxystrobin
+fig.2
+```
+
 #  Picoxystrobin Using the DC including Farmer fields and Fungicide field trials
 ```{r Using the DC Picoxystrobinand the model}
 picoxystrobin_data <- survey.data.3 %>%
@@ -885,8 +933,14 @@ picoxystrobin.filtered. <- picoxystrobin.filtered.survey %>%
   mutate(ID = as.numeric(ID)) %>% 
    select(c(ID, EC50DC)) 
              
+knitr::opts_chunk$set(echo = FALSE)
 
 ```
+
+```{r}
+picoxystrobin.filtered.
+```
+
 ##  Analysis by fungicide
 #  Tetraconazole
 ```{r Serial dilution Tetraconazole}
@@ -920,7 +974,14 @@ tetraconazole.bb <-
   mutate(fungicide = "Tetraconazole") %>% mutate(group = recode(group, survey_isolates = "Farmer fields", treatmentyear2016_isolates = "Fungicide field trials", baseline = "Baseline")) %>% 
   mutate(group = as.factor(group)) %>% 
   ungroup()
+
+knitr::opts_chunk$set(echo = FALSE)
 ```
+
+```{r}
+bb
+```
+
 ##  Procedure to get the Discrimanatory Concentration (DC) 
 #  Tetraconazole
 ```{r Calculus of DC Tetraconazole}
@@ -981,7 +1042,8 @@ plot(final.tetraconazole.DC.2)
 #check_assumptions(final_tetraconazole_DC_2)
 #pdf("Linear regression of tetraconazole 2 ppm.pdf")   
 # Linear Regression graph of EC50 and EC50DC
-ggplot(final.tetraconazole.DC.2,
+
+fig.3 <- ggplot(final.tetraconazole.DC.2,
        aes(x = Estimate.50, y = Estimate.50DC)) +  theme(
          plot.title = element_text(
         size = 14, 
@@ -997,12 +1059,16 @@ ggplot(final.tetraconazole.DC.2,
           ),
         panel.background = element_rect(fill = "white",colour = "grey50")) + labs(title= "Linear regression between EC50 and EC50(D) values of Tetraconazole", x =
        "EC50 (ppm)", y = "EC50(D) (ppm)") + geom_point(shape=21) + geom_smooth(method = "lm")
-        
-       
 
-
+knitr::opts_chunk$set(echo = FALSE)
 
 ```
+
+```{r}
+final.tetraconazole
+fig.3
+```
+
 #  Tetraconazole using the DC and the model including Farmer fields and Fungicide field trials
 ```{r Using the DC Tetraconazoleand the model}
 tetraconazole_data <- survey.data.3 %>%
@@ -1038,9 +1104,13 @@ ungroup() %>%
   mutate(ID = as.numeric(ID)) %>% 
    select(c(ID, EC50DC))
 
-
-
+knitr::opts_chunk$set(echo = FALSE)
 ```
+
+```{r}
+tetraconazole.filtered.
+```
+
 ##  Analysis by fungicide
 #  Thiophanate methyl
 ```{r Serial dilution Thiophanate methyl}
@@ -1073,9 +1143,14 @@ TM.zz <-   zz%>% rename(ID = sample ) %>%
     )
     )) %>% ungroup() %>% mutate(fungicide = "TM") %>% mutate(group = recode(group, survey_isolates = "Farmer fields", treatmentyear2016_isolates = "Fungicide field trials", baseline = "Baseline")) %>% mutate(group = as.factor(group)) %>% 
   ungroup()
-  
 
+knitr::opts_chunk$set(echo = FALSE)
 ```
+
+```{r}
+zz
+```
+
 ##  Procedure to get the Discrimanatory Concentration (DC) 
 #  Thiophanate methyl
 ```{r Calculus of DC Thiophanate methyl}
@@ -1099,7 +1174,7 @@ summary(finalRG10)
 plot(finalRG10)
 #check_assumptions(finalRG2.5)
     # Linear Regression graph of log EC50 and relative growth at 10 ppm
-ggplot(finalRG10, aes(x = RG10, y = logEC50)) +  geom_point() + geom_smooth()
+  ggplot(finalRG10, aes(x = RG10, y = logEC50)) +  geom_point() + geom_smooth()
 
 # Getting the EC50DC according to the model ,the r is very low!
 
@@ -1115,8 +1190,15 @@ plot(final.TM.DC.10)
 #check_assumptions(final_TM_DC_10)
 #pdf("Linear regression of thiophanate methyl 10 ppm.pdf")   
 ## Linear Regression graph of EC50 and EC50DC
-ggplot(final.TM.DC.10, aes(x = Estimate.50, y = Estimate.50DC)) +  theme(plot.title = element_text(size = 16, face = "bold", hjust = 1)) + labs(title = "Linear regression of thiophanate methyl 10 ppm", x ="EC50 (ppm)", y = "EC50DC (ppm)" ) + geom_point() + geom_smooth(method = "lm")
+fig.4 <- ggplot(final.TM.DC.10, aes(x = Estimate.50, y = Estimate.50DC)) +  theme(plot.title = element_text(size = 16, face = "bold", hjust = 1)) + labs(title = "Linear regression of thiophanate methyl 10 ppm", x ="EC50 (ppm)", y = "EC50DC (ppm)" ) + geom_point() + geom_smooth(method = "lm")
 
+
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r}
+final.TM
+fig.4
 ```
 
 #  Thiophanate methyl Using the DC  including Farmer fields and Fungicide field trials
@@ -1130,7 +1212,7 @@ TM_data <- survey.data.3 %>%
 mutate(resistance = ifelse(RG >24,#more or equal to 25%, in literature is used approx greater than 50 % 
                            "resistant", "nonresistant")) 
 
-
+knitr::opts_chunk$set(echo = FALSE)
 ```
 
 #  Another approach with TM to pick the probably isolates with high EC50 using a new model of 2.5 ppm, the closest at the EC50
@@ -1160,11 +1242,17 @@ plot(final.TM.DC.2.5)
 #check_assumptions(final_TM_DC_2.5)
 #pdf("Linear regression of thiophanate methyl 10 ppm.pdf")   
 ## Linear Regression graph of EC50 and EC50DC
-ggplot(final.TM.DC.2.5, aes(x = Estimate.50, y = Estimate.50DC)) +  theme(plot.title = element_text(size = 16, face = "bold", hjust = 1)) + labs(title = "Linear regression of thiophanate methyl 2.5 ppm", x ="EC50 (ppm)", y = "EC50DC (ppm)" ) + geom_point() + geom_smooth(method = "lm")
+fig.5 <- ggplot(final.TM.DC.2.5, aes(x = Estimate.50, y = Estimate.50DC)) +  theme(plot.title = element_text(size = 16, face = "bold", hjust = 1)) + labs(title = "Linear regression of thiophanate methyl 2.5 ppm", x ="EC50 (ppm)", y = "EC50DC (ppm)" ) + geom_point() + geom_smooth(method = "lm")
 
 #dev.off()
 
+knitr::opts_chunk$set(echo = FALSE)
 ```
+```{r}
+fig.5
+```
+
+
 #  Another approach with TM to pick the probably isolates with low sensitivity based on the growth at Discrimantory concentrartion,including farmer fields and fungicide field trials 
 ```{r Estimating low sensitivity TM}
 #  I cannot use the model because the DC used was 10 ppm, and the model was built based on 2.5 ppm
@@ -1191,7 +1279,11 @@ ungroup() %>%
   filter(RG >19) %>% # More than 20 % arbitrarily selected
 select(ID)
 
+knitr::opts_chunk$set(echo = FALSE)
+```
 
+```{r}
+TM.data
 ```
 
 ##  Wrangling datframe for each fungicide
@@ -1306,7 +1398,7 @@ mutate( ID= as.numeric(ID)) %>%
     mutate(Origin = as.factor(Origin), Host= as.factor(Host)) %>% #taking out "different host" becuse does not belong to drybean nor soybean
   filter(!ID == 8,!ID == 129 )
 
-
+knitr::opts_chunk$set(echo = FALSE)
 ```
 
 # Function to detect outliers considered since the third quantil from the outliers of ecah fungicicde
@@ -1319,7 +1411,8 @@ mutate( ID= as.numeric(ID)) %>%
   necrosis <- alpha$stats
   wilt <- max(necrosis[necrosis!=max(necrosis)])
     return(data.frame(outlier = wilt))
-}           
+ }  
+knitr::opts_chunk$set(echo = FALSE)
 ```
 # Detection of  outliers (third quantil) using the previous function
 
@@ -1410,7 +1503,9 @@ TM.complete.3<- TM.complete%>%
   mutate( ID= as.numeric(ID)) %>% 
   unique()
 
+knitr::opts_chunk$set(echo = FALSE)
 ```
+
 
 # Dataframe with with ouliers of boscalid, picoxystrobin, tetraconazole and TM using 0, 1 and NA 
 
@@ -1461,10 +1556,10 @@ TRUE ~ 3)) %>%
 glimpse(Compendium)
 #the following Iam getting the Sum by row but because I dont know how to use apply in dplyr. Iwa screating many objects and doing step by step
 hello <- Compendium %>%  select(  bos, pico, tetra, TM)
-bye <- apply(hello, 1, sum)
-water <- cbind(hello, bye)
+#bye <- apply(hello, 1, sum)
+#water <- cbind(hello, bye)
 #filtering to know how many isolates coincide to be  outliers for at at least 3 fungicicdes
-fusarium <- water %>% filter(bye>=3) %>% arrange(bye) 
+#fusarium <- water %>% filter(bye>=3) %>% arrange(bye) 
 
 #datfarmae for select how many of those to use for test
 hola <- Compendium %>% 
@@ -1479,20 +1574,28 @@ mutate(N_iso_tested= n()) %>%# countig those tested
   mutate(N_iso_to_pick = N_iso_to_pick - N_iso_tested  )%>% #subtracting
     select(-c(Host, Origin)) %>% 
    mutate(N_iso_to_pick_EX =  
-           ifelse( N_iso_perfield  >= (N_iso_to_pick +  3), (N_iso_to_pick + 3), ifelse( N_iso_perfield  >= (N_iso_to_pick +  2), (N_iso_to_pick + 2), N_iso_to_pick )))# adding more extra isolates for the case many times they do not grow from the sclerotia
- 
-#dataframe the real total to use
-hola2 <- hola %>%  
-  sample_n(size = N_iso_to_pick,replace = T) %>% #randomly sampling
-   arrange(ID) 
-     
-#dataframe with the extra taking in case the sclerotia does not growth
-hola3 <- hola %>%  
-  sample_n(size = N_iso_to_pick_EX,replace = T) %>% #randomly sampling
-  arrange(ID)
+           ifelse( N_iso_perfield  >= (N_iso_to_pick +  3), (N_iso_to_pick + 3), ifelse( N_iso_perfield  >= (N_iso_to_pick +  2), (N_iso_to_pick + 2), N_iso_to_pick ))) # adding more extra isolates for the case many times they do not grow from the sclerotia 
   
 
-  
+ 
+#dataframe the real total to use
+hola.2 <- hola %>%  
+  sample_n(size = N_iso_to_pick) %>% #randomly sampling
+       arrange(Group) %>% 
+  rename(Nperfield = N_iso_perfield , Ntested = N_iso_tested,Nselect  = N_iso_to_pick, Nextra= N_iso_to_pick_EX)
+ 
+     
+#dataframe with the extra taking in case the sclerotia does not growth
+hola.3 <- hola %>%   
+  sample_n(size = N_iso_to_pick_EX, replace = T) %>% 
+   #randomly sampling
+  arrange(ID) %>% rename(Nperfield = N_iso_perfield , Ntested = N_iso_tested,Nselect  = N_iso_to_pick, Nextra= N_iso_to_pick_EX)
+ 
+hola.2 %>%
+kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
+  write2pdf("List_of_isolates_to_test.pdf")
+
+ 
  
 # fusarium%>%
 #   write_csv("clean data/table_ouliers_together.csv")
@@ -1535,6 +1638,7 @@ hola3 <- hola %>%
 
 picoxystrobin.complete$ID[!picoxystrobin.complete$ID%in% boscalid.complete$ID]
 
+knitr::opts_chunk$set(echo = FALSE)
 ```
 
 class
