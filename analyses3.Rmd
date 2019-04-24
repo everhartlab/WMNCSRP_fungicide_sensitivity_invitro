@@ -606,7 +606,7 @@ xx
 ```
 
 
-## Procedure to get the Discrimantory Concentration (DC)  
+## Procedure to get the Discriminatory Concentration (DC)  
 
 ```{r Calculus of DC Boscalid, echo = FALSE}
 ##Getting relative growth column at each dose where RG = Relative Growth, eg. RG0.025 = Relative Growth at 0.025 ppm##
@@ -706,7 +706,7 @@ final.boscalid.DC
 fig.1
 ```
 
-##  Using the DC 
+##  Use of the DC 
 ```{r Using the DC Boscalid and the model, echo = FALSE}
 boscalid_data <- survey.data.3 %>%
   select(ID,
@@ -751,8 +751,8 @@ boscalid.filtered. <- boscalid.filtered.survey %>%
 boscalid.filtered.
 ```
 
-##  Analysis by fungicide
-#  Picoxystrobin
+#  Analysis of Picoxystrobin fungicide
+## Serial dilution   
 ```{r Serial dilution Picoxystrobin, include = FALSE}
 #Picoxystrobin  fungicide taking the outliers from the 8 observations of each one USING THE FUCTION
 picoxystrobin.filtered <- picoxystrobin.data %>%
@@ -791,8 +791,7 @@ picoxystrobin.yy <-
 yy
 ```
 
-##  Procedure to get the Discriminatory Concentration (DC) 
-#  Picoxystrobin
+## Procedure to get the Discriminatory Concentration (DC)  
 ```{r Calculus of DC Picoxystrobin, echo = FALSE, results= "hide"}
 #Getting relative growth column at each dose where RG= Relative Growth, eg. RG0.01= Relative Growth at 0.01 ppm
 RG.picoxystrobin <-
@@ -866,7 +865,7 @@ final.picoxystrobin
 fig.2
 ```
 
-#  Picoxystrobin Using the DC including Farmer fields and Fungicide field trials
+#  Use of the DC i
 ```{r Using the DC Picoxystrobinand the model, echo = FALSE}
 picoxystrobin_data <- survey.data.3 %>%
   select(
@@ -915,8 +914,8 @@ picoxystrobin.filtered. <- picoxystrobin.filtered.survey %>%
 picoxystrobin.filtered.
 ```
 
-##  Analysis by fungicide
-#  Tetraconazole
+#  Analysis of Tetraconazole fungicide
+##  Serial dilution
 ```{r Serial dilution Tetraconazole, include = FALSE, results= "hide"}
 #Tetraconzaole  fungicide taking the outliers from the 8 observations of each one USING THE FUCTION
 
@@ -955,8 +954,7 @@ tetraconazole.bb <-
 bb
 ```
 
-##  Procedure to get the Discrimanatory Concentration (DC) 
-#  Tetraconazole
+## Procedure to get the Discriminatory Concentration (DC)  
 ```{r Calculus of DC Tetraconazole, echo = FALSE}
 #Getting relative growth column at each dose where RG= Relative Growth, eg. RG0.01= Relative Growth at 0.01 ppm
 
@@ -1041,7 +1039,7 @@ final.tetraconazole
 fig.3
 ```
 
-#  Tetraconazole using the DC and the model including Farmer fields and Fungicide field trials
+##  Use of the DC 
 ```{r Using the DC Tetraconazoleand the model, echo = FALSE}
 tetraconazole_data <- survey.data.3 %>%
   select(ID,
@@ -1082,8 +1080,8 @@ ungroup() %>%
 tetraconazole.filtered.
 ```
 
-##  Analysis by fungicide
-#  Thiophanate methyl
+#  Analysis of Tetraconazole fungicide
+## Serial dilution
 ```{r Serial dilution Thiophanate methyl, include = FALSE}
 #Thiophanate methyl  fungicide taking the outliers from the 8 observations of each one USING THE FUCTION
 TM.filtered <- TMdata %>%
@@ -1121,8 +1119,7 @@ TM.zz <-   zz%>% rename(ID = sample ) %>%
 zz
 ```
 
-##  Procedure to get the Discrimanatory Concentration (DC) 
-#  Thiophanate methyl
+## Procedure to get the Discriminatory Concentration (DC)  
 ```{r Calculus of DC Thiophanate methyl, echo = FALSE}
 #Getting relative growth column at each dose where RG= Relative Growth, eg. RG0.01= Relative Growth at 0.01 ppm 
 RG.TM <- TM.filtered %>% group_by(ID,dose) %>% summarise(mean_response=mean(response,na.rm=TRUE)) %>% spread(dose,mean_response) %>%  mutate(RG0.75=((`0.75`/`0`)*100)) %>% mutate(RG1=((`1`/`0`)*100)) %>% mutate(RG1.5=((`1.5`/`0`)*100)) %>% mutate(RG2=((`2`/`0`)*100)) %>% mutate(RG2.5=((`2.5`/`0`)*100)) %>%  mutate(RG10=((`10`/`0`)*100))
@@ -1170,7 +1167,7 @@ final.TM
 fig.4
 ```
 
-#  Thiophanate methyl Using the DC  including Farmer fields and Fungicide field trials
+##  Use of the DC  
 ```{r Using the DC Thiophanate methyl and the model, echo = FALSE}
 TM_data <- survey.data.3 %>%
   select(ID, repeats, experimental_replicate, TM.growth, control.growth) %>% 
@@ -1514,28 +1511,35 @@ notoutlierbuttested_TM <-TM.complete.4$ID[! TM.complete.4$ID %in% TM.complete.3$
 
 
 #creating the datafarme
-Compendium<- mu %>%
+Compendium <- mu %>%
 mutate(bos= case_when(
 ID%in% boscalid.complete.2$ID ~ 1, #tested outlier
 ID%in% notoutlierbuttested_bos~ 0, #tested but not outlier
-TRUE ~ 3), # I used this "NA_real_" instead of "NA" becasue Iam getting this error: must be a double vector, not a logical vector but now IAM USING instead 3 becasue i could not filter then NA's
-
+TRUE ~ NA_real_), # I used this "NA_real_" instead of "NA" becasue Iam getting this error: must be a double vector, not a logical vector but now IAM USING instead 3 becasue i could not filter then NA's
 pico= case_when(
 ID%in% picoxystrobin.complete.2$ID ~ 1,
 ID%in% notoutlierbuttested_pico ~ 0,
-TRUE ~ 3), 
+TRUE ~ NA_real_), 
 tetra= case_when(
 ID%in% tetraconazole.complete.2$ID ~ 1,
 ID%in% notoutlierbuttested_tetra ~ 0,
-TRUE ~ 3), 
+TRUE ~ NA_real_), 
 TM= case_when(
 ID%in% TM.complete.2$ID ~ 1,
 ID%in% notoutlierbuttested_TM ~ 0,
-TRUE ~ 3)) %>%
+TRUE ~ NA_real_)) %>%
   # Filering by solo group that at current season BECAUSE mixxes are not taking into account  and not take into account iether previous fungicides even solo becasue there is not completely certain of that.. and also the fungicide trails are not coming for exactly the same plot, satelita image shown 
-   filter(Group== "Group_one"|Group=="Group_3"|Group=="Group_7"|Group=="Group_11") %>% 
+   filter(Group=="Group_one"|
+            Group=="Group_3"|
+            Group=="Group_7"|
+            Group=="Group_11") %>% 
   arrange(Group) %>% 
-  mutate(bos = as.character(bos), pico = as.character(pico), tetra = as.character(tetra), TM = as.character(TM) )
+  ungroup() %>% 
+  mutate(sum_outliers = rowSums(.[9:12], na.rm = TRUE)) #columns 9:12 have the number of respective fungicide outliers
+
+summary_fungicide_outliers <- Compendium %>% 
+  group_by(sum_outliers) %>% 
+  summarize(count = n())
 
 
 # Groupone <- Compendium %>% filter(Group== "Group_one")
@@ -1548,41 +1552,69 @@ TRUE ~ 3)) %>%
 
 #glimpse(Compendium)
 #the following Iam getting the Sum by row but because I dont know how to use apply in dplyr. Iwa screating many objects and doing step by step
-hello <- Compendium %>%  select(  bos, pico, tetra, TM)
+#filtering those greater or eauql than 4 isolates/field
+fields_more_4 <- Compendium %>% 
+  filter(N_iso_perfield >= 4)
+
+
 #bye <- apply(hello, 1, sum)
 #water <- cbind(hello, bye)
 #filtering to know how many isolates coincide to be  outliers for at at least 3 fungicicdes
 #fusarium <- water %>% filter(bye>=3) %>% arrange(bye) 
 
 #datfarmae for select how many of those to use for test
-hola <- Compendium %>% 
-   filter(N_iso_perfield >= 5) %>% #filtering those greater or eauql than 5 isolates/field
+num_isolates_selected <- fields_more_4 %>% 
+  mutate_all(~replace(., is.na(.), 3)) %>% 
   filter(bos ==3, pico==3, tetra == 3, TM==3 ) %>% #filter all NO tested, NA or 3
-    group_by(Group, Field) %>% 
-  select(-c( bos, pico, tetra, TM)) %>% 
-mutate(N_iso_tested= n()) %>%# countig those tested
-    mutate(N_iso_perfield = as.numeric(N_iso_perfield)) %>% # converting to numeric
-  mutate(N_iso_tested= N_iso_perfield-N_iso_tested) %>% #subtracting
-      mutate(N_iso_to_pick = ifelse(N_iso_perfield >= 10, 10,  N_iso_perfield  )) %>% #if there is more than 10 converting to t10 if is less than 10, keoin the original number
+  group_by(Group, Field) %>% 
+  select(-c( bos, pico, tetra, TM, sum_outliers)) %>% 
+  mutate(N_iso_not_tested= n()) %>%# countig those tested
+  mutate(N_iso_tested= N_iso_perfield-N_iso_not_tested) %>% #subtracting
+  mutate(N_iso_to_pick = ifelse(N_iso_perfield >= 10, 10,
+                                N_iso_perfield  )) %>% #if there is more than 10 converting to t10 if is less than 10, keoin the original number
   mutate(N_iso_to_pick = N_iso_to_pick - N_iso_tested  )%>% #subtracting
     select(-c(Host, Origin)) %>% 
-   mutate(N_iso_to_pick_EX =  
-           ifelse( N_iso_perfield  >= (N_iso_to_pick +  3), (N_iso_to_pick + 3), ifelse( N_iso_perfield  >= (N_iso_to_pick +  2), (N_iso_to_pick + 2), N_iso_to_pick ))) # adding more extra isolates for the case many times they do not grow from the sclerotia 
+   mutate(N_iso_to_pick_extra =  
+           ifelse( N_iso_not_tested  >= (N_iso_to_pick +  3), (N_iso_to_pick + 3), 
+                   ifelse( N_iso_not_tested  >= (N_iso_to_pick +  2), (N_iso_to_pick + 2), N_iso_to_pick ))) # adding more extra isolates for the case many times they do not grow from the sclerotia 
   
+select_max_iso_field <- num_isolates_selected %>% 
+  ungroup() %>% 
+  group_by(Field) %>% 
+  mutate(Nmax_per_field = max(N_iso_to_pick_extra)) %>% 
+  select(Field, Nmax_per_field) %>% 
+  unique()
 
  
-#dataframe the real total to use
-hola.2 <- hola %>%  
-  sample_n(size = N_iso_to_pick) %>% #randomly sampling
-       arrange(Group) %>% 
-  rename(Nperfield = N_iso_perfield , Ntested = N_iso_tested,Nselect  = N_iso_to_pick, Nextra= N_iso_to_pick_EX)
- 
-     
-#dataframe with the extra taking in case the sclerotia does not growth
-hola.3 <- hola %>%   
-  sample_n(size = N_iso_to_pick_EX, replace = T) %>% 
-   #randomly sampling
-  arrange(ID) %>% rename(Nperfield = N_iso_perfield , Ntested = N_iso_tested,Nselect  = N_iso_to_pick, Nextra= N_iso_to_pick_EX)
+#dataframe the real total to use. This is being done
+#so that we can have mutual isolates across fungicides
+
+selected_isolates <- num_isolates_selected %>%
+  left_join(select_max_iso_field) %>% 
+  ungroup() %>% 
+  group_by(Field) %>% 
+  sample_n(size = Nmax_per_field) %>% #randomly sampling
+  arrange(Group) %>% 
+  rename(Nperfield = N_iso_perfield , 
+         Ntested = N_iso_tested, 
+         Nselect  = N_iso_to_pick,
+         Nextra = N_iso_to_pick_extra)
+
+id_selected_isolates <- selected_isolates %>% 
+  select(ID, Field)
+
+info_selected_isolates <- selected_isolates %>% 
+  select(-ID) %>% 
+  unique() %>% 
+  group_by(Field, Group) %>% 
+  arrange(Group)
+
+final_data_isolates <- id_selected_isolates %>% 
+  left_join(info_selected_isolates) %>% 
+  arrange(Group) %>% 
+  group_by(Field, Group) %>% 
+  sample_n(size = Nextra)
+
  
 # hola.2 %>%
 # kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
