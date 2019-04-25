@@ -1,5 +1,5 @@
 ---
-title: "R Notebook"
+title: "Survey fungicide sensitivity of S. sclerotiorum from drybean and soybean from the U.S."
 output:
   html_document:
     df_print: paged
@@ -31,18 +31,25 @@ library(knitr)
 
 #  Background   
 
-Fungicide applications are essential for maintaining healthy, reliable, and high-quality agricultural products. Resistance to fungicides is an increasing threat to this effectiveness and has already been reported for 203 plant pathogenic fungi (Fungicide Resistance Action Committee 2013). Soybean is the second most important crop in the U.S. and contributes significantly to the nation’s economy with annual sales of $38.7 billion, accounting for 10 percent of total U.S. agriculture sales (Census of Agriculture 2012). In the temperate North Central soybean production areas of the United States, the white mold disease can be a significant yield limiting disease, with reported losses more than 10 million bushels per year (Peltier et al. 2012). This yield loss is significant and makes S. sclerotiorum one of the most important pathogens of soybean in the North Central U.S. In Mexico, dry common bean (_Phaseolus vulgaris_) is the second most important crop and is also significantly affected by _S._ _sclerotiorum_. For example, in the State of Sinaloa, _S._ _sclerotiorum_ causes up to 75% yield loss in dry bean and is considered the most important fungal pathogen (Apodaca et al. 2011).
-Lack of adequate levels of host resistance means that fungicides are the primary method of disease control (Bardin and Huang 2001). A major problem is that by the time fungicide resistance is detected by growers, it may be too late to prevent spread of fungicide resistance. Identifying changes in fungicide sensitivity requires knowledge of existing baseline sensitivity to each class of fungicides. Acquisition of fungicide resistance within a completely susceptible population begins with emergence and is followed by selection and adjustment phases. Few studies have addressed the emergence phase and there is a debate about the role of fungicide dose (Van Den Bosch et al. 2011). In the literature, authors speculate that rate of resistance emergence may be directly related to pathogen exposure to low-doses of fungicides (Gressel 2011), which may increase with fewer fungicide applications, such as is recommended in an Integrate Pest Management (IPM) method (Beckerman et al. 2015). This is relevant to soybean production because low-doses of fungicides are likely to occur in the field, whether due to intentional reduction of application rates or unintentionally because of incomplete spray coverage. Other factors related to risk of resistance emergence in fungal plant pathogens is the mechanism of reproduction of the fungus (sexual out-crossing, sexual selfing or asexual reproduction) and population structure of the pathogen. Knowledge of the population structure and spread of _S._ _sclerotiorum_ on soybean and dry bean is needed.  
+Knowledge of baseline sensitivity of a pathogen population to fungicides is important for detection of resistance and for achieving effective disease management strategies (Brent and Holloman 2007). QoI, DMI, MBC and SDHI fungicides are used to control _S. sclerotiorum_ in an IPM approach in soybean and dry bean in the U.S. DMI fungicides are considered to medium risk of resistance emergence, whereas QoI, SDHI and MBC are high risk (Fungicide Resistance Action Committee 2016). MBC and dicarboximide fungicides are used for white mold in Brazil, wherein resistance to MBC fungicide, Thiophanate methyl, has been reported (Lehner et al. 2015). Fungicide resistance has also been reported in China to the MBC, Carbendazim and dicarboximide, Dimethachlon (Ma et al. 2009).
 
-Survey fungicide sensitivity of populationss of S. sclerotiorum from soybean
-#Backgroundddd
-Knowledge of baseline sensitivity of a pathogen population to fungicides is important for detection of resistance and for achieving effective disease management strategies (Brent and Holloman 2007). QoI, DMI, MBC and SDHI fungicides are used to control _S._ _sclerotiorum_ in an IPM approach in soybean and dry bean in the U.S. DMI fungicides are considered to medium risk of resistance emergence, whereas QoI, SDHI and MBC are high risk (Fungicide Resistance Action Committee 2016). MBC and dicarboximide fungicides are used for white mold in Brazil, wherein resistance to MBC fungicide, Thiophanate methyl, has been reported (Lehner et al. 2015). Fungicide resistance has also been reported in China to the MBC, Carbendazim and dicarboximide, Dimethachlon (Ma et al. 2009). Field application of fungicides in the United States on soybean show control of S. sclerotiorum is low to fair for QoI, DMI and MBC fungicides, and good for SDHI fungicides (The North Central Regional Committee on Soybean Diseases 2015). However, it is unknown whether efficacy is related to reduce sensitivity within populations under study. Therefore, the __hypothesis of this objective is that there are isolates of _S. sclerotiorum_ with low sensitivity to the most commonly used fungicides in the North Central United States.__  
+COMMONLY USED FUNGICIDES FOR WM .
 
-# Fungicides
-## Boscalid
-## Picoxystrobin
-## Tetraconazole
-## Thiophanate methyl
+Thiophanate methyl (MBC) fair control; launched 1970
+Tetraconazole (DMI)  fair control; launched 1988
+Picoxystrobin (QoI) good-very good control; launched 2000
+Boscalid (SDHI) very good control; launched 2003
+Examples of these include: Topsin, Domark, Aproach & Endura
+Several other products are mixtures
+
+MBC: Methyl Benzimidazole Carbamates 
+DMI: DeMethylation Inhibitors 
+QoI: Quinone outside Inhibitors 
+SDHI: Succinate dehydrogenase inhibitors 
+
+Field applications of fungicides in the United States on soybean show control of _S. sclerotiorum_ is low to fair for QoI, DMI and MBC fungicides, and good for SDHI fungicides (The North Central Regional Committee on Soybean Diseases 2015). However, it is unknown whether efficacy is related to reduce sensitivity within populations under study. 
+
+
 
 ```{r read data, echo = FALSE}
 ##  Reading and subsetting data 
@@ -474,7 +481,11 @@ WM3 <- WM2 %>% mutate(ID = as.numeric(ID))
 
 
 ```
-# Hypothesis
+# Hypotheses  
+
+1. Some _S. sclerotiorum_ isolates from fungicide field trials and farmer fields will have decreased sensitivity to commonly used fungicides in the U.S.  
+
+2. Some _S. sclerotiorum_ isolates from dry beans will have decreased sensitivity compared to those from soybeans.
 
 ```{r setting objects, echo = FALSE}
 #replacing with the original ID, for example, instead of 12b, now 12
@@ -551,7 +562,33 @@ WM3_ <- WM3%>%
  
 
 ```
+# Collection
+In 2016, and 2017, we conducted a survey of _S. sclerotiorum_ from soybean in NE, IA, WI, and MI, resulting in a collection of 1,369 isolates, which included farmer fields and fungicide field trials. In 2003 to 2012, 366 isolates were collected and characterized previously from white mold screening nurseries or producer fields throughout dry bean and snap bean production areas across the US, with others collected in prior years.  
 
+From these, we randomly selected 207 isolates: 93 from dry beans (18 ND, 16 MI, 16 WA, 15 CO, 11 NE, 2 DE, 2 MN, 2 WI, 1 OR, 6 from Brazil and, 4 from Mexico) and 114 from soybeans (48 NE, 25 MI, 24 IA, and 17 WI). Isolates were from farmer fields (FF), fungicide field trials (FFT), and fields without fungicide applications, that latter were called baseline.
+
+# Fungicides
+## Boscalid
+## Picoxystrobin
+## Tetraconazole
+## Thiophanate methyl
+
+#  Fungicide sensitivity by fungicide
+## Serial dilution
+Fungicide sensitivity was determined since 21 baseline isolates plus 21 additional isolates from FF and FFT randomly selected. Serial dilution  by fungicide eas carried out from 5-6 concentrations with 4 repetitions per isolate and 2 experimental replications. Plates were incubated in darkness at 23 ± 2 °C for 42 h and diameter measured with digital calipers. A dose-response curve was fit to estimate the EC50 for each fungicide.  
+
+## Procedure to get the Discriminatory Concentration (DC)  
+
+We identified the concentration with the best prediction of EC50 for each fungicide, known as discriminatory concentration (DC), by linear regression of % mycelial growth vs. log(EC50). The concentration yielding the highest coefficient of determination (r2) was selected as the DC for each fungicide. For the remaining isolates among the 207, growth on the DC was used to estimate EC50, which is termed EC50(D).
+
+##  Use of the Discriminatory Concentration DC
+
+We randomly selected 154 isolates: 86 from dry beans (from 9 states with 1-17 isolates/state, and 2 states from Brazil) and 66 from soybeans (6 NE, 18 IA, 13 WI & 18 MI and 4 from Mexico)  from the collection (baseline, FF, and FF) plus 5 same isolates used in the serial dilution approach
+
+##  Statistic Analysis 
+
+
+In the following section we will show the results for each fungicide
 
 
 ```{r function to take outliers from 8 observations, echo = FALSE}
@@ -564,8 +601,9 @@ get_range <- function(mynumber) {
 }
 ```
 
-#  Analysis  of Boscalid fungicide
+# Boscalid 
 ## Serial dilution
+
 ```{r Serial dilution Boscalid, include = FALSE}
 #Boscalid fungicide taking the outliers from the 8 observations of each one USING THE FUCTION 
 boscalid.filtered  <- boscalid.data %>%
@@ -601,14 +639,14 @@ boscalid.xx <-
 
 ```
 
-```{r}
+```{r, echo = FALSE}
 xx
 ```
 
 
 ## Procedure to get the Discriminatory Concentration (DC)  
 
-```{r Calculus of DC Boscalid, echo = FALSE}
+```{r Calculus of DC Boscalid, include=FALSE}
 ##Getting relative growth column at each dose where RG = Relative Growth, eg. RG0.025 = Relative Growth at 0.025 ppm##
 RG.boscalid <-
   boscalid.filtered %>% group_by(ID, dose) %>% summarise(mean_response = mean(response, na.rm = TRUE)) %>%
@@ -643,7 +681,7 @@ final.boscalid.clean <-
   
 # Linear Regression graph of log EC50 and relative growth at 0.2 ppm
 
-    ggplot(finalRG0.2, aes(x = RG0.2, y = logEC50)) +  geom_point() + geom_smooth(method = "lm") +  theme(
+ fig.1 <-    ggplot(finalRG0.2, aes(x = RG0.2, y = logEC50)) +  geom_point() + geom_smooth(method = "lm") +  theme(
     plot.title = element_text(
     size = 12,
     face = "bold",
@@ -679,9 +717,9 @@ kable(tidy(final.boscalid.DC.0.2), digits = 3, format = "markdown", caption = "T
 #plot(final.boscalid.DC.0.2)
 
 #pdf("Linear regression of boscalid 0.2 ppm.pdf")  
-fig.1<- ggplot(final.boscalid.DC.0.2, aes(x = Estimate.50, y = Estimate.50DC)) +  theme(
+fig.2<- ggplot(final.boscalid.DC.0.2, aes(x = Estimate.50, y = Estimate.50DC)) +  theme(
   plot.title = element_text(
-  size = 14,
+  size = 10,
   face = "bold",
   hjust = 1,
   family = "Verdana"
@@ -700,13 +738,14 @@ fig.1<- ggplot(final.boscalid.DC.0.2, aes(x = Estimate.50, y = Estimate.50DC)) +
  
 ```
 
-```{r}
- 
+```{r, echo= FALSE}
+fig.1 
+kable(tidy(final.boscalid.DC.0.2), digits = 3, format = "markdown", caption = "Table with outliers for each fungicide, NA= never tested , 0=  not an outlier but tested, 1 = outlier", padding = 0, align = "l")
 final.boscalid.DC
-fig.1
+fig.2
 ```
 
-##  Use of the DC 
+##  Use of the Discriminatory Concentration (DC) 
 ```{r Using the DC Boscalid and the model, echo = FALSE}
 boscalid_data <- survey.data.3 %>%
   select(ID,
@@ -747,11 +786,172 @@ boscalid.filtered. <- boscalid.filtered.survey %>%
 
 ```
 
-```{r}
+```{r, echo= FALSE}
 boscalid.filtered.
 ```
 
-#  Analysis of Picoxystrobin fungicide
+```{r wrangling Boscalid, echo = FALSE}
+
+#Selecting the EC50D from the serial dilution
+boscalid.complete <- final.boscalid.DC %>% 
+ ####WATCH OUT, Based on EC50DC
+   rename(EC50DC = Estimate.50DC) %>% 
+  select(ID, EC50DC) %>% 
+  bind_rows(boscalid.filtered.) %>% 
+ungroup() %>%  
+  mutate( ID= as.numeric(ID)) %>% 
+  group_by(ID) %>%
+  top_n(1, EC50DC) %>%
+  ungroup() %>% 
+    mutate(Origin = ifelse(
+    ID %in% baseline_isolates_2,
+    "Baseline",
+    ifelse(
+      ID %in% Farmer_fields,
+      "FF","FFT"
+    )), Host = ifelse(
+    ID %in% drybean,
+    "Drybean", ifelse(
+      ID %in% soybean,
+      "Soybean","different_host"
+    ))) %>% 
+    mutate(Origin = as.factor(Origin), Host= as.factor(Host)) %>% 
+#taking out "different host" becuse does not belong to drybean nor soybean
+  filter(!ID == 8,!ID == 129 )
+
+```
+
+
+
+## Statistical analysis
+### By Origin
+```{r, include= FALSE}
+
+
+##NORMALITY TEST-Shapiro_test
+
+shapiro.test.boscal <- boscalid.complete %>%
+  group_by(Origin) %>%
+  do(tidy(shapiro.test(.$EC50DC)))
+shapiro.test.boscal 
+
+
+
+ #NO NORMALILTY thats is why  krusKal
+#by origin
+
+object.1 <- kruskal.test(EC50DC ~ Origin, data = boscalid.complete)
+
+#There is difference p-value = 1.25 *10 -05
+
+object.2 <-  DunnTest(EC50DC ~ Origin, data = boscalid.complete, method = "bonferroni")
+#P VALUE 0.00057 *** FF-Baseline
+#P VALUE 0.00093 *** FFT-FF
+
+
+```
+
+```{r, echo= FALSE}
+shapiro.test.boscal 
+
+object.1 
+
+object.2
+```
+
+
+
+```{r, echo= FALSE}
+plot.bos <- boscalid.complete%>%
+  ggplot(aes(x = Origin, y = EC50DC)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 21,
+    color = "black",
+    fill = "chartreuse2",
+    size = 2,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 22,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs( x = "Origin", y = "EC50 (ppm)") + theme(
+    panel.border = element_rect(colour = "black", fill=NA, size=1),
+    axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 7,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50" )
+  )
+
+plot.bos
+
+
+
+
+```
+
+### By Host
+```{r, echo = FALSE}
+#by hosts
+
+# No normals
+shapiro.test.boscal.2 <- boscalid.complete%>%
+  group_by(Host) %>%
+  do(tidy(shapiro.test(.$EC50DC)))
+shapiro.test.boscal.2
+
+
+kruskal.test(EC50DC ~ Host, data = boscalid.complete)
+#There is NO difference p-value 0.06043
+
+```
+
+```{r, echo = FALSE}
+plot.bos.2 <- boscalid.complete%>%
+  ggplot(aes(x = Host, y = EC50DC)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 21,
+    color = "black",
+    fill = "chartreuse2",
+    size = 2,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 22,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs( x = "Group", y = "EC50 (ppm)") + theme(
+    panel.border = element_rect(colour = "black", fill=NA, size=1),
+        axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 7,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+
+plot.bos.2
+
+
+```
+
+
+
+# Picoxystrobin 
 ## Serial dilution   
 ```{r Serial dilution Picoxystrobin, include = FALSE}
 #Picoxystrobin  fungicide taking the outliers from the 8 observations of each one USING THE FUCTION
@@ -865,7 +1065,7 @@ final.picoxystrobin
 fig.2
 ```
 
-#  Use of the DC i
+##  Use of the Discriminatory Concentration (DC) 
 ```{r Using the DC Picoxystrobinand the model, echo = FALSE}
 picoxystrobin_data <- survey.data.3 %>%
   select(
@@ -913,8 +1113,146 @@ picoxystrobin.filtered. <- picoxystrobin.filtered.survey %>%
 ```{r}
 picoxystrobin.filtered.
 ```
+```{r}
+ #####PICOXYSTROBIN##
 
-#  Analysis of Tetraconazole fungicide
+#Selecting the EC50D from the serial dilution
+picoxystrobin.complete <- final.picoxystrobin.DC %>% 
+  ####WATCH OUT, Based on EC50DC
+   rename(EC50DC = Estimate.50DC) %>% 
+  select(ID, EC50DC) %>%
+  bind_rows(picoxystrobin.filtered.) %>% 
+  ungroup() %>%
+  mutate( ID= as.numeric(ID)) %>% 
+  group_by(ID) %>%
+  top_n(1, EC50DC) %>%
+  ungroup() %>% 
+  mutate(Origin = ifelse(
+    ID %in% baseline_isolates_2,
+    "Baseline",
+    ifelse(
+      ID %in% Farmer_fields,
+      "FF","FFT"
+    )), Host = ifelse(
+    ID %in% drybean,
+    "Drybean", ifelse(
+      ID %in% soybean,
+      "Soybean","different_host"
+    ))) %>% 
+    mutate(Origin = as.factor(Origin), Host= as.factor(Host)) %>%
+  #taking out "different host" becuse does not belong to drybean nor soybean
+  filter(!ID == 8,!ID == 129 )
+  
+
+```
+
+
+## Statistical analysis
+### By origin
+```{r}
+####### pico
+
+
+##NORMALITY TEST-Shapiro_test
+
+shapiro.test.pico <-picoxystrobin.complete %>%
+  group_by(Origin) %>%
+  do(tidy(shapiro.test(.$EC50DC)))
+shapiro.test.pico 
+  ##NO normals
+shapiro.test.pico.2 <-picoxystrobin.complete %>%
+  group_by(Host) %>%
+  do(tidy(shapiro.test(.$EC50DC)))
+shapiro.test.pico.2
+
+ #NO NORMALILTY thats is why  krusKal
+#by origin
+
+kruskal.test(EC50DC ~ Origin, data = picoxystrobin.complete)
+
+#There is NO difference p-value = 0.3702
+
+
+```
+
+
+```{r}
+plot.pico <- picoxystrobin.complete%>%
+  ggplot(aes(x = Origin, y = EC50DC)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 21,
+    color = "black",
+    fill = "chocolate1",
+    size = 2,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 22,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs(x = "Origin", y = "EC50 (ppm)") + theme(panel.border = element_rect(colour = "black", fill=NA, size=1),
+        axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 7,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+plot.pico
+
+
+```
+
+### By Host
+
+```{r}
+#by hosts
+
+kruskal.test(EC50DC ~ Host, data = picoxystrobin.complete)
+#There is NO difference p-value 0.6842
+```
+
+```{r}
+plot.pico.2 <- picoxystrobin.complete%>%
+  ggplot(aes(x = Host, y = EC50DC)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 21,
+    color = "black",
+    fill = "chocolate1",
+    size = 2,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 22,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs( x = "Group", y = "EC50 (ppm)") + theme(
+    panel.border = element_rect(colour = "black", fill=NA, size=1),
+        axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 7,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+plot.pico.2
+
+
+```
+
+# Tetraconazole 
 ##  Serial dilution
 ```{r Serial dilution Tetraconazole, include = FALSE, results= "hide"}
 #Tetraconzaole  fungicide taking the outliers from the 8 observations of each one USING THE FUCTION
@@ -1039,7 +1377,8 @@ final.tetraconazole
 fig.3
 ```
 
-##  Use of the DC 
+
+##  Use of the Discriminatory Concentration (DC) 
 ```{r Using the DC Tetraconazoleand the model, echo = FALSE}
 tetraconazole_data <- survey.data.3 %>%
   select(ID,
@@ -1080,7 +1419,151 @@ ungroup() %>%
 tetraconazole.filtered.
 ```
 
-#  Analysis of Tetraconazole fungicide
+```{r}
+#######TETRACONAZOLE##
+ 
+ #Selecting the EC50D from the serial dilution
+tetraconazole.complete <- final.tetraconazole.DC %>% 
+   ####WATCH OUT, Based on EC50DC
+  rename(EC50DC = Estimate.50DC) %>% 
+  select(ID, EC50DC) %>% ungroup() %>% 
+bind_rows(tetraconazole.filtered.) %>% 
+  ungroup() %>%
+  mutate( ID= as.numeric(ID)) %>% 
+  group_by(ID) %>%
+  top_n(1, EC50DC) %>%
+  ungroup() %>% 
+   mutate(Origin = ifelse(
+    ID %in% baseline_isolates_2,
+    "Baseline",
+    ifelse(
+      ID %in% Farmer_fields,
+      "FF","FFT"
+    )), Host = ifelse(
+    ID %in% drybean,
+    "Drybean", ifelse(
+      ID %in% soybean,
+      "Soybean","different_host"
+    ))) %>% 
+    mutate(Origin = as.factor(Origin), Host= as.factor(Host)) %>% #taking out "different host" becuse does not belong to drybean nor soybean
+  filter(!ID == 8,!ID == 129 )
+# that is the diffrenece
+####WATCH OUT, Based on EC50DC
+
+
+```
+
+
+## Statistical analysis
+### By origin
+
+```{r}
+#########tetra
+ 
+
+##NORMALITY TEST-Shapiro_test
+
+shapiro.test.tetra <- tetraconazole.complete %>%
+  group_by(Origin) %>%
+  do(tidy(shapiro.test(.$EC50DC)))
+shapiro.test.tetra 
+# No normals
+shapiro.test.tetra.2 <- tetraconazole.complete %>%
+  group_by(Host) %>%
+  do(tidy(shapiro.test(.$EC50DC)))
+shapiro.test.tetra.2
+
+ #NO NORMALILTY thats is why  krusKal
+#by origin
+
+kruskal.test(EC50DC ~ Origin, data = tetraconazole.complete)
+
+#There NO difference p-value = 0.05979
+
+
+
+
+```
+
+
+```{r}
+plot.tetra <- tetraconazole.complete%>%
+  ggplot(aes(x = Origin, y = EC50DC)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 21,
+    color = "black",
+    fill = "deepskyblue",
+    size = 2,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 22,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs( x = "Origin", y = "EC50 (ppm)") + theme(panel.border = element_rect(colour = "black", fill=NA, size=1),
+        axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 7,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+plot.tetra
+
+```
+
+### By Host
+```{r}
+#by hosts
+
+kruskal.test(EC50DC ~ Host, data = tetraconazole.complete)
+#There is NO difference p-value 0.4241
+
+
+```
+
+```{r}
+plot.tetra.2 <- tetraconazole.complete%>%
+  ggplot(aes(x = Host, y = EC50DC)) +
+  geom_jitter(
+    width = .1,
+    height = 0.5,
+    shape = 21,
+    color = "black",
+    fill = "deepskyblue",
+    size = 2,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 22,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs( x = "Group", y = "EC50 (ppm)") + theme(
+        panel.border = element_rect(colour = "black", fill=NA, size=1),
+
+        axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 7,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+plot.tetra.2
+
+
+```
+
+# Thiophanate methyl 
 ## Serial dilution
 ```{r Serial dilution Thiophanate methyl, include = FALSE}
 #Thiophanate methyl  fungicide taking the outliers from the 8 observations of each one USING THE FUCTION
@@ -1118,8 +1601,6 @@ TM.zz <-   zz%>% rename(ID = sample ) %>%
 ```{r}
 zz
 ```
-
-## Procedure to get the Discriminatory Concentration (DC)  
 ```{r Calculus of DC Thiophanate methyl, echo = FALSE}
 #Getting relative growth column at each dose where RG= Relative Growth, eg. RG0.01= Relative Growth at 0.01 ppm 
 RG.TM <- TM.filtered %>% group_by(ID,dose) %>% summarise(mean_response=mean(response,na.rm=TRUE)) %>% spread(dose,mean_response) %>%  mutate(RG0.75=((`0.75`/`0`)*100)) %>% mutate(RG1=((`1`/`0`)*100)) %>% mutate(RG1.5=((`1.5`/`0`)*100)) %>% mutate(RG2=((`2`/`0`)*100)) %>% mutate(RG2.5=((`2.5`/`0`)*100)) %>%  mutate(RG10=((`10`/`0`)*100))
@@ -1162,27 +1643,8 @@ fig.4 <- ggplot(final.TM.DC.10, aes(x = Estimate.50, y = Estimate.50DC)) +  them
 
 ```
 
-```{r}
-final.TM
-fig.4
-```
 
-##  Use of the DC  
-```{r Using the DC Thiophanate methyl and the model, echo = FALSE}
-TM_data <- survey.data.3 %>%
-  select(ID, repeats, experimental_replicate, TM.growth, control.growth) %>% 
-  rename(response = TM.growth, control = control.growth)%>%  
-  group_by(ID) %>% 
-  summarise(mean_response =mean(response, na.rm = TRUE), mean_control =mean(control, na.rm = TRUE)) %>% 
-  mutate(RG= (mean_response/mean_control)*100)  %>% 
-mutate(resistance = ifelse(RG >24,#more or equal to 25%, in literature is used approx greater than 50 % 
-                           "resistant", "nonresistant")) 
-
-
-```
-
-# because we did not get any possible outlier then..
-#  Another approach with TM to pick the probably isolates with high EC50 using a new model of 2.5 ppm, the closest at the EC50
+## Procedure to get the Discriminatory Concentration (DC)  
 ```{r Selecting outliers of the serial dilution Thiophanate  methyl, echo = FALSE }
 
 #Dose chosen as  potential DC
@@ -1220,131 +1682,11 @@ fig.5 <- ggplot(final.TM.DC.2.5, aes(x = Estimate.50, y = Estimate.50DC)) +  the
 ```
 
 ```{r}
+final.TM
 fig.5
 ```
 
-
-#  Another approach with TM to pick the probably isolates with low sensitivity based on the growth at Discrimantory concentrartion,including farmer fields and fungicide field trials 
-```{r Estimating low sensitivity TM, echo = FALSE}
-#  I cannot use the model because the DC used was 10 ppm, and the model was built based on 2.5 ppm
-
-
-TM.data <- survey.data.3 %>%
-  select(ID, repeats, experimental_replicate, TM.growth, control.growth) %>% 
-  rename(response = TM.growth, control = control.growth) %>% 
-   # Using the function in order to take out the outliers#
-  group_by(ID) %>%
-  mutate(response_range = list(get_range(response))) %>%
-  unnest() %>%
-  mutate(control_range = list(get_range(control))) %>%
-  unnest() %>%
-  filter(response <= upper & response >= lower, control <= upper1 & control >= lower1) %>%
-  ungroup()%>% 
-  select(c(ID, experimental_replicate, response, control)) %>% 
-  group_by(ID) %>% 
-  summarise(mean_response =mean(response, na.rm = TRUE), mean_control =mean(control, na.rm = TRUE)) %>% 
-  mutate(RG= (mean_response/mean_control)*100) %>% 
-ungroup() %>%
-    mutate(ID = as.numeric(ID)) %>%
-   select(c(ID, RG)) %>% 
-  arrange(RG) %>% 
-  filter(RG >19) %>% # More than 20 % arbitrarily selected
-select(ID)
-  
-
-```
-
-
-
-##  Wrangling datframe for each fungicide
-```{r wrangling fungicides, echo = FALSE}
-
-#Selecting the EC50D from the serial dilution
-boscalid.complete <- final.boscalid.DC %>% 
- ####WATCH OUT, Based on EC50DC
-   rename(EC50DC = Estimate.50DC) %>% 
-  select(ID, EC50DC) %>% 
-  bind_rows(boscalid.filtered.) %>% 
-ungroup() %>%  
-  mutate( ID= as.numeric(ID)) %>% 
-  group_by(ID) %>%
-  top_n(1, EC50DC) %>%
-  ungroup() %>% 
-    mutate(Origin = ifelse(
-    ID %in% baseline_isolates_2,
-    "Baseline",
-    ifelse(
-      ID %in% Farmer_fields,
-      "FF","FFT"
-    )), Host = ifelse(
-    ID %in% drybean,
-    "Drybean", ifelse(
-      ID %in% soybean,
-      "Soybean","different_host"
-    ))) %>% 
-    mutate(Origin = as.factor(Origin), Host= as.factor(Host)) %>% 
-#taking out "different host" becuse does not belong to drybean nor soybean
-  filter(!ID == 8,!ID == 129 )
- #####PICOXYSTROBIN##
-
-#Selecting the EC50D from the serial dilution
-picoxystrobin.complete <- final.picoxystrobin.DC %>% 
-  ####WATCH OUT, Based on EC50DC
-   rename(EC50DC = Estimate.50DC) %>% 
-  select(ID, EC50DC) %>%
-  bind_rows(picoxystrobin.filtered.) %>% 
-  ungroup() %>%
-  mutate( ID= as.numeric(ID)) %>% 
-  group_by(ID) %>%
-  top_n(1, EC50DC) %>%
-  ungroup() %>% 
-  mutate(Origin = ifelse(
-    ID %in% baseline_isolates_2,
-    "Baseline",
-    ifelse(
-      ID %in% Farmer_fields,
-      "FF","FFT"
-    )), Host = ifelse(
-    ID %in% drybean,
-    "Drybean", ifelse(
-      ID %in% soybean,
-      "Soybean","different_host"
-    ))) %>% 
-    mutate(Origin = as.factor(Origin), Host= as.factor(Host)) %>%
-  #taking out "different host" becuse does not belong to drybean nor soybean
-  filter(!ID == 8,!ID == 129 )
-  
-
-#######TETRACONAZOLE##
- 
- #Selecting the EC50D from the serial dilution
-tetraconazole.complete <- final.tetraconazole.DC %>% 
-   ####WATCH OUT, Based on EC50DC
-  rename(EC50DC = Estimate.50DC) %>% 
-  select(ID, EC50DC) %>% ungroup() %>% 
-bind_rows(tetraconazole.filtered.) %>% 
-  ungroup() %>%
-  mutate( ID= as.numeric(ID)) %>% 
-  group_by(ID) %>%
-  top_n(1, EC50DC) %>%
-  ungroup() %>% 
-   mutate(Origin = ifelse(
-    ID %in% baseline_isolates_2,
-    "Baseline",
-    ifelse(
-      ID %in% Farmer_fields,
-      "FF","FFT"
-    )), Host = ifelse(
-    ID %in% drybean,
-    "Drybean", ifelse(
-      ID %in% soybean,
-      "Soybean","different_host"
-    ))) %>% 
-    mutate(Origin = as.factor(Origin), Host= as.factor(Host)) %>% #taking out "different host" becuse does not belong to drybean nor soybean
-  filter(!ID == 8,!ID == 129 )
-# that is the diffrenece
-####WATCH OUT, Based on EC50DC
-
+```{r}
 ##TM#######
     #Selecting the EC50D from the serial dilution
 TM.complete<- final.TM.DC1 %>% 
@@ -1368,9 +1710,103 @@ mutate( ID= as.numeric(ID)) %>%
     mutate(Origin = as.factor(Origin), Host= as.factor(Host)) %>% #taking out "different host" becuse does not belong to drybean nor soybean
   filter(!ID == 8,!ID == 129 )
 
+
 ```
 
-# Function to detect outliers considered since the third quantil from the outliers of ecah fungicicde
+```{r}
+# Suppose TM
+plot.TM <- TM.complete%>%
+  ggplot(aes(x = Origin, y = EC50DC)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 21,
+    color = "black",
+    fill = "goldenrod",
+    size = 2,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 22,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs( x = "Origin", y = "EC50 (ppm)") + theme(
+    panel.border = element_rect(colour = "black", fill=NA, size=1),
+    axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 7,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50" )
+  )
+
+plot.TM
+
+
+```
+
+
+
+##  Use of the Discriminatory Concentration (DC)  
+
+Because  the results of  EC50 by this model, the Discriminatory Conecntration (DC) was not trustable, and the DC selected was the highest concentartion (10 ppm). This concentration will alow to classified the isolates in resistant or susceptible. The criteria of classificattion was more than 24% grotwh for resistant. 
+
+```{r Using the DC Thiophanate methyl and the model, echo = FALSE}
+TM_data <- survey.data.3 %>%
+  select(ID, repeats, experimental_replicate, TM.growth, control.growth) %>% 
+  rename(response = TM.growth, control = control.growth)%>%  
+  group_by(ID) %>% 
+  summarise(mean_response =mean(response, na.rm = TRUE), mean_control =mean(control, na.rm = TRUE)) %>% 
+  mutate(RG= (mean_response/mean_control)*100)  %>% 
+mutate(resistance = ifelse(RG >24,#more or equal to 25%, in literature is used approx greater than 50 % 
+                           "resistant", "nonresistant")) 
+
+
+```
+
+
+
+
+```{r}
+# Suppose TM
+plot.TM.2 <- TM.complete%>%
+  ggplot(aes(x = Host, y = EC50DC)) +
+  geom_jitter(
+    width = .1,
+    height = 0.5,
+    shape = 21,
+    color = "black",
+    fill = "goldenrod",
+    size = 2,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 22,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs( x = "Group", y = "EC50 (ppm)") + theme(
+        panel.border = element_rect(colour = "black", fill=NA, size=1),
+
+        axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 7,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+plot.TM.2
+
+```
+
+
 
 ```{r function to detect outliers includng third quantil, echo = FALSE}
  #New function to detect outliers of EC50DC en each group for fungicide. These ouliers are considered as equal to the third quantil, i.e. the second max stats
@@ -1382,9 +1818,10 @@ mutate( ID= as.numeric(ID)) %>%
     return(data.frame(outlier = wilt))
  }  
 ```
-# Detection of  outliers (third quantil) using the previous function
 
-```{r Outliers detection, echo = FALSE}
+
+
+```{r Outliers detection (third quantil) using the previous  chucnk function, echo = FALSE}
 #Boscalid
 # Using the function to detect outliers from all tested and keep them
 
@@ -1448,6 +1885,42 @@ unnest() %>%
 filter(EC50DC >=  outlier) %>% ungroup() %>% 
   select(ID)
 
+```
+
+## Part of outliers using the Discriminatory Concentration (DC) 
+It was possible to get the outliers when using 10 ppm selecting those isolates with less growth than 24%, in this case it was selecect the percentage of 19%
+```{r Estimating low sensitivity TM, echo = FALSE}
+#  I cannot use the model because the DC used was 10 ppm, and the model was built based on 2.5 ppm
+
+
+TM.data <- survey.data.3 %>%
+  select(ID, repeats, experimental_replicate, TM.growth, control.growth) %>% 
+  rename(response = TM.growth, control = control.growth) %>% 
+   # Using the function in order to take out the outliers#
+  group_by(ID) %>%
+  mutate(response_range = list(get_range(response))) %>%
+  unnest() %>%
+  mutate(control_range = list(get_range(control))) %>%
+  unnest() %>%
+  filter(response <= upper & response >= lower, control <= upper1 & control >= lower1) %>%
+  ungroup()%>% 
+  select(c(ID, experimental_replicate, response, control)) %>% 
+  group_by(ID) %>% 
+  summarise(mean_response =mean(response, na.rm = TRUE), mean_control =mean(control, na.rm = TRUE)) %>% 
+  mutate(RG= (mean_response/mean_control)*100) %>% 
+ungroup() %>%
+    mutate(ID = as.numeric(ID)) %>%
+   select(c(ID, RG)) %>% 
+  arrange(RG) %>% 
+  filter(RG >19) %>% # More than 20 % arbitrarily selected
+select(ID)
+  
+TM.data
+
+```
+
+# Selection of outliers for each fungicide considering Farmer fields (FF),  and Fungicide Field  Trials (FFT)
+```{r}
 #TM
 
 
@@ -1485,12 +1958,14 @@ TM.complete.4 <- TM_data %>%
 
 # # corroborrating any duplication in ID
    anyDuplicated(TM.complete.3$ID)
+
 ```
 
 
-# Dataframe with with ouliers of boscalid, picoxystrobin, tetraconazole and TM using 0, 1 and NA 
 
 ```{r Dataframe of outliers, echo = FALSE}
+
+# Dataframe with with ouliers of boscalid, picoxystrobin, tetraconazole and TM using 0, 1 and NA 
 
 ### setting the objects
 ##isolate that were tested but are not outliers
@@ -1542,25 +2017,11 @@ summary_fungicide_outliers <- Compendium %>%
   summarize(count = n())
 
 
-# Groupone <- Compendium %>% filter(Group== "Group_one")
-# Groupone %>%
-# kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
-# write2pdf("Group_XX.pdf")
-
-#checking the structure of datframe
-
-
-#glimpse(Compendium)
-#the following Iam getting the Sum by row but because I dont know how to use apply in dplyr. Iwa screating many objects and doing step by step
 #filtering those greater or eauql than 4 isolates/field
 fields_more_4 <- Compendium %>% 
   filter(N_iso_perfield >= 4)
 
 
-#bye <- apply(hello, 1, sum)
-#water <- cbind(hello, bye)
-#filtering to know how many isolates coincide to be  outliers for at at least 3 fungicicdes
-#fusarium <- water %>% filter(bye>=3) %>% arrange(bye) 
 
 #datfarmae for select how many of those to use for test
 num_isolates_selected <- fields_more_4 %>% 
@@ -1609,14 +2070,25 @@ info_selected_isolates <- selected_isolates %>%
   group_by(Field, Group) %>% 
   arrange(Group)
 
+set.seed(2016)
 final_data_isolates <- id_selected_isolates %>% 
   left_join(info_selected_isolates) %>% 
   arrange(Group) %>% 
   group_by(Field, Group) %>% 
-  sample_n(size = Nextra)
+  sample_n(size = Nextra) %>% 
+  select(ID, Group, State, Year, Field, Nperfield, N_iso_not_tested, Ntested, Nselect, Nextra, Nmax_per_field) %>% 
+  ungroup() %>% 
+   mutate(Group = recode(Group, Group_one = 1, Group_3 =  3, Group_7 = 7, Group_11 = 11)) %>% 
+  arrange(Group) 
+  
+ final_data_isolates
 
+#
+SUMMARY.final_data_isolates <- final_data_isolates %>% 
+  group_by(Group) %>% 
+  summarize(Total_isolates = n()) 
  
-# hola.2 %>%
+# final_data_isolates %>%
 # kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
 #   write2pdf("List_of_isolates_to_test.pdf")
 
@@ -1661,12 +2133,23 @@ final_data_isolates <- id_selected_isolates %>%
 # write.csv(FieldSS_, "clean data/summary_outliers.csv")
 # 
 
-picoxystrobin.complete$ID[!picoxystrobin.complete$ID%in% boscalid.complete$ID]
+# Groupone <- Compendium %>% filter(Group== "Group_one")
+# Groupone %>%
+# kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
+# write2pdf("Group_XX.pdf")
+
+#checking the structure of datframe
+
+
+#glimpse(Compendium)
+#the following Iam getting the Sum by row but because I dont know how to use apply in dplyr. Iwa screating many objects and doing step by step
+
 
 
 ```
-#CREATING SUMMARY LIST
-```{r, include= FALSE }
+
+```{r, Creating summary list, include= FALSE }
+
 casa <-WM3_ %>% # selecting variables more important 
      select(colnames(boscalid.complete.2), Field,  Year, State, Group_MOA_current_season, Host) %>%
    left_join(summary.field.original)  %>% # joining with table of summary of how many isolates are per field
