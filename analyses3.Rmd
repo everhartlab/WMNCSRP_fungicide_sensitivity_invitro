@@ -1076,10 +1076,12 @@ plot.bos.2 <- boscalid.complete%>%
 
 plot.bos.2
 
-boscalid.complete.groups%>%
-ggplot(aes(x = group, color= Host)) +
-geom_density()
-
+boscalid.complete.groups %>%
+  group_by(source, group) %>% 
+  summarize(N=n()) %>% 
+  ggplot(aes(x = group, y= N,  color= source, fill= source) ) +
+geom_bar(stat="identity", position=position_dodge())+ 
+  geom_smooth(method = "auto", se = FALSE)
 ```
 
 
@@ -2272,7 +2274,10 @@ final_data_isolates <- id_selected_isolates %>%
   select(ID, Group, State, Year, Field, Nperfield, N_iso_not_tested, Ntested, Nselect, Nextra, Nmax_per_field) %>% 
   ungroup() %>% 
    mutate(Group = recode(Group, Group_one = 1, Group_3 =  3, Group_7 = 7, Group_11 = 11)) %>% 
-  arrange(Group) 
+  arrange(Group) %>% 
+  filter(Group == 7) %>% 
+  arrange(ID) %>%
+  slice(1:27) 
   
  final_data_isolates
 
@@ -2280,9 +2285,14 @@ final_data_isolates <- id_selected_isolates %>%
 SUMMARY.final_data_isolates <- final_data_isolates %>% 
   group_by(Group) %>% 
   summarize(Total_isolates = n()) 
- 
+ ##For boscalid test
+
+  final_data_isolates %>% filter(Group == 7) %>% arrange(ID) %>% kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
+   write2pdf("List_of_isolates_to_test_BOSCALID.pdf")
+
+  
 # final_data_isolates %>%
-# kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
+#kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
 #   write2pdf("List_of_isolates_to_test.pdf")
 
  
@@ -2341,14 +2351,14 @@ SUMMARY.final_data_isolates <- final_data_isolates %>%
 #boscalid complete is which have less ID so this
 WM4 <- WM3_ %>%
   mutate(Fungicide_status= ifelse(
-    ID %in% boscalid.complete$ID,
+    ID %in% boscalid.complete$ID, #Iam selecting boscalid because is the one that has less number of isolates tested
     "tested",
     "no_tested"), 
     Fungicide_status= 
       as.factor(Fungicide_status), 
     Selection_fungicides = ifelse(
     ID %in% id_selected_isolates$ID, #From the real selected to test
-    "selected",
+    "selected", # its better to keep it separate and taht form wI cand differentiate, when I need to filter it should be, == No_tested& selected/no_selected 
     "no_selected") ) %>% 
    mutate(Origin = as.factor(Origin)) %>% 
     mutate(Source = case_when(
@@ -2361,7 +2371,7 @@ WM4 <- WM3_ %>%
 
 
 
-write_csv(WM4, "clean data/clean_data.csv")
+#write_csv(WM4, "clean data/clean_data.csv")
 #summarizing
 
 
@@ -2373,7 +2383,7 @@ Group_MOA_current_season=="Group_3"|
 Group_MOA_current_season=="Group_7"|
 Group_MOA_current_season=="Group_11") %>%
 group_by(Field, Group_MOA_current_season, Source) %>% 
-summarize(N= n()) %>% filter(N>=5)
+summarize(N= n()) #%>% filter(N>=5)
 
 
 summa_tested <- WM4 %>% left_join(summary.field.sourceal) %>%
@@ -2390,8 +2400,81 @@ summarize(N= n())
 
 
 which(summa_tested$Field %in% summa_notested$Field)
+#Good corroboration
 
+#Data
+info_tested <- summa_tested %>% #using summa_tested and no drybeans with WM_Production
+  mutate(tested_more_than4 = N >= 4)
 
+#Outlier fields for each fungicide
+out_bos_field <- boscalid.complete.2 %>% 
+  mutate(fungicide_outier = "Bos") %>% 
+  inner_join(WM4) %>% 
+  select(Field, fungicide_outier) %>% 
+  unique() %>% 
+  filter(Field != "")
+
+out_TM_field <- TM.complete.3 %>% 
+  mutate(fungicide_outier = "TM") %>% 
+  inner_join(WM4) %>% 
+  select(Field, fungicide_outier) %>% 
+  unique() %>% 
+  filter(Field != "")
+
+out_tet_field <- tetraconazole.complete.2 %>% 
+  mutate(fungicide_outier = "Tet") %>% 
+  inner_join(WM4) %>% 
+  select(Field, fungicide_outier) %>% 
+  unique() %>% 
+  filter(Field != "")
+
+out_pico_field <- picoxystrobin.complete.2 %>% 
+  mutate(fungicide_outier = "Pico") %>% 
+  inner_join(WM4) %>% 
+  select(Field, fungicide_outier) %>% 
+  unique() %>% 
+  filter(Field != "")
+
+out_fungicide_field <- out_bos_field %>% 
+  full_join(out_TM_field) %>% 
+  full_join(out_tet_field) %>%
+  full_join(out_pico_field) 
+
+info_tested_fields <- info_tested %>%
+  full_join(out_fungicide_field)
+
+info_out_field <- info_tested_fields %>% 
+  ungroup() %>% 
+  mutate(Outlier_Field = info_tested_fields$Field %in% out_fungicide_field$Field)  %>% 
+  filter(Group_MOA_current_season != "NA") #filtering out fields with no info
+
+#Fields that were not outliers and the number of tested isolates were less than 4
+field_not_out_less_tested <- info_out_field %>% #only one such field
+  filter(Outlier_Field == FALSE & tested_more_than4 == FALSE) %>% 
+  mutate(num_test_isolates = 4-N) #Subtracting number of tested isolates (N) from number 4. This column contains the number of isolates that I need to test per field.
+
+tested_fields <- summa_tested %>% 
+  ungroup() %>% 
+  select(Field) %>% 
+  unique() 
+
+total_fields <- summa_notested %>% 
+  full_join(summa_tested) %>% 
+  ungroup() %>% 
+  select(Field) %>% 
+  unique()
+
+total_fields <- total_fields %>% 
+  mutate(Tested = total_fields$Field %in% tested_fields$Field)
+
+not_tested_fields <- total_fields %>% 
+  filter(Tested == FALSE) #only two fields that were not tested
+
+select_fields_not_tested <- summa_notested %>% 
+  ungroup() %>% 
+  filter(summa_notested$Field %in% not_tested_fields$Field)
+
+#Question: How do I have different N for the same no tested field?
 ```
 
 ```{r, Creating summary list, include= FALSE }
