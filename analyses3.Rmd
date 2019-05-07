@@ -1016,9 +1016,23 @@ mutate(group =ifelse(
 
 
 boscalid.complete.groups%>%
-ggplot(aes(x = group, color= source)) +
-geom_density()
-  
+group_by(source, group) %>%
+summarize(N_isolates= n()) %>%
+ggplot(aes(x = group, y= N_isolates, fill= source)) +
+geom_bar(stat = "identity", position=position_dodge()) +
+geom_smooth(method = "loess", se = FALSE, aes(color= source))+
+theme_minimal() +
+  labs( x = "EC50DC", y = "Number of isolates") + theme(
+    panel.border = element_rect(colour = "black", fill=NA, size=1),
+    axis.title = element_text(size = 12, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 12,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50" )
+  ) 
+
 
 
 ```
@@ -1076,12 +1090,24 @@ plot.bos.2 <- boscalid.complete%>%
 
 plot.bos.2
 
-boscalid.complete.groups %>%
-  group_by(source, group) %>% 
-  summarize(N=n()) %>% 
-  ggplot(aes(x = group, y= N,  color= source, fill= source) ) +
-geom_bar(stat="identity", position=position_dodge())+ 
-  geom_smooth(method = "auto", se = FALSE)
+boscalid.complete.groups%>%
+group_by(Host, group) %>%
+summarize(N_isolates= n()) %>%
+ggplot(aes(x = group, y= N_isolates, fill= Host)) +
+geom_bar(stat = "identity", position=position_dodge()) +
+geom_smooth(method = "loess", se = FALSE, aes(color= Host))+
+theme_minimal() +
+  labs( x = "EC50DC", y = "Number of isolates") + theme(
+    panel.border = element_rect(colour = "black", fill=NA, size=1),
+    axis.title = element_text(size = 12, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 12,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50" )
+  ) 
+
 ```
 
 
@@ -1363,8 +1389,23 @@ mutate(group =ifelse(
          ) )))))))
 
 picoxystrobin.complete.groups%>%
-ggplot(aes(x = group, color= source)) +
-geom_density()
+group_by(source, group) %>%
+summarize(N_isolates= n()) %>%
+ggplot(aes(x = group, y= N_isolates, fill= source)) +
+geom_bar(stat = "identity", position=position_dodge()) +
+geom_smooth(method = "loess", se = FALSE, aes(color= source))+
+theme_minimal() +
+  labs( x = "EC50DC", y = "Number of isolates") + theme(
+    panel.border = element_rect(colour = "black", fill=NA, size=1),
+    axis.title = element_text(size = 12, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 12,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50" )
+  ) 
+
 
 
 
@@ -1411,8 +1452,23 @@ plot.pico.2 <- picoxystrobin.complete%>%
 plot.pico.2
 
 picoxystrobin.complete.groups%>%
-ggplot(aes(x = group, color= Host)) +
-geom_density()
+group_by(Host, group) %>%
+summarize(N_isolates= n()) %>%
+ggplot(aes(x = group, y= N_isolates, fill= Host)) +
+geom_bar(stat = "identity", position=position_dodge()) +
+geom_smooth(method = "loess", se = FALSE, aes(color= Host))+
+theme_minimal() +
+  labs( x = "EC50DC", y = "Number of isolates") + theme(
+    panel.border = element_rect(colour = "black", fill=NA, size=1),
+    axis.title = element_text(size = 12, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 12,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50" )
+  ) 
+
 
 ```
 
@@ -1703,8 +1759,23 @@ mutate(group =ifelse(
          ) )))))))
 
 tetraconazole.complete.groups%>%
-ggplot(aes(x = group, color= source)) +
-geom_density()
+group_by(source, group) %>%
+summarize(N_isolates= n()) %>%
+ggplot(aes(x = group, y= N_isolates, fill= source)) +
+geom_bar(stat = "identity", position=position_dodge()) +
+geom_smooth(method = "loess", se = FALSE, aes(color= source))+
+theme_minimal() +
+  labs( x = "EC50DC", y = "Number of isolates") + theme(
+    panel.border = element_rect(colour = "black", fill=NA, size=1),
+    axis.title = element_text(size = 12, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 12,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50" )
+  ) 
+
 
 
 
@@ -1753,8 +1824,24 @@ plot.tetra.2 <- tetraconazole.complete%>%
 plot.tetra.2
 
 tetraconazole.complete.groups%>%
-ggplot(aes(x = group, color= Host)) +
-geom_density()
+group_by(Host, group) %>%
+summarize(N_isolates= n()) %>%
+ggplot(aes(x = group, y= N_isolates, fill= Host)) +
+geom_bar(stat = "identity", position=position_dodge()) +
+geom_smooth(method = "loess", se = FALSE, aes(color= Host))+
+theme_minimal() +
+  labs( x = "EC50DC", y = "Number of isolates") + theme(
+    panel.border = element_rect(colour = "black", fill=NA, size=1),
+    axis.title = element_text(size = 12, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 12,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50" )
+  ) 
+
+
 
 ```
 
