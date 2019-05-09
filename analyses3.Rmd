@@ -52,6 +52,7 @@ Field applications of fungicides in the United States on soybean show control of
 
 
 ```{r read data, echo = FALSE}
+#
 ##  Reading and subsetting data 
 boscalid.data <-
   read.csv("data/boscalid_serialdilution_baseline(validationdata).csv")
@@ -919,7 +920,7 @@ ungroup() %>%
 
 
 ## Statistical analysis
-### By source
+### By Source
 ```{r, include= FALSE}
 
 
@@ -1051,9 +1052,6 @@ shapiro.test.boscal.2
 
 kruskal.test(EC50DC ~ Host, data = boscalid.complete)
 #There is NO difference p-value 0.06043
-
-```
-```{r}
 
 ```
 
