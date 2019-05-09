@@ -1,10 +1,10 @@
 ---
 title: "Survey fungicide sensitivity of S. sclerotiorum from drybean and soybean from the U.S."
 output:
+  pdf_document: default
   html_document:
     df_print: paged
     toc: TRUE
-  pdf_document: default
   html_notebook: default
   word_document: default
 ---
@@ -779,7 +779,7 @@ final.boscalid.clean <-
 
  fig.1 <-    ggplot(finalRG0.2, aes(x = RG0.2, y = logEC50)) +  geom_point() + geom_smooth(method = "lm") +  theme(
     plot.title = element_text(
-    size = 12,
+    size = 8,
     face = "bold",
     hjust = 0.5,
     family = "Verdana"
@@ -815,7 +815,7 @@ kable(tidy(final.boscalid.DC.0.2), digits = 3, format = "markdown", caption = "T
 #pdf("Linear regression of boscalid 0.2 ppm.pdf")  
 fig.2<- ggplot(final.boscalid.DC.0.2, aes(x = Estimate.50, y = Estimate.50DC)) +  theme(
   plot.title = element_text(
-  size = 10,
+  size = 8,
   face = "bold",
   hjust = 1,
   family = "Verdana"
@@ -1201,7 +1201,7 @@ plot(final.picoxystrobin.DC.0.01)
 fig.2 <- ggplot(final.picoxystrobin.DC.0.01,
        aes(x = Estimate.50, y = Estimate.50DC)) +  theme(
        plot.title = element_text(
-       size = 14,
+       size = 10,
        face = "bold",
        hjust = 1,
        family = "Verdana"
@@ -1573,7 +1573,7 @@ plot(final.tetraconazole.DC.2)
 fig.3 <- ggplot(final.tetraconazole.DC.2,
        aes(x = Estimate.50, y = Estimate.50DC)) +  theme(
          plot.title = element_text(
-        size = 14, 
+        size = 10, 
         face = "bold", 
         hjust = 1,
         family = "Verdana"
@@ -1918,7 +1918,7 @@ plot(final.TM.DC.10)
 #check_assumptions(final_TM_DC_10)
 #pdf("Linear regression of thiophanate methyl 10 ppm.pdf")   
 ## Linear Regression graph of EC50 and EC50DC
-fig.4 <- ggplot(final.TM.DC.10, aes(x = Estimate.50, y = Estimate.50DC)) +  theme(plot.title = element_text(size = 16, face = "bold", hjust = 1)) + labs(title = "Linear regression of thiophanate methyl 10 ppm", x ="EC50 (ppm)", y = "EC50DC (ppm)" ) + geom_point() + geom_smooth(method = "lm")
+fig.4 <- ggplot(final.TM.DC.10, aes(x = Estimate.50, y = Estimate.50DC)) +  theme(plot.title = element_text(size = 8, face = "bold", hjust = 1)) + labs(title = "Linear regression of thiophanate methyl 10 ppm", x ="EC50 (ppm)", y = "EC50DC (ppm)" ) + geom_point() + geom_smooth(method = "lm")
 
 
 ```
