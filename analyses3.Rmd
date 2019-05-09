@@ -1,12 +1,9 @@
 ---
 title: "Survey fungicide sensitivity of S. sclerotiorum from drybean and soybean from the U.S."
-output:
-  pdf_document: default
-  html_document:
-    df_print: paged
-    toc: TRUE
-  html_notebook: default
-  word_document: default
+output: 
+  pdf_document
+   
+ 
 ---
 
  
@@ -782,13 +779,13 @@ final.boscalid.clean <-
     size = 8,
     face = "bold",
     hjust = 0.5,
-    family = "Verdana"
+    family = "Arial"
     ),
     axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
     axis.text = element_text(
     face = "bold",
     size = 14,
-    family = "Verdana"
+    family = "Arial"
     ),
     panel.background = element_rect(fill = "white", colour = "grey50")
     ) + labs(title = "Linear regression between EC50 values & relative growth of Boscalid at 0.2 ppm", x =
@@ -818,13 +815,13 @@ fig.2<- ggplot(final.boscalid.DC.0.2, aes(x = Estimate.50, y = Estimate.50DC)) +
   size = 8,
   face = "bold",
   hjust = 1,
-  family = "Verdana"
+  family = "Arial"
   ),
   axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
   axis.text = element_text(
   face = "bold",
   size = 14,
-  family = "Verdana"
+  family = "Arial"
   ),
   panel.background = element_rect(fill = "white", colour = "grey50")
   ) + labs(title = "Linear regression between EC50 and EC50(D) values of Boscalid ", x =
@@ -835,10 +832,10 @@ fig.2<- ggplot(final.boscalid.DC.0.2, aes(x = Estimate.50, y = Estimate.50DC)) +
 ```
 
 ```{r, echo= FALSE}
-fig.1 
-kable(tidy(final.boscalid.DC.0.2), digits = 3, format = "markdown", caption = "Table with outliers for each fungicide, NA= never tested , 0=  not an outlier but tested, 1 = outlier", padding = 0, align = "l")
-final.boscalid.DC
-fig.2
+# fig.1 
+# kable(tidy(final.boscalid.DC.0.2), digits = 3, format = "markdown", caption = "Table with outliers for each fungicide, NA= never tested , 0=  not an outlier but tested, 1 = outlier", padding = 0, align = "l")
+# final.boscalid.DC
+# fig.2
 ```
 
 ##  Use of the Discriminatory Concentration (DC) 
@@ -982,12 +979,12 @@ plot.bos <- boscalid.complete%>%
     axis.text = element_text(
       face = "bold",
       size = 7,
-      family = "Verdana"
+      family = "Arial"
     ),
     panel.background = element_rect(fill = "white", colour = "grey50" )
   )
 
-plot.bos
+#plot.bos
 
 
 
@@ -1016,24 +1013,24 @@ mutate(group =ifelse(
          ) )))))))
 
 
-boscalid.complete.groups%>%
-group_by(source, group) %>%
-summarize(N_isolates= n()) %>%
-ggplot(aes(x = group, y= N_isolates, fill= source)) +
-geom_bar(stat = "identity", position=position_dodge()) +
-geom_smooth(method = "loess", se = FALSE, aes(color= source))+
-theme_minimal() +
-  labs( x = "EC50DC", y = "Number of isolates") + theme(
-    panel.border = element_rect(colour = "black", fill=NA, size=1),
-    axis.title = element_text(size = 12, face = "bold", hjust = 0.5),
-    axis.text = element_text(
-      face = "bold",
-      size = 12,
-      family = "Verdana"
-    ),
-    panel.background = element_rect(fill = "white", colour = "grey50" )
-  ) 
-
+# boscalid.complete.groups%>%
+# group_by(source, group) %>%
+# summarize(N_isolates= n()) %>%
+# ggplot(aes(x = group, y= N_isolates, fill= source)) +
+# geom_bar(stat = "identity", position=position_dodge()) +
+# geom_smooth(method = "loess", se = FALSE, aes(color= source))+
+# theme_minimal() +
+#   labs( x = "EC50DC", y = "Number of isolates") + theme(
+#     panel.border = element_rect(colour = "black", fill=NA, size=1),
+#     axis.title = element_text(size = 12, face = "bold", hjust = 0.5),
+#     axis.text = element_text(
+#       face = "bold",
+#       size = 12,
+#       family = "Arial"
+#     ),
+#     panel.background = element_rect(fill = "white", colour = "grey50" )
+#   ) 
+# 
 
 
 ```
@@ -1081,30 +1078,30 @@ plot.bos.2 <- boscalid.complete%>%
     axis.text = element_text(
       face = "bold",
       size = 7,
-      family = "Verdana"
+      family = "Arial"
     ),
     panel.background = element_rect(fill = "white", colour = "grey50")
   )
 
-plot.bos.2
+#plot.bos.2
 
-boscalid.complete.groups%>%
-group_by(Host, group) %>%
-summarize(N_isolates= n()) %>%
-ggplot(aes(x = group, y= N_isolates, fill= Host)) +
-geom_bar(stat = "identity", position=position_dodge()) +
-geom_smooth(method = "loess", se = FALSE, aes(color= Host))+
-theme_minimal() +
-  labs( x = "EC50DC", y = "Number of isolates") + theme(
-    panel.border = element_rect(colour = "black", fill=NA, size=1),
-    axis.title = element_text(size = 12, face = "bold", hjust = 0.5),
-    axis.text = element_text(
-      face = "bold",
-      size = 12,
-      family = "Verdana"
-    ),
-    panel.background = element_rect(fill = "white", colour = "grey50" )
-  ) 
+# boscalid.complete.groups%>%
+# group_by(Host, group) %>%
+# summarize(N_isolates= n()) %>%
+# ggplot(aes(x = group, y= N_isolates, fill= Host)) +
+# geom_bar(stat = "identity", position=position_dodge()) +
+# geom_smooth(method = "loess", se = FALSE, aes(color= Host))+
+# theme_minimal() +
+#   labs( x = "EC50DC", y = "Number of isolates") + theme(
+#     panel.border = element_rect(colour = "black", fill=NA, size=1),
+#     axis.title = element_text(size = 12, face = "bold", hjust = 0.5),
+#     axis.text = element_text(
+#       face = "bold",
+#       size = 12,
+#       family = "Arial"
+#     ),
+#     panel.background = element_rect(fill = "white", colour = "grey50" )
+#   ) 
 
 ```
 
@@ -1204,13 +1201,13 @@ fig.2 <- ggplot(final.picoxystrobin.DC.0.01,
        size = 10,
        face = "bold",
        hjust = 1,
-       family = "Verdana"
+       family = "Arial"
        ),
        axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
        axis.text = element_text(
        face = "bold",
        size = 14,
-       family = "Verdana"
+       family = "Arial"
        ),
        panel.background = element_rect(fill = "white", colour = "grey50")
        ) + labs(title = "Linear regression between EC50 and EC50(D) values of Picoxystrobin ", x =
@@ -1221,7 +1218,7 @@ fig.2 <- ggplot(final.picoxystrobin.DC.0.01,
 
 ```{r}
 final.picoxystrobin
-fig.2
+#fig.2
 ```
 
 ##  Use of the Discriminatory Concentration (DC) 
@@ -1359,11 +1356,11 @@ plot.pico <- picoxystrobin.complete%>%
     axis.text = element_text(
       face = "bold",
       size = 7,
-      family = "Verdana"
+      family = "Arial"
     ),
     panel.background = element_rect(fill = "white", colour = "grey50")
   )
-plot.pico
+#plot.pico
 
 #Range of EC50)DC
 bye <- (max(picoxystrobin.complete$EC50DC)-min(picoxystrobin.complete$EC50DC))/7
@@ -1386,26 +1383,26 @@ mutate(group =ifelse(
                               ifelse(EC50DC <= picoxystrobin_group7, 7, 0
          ) )))))))
 
-picoxystrobin.complete.groups%>%
-group_by(source, group) %>%
-summarize(N_isolates= n()) %>%
-ggplot(aes(x = group, y= N_isolates, fill= source)) +
-geom_bar(stat = "identity", position=position_dodge()) +
-geom_smooth(method = "loess", se = FALSE, aes(color= source))+
-theme_minimal() +
-  labs( x = "EC50DC", y = "Number of isolates") + theme(
-    panel.border = element_rect(colour = "black", fill=NA, size=1),
-    axis.title = element_text(size = 12, face = "bold", hjust = 0.5),
-    axis.text = element_text(
-      face = "bold",
-      size = 12,
-      family = "Verdana"
-    ),
-    panel.background = element_rect(fill = "white", colour = "grey50" )
-  ) 
-
-
-
+# picoxystrobin.complete.groups%>%
+# group_by(source, group) %>%
+# summarize(N_isolates= n()) %>%
+# ggplot(aes(x = group, y= N_isolates, fill= source)) +
+# geom_bar(stat = "identity", position=position_dodge()) +
+# geom_smooth(method = "loess", se = FALSE, aes(color= source))+
+# theme_minimal() +
+#   labs( x = "EC50DC", y = "Number of isolates") + theme(
+#     panel.border = element_rect(colour = "black", fill=NA, size=1),
+#     axis.title = element_text(size = 12, face = "bold", hjust = 0.5),
+#     axis.text = element_text(
+#       face = "bold",
+#       size = 12,
+#       family = "Arial"
+#     ),
+#     panel.background = element_rect(fill = "white", colour = "grey50" )
+#   ) 
+# 
+# 
+# 
 
 ```
 
@@ -1443,30 +1440,30 @@ plot.pico.2 <- picoxystrobin.complete%>%
     axis.text = element_text(
       face = "bold",
       size = 7,
-      family = "Verdana"
+      family = "Arial"
     ),
     panel.background = element_rect(fill = "white", colour = "grey50")
   )
-plot.pico.2
+#plot.pico.2
 
-picoxystrobin.complete.groups%>%
-group_by(Host, group) %>%
-summarize(N_isolates= n()) %>%
-ggplot(aes(x = group, y= N_isolates, fill= Host)) +
-geom_bar(stat = "identity", position=position_dodge()) +
-geom_smooth(method = "loess", se = FALSE, aes(color= Host))+
-theme_minimal() +
-  labs( x = "EC50DC", y = "Number of isolates") + theme(
-    panel.border = element_rect(colour = "black", fill=NA, size=1),
-    axis.title = element_text(size = 12, face = "bold", hjust = 0.5),
-    axis.text = element_text(
-      face = "bold",
-      size = 12,
-      family = "Verdana"
-    ),
-    panel.background = element_rect(fill = "white", colour = "grey50" )
-  ) 
-
+# picoxystrobin.complete.groups%>%
+# group_by(Host, group) %>%
+# summarize(N_isolates= n()) %>%
+# ggplot(aes(x = group, y= N_isolates, fill= Host)) +
+# geom_bar(stat = "identity", position=position_dodge()) +
+# geom_smooth(method = "loess", se = FALSE, aes(color= Host))+
+# theme_minimal() +
+#   labs( x = "EC50DC", y = "Number of isolates") + theme(
+#     panel.border = element_rect(colour = "black", fill=NA, size=1),
+#     axis.title = element_text(size = 12, face = "bold", hjust = 0.5),
+#     axis.text = element_text(
+#       face = "bold",
+#       size = 12,
+#       family = "Arial"
+#     ),
+#     panel.background = element_rect(fill = "white", colour = "grey50" )
+#   ) 
+# 
 
 ```
 
@@ -1576,13 +1573,13 @@ fig.3 <- ggplot(final.tetraconazole.DC.2,
         size = 10, 
         face = "bold", 
         hjust = 1,
-        family = "Verdana"
+        family = "Arial"
         ),
         axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
         axis.text = element_text(
           face = "bold",
           size= 14,
-          family= "Verdana"
+          family= "Arial"
           ),
         panel.background = element_rect(fill = "white",colour = "grey50")) + labs(title= "Linear regression between EC50 and EC50(D) values of Tetraconazole", x =
        "EC50 (ppm)", y = "EC50(D) (ppm)") + geom_point(shape=21) + geom_smooth(method = "lm")
@@ -1592,7 +1589,7 @@ fig.3 <- ggplot(final.tetraconazole.DC.2,
 
 ```{r}
 final.tetraconazole
-fig.3
+#fig.3
 ```
 
 
@@ -1728,11 +1725,11 @@ plot.tetra <- tetraconazole.complete%>%
     axis.text = element_text(
       face = "bold",
       size = 7,
-      family = "Verdana"
+      family = "Arial"
     ),
     panel.background = element_rect(fill = "white", colour = "grey50")
   )
-plot.tetra
+#plot.tetra
 
 
 #Range of EC50)DC
@@ -1756,24 +1753,24 @@ mutate(group =ifelse(
                               ifelse(EC50DC <= tetraconazole_group7, 7, 0
          ) )))))))
 
-tetraconazole.complete.groups%>%
-group_by(source, group) %>%
-summarize(N_isolates= n()) %>%
-ggplot(aes(x = group, y= N_isolates, fill= source)) +
-geom_bar(stat = "identity", position=position_dodge()) +
-geom_smooth(method = "loess", se = FALSE, aes(color= source))+
-theme_minimal() +
-  labs( x = "EC50DC", y = "Number of isolates") + theme(
-    panel.border = element_rect(colour = "black", fill=NA, size=1),
-    axis.title = element_text(size = 12, face = "bold", hjust = 0.5),
-    axis.text = element_text(
-      face = "bold",
-      size = 12,
-      family = "Verdana"
-    ),
-    panel.background = element_rect(fill = "white", colour = "grey50" )
-  ) 
-
+# tetraconazole.complete.groups%>%
+# group_by(source, group) %>%
+# summarize(N_isolates= n()) %>%
+# ggplot(aes(x = group, y= N_isolates, fill= source)) +
+# geom_bar(stat = "identity", position=position_dodge()) +
+# geom_smooth(method = "loess", se = FALSE, aes(color= source))+
+# theme_minimal() +
+#   labs( x = "EC50DC", y = "Number of isolates") + theme(
+#     panel.border = element_rect(colour = "black", fill=NA, size=1),
+#     axis.title = element_text(size = 12, face = "bold", hjust = 0.5),
+#     axis.text = element_text(
+#       face = "bold",
+#       size = 12,
+#       family = "Arial"
+#     ),
+#     panel.background = element_rect(fill = "white", colour = "grey50" )
+#   ) 
+# 
 
 
 
@@ -1815,31 +1812,31 @@ plot.tetra.2 <- tetraconazole.complete%>%
     axis.text = element_text(
       face = "bold",
       size = 7,
-      family = "Verdana"
+      family = "Arial"
     ),
     panel.background = element_rect(fill = "white", colour = "grey50")
   )
-plot.tetra.2
+#plot.tetra.2
 
-tetraconazole.complete.groups%>%
-group_by(Host, group) %>%
-summarize(N_isolates= n()) %>%
-ggplot(aes(x = group, y= N_isolates, fill= Host)) +
-geom_bar(stat = "identity", position=position_dodge()) +
-geom_smooth(method = "loess", se = FALSE, aes(color= Host))+
-theme_minimal() +
-  labs( x = "EC50DC", y = "Number of isolates") + theme(
-    panel.border = element_rect(colour = "black", fill=NA, size=1),
-    axis.title = element_text(size = 12, face = "bold", hjust = 0.5),
-    axis.text = element_text(
-      face = "bold",
-      size = 12,
-      family = "Verdana"
-    ),
-    panel.background = element_rect(fill = "white", colour = "grey50" )
-  ) 
-
-
+# tetraconazole.complete.groups%>%
+# group_by(Host, group) %>%
+# summarize(N_isolates= n()) %>%
+# ggplot(aes(x = group, y= N_isolates, fill= Host)) +
+# geom_bar(stat = "identity", position=position_dodge()) +
+# geom_smooth(method = "loess", se = FALSE, aes(color= Host))+
+# theme_minimal() +
+#   labs( x = "EC50DC", y = "Number of isolates") + theme(
+#     panel.border = element_rect(colour = "black", fill=NA, size=1),
+#     axis.title = element_text(size = 12, face = "bold", hjust = 0.5),
+#     axis.text = element_text(
+#       face = "bold",
+#       size = 12,
+#       family = "Arial"
+#     ),
+#     panel.background = element_rect(fill = "white", colour = "grey50" )
+#   ) 
+# 
+# 
 
 ```
 
@@ -1881,6 +1878,7 @@ TM.zz <-   zz%>% rename(ID = sample ) %>%
 ```{r}
 zz
 ```
+
 ```{r Calculus of DC Thiophanate methyl, echo = FALSE}
 #Getting relative growth column at each dose where RG= Relative Growth, eg. RG0.01= Relative Growth at 0.01 ppm 
 RG.TM <- TM.filtered %>% group_by(ID,dose) %>% summarise(mean_response=mean(response,na.rm=TRUE)) %>% spread(dose,mean_response) %>%  mutate(RG0.75=((`0.75`/`0`)*100)) %>% mutate(RG1=((`1`/`0`)*100)) %>% mutate(RG1.5=((`1.5`/`0`)*100)) %>% mutate(RG2=((`2`/`0`)*100)) %>% mutate(RG2.5=((`2.5`/`0`)*100)) %>%  mutate(RG10=((`10`/`0`)*100))
@@ -1963,7 +1961,7 @@ fig.5 <- ggplot(final.TM.DC.2.5, aes(x = Estimate.50, y = Estimate.50DC)) +  the
 
 ```{r}
 final.TM
-fig.5
+#fig.5
 ```
 
 ```{r}
@@ -2019,12 +2017,12 @@ plot.TM <- TM.complete%>%
     axis.text = element_text(
       face = "bold",
       size = 7,
-      family = "Verdana"
+      family = "Arial"
     ),
     panel.background = element_rect(fill = "white", colour = "grey50" )
   )
 
-plot.TM
+#plot.TM
 
 
 ```
@@ -2078,11 +2076,11 @@ plot.TM.2 <- TM.complete%>%
     axis.text = element_text(
       face = "bold",
       size = 7,
-      family = "Verdana"
+      family = "Arial"
     ),
     panel.background = element_rect(fill = "white", colour = "grey50")
   )
-plot.TM.2
+#plot.TM.2
 
 ```
 
@@ -2195,7 +2193,7 @@ ungroup() %>%
   filter(RG >19) %>% # More than 20 % arbitrarily selected
 select(ID)
   
-TM.data
+#TM.data
 
 ```
 
