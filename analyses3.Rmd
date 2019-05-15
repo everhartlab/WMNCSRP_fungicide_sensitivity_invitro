@@ -1,7 +1,8 @@
 ---
 title: "Survey fungicide sensitivity of S. sclerotiorum from drybean and soybean from the U.S."
 output: 
-  pdf_document
+ pdf_document: default
+
    
  
 ---
@@ -580,7 +581,6 @@ SI_Production_Field <- c( 698:741, 743:744, 746:760, 762: 778,
 
 SI_Screening_Nursery_Field <- c(444:454, 457:465, 467, 469, 472:477, 555: 582, 584: 601, 611, 636:670, 673:681,691:694, 798:809, 824: 833 , 836:847)# also taking into account WM Monitor 
 
-Fungicide_field_trials <- 
 
 #Fungicides single mode of action
 Group_one <- c("thiophanate_methyl")
@@ -1960,7 +1960,7 @@ fig.5 <- ggplot(final.TM.DC.2.5, aes(x = Estimate.50, y = Estimate.50DC)) +  the
 ```
 
 ```{r}
-final.TM
+#final.TM
 #fig.5
 ```
 
@@ -2288,6 +2288,7 @@ TRUE ~ NA_real_)) %>%
             Group=="Group_11") %>% 
   arrange(Group) %>% 
   ungroup() %>% 
+  arrange(Group) %>% 
   mutate(sum_outliers = rowSums(.[9:12], na.rm = TRUE)) #columns 9:12 have the number of respective fungicide outliers
 
 summary_fungicide_outliers <- Compendium %>% 
@@ -2307,10 +2308,10 @@ num_isolates_selected <- fields_more_4 %>%
   filter(bos ==3, pico==3, tetra == 3, TM==3 ) %>% #filter all NO tested, NA or 3
   group_by(Group, Field) %>% 
   select(-c( bos, pico, tetra, TM, sum_outliers)) %>% 
-  mutate(N_iso_not_tested= n()) %>%# countig those tested
+  mutate(N_iso_not_tested= n()) %>%# counting those not tested
   mutate(N_iso_tested= N_iso_perfield-N_iso_not_tested) %>% #subtracting
   mutate(N_iso_to_pick = ifelse(N_iso_perfield >= 10, 10,
-                                N_iso_perfield  )) %>% #if there is more than 10 converting to t10 if is less than 10, keoin the sourceal number
+                                N_iso_perfield  )) %>% #if there is more than 10 converting to 10, if is less than 10: keeping the source number
   mutate(N_iso_to_pick = N_iso_to_pick - N_iso_tested  )%>% #subtracting
     select(-c(Host, source)) %>% 
    mutate(N_iso_to_pick_extra =  
@@ -2328,53 +2329,114 @@ select_max_iso_field <- num_isolates_selected %>%
 #dataframe the real total to use. This is being done
 #so that we can have mutual isolates across fungicides
 
-selected_isolates <- num_isolates_selected %>%
+isolates_field <- num_isolates_selected %>%
   left_join(select_max_iso_field) %>% 
-  ungroup() %>% 
-  group_by(Field) %>% 
-  sample_n(size = Nmax_per_field) %>% #randomly sampling
   arrange(Group) %>% 
   rename(Nperfield = N_iso_perfield , 
          Ntested = N_iso_tested, 
          Nselect  = N_iso_to_pick,
-         Nextra = N_iso_to_pick_extra)
-## Informaton about the new isolates selected to be tested
-id_selected_isolates <- selected_isolates %>% 
-  select(ID, Field)
-
-info_selected_isolates <- selected_isolates %>% 
-  select(-ID) %>% 
-  unique() %>% 
-  group_by(Field, Group) %>% 
-  arrange(Group)
-
-set.seed(2016)# to be randomly the same 
-final_data_isolates <- id_selected_isolates %>% 
-  left_join(info_selected_isolates) %>% 
-  arrange(Group) %>% 
-  group_by(Field, Group) %>% 
-  sample_n(size = Nextra) %>% 
-  select(ID, Group, State, Year, Field, Nperfield, N_iso_not_tested, Ntested, Nselect, Nextra, Nmax_per_field) %>% 
+         Nextra = N_iso_to_pick_extra) %>% 
   ungroup() %>% 
-   mutate(Group = recode(Group, Group_one = 1, Group_3 =  3, Group_7 = 7, Group_11 = 11)) %>% 
-  arrange(Group) %>% 
-  filter(Group == 7) %>% 
-  arrange(ID) %>%
-  slice(1:27) 
-  
- final_data_isolates
+  mutate(Group = recode(Group, Group_one = 1, 
+                        Group_3 =  3, Group_7 = 7, Group_11 = 11)) %>% 
+  mutate(Random_sampling_possible = case_when(
+    N_iso_not_tested == Nmax_per_field ~ FALSE,
+    TRUE ~ TRUE
+    ))
 
+selected_remaining_iso_field_grp <- isolates_field %>% 
+  filter(Random_sampling_possible == FALSE) %>% 
+  select(-Random_sampling_possible) %>% 
+  group_by(Field) #Each of these fields has one grp by chance.
+
+randomly_selected_iso_field_grp <- isolates_field %>% 
+  filter(Random_sampling_possible == TRUE) %>% 
+  select(-Random_sampling_possible) %>% 
+  group_by(Field) %>% 
+  sample_n(size = Nmax_per_field)
+
+# selected_isolates_field <- num_isolates_selected %>%
+#   left_join(select_max_iso_field) %>% 
+#   ungroup() %>% 
+#   group_by(Field) %>% 
+#   sample_n(size = Nmax_per_field) %>% #randomly sampling: interestingly no error. There should be an error as some fields have the same no. of isolates as can be used for sampling
+#   arrange(Group) %>% 
+#   rename(Nperfield = N_iso_perfield , 
+#          Ntested = N_iso_tested, 
+#          Nselect  = N_iso_to_pick,
+#          Nextra = N_iso_to_pick_extra) %>% 
+#   mutate(Group = recode(Group, Group_one = 1, 
+#                         Group_3 =  3, Group_7 = 7, Group_11 = 11))
+
+field_group_info <- selected_isolates_field %>% 
+  select(-ID) %>% 
+  unique()
+
+# data_isolates <- Compendium %>%
+#   select(ID, Field, Year, State, Group) %>%
+#   mutate(Group = recode(Group, Group_one = 1,
+#                         Group_3 =  3, Group_7 = 7, Group_11 = 11)) %>%
+#   mutate(Remove_tested = case_when(
+#     ID %in% selected_isolates$ID ~ TRUE,
+#     TRUE ~ FALSE
+#     )) %>%
+#   filter(Remove_tested == FALSE) %>%
+#   select(-Remove_tested) %>%
+#   inner_join(field_group_info) %>%
+#   ungroup() %>%
+#   group_by(Field, Group) %>%
+#   mutate(Random_sampling_possible = case_when(
+#     N_iso_not_tested == Nextra ~ FALSE,
+#     TRUE ~ TRUE
+#   ))
+  
+#   left_join(info_selected_isolates) %>% ## GOOD UNTIL HERE
+#   arrange(Group) %>%
+#   group_by(Field, Group) %>%
+#   sample_n(size = Nextra) %>%
+#   select(ID, Group, State, Year, Field, Nperfield, N_iso_not_tested, Ntested, Nselect, Nextra, Nmax_per_field) %>%
+#   ungroup() %>%
+#    mutate(Group = recode(Group, Group_one = 1, Group_3 =  3, Group_7 = 7, Group_11 = 11)) %>%
+#   arrange(Group) %>%
+#   filter(Group == 7) %>%
+#   arrange(ID) %>%
+
+## Informaton about the new isolates selected to be tested
+# id_selected_isolates <- selected_isolates %>% 
+#   select(ID, Field)
+# 
+# info_selected_isolates <- selected_isolates %>% 
+#   select(-ID) %>% 
+#   unique() %>% 
+#   group_by(Field, Group) %>% 
+#   arrange(Group)
+#### Godd before here
+
+# set.seed(2016)# to be randomly the same
+# final_data_isolates <- id_selected_isolates %>%
+#   left_join(info_selected_isolates) %>% ## GOOD UNTIL HERE
+#   arrange(Group) %>%
+#   group_by(Field, Group) %>%
+#   sample_n(size = Nextra) %>%
+#   select(ID, Group, State, Year, Field, Nperfield, N_iso_not_tested, Ntested, Nselect, Nextra, Nmax_per_field) %>%
+#   ungroup() %>%
+#    mutate(Group = recode(Group, Group_one = 1, Group_3 =  3, Group_7 = 7, Group_11 = 11)) %>%
+#   arrange(Group) %>%
+#   filter(Group == 7) %>%
+#   arrange(ID) %>%
+#   slice(16:39)
 #
-SUMMARY.final_data_isolates <- final_data_isolates %>% 
+
+SUMMARY.final_data_isolates <- selected_isolates %>% 
   group_by(Group) %>% 
   summarize(Total_isolates = n()) 
  ##For boscalid test
 
-  final_data_isolates %>% filter(Group == 7) %>% arrange(ID) %>% kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
+  selected_isolates %>% filter(Group == 7) %>% arrange(ID) %>% kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
    write2pdf("List_of_isolates_to_test_BOSCALID.pdf")
 
   
-# final_data_isolates %>%
+# selected_isolates %>%
 #kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
 #   write2pdf("List_of_isolates_to_test.pdf")
 
@@ -2441,7 +2503,7 @@ WM4 <- WM3_ %>%
       as.factor(Fungicide_status), 
     Selection_fungicides = ifelse(
     ID %in% id_selected_isolates$ID, #From the real selected to test
-    "selected", # its better to keep it separate and taht form wI cand differentiate, when I need to filter it should be, == No_tested& selected/no_selected 
+    "selected", # its better to keep it separate and taht form I can differentiate, when I need to filter it should be, == No_tested & selected/no_selected 
     "no_selected") ) %>% 
    mutate(Origin = as.factor(Origin)) %>% 
     mutate(Source = case_when(
