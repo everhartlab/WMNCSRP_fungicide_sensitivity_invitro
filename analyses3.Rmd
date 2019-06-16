@@ -244,8 +244,28 @@ TMdata$ID <- as.numeric(TMdata$ID)
               survey.data.2$ID[ survey.data.2$ID =="78-02"]  <- "2140"
 
              survey.data.3 <- survey.data.2 %>% mutate(ID = as.numeric(ID))
+
+             #Reading and subsetting data of discriminatory dose use
+    survey.data.extended <-  read.csv("data/DD_survey-WMNCSRP_2.csv")
+   survey.data.extended <- survey.data.extended %>%
+     select(ID,experimental_replicate, repeats,     boscalid.ecuatorial,
+    boscalid.polar,
+    control.ecuatorial,
+    control.polar
+    ) %>% mutate(
+       boscalid.growth = (boscalid.ecuatorial + boscalid.polar) / 2,
+       control.growth = (control.ecuatorial + control.polar) / 2
+         )%>%
+     rename(response = boscalid.growth, control = control.growth) %>% 
+    ungroup()  
+    
+   
+    
+             
+         
+
 # reading the inventory Sclerotinia collection with some of my update modifications
-                            WM <- read.csv("data/WM-fixingproductnamesID2573_modifyingforactiveingredient_8.csv", stringsAsFactors = TRUE)
+                            WM <- read.csv("data/WM-fixingproductnamesID2573_modifyingforactiveingredient_10.csv", stringsAsFactors = TRUE)
 WM$Collection_ID <- str_squish(WM$Collection_ID)
 # removing those isolates that are repated and have subsequent ID number becasue they are coming from the previous isolates, for example, 5 & 5A,both are the same, actually 5A is coming from 5,  removing then 5A
 WM2 <- 
@@ -877,6 +897,91 @@ boscalid.filtered. <- boscalid.filtered.survey %>%
   mutate(ID = as.numeric(ID)) %>% 
    select(c(ID, EC50DC)) 
 
+
+##new survey data Using the previous  function in order to take out the outliers
+
+
+survey.data.extended.survey <- survey.data.extended %>%
+  group_by(ID) %>%
+  mutate(response_range = list(get_range(response))) %>%
+  unnest() %>%
+  mutate(control_range = list(get_range(control))) %>%
+  unnest() %>%
+  filter(response <= upper &
+           response >= lower,
+         control <= upper1 & control >= lower1) %>%
+  ungroup() %>%
+  select(c(ID, experimental_replicate, repeats, response, control))
+
+#  Using the model to estimate the EC50DC
+survey.data.extended.survey <- survey.data.extended.survey %>%
+  group_by(ID) %>%
+  summarise(
+  mean_response = mean(response, na.rm = TRUE),
+  mean_control = mean(control, na.rm = TRUE)
+  ) %>%
+  mutate(RG = (mean_response / mean_control) * 100) %>%
+  
+  mutate(Estimate.50DC = exp # exponential is the opposite of log
+        #using the model the intercept and the coefficient of the model
+          (finalRG0.2[[1]][[1]] + finalRG0.2[[1]][[2]] * RG)) %>% ungroup() %>% 
+  rename(EC50DC= Estimate.50DC) %>% 
+  mutate(ID = as.numeric(ID)) %>% 
+   select(c(ID, EC50DC)) 
+###
+
+#Selecting the EC50D from the serial dilution
+boscalid.complete <- final.boscalid.DC %>% 
+ ####WATCH OUT, Based on EC50DC
+   rename(EC50DC = Estimate.50DC) %>% 
+  select(ID, EC50DC) %>% 
+  bind_rows(survey.data.extended.survey) %>% 
+ungroup() %>%  
+  mutate( ID= as.numeric(ID)) %>% 
+  group_by(ID) %>%
+    ungroup() %>% 
+    mutate(source = ifelse(
+    ID %in% baseline_isolates_2,
+    "Baseline",
+    ifelse(
+      ID %in% Farmer_fields,
+      "FF","FFT"
+    )), Host = ifelse(
+    ID %in% drybean,
+    "Drybean", ifelse(
+      ID %in% soybean,
+      "Soybean","different_host"
+    ))) %>% 
+    mutate(source = as.factor(source), Host= as.factor(Host)) %>% 
+#taking out "different host" becuse does not belong to drybean nor soybean
+  filter(!ID == 8,!ID == 129 ) %>% 
+  filter(ID == 568)
+
+
+
+##NORMALITY TEST-Shapiro_test
+
+shapiro.test.boscal.extended <-boscalid.complete %>%
+  group_by(ID) %>%
+  do(tidy(shapiro.test(.$EC50DC)))
+shapiro.test.boscal.extended
+# there are nomal
+
+ #by ID
+
+object.1 <-aov (EC50DC ~ ID, data = boscalid.complete)
+
+#There is difference p-value = 1.25 *10 -05
+
+object.2 <-  DunnTest(EC50DC ~ source, data = boscalid.complete, method = "bonferroni")
+#P VALUE 0.00057 *** FF-Baseline
+#P VALUE 0.00093 *** FFT-FF
+
+
+
+
+
+
 ```
 
 ```{r, echo= FALSE}
@@ -1309,6 +1414,7 @@ picoxystrobin.complete <- final.picoxystrobin.DC %>%
 ####### pico
 
 
+##Watch out it is missing firts to normalize th EC50values, even though they are not normals
 ##NORMALITY TEST-Shapiro_test
 
 shapiro.test.pico <-picoxystrobin.complete %>%
@@ -2502,7 +2608,7 @@ WM4 <- WM3_ %>%
     Fungicide_status= 
       as.factor(Fungicide_status), 
     Selection_fungicides = ifelse(
-    ID %in% id_selected_isolates$ID, #From the real selected to test
+    ID %in% selected_isolates$ID, #From the real selected to test, here the change
     "selected", # its better to keep it separate and taht form I can differentiate, when I need to filter it should be, == No_tested & selected/no_selected 
     "no_selected") ) %>% 
    mutate(Origin = as.factor(Origin)) %>% 
