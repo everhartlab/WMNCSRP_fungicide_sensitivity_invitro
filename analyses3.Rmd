@@ -1,10 +1,10 @@
 ---
-title: "Survey fungicide sensitivity of S. sclerotiorum from drybean and soybean from the U.S."
-output: 
- pdf_document: default
-
-   
- 
+title: Survey fungicide sensitivity of S. sclerotiorum from drybean and soybean from
+  the U.S.
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
 ---
 
  
@@ -259,8 +259,30 @@ TMdata$ID <- as.numeric(TMdata$ID)
      rename(response = boscalid.growth, control = control.growth) %>% 
     ungroup()  
     
+   #Discriminatory dose picoxystrobin
    
+    survey.data.picoxystrobin <- 
+      read.csv("data/DD_survey-WMNCSRP_picoxystrobin.csv")
+    survey.data.picoxystrobin <-survey.data.picoxystrobin %>% 
+select(ID, repeats, experimental_replicate, sham.ecuatorial, sham.polar, picoxystrobin.ecuatorial, picoxystrobin.polar) %>% 
+      # group_by(
+      #   ID,
+      #   repeats,
+      #   experimental_replicate,
+      #   sham.ecuatorial,
+      #   sham.polar,
+      #   picoxystrobin.ecuatorial,
+      #   picoxystrobin.polar
+      #   )  %>%
+        mutate(
+    sham.growth = ((sham.ecuatorial + sham.polar) / 2),
+    picoxystrobin.growth = ((
+    picoxystrobin.ecuatorial + picoxystrobin.polar
+    ) / 2), ID = as.character(ID)) %>% 
+      select(ID, repeats, experimental_replicate, sham.growth, picoxystrobin.growth)
     
+    
+
              
          
 
@@ -970,7 +992,7 @@ shapiro.test.boscal.extended
  #by ID
 
 object.1 <-aov (EC50DC ~ ID, data = boscalid.complete)
-
+## check this out because if they are normal I can use whicever host test
 #There is difference p-value = 1.25 *10 -05
 
 object.2 <-  DunnTest(EC50DC ~ source, data = boscalid.complete, method = "bonferroni")
@@ -1334,10 +1356,11 @@ picoxystrobin_data <- survey.data.3 %>%
   repeats,
   experimental_replicate,
   picoxystrobin.growth,
-  sham.growth,
-  control.growth
+  sham.growth
   ) %>%
-  rename(response = picoxystrobin.growth, control = sham.growth) %>% select(-control.growth) 
+  rbind(survey.data.picoxystrobin) %>% 
+  
+  rename(response = picoxystrobin.growth, control = sham.growth)  
 
 # Using the function in order to take out the outliers
 picoxystrobin.filtered.survey <- picoxystrobin_data %>%
