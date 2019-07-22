@@ -2398,6 +2398,7 @@ plot_tetra
 ```
 
 ```{r}
+#Taking out uncertain host isolates
 boscalid_complete_4 <- boscalid_complete_3 %>% filter(!ID == "8" & !ID == "129")
 plot_bos_2 <- boscalid_complete_4%>%
   ggplot(aes(x = Host, y = EC50)) +
@@ -2600,7 +2601,7 @@ boscalid_xx2 <- boscalid_xx %>%
   select(ID, EC50)
 #No more this
 # final_boscalid_DC <- final_boscalid_DC %>% select(ID, Estimate.50DC)
-####WATCH OUT, Iam naming EC50 although for boscalide filtered realy is EC50D
+####WATCH OUT, Iam naming EC50 although for boscalide filtered really is EC50D
 boscalid_filtered_2 <- boscalid_filtered_ %>% 
 rename( EC50 =  Estimate.50DC)
 boscalid_complete <-  rbind.data.frame(boscalid_xx2, boscalid_filtered_2)
