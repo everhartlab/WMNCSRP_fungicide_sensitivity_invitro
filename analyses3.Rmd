@@ -243,23 +243,47 @@ TMdata$ID <- as.numeric(TMdata$ID)
              survey.data.2$ID[ survey.data.2$ID =="419"]  <- "2385"
               survey.data.2$ID[ survey.data.2$ID =="78-02"]  <- "2140"
 
-             survey.data.3 <- survey.data.2 %>% mutate(ID = as.numeric(ID))
+             survey.data.3 <- survey.data.2 %>% mutate(ID = as.numeric(ID)) %>% mutate(new= "No")
 
              #Reading and subsetting data of discriminatory dose use
-    survey.data.extended <-  read.csv("data/DD_survey-WMNCSRP_2.csv")
-   survey.data.extended <- survey.data.extended %>%
-     select(ID,experimental_replicate, repeats,     boscalid.ecuatorial,
-    boscalid.polar,
-    control.ecuatorial,
-    control.polar
-    ) %>% mutate(
-       boscalid.growth = (boscalid.ecuatorial + boscalid.polar) / 2,
-       control.growth = (control.ecuatorial + control.polar) / 2
-         )%>%
-     rename(response = boscalid.growth, control = control.growth) %>% 
-    ungroup()  
-    
-   #Discriminatory dose picoxystrobin
+   #  survey.data.extended <-  read.csv("data/DD_survey-WMNCSRP_2.csv")
+   # survey.data.extended <- survey.data.extended %>%
+   #   select(ID,experimental_replicate, repeats,     boscalid.ecuatorial,
+   #  boscalid.polar,
+   #  control.ecuatorial,
+   #  control.polar
+   #  ) %>% mutate(
+   #     boscalid.growth = (boscalid.ecuatorial + boscalid.polar) / 2,
+   #     control.growth = (control.ecuatorial + control.polar) / 2
+   #       )%>%
+   #   rename(response = boscalid.growth, control = control.growth) %>% 
+   #  ungroup()  
+   #  
+  #Discriminatory dose boscalid
+   
+    survey.data.boscalid <- 
+      read.csv("data/DD_survey-WMNCSRP_boscalid.csv")
+    survey.data.boscalid <-survey.data.boscalid %>% 
+select(ID, repeats, experimental_replicate, control.ecuatorial_30hr, control.polar_30hr, boscalid.ecuatorial.30hr, boscalid.polar_30hr) %>% 
+      # group_by(
+      #   ID,
+      #   repeats,
+      #   experimental_replicate,
+      #   sham.ecuatorial,
+      #   sham.polar,
+      #   boscalid.ecuatorial,
+      #   boscalid.polar
+      #   )  %>%
+        mutate(
+    control.growth = ((control.polar_30hr + control.ecuatorial_30hr) / 2),
+    boscalid.growth = ((
+    boscalid.ecuatorial.30hr + boscalid.polar_30hr
+    ) / 2), ID = as.character(ID), new= "Yes") %>% 
+      select(ID, repeats, experimental_replicate, control.growth, boscalid.growth, new)
+  
+   
+   
+    #Discriminatory dose picoxystrobin
    
     survey.data.picoxystrobin <- 
       read.csv("data/DD_survey-WMNCSRP_picoxystrobin.csv")
@@ -278,8 +302,8 @@ select(ID, repeats, experimental_replicate, sham.ecuatorial, sham.polar, picoxys
     sham.growth = ((sham.ecuatorial + sham.polar) / 2),
     picoxystrobin.growth = ((
     picoxystrobin.ecuatorial + picoxystrobin.polar
-    ) / 2), ID = as.character(ID)) %>% 
-      select(ID, repeats, experimental_replicate, sham.growth, picoxystrobin.growth)
+    ) / 2), ID = as.character(ID), new= "Yes") %>% 
+      select(ID, repeats, experimental_replicate, sham.growth, picoxystrobin.growth, new)
     
     
 
@@ -694,8 +718,29 @@ WM3_ <- WM3%>%
     ) )   
 
 
-  
+  MI_East_Lansing <- WM3_ %>% 
+  filter(WM3_$Field== "lan") %>% 
+  pull(ID)
+IA_Nashua <- WM3_ %>% 
+  filter(WM3_$Field== "na") %>% 
+  pull(ID)
+WI_Hancock <- WM3_ %>% 
+  filter(WM3_$Field== "han") %>% 
+  pull(ID)
+MI_Montcalm_2017 <- WM3_ %>% 
+  filter(WM3_$Field== "mon") %>% 
+  pull(ID)
+MI_Montcalm_2015 <- WM3_ %>% 
+  filter(WM3_$Field== "mont") %>% 
+  pull(ID)
+WI_Cerny <- WM3_ %>% 
+  filter(WM3_$Field== "cer") %>% 
+  pull(ID)
 
+potato <- c(2570:2573)
+
+mexican.isolates <- c(242, 248, 615:632, 779, 1857: 1940)
+brazilian.isolates <-  c(400:402, 972:979, 1010:1022, 1227:1254, 2417:2569)
 ```
 # Collection
 In 2016, and 2017, we conducted a survey of _S. sclerotiorum_ from soybean in NE, IA, WI, and MI, resulting in a collection of 1,369 isolates, which included farmer fields and fungicide field trials. In 2003 to 2012, 366 isolates were collected and characterized previously from white mold screening nurseries or producer fields throughout dry bean and snap bean production areas across the US, with others collected in prior years.  
@@ -774,7 +819,7 @@ boscalid.xx <-
 
 ```
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, include= FALSE}
 xx
 ```
 
@@ -887,8 +932,9 @@ boscalid_data <- survey.data.3 %>%
          repeats,
          experimental_replicate,
          boscalid.growth,
-         control.growth) %>%
-  rename(response = boscalid.growth, control = control.growth) 
+         control.growth, new) %>%
+  rbind(survey.data.boscalid) %>% 
+  rename(response = boscalid.growth, control = control.growth) %>% mutate(new= as.factor(new))
 
 # Using the previous  function in order to take out the outliers
 boscalid.filtered.survey <- boscalid_data %>%
@@ -901,7 +947,13 @@ boscalid.filtered.survey <- boscalid_data %>%
            response >= lower,
          control <= upper1 & control >= lower1) %>%
   ungroup() %>%
-  select(c(ID, experimental_replicate, repeats, response, control))
+  select(c(ID, experimental_replicate, repeats, response, control, new))
+
+#Creating a vector object with yes for new tested
+boscalid.filtered.survey.yes <- boscalid.filtered.survey %>% filter(boscalid.filtered.survey$new== "Yes") %>% 
+  mutate(new =  as.factor(new)) %>% 
+  pull(ID) %>% unique() %>% as.numeric()
+
 
 #  Using the model to estimate the EC50DC
 boscalid.filtered. <- boscalid.filtered.survey %>%
@@ -917,85 +969,93 @@ boscalid.filtered. <- boscalid.filtered.survey %>%
           (finalRG0.2[[1]][[1]] + finalRG0.2[[1]][[2]] * RG)) %>% ungroup() %>% 
   rename(EC50DC= Estimate.50DC) %>% 
   mutate(ID = as.numeric(ID)) %>% 
-   select(c(ID, EC50DC)) 
+   select(c(ID, EC50DC)) %>% 
+  mutate(new = ifelse(
+    ID %in% boscalid.filtered.survey.yes,
+    "Yes","No")) 
+
+boscalid.filtered. <- boscalid.filtered. %>% 
+  mutate(new= as.factor(new))
 
 
-##new survey data Using the previous  function in order to take out the outliers
-
-
-survey.data.extended.survey <- survey.data.extended %>%
-  group_by(ID) %>%
-  mutate(response_range = list(get_range(response))) %>%
-  unnest() %>%
-  mutate(control_range = list(get_range(control))) %>%
-  unnest() %>%
-  filter(response <= upper &
-           response >= lower,
-         control <= upper1 & control >= lower1) %>%
-  ungroup() %>%
-  select(c(ID, experimental_replicate, repeats, response, control))
-
-#  Using the model to estimate the EC50DC
-survey.data.extended.survey <- survey.data.extended.survey %>%
-  group_by(ID) %>%
-  summarise(
-  mean_response = mean(response, na.rm = TRUE),
-  mean_control = mean(control, na.rm = TRUE)
-  ) %>%
-  mutate(RG = (mean_response / mean_control) * 100) %>%
-  
-  mutate(Estimate.50DC = exp # exponential is the opposite of log
-        #using the model the intercept and the coefficient of the model
-          (finalRG0.2[[1]][[1]] + finalRG0.2[[1]][[2]] * RG)) %>% ungroup() %>% 
-  rename(EC50DC= Estimate.50DC) %>% 
-  mutate(ID = as.numeric(ID)) %>% 
-   select(c(ID, EC50DC)) 
-###
+# ##new survey data Using the previous  function in order to take out the outliers
+# 
+# 
+# survey.data.extended.survey <- survey.data.extended %>%
+#   group_by(ID) %>%
+#   mutate(response_range = list(get_range(response))) %>%
+#   unnest() %>%
+#   mutate(control_range = list(get_range(control))) %>%
+#   unnest() %>%
+#   filter(response <= upper &
+#            response >= lower,
+#          control <= upper1 & control >= lower1) %>%
+#   ungroup() %>%
+#   select(c(ID, experimental_replicate, repeats, response, control))
+# 
+# #  Using the model to estimate the EC50DC
+# survey.data.extended.survey <- survey.data.extended.survey %>%
+#   group_by(ID) %>%
+#   summarise(
+#   mean_response = mean(response, na.rm = TRUE),
+#   mean_control = mean(control, na.rm = TRUE)
+#   ) %>%
+#   mutate(RG = (mean_response / mean_control) * 100) %>%
+#   
+#   mutate(Estimate.50DC = exp # exponential is the opposite of log
+#         #using the model the intercept and the coefficient of the model
+#           (finalRG0.2[[1]][[1]] + finalRG0.2[[1]][[2]] * RG)) %>% ungroup() %>% 
+#   rename(EC50DC= Estimate.50DC) %>% 
+#   mutate(ID = as.numeric(ID)) %>% 
+#    select(c(ID, EC50DC)) 
+# #
+# boscalid.filtered.survey.yes <- boscalid.filtered.survey %>% filter(boscalid.filtered.survey$new== "Yes") %>% pull(ID) %>% unique()
+# ###
 
 #Selecting the EC50D from the serial dilution
-boscalid.complete <- final.boscalid.DC %>% 
- ####WATCH OUT, Based on EC50DC
-   rename(EC50DC = Estimate.50DC) %>% 
-  select(ID, EC50DC) %>% 
-  bind_rows(survey.data.extended.survey) %>% 
-ungroup() %>%  
-  mutate( ID= as.numeric(ID)) %>% 
-  group_by(ID) %>%
-    ungroup() %>% 
-    mutate(source = ifelse(
-    ID %in% baseline_isolates_2,
-    "Baseline",
-    ifelse(
-      ID %in% Farmer_fields,
-      "FF","FFT"
-    )), Host = ifelse(
-    ID %in% drybean,
-    "Drybean", ifelse(
-      ID %in% soybean,
-      "Soybean","different_host"
-    ))) %>% 
-    mutate(source = as.factor(source), Host= as.factor(Host)) %>% 
-#taking out "different host" becuse does not belong to drybean nor soybean
-  filter(!ID == 8,!ID == 129 ) %>% 
-  filter(ID == 568)
-
+# boscalid.complete <- final.boscalid.DC %>% 
+#  ####WATCH OUT, Based on EC50DC
+#    rename(EC50DC = Estimate.50DC) %>% 
+#   select(ID, EC50DC) %>% 
+#   bind_rows(survey.data.extended.survey) %>% 
+# ungroup() %>%  
+#   mutate( ID= as.numeric(ID)) %>% 
+#   group_by(ID) %>%
+#     ungroup() %>% 
+#     mutate(source = ifelse(
+#     ID %in% baseline_isolates_2,
+#     "Baseline",
+#     ifelse(
+#       ID %in% Farmer_fields,
+#       "FF","FFT"
+#     )), Host = ifelse(
+#     ID %in% drybean,
+#     "Drybean", ifelse(
+#       ID %in% soybean,
+#       "Soybean","different_host"
+#     ))) %>% 
+#     mutate(source = as.factor(source), Host= as.factor(Host)) %>% 
+# #taking out "different host" becuse does not belong to drybean nor soybean
+#   filter(!ID == 8,!ID == 129 ) %>% 
+#   filter(ID == 568)
+# 
 
 
 ##NORMALITY TEST-Shapiro_test
-
-shapiro.test.boscal.extended <-boscalid.complete %>%
-  group_by(ID) %>%
-  do(tidy(shapiro.test(.$EC50DC)))
-shapiro.test.boscal.extended
+#check this
+# shapiro.test.boscal.extended <-boscalid.complete %>%
+#   group_by(ID) %>%
+#   do(tidy(shapiro.test(.$EC50DC)))
+# shapiro.test.boscal.extended
 # there are nomal
 
  #by ID
 
-object.1 <-aov (EC50DC ~ ID, data = boscalid.complete)
+#object.1 <-aov (EC50DC ~ ID, data = boscalid.complete)
 ## check this out because if they are normal I can use whicever host test
 #There is difference p-value = 1.25 *10 -05
 
-object.2 <-  DunnTest(EC50DC ~ source, data = boscalid.complete, method = "bonferroni")
+#object.2 <-  DunnTest(EC50DC ~ source, data = boscalid.complete, method = "bonferroni")
 #P VALUE 0.00057 *** FF-Baseline
 #P VALUE 0.00093 *** FFT-FF
 
@@ -1006,11 +1066,11 @@ object.2 <-  DunnTest(EC50DC ~ source, data = boscalid.complete, method = "bonfe
 
 ```
 
-```{r, echo= FALSE}
+```{r, echo= FALSE, include= FALSE }
 boscalid.filtered.
 ```
 
-```{r wrangling Boscalid, echo = FALSE}
+```{r wrangling Boscalid, echo = FALSE, warning= FALSE}
 
 #Selecting the EC50D from the serial dilution
 boscalid.complete <- final.boscalid.DC %>% 
@@ -1018,10 +1078,42 @@ boscalid.complete <- final.boscalid.DC %>%
    rename(EC50DC = Estimate.50DC) %>% 
   select(ID, EC50DC) %>% 
   bind_rows(boscalid.filtered.) %>% 
-ungroup() %>%  
+ungroup() 
+
+## Testing controls between Serial dilution and Duscriminatory concentration
+
+boscalid.controls <- boscalid.complete$ID[duplicated(boscalid.complete$ID)]
+# 21 repeats
+
+boscalid.complete.controls <- boscalid.complete %>% 
+  mutate(controls = ifelse(
+    ID %in% boscalid.controls,
+    "Yes", "No")) %>% 
+  filter(controls== "Yes")
+ 
+## Normality test
+
+shapiro.test.boscal.controls <- boscalid.complete.controls  %>%
+  do(tidy(shapiro.test(.$EC50DC)))
+
+shapiro.test.boscal.controls
+
+# All normals, t- test since the sample size for each sampe is 2, in other words grouping by ID
+
+tested.bocalid.controls <- boscalid.complete.controls %>% 
+  group_by(ID) %>% 
+do(tidy(t.test(.$EC50DC))) %>% 
+  filter(p.value<= 0.05)
+
+tested.bocalid.controls
+
+##From the 21, there are 4 that are statistically differenet
+
+# keeping juts the highest value of the repeated ID value and taking out Mexico and Brazil
+boscalid.complete<- boscalid.complete%>%  
   mutate( ID= as.numeric(ID)) %>% 
   group_by(ID) %>%
-  top_n(1, EC50DC) %>%
+  top_n(1, EC50DC) %>% #keeping the highest value of each ID value
   ungroup() %>% 
     mutate(source = ifelse(
     ID %in% baseline_isolates_2,
@@ -1033,27 +1125,127 @@ ungroup() %>%
     ID %in% drybean,
     "Drybean", ifelse(
       ID %in% soybean,
-      "Soybean","different_host"
-    ))) %>% 
-    mutate(source = as.factor(source), Host= as.factor(Host)) %>% 
+      "Soybean","different_host")),
+       Field = ifelse(
+  ID %in% MI_East_Lansing,
+  "MI:East_Lansing",
+  ifelse(
+  ID %in% IA_Nashua,
+  "IA_Nashua",
+  ifelse(
+  ID %in% WI_Hancock,
+  "WI_Hancock",
+  ifelse(
+  ID %in% MI_Montcalm_2017,
+  "MI_Montcalm_2017",
+  ifelse(
+  ID %in% MI_Montcalm_2015,
+  "MI_Montcalm_2015",
+  ifelse(ID %in% potato, 
+         "potato", ifelse(ID %in% baseline_isolates_2, 
+         "No_fungicide_exposure", "other_fields"
+ 
+ )
+  )
+  )
+  )
+  )
+  )
+  )
+ )%>%
+  mutate(
+  source = as.factor(source),
+  Host = as.factor(Host),
+  Field = as.factor(Field)
+  ) %>%    
 #taking out "different host" becuse does not belong to drybean nor soybean
-  filter(!ID == 8,!ID == 129 )
+  filter(!ID == 8, !ID == 129)%>%
+  mutate(Country = ifelse(
+  ID %in% mexican.isolates,
+  "Mexico",
+  ifelse(ID %in% brazilian.isolates,
+  "Brazil", "USA")
+  )) 
+boscalid.complete.2 <- boscalid.complete%>%
+  filter(
+    !Country =="Brazil" & !Country == "Mexico"  
+  )
+boscalid.complete.3 <- boscalid.complete%>% 
+  filter( !Field == "potato", !Field == "other_fields")
+
+
+###
+
+ boscalid.filtered. <- boscalid.filtered. %>%
+  mutate(
+  source = ifelse(
+  ID %in% baseline_isolates_2,
+  "Baseline",
+  ifelse(ID %in% Farmer_fields,
+  "FF", "FFT")
+  ),
+  Host = ifelse(
+  ID %in% drybean,
+  "Drybean",
+  ifelse(ID %in% soybean,
+  "Soybean", "different_host")
+  ),
+  Field = ifelse(
+  ID %in% MI_East_Lansing,
+  "MI:East_Lansing",
+  ifelse(
+  ID %in% IA_Nashua,
+  "IA_Nashua",
+  ifelse(
+  ID %in% WI_Hancock,
+  "WI_Hancock",
+  ifelse(
+  ID %in% MI_Montcalm_2017,
+  "MI_Montcalm_2017",
+  ifelse(
+  ID %in% MI_Montcalm_2015,
+  "MI_Montcalm_2015",
+  ifelse(ID %in% potato, 
+         "potato", "other_field"
+  )
+  )
+  )
+  )
+  )
+  )
+  ) %>%
+  mutate(
+  source = as.factor(source),
+  Host = as.factor(Host),
+  Field = as.factor(Field)
+  ) %>%
+  #taking out "different host" becuse does not belong to drybean nor soybean
+  filter(!ID == 8, !ID == 129) #%>% 
+  #filter( !Field == "potato", !Field == "other_field")
+##
+ boscalid.filtered.2 <- boscalid.filtered. %>%
+  filter( !Field == "potato", !Field == "other_field")
+
+
+
+
 
 ```
 
 
 
 ## Statistical analysis
-### By Source
+### By Field (previous Source)
+No normality
 ```{r, include= FALSE}
 
 
 ##NORMALITY TEST-Shapiro_test
 
-shapiro.test.boscal <- boscalid.complete %>%
-  group_by(source) %>%
-  do(tidy(shapiro.test(.$EC50DC)))
-shapiro.test.boscal 
+# shapiro.test.boscal <- boscalid.complete %>%
+#   group_by(source) %>%
+#   do(tidy(shapiro.test(.$EC50DC)))
+# shapiro.test.boscal 
 
 
 
@@ -1068,10 +1260,43 @@ object.2 <-  DunnTest(EC50DC ~ source, data = boscalid.complete, method = "bonfe
 #P VALUE 0.00057 *** FF-Baseline
 #P VALUE 0.00093 *** FFT-FF
 
+###
+shapiro.test.boscal <- boscalid.filtered.2  %>%
+  do(tidy(shapiro.test(.$EC50DC)))
+
+shapiro.test.boscal
+
+shapiro.test.boscal.2 <- boscalid.filtered.2 %>%
+  group_by(Field) %>%
+  do(tidy(shapiro.test(.$EC50DC)))
+
+shapiro.test.boscal.2 
+
 
 ```
 
-```{r, echo= FALSE}
+```{r}
+shapiro.test.boscal <- boscalid.filtered.2  %>%
+  do(tidy(shapiro.test(.$EC50DC)))
+
+shapiro.test.boscal
+
+shapiro.test.boscal.2 <- boscalid.filtered.2 %>%
+  group_by(Field) %>%
+  do(tidy(shapiro.test(.$EC50DC)))
+
+shapiro.test.boscal.2 
+
+```
+
+#kruskal wallis test
+There is NO difference, P value is 0.07562
+```{r}
+object.1 <- kruskal.test(EC50DC ~ Field, data = boscalid.filtered.2)
+object.1[[3]][[1]] 
+```
+
+```{r, echo= FALSE, include= FALSE}
 shapiro.test.boscal 
 
 object.1 
@@ -1081,7 +1306,7 @@ object.2
 
 
 
-```{r, echo= FALSE}
+```{r, echo= FALSE, include= FALSE}
 plot.bos <- boscalid.complete%>%
   ggplot(aes(x = source, y = EC50DC)) +
   geom_jitter(
@@ -1100,7 +1325,7 @@ plot.bos <- boscalid.complete%>%
     color = "black"
   ) +
   theme_minimal() +
-  labs( x = "source", y = "EC50 (ppm)") + theme(
+  labs( x = "source", y = "EC50DC (ppm)") + theme(
     panel.border = element_rect(colour = "black", fill=NA, size=1),
     axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
     axis.text = element_text(
@@ -1119,6 +1344,77 @@ plot.bos <- boscalid.complete%>%
 ```
 
 ```{r}
+plot.bos.2 <- boscalid.complete.2%>%
+  ggplot(aes(x = source, y = EC50DC)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 21,
+    color = "black",
+    fill = "chartreuse2",
+    size = 2,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 22,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs( x = "source", y = "EC50DC (ppm)") + theme(
+    panel.border = element_rect(colour = "black", fill=NA, size=1),
+    axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 7,
+      family = "Arial"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50" )
+  )
+
+#plot.bos
+
+```
+
+```{r echo= FALSE}
+plot.bos.3 <- boscalid.complete.3%>%
+  ggplot(aes(x = Field, y = EC50DC)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 21,
+    color = "black",
+    fill = "chartreuse2",
+    size = 2,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 22,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs( x = "source", y = "EC50DC (ppm)") + theme(
+    panel.border = element_rect(colour = "black", fill=NA, size=1),
+    axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 7,
+      family = "Arial"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50" )
+  )
+
+plot.bos.3
+
+
+
+
+```
+
+```{r, echo= FALSE}
 hola <- (max(boscalid.complete$EC50DC)-min(boscalid.complete$EC50DC))/7
 boscalid_group1 <- min(boscalid.complete$EC50DC) + hola    
 boscalid_group2 <- min(boscalid.complete$EC50DC) + 2*hola     
@@ -1164,7 +1460,7 @@ mutate(group =ifelse(
 
 
 ### By Host
-```{r, echo = FALSE}
+```{r, echo = FALSE, include= FALSE}
 #by hosts
 
 # No normals
@@ -1181,7 +1477,7 @@ kruskal.test(EC50DC ~ Host, data = boscalid.complete)
 
 
 ```{r, echo = FALSE}
-plot.bos.2 <- boscalid.complete%>%
+plot.bos.4 <- boscalid.complete.3%>%
   ggplot(aes(x = Host, y = EC50DC)) +
   geom_jitter(
     width = .1,
@@ -1199,7 +1495,7 @@ plot.bos.2 <- boscalid.complete%>%
     color = "black"
   ) +
   theme_minimal() +
-  labs( x = "Group", y = "EC50 (ppm)") + theme(
+  labs( x = "Group", y = "EC50DC (ppm)") + theme(
     panel.border = element_rect(colour = "black", fill=NA, size=1),
         axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
     axis.text = element_text(
@@ -1270,12 +1566,12 @@ picoxystrobin.yy <-
 
 ```
 
-```{r}
+```{r, include= FALSE}
 yy
 ```
 
 ## Procedure to get the Discriminatory Concentration (DC)  
-```{r Calculus of DC Picoxystrobin, echo = FALSE, results= "hide"}
+```{r Calculus of DC Picoxystrobin, echo = FALSE, include= FALSE}
 #Getting relative growth column at each dose where RG= Relative Growth, eg. RG0.01= Relative Growth at 0.01 ppm
 RG.picoxystrobin <-
   picoxystrobin.filtered %>% group_by(ID, dose) %>% summarise(mean_response = mean(response, na.rm = TRUE)) %>% spread(dose, mean_response) %>%
@@ -1343,24 +1639,25 @@ fig.2 <- ggplot(final.picoxystrobin.DC.0.01,
 #dev.off()
 ```
 
-```{r}
+```{r, include= FALSE}
 final.picoxystrobin
 #fig.2
 ```
 
 ##  Use of the Discriminatory Concentration (DC) 
 ```{r Using the DC Picoxystrobinand the model, echo = FALSE}
+# combining previous data of DC with new data of DC using 10 isolates per field/plot
 picoxystrobin_data <- survey.data.3 %>%
   select(
   ID,
   repeats,
   experimental_replicate,
   picoxystrobin.growth,
-  sham.growth
+  sham.growth, new
   ) %>%
   rbind(survey.data.picoxystrobin) %>% 
-  
-  rename(response = picoxystrobin.growth, control = sham.growth)  
+    rename(response = picoxystrobin.growth, control = sham.growth)  %>% 
+  mutate(new= as.factor(new))
 
 # Using the function in order to take out the outliers
 picoxystrobin.filtered.survey <- picoxystrobin_data %>%
@@ -1373,8 +1670,12 @@ filter(response <= upper &
 response >= lower,
 control <= upper1 & control >= lower1) %>%
 ungroup() %>%
-select(c(ID, experimental_replicate, repeats, response, control))
+select(c(ID, experimental_replicate, repeats, response, control, new)) %>% 
+  mutate(ID= as.numeric(ID))
   
+
+picoxystrobin.filtered.survey.yes <- picoxystrobin.filtered.survey %>% filter(picoxystrobin.filtered.survey$new== "Yes") %>% pull(ID) %>% unique()
+
 #  Using the model to estimate the EC50DC
 picoxystrobin.filtered. <- picoxystrobin.filtered.survey %>%
   group_by(ID) %>%
@@ -1388,16 +1689,20 @@ picoxystrobin.filtered. <- picoxystrobin.filtered.survey %>%
                   (finalRG0.01[[1]][[1]] + finalRG0.01[[1]][[2]] * RG)) %>%
   ungroup() %>%
   rename(EC50DC= Estimate.50DC) %>% 
-  mutate(ID = as.numeric(ID)) %>% 
-   select(c(ID, EC50DC)) 
-             
+  mutate(ID = as.numeric(ID)) %>%
+   select(c(ID, EC50DC)) %>% 
+mutate(new = ifelse(
+    ID %in% picoxystrobin.filtered.survey.yes,
+    "Yes","No")) 
 
+picoxystrobin.filtered. <- picoxystrobin.filtered. %>% 
+  mutate(new= as.factor(new))
 ```
 
-```{r}
+```{r, include=FALSE}
 picoxystrobin.filtered.
 ```
-```{r}
+```{r, echo= FALSE, }
  #####PICOXYSTROBIN##
 
 #Selecting the EC50D from the serial dilution
@@ -1409,8 +1714,9 @@ picoxystrobin.complete <- final.picoxystrobin.DC %>%
   ungroup() %>%
   mutate( ID= as.numeric(ID)) %>% 
   group_by(ID) %>%
-  top_n(1, EC50DC) %>%
+  top_n(1, EC50DC) %>%# taking out the duplication and keeping the one with highest value
   ungroup() %>% 
+  arrange((EC50DC)) %>% 
   mutate(source = ifelse(
     ID %in% baseline_isolates_2,
     "Baseline",
@@ -1427,13 +1733,67 @@ picoxystrobin.complete <- final.picoxystrobin.DC %>%
   #taking out "different host" becuse does not belong to drybean nor soybean
   filter(!ID == 8,!ID == 129 )
   
-
+##new
+picoxystrobin.filtered. <- picoxystrobin.filtered. %>%
+  mutate(
+  source = ifelse(
+  ID %in% baseline_isolates_2,
+  "Baseline",
+  ifelse(ID %in% Farmer_fields,
+  "FF", "FFT")
+  ),
+  Host = ifelse(
+  ID %in% drybean,
+  "Drybean",
+  ifelse(ID %in% soybean,
+  "Soybean", "different_host")
+  ),
+  Field = ifelse(
+  ID %in% MI_East_Lansing,
+  "MI:East_Lansing",
+  ifelse(
+  ID %in% IA_Nashua,
+  "IA_Nashua",
+  ifelse(
+  ID %in% WI_Hancock,
+  "WI_Hancock",
+  ifelse(
+  ID %in% MI_Montcalm_2017,
+  "MI_Montcalm_2017",
+  ifelse(
+  ID %in% MI_Montcalm_2015,
+  "MI_Montcalm_2015",
+  ifelse(
+  ID %in% WI_Cerny,
+  "WI_Cerny",
+  ifelse(ID %in% potato, 
+         "potato", "other_field"
+  )
+  )
+  )
+  )
+  )
+  )
+  )
+  ) %>%
+  mutate(
+  source = as.factor(source),
+  Host = as.factor(Host),
+  Field = as.factor(Field)
+  ) %>%
+  #taking out "different host" becuse does not belong to drybean nor soybean
+  filter(!ID == 8, !ID == 129) 
+  
+ 
+picoxystrobin.filtered.2 <- picoxystrobin.filtered. %>%
+  filter( !Field == "potato", !Field == "other_field")
+ 
 ```
 
 
 ## Statistical analysis
-### By source
-```{r}
+### By Field (previous source)
+```{r include= FALSE}
 ####### pico
 
 
@@ -1455,22 +1815,42 @@ shapiro.test.pico.2
 
 kruskal.test(EC50DC ~ source, data = picoxystrobin.complete)
 
-#There is NO difference p-value = 0.3702
+#There IS difference p-value = 0.0001368
 
+#
+summary(aov (EC50DC ~ Field, data = picoxystrobin.filtered.))
+shapiro.test.picoXX <- picoxystrobin.filtered. %>% 
+   group_by(Field) %>%
+do(tidy(shapiro.test(.$EC50DC)))
+ shapiro.test.picoXX 
 
 ```
 
-
+# there is normality
 ```{r}
-plot.pico <- picoxystrobin.complete%>%
-  ggplot(aes(x = source, y = EC50DC)) +
+shapiro.test.pico <-picoxystrobin.filtered.2 %>%
+  do(tidy(shapiro.test(.$EC50DC)))
+shapiro.test.pico
+
+shapiro.test.pico.2 <-picoxystrobin.filtered.2 %>%
+  group_by(Field) %>%
+  do(tidy(shapiro.test(.$EC50DC)))
+shapiro.test.pico.2 
+```
+ANOVA, There is no difference, p value is 0.0613
+```{r, echo= FALSE}
+summary(aov (EC50DC ~ Field, data = picoxystrobin.filtered.2))
+
+```
+
+```{r, echo= FALSE, include= FALSE}
+plot.pico <-picoxystrobin.filtered.%>%
+  ggplot(aes(x = source, y = EC50DC, colour= new)) +
   geom_jitter(
     width = .1,
     height = 0,
     shape = 21,
-    color = "black",
-    fill = "chocolate1",
-    size = 2,
+      size = 2,
     alpha = 3 / 4
   ) + stat_summary(
     fun.y = mean,
@@ -1480,7 +1860,7 @@ plot.pico <- picoxystrobin.complete%>%
     color = "black"
   ) +
   theme_minimal() +
-  labs(x = "source", y = "EC50 (ppm)") + theme(panel.border = element_rect(colour = "black", fill=NA, size=1),
+  labs(x = "source", y = "EC50DC (ppm)") + theme(panel.border = element_rect(colour = "black", fill=NA, size=1),
         axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
     axis.text = element_text(
       face = "bold",
@@ -1537,14 +1917,14 @@ mutate(group =ifelse(
 
 ### By Host
 
-```{r}
+```{r include= FALSE}
 #by hosts
 
 kruskal.test(EC50DC ~ Host, data = picoxystrobin.complete)
-#There is NO difference p-value 0.6842
+#There IS difference p-value 0.04489
 ```
 
-```{r}
+```{r, include= FALSE}
 plot.pico.2 <- picoxystrobin.complete%>%
   ggplot(aes(x = Host, y = EC50DC)) +
   geom_jitter(
@@ -1563,7 +1943,7 @@ plot.pico.2 <- picoxystrobin.complete%>%
     color = "black"
   ) +
   theme_minimal() +
-  labs( x = "Group", y = "EC50 (ppm)") + theme(
+  labs( x = "Group", y = "EC50DC (ppm)") + theme(
     panel.border = element_rect(colour = "black", fill=NA, size=1),
         axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
     axis.text = element_text(
@@ -1594,6 +1974,68 @@ plot.pico.2 <- picoxystrobin.complete%>%
 #   ) 
 # 
 
+```
+
+```{r, include= FALSE}
+plot.pico.2 <- picoxystrobin.filtered.%>%
+  ggplot(aes(x = Host, y = EC50DC, colour= new)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 21,
+    size = 2,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 22,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs( x = "Group", y = "EC50DC (ppm)") + theme(
+    panel.border = element_rect(colour = "black", fill=NA, size=1),
+        axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 7,
+      family = "Arial"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+#plot.pico.2
+
+```
+# By field
+```{r, echo= FALSE}
+plot.pico.3 <-picoxystrobin.filtered.2%>%
+  ggplot(aes(x = Field, y = EC50DC)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 21,
+    size = 2,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 22,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs(x = "Field", y = "EC50DC (ppm)") + theme(panel.border = element_rect(colour = "black", fill=NA, size=1),
+                                                 axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+                                                 axis.text = element_text(
+                                                   face = "bold",
+                                                   size = 7,
+                                                   family = "Arial"
+                                                 ),
+                                                 panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+
+
+plot.pico.3
 ```
 
 # Tetraconazole 
@@ -2457,324 +2899,326 @@ select_max_iso_field <- num_isolates_selected %>%
  
 #dataframe the real total to use. This is being done
 #so that we can have mutual isolates across fungicides
+# this part is in other script that Nikita helpd me, called change _analyses_3
 
-isolates_field <- num_isolates_selected %>%
-  left_join(select_max_iso_field) %>% 
-  arrange(Group) %>% 
-  rename(Nperfield = N_iso_perfield , 
-         Ntested = N_iso_tested, 
-         Nselect  = N_iso_to_pick,
-         Nextra = N_iso_to_pick_extra) %>% 
-  ungroup() %>% 
-  mutate(Group = recode(Group, Group_one = 1, 
-                        Group_3 =  3, Group_7 = 7, Group_11 = 11)) %>% 
-  mutate(Random_sampling_possible = case_when(
-    N_iso_not_tested == Nmax_per_field ~ FALSE,
-    TRUE ~ TRUE
-    ))
-
-selected_remaining_iso_field_grp <- isolates_field %>% 
-  filter(Random_sampling_possible == FALSE) %>% 
-  select(-Random_sampling_possible) %>% 
-  group_by(Field) #Each of these fields has one grp by chance.
-
-randomly_selected_iso_field_grp <- isolates_field %>% 
-  filter(Random_sampling_possible == TRUE) %>% 
-  select(-Random_sampling_possible) %>% 
-  group_by(Field) %>% 
-  sample_n(size = Nmax_per_field)
-
-# selected_isolates_field <- num_isolates_selected %>%
+# isolates_field <- num_isolates_selected %>%
 #   left_join(select_max_iso_field) %>% 
-#   ungroup() %>% 
-#   group_by(Field) %>% 
-#   sample_n(size = Nmax_per_field) %>% #randomly sampling: interestingly no error. There should be an error as some fields have the same no. of isolates as can be used for sampling
 #   arrange(Group) %>% 
 #   rename(Nperfield = N_iso_perfield , 
 #          Ntested = N_iso_tested, 
 #          Nselect  = N_iso_to_pick,
 #          Nextra = N_iso_to_pick_extra) %>% 
+#   ungroup() %>% 
 #   mutate(Group = recode(Group, Group_one = 1, 
-#                         Group_3 =  3, Group_7 = 7, Group_11 = 11))
-
-field_group_info <- selected_isolates_field %>% 
-  select(-ID) %>% 
-  unique()
-
-# data_isolates <- Compendium %>%
-#   select(ID, Field, Year, State, Group) %>%
-#   mutate(Group = recode(Group, Group_one = 1,
-#                         Group_3 =  3, Group_7 = 7, Group_11 = 11)) %>%
-#   mutate(Remove_tested = case_when(
-#     ID %in% selected_isolates$ID ~ TRUE,
-#     TRUE ~ FALSE
-#     )) %>%
-#   filter(Remove_tested == FALSE) %>%
-#   select(-Remove_tested) %>%
-#   inner_join(field_group_info) %>%
-#   ungroup() %>%
-#   group_by(Field, Group) %>%
+#                         Group_3 =  3, Group_7 = 7, Group_11 = 11)) %>% 
 #   mutate(Random_sampling_possible = case_when(
-#     N_iso_not_tested == Nextra ~ FALSE,
+#     N_iso_not_tested == Nmax_per_field ~ FALSE,
 #     TRUE ~ TRUE
-#   ))
-  
-#   left_join(info_selected_isolates) %>% ## GOOD UNTIL HERE
-#   arrange(Group) %>%
-#   group_by(Field, Group) %>%
-#   sample_n(size = Nextra) %>%
-#   select(ID, Group, State, Year, Field, Nperfield, N_iso_not_tested, Ntested, Nselect, Nextra, Nmax_per_field) %>%
-#   ungroup() %>%
-#    mutate(Group = recode(Group, Group_one = 1, Group_3 =  3, Group_7 = 7, Group_11 = 11)) %>%
-#   arrange(Group) %>%
-#   filter(Group == 7) %>%
-#   arrange(ID) %>%
-
-## Informaton about the new isolates selected to be tested
-# id_selected_isolates <- selected_isolates %>% 
-#   select(ID, Field)
+#     ))
 # 
-# info_selected_isolates <- selected_isolates %>% 
+# selected_remaining_iso_field_grp <- isolates_field %>% 
+#   filter(Random_sampling_possible == FALSE) %>% 
+#   select(-Random_sampling_possible) %>% 
+#   group_by(Field) #Each of these fields has one grp by chance.
+# 
+# randomly_selected_iso_field_grp <- isolates_field %>% 
+#   filter(Random_sampling_possible == TRUE) %>% 
+#   select(-Random_sampling_possible) %>% 
+#   group_by(Field) %>% 
+#   sample_n(size = Nmax_per_field)
+# 
+# # selected_isolates_field <- num_isolates_selected %>%
+# #   left_join(select_max_iso_field) %>% 
+# #   ungroup() %>% 
+# #   group_by(Field) %>% 
+# #   sample_n(size = Nmax_per_field) %>% #randomly sampling: interestingly no error. There should be an error as some fields have the same no. of isolates as can be used for sampling
+# #   arrange(Group) %>% 
+# #   rename(Nperfield = N_iso_perfield , 
+# #          Ntested = N_iso_tested, 
+# #          Nselect  = N_iso_to_pick,
+# #          Nextra = N_iso_to_pick_extra) %>% 
+# #   mutate(Group = recode(Group, Group_one = 1, 
+# #                         Group_3 =  3, Group_7 = 7, Group_11 = 11))
+# 
+# field_group_info <- selected_isolates_field %>% 
 #   select(-ID) %>% 
+#   unique()
+# 
+# # data_isolates <- Compendium %>%
+# #   select(ID, Field, Year, State, Group) %>%
+# #   mutate(Group = recode(Group, Group_one = 1,
+# #                         Group_3 =  3, Group_7 = 7, Group_11 = 11)) %>%
+# #   mutate(Remove_tested = case_when(
+# #     ID %in% selected_isolates$ID ~ TRUE,
+# #     TRUE ~ FALSE
+# #     )) %>%
+# #   filter(Remove_tested == FALSE) %>%
+# #   select(-Remove_tested) %>%
+# #   inner_join(field_group_info) %>%
+# #   ungroup() %>%
+# #   group_by(Field, Group) %>%
+# #   mutate(Random_sampling_possible = case_when(
+# #     N_iso_not_tested == Nextra ~ FALSE,
+# #     TRUE ~ TRUE
+# #   ))
+#   
+# #   left_join(info_selected_isolates) %>% ## GOOD UNTIL HERE
+# #   arrange(Group) %>%
+# #   group_by(Field, Group) %>%
+# #   sample_n(size = Nextra) %>%
+# #   select(ID, Group, State, Year, Field, Nperfield, N_iso_not_tested, Ntested, Nselect, Nextra, Nmax_per_field) %>%
+# #   ungroup() %>%
+# #    mutate(Group = recode(Group, Group_one = 1, Group_3 =  3, Group_7 = 7, Group_11 = 11)) %>%
+# #   arrange(Group) %>%
+# #   filter(Group == 7) %>%
+# #   arrange(ID) %>%
+# 
+# ## Informaton about the new isolates selected to be tested
+# # id_selected_isolates <- selected_isolates %>% 
+# #   select(ID, Field)
+# # 
+# # info_selected_isolates <- selected_isolates %>% 
+# #   select(-ID) %>% 
+# #   unique() %>% 
+# #   group_by(Field, Group) %>% 
+# #   arrange(Group)
+# #### Godd before here
+# 
+# # set.seed(2016)# to be randomly the same
+# # final_data_isolates <- id_selected_isolates %>%
+# #   left_join(info_selected_isolates) %>% ## GOOD UNTIL HERE
+# #   arrange(Group) %>%
+# #   group_by(Field, Group) %>%
+# #   sample_n(size = Nextra) %>%
+# #   select(ID, Group, State, Year, Field, Nperfield, N_iso_not_tested, Ntested, Nselect, Nextra, Nmax_per_field) %>%
+# #   ungroup() %>%
+# #    mutate(Group = recode(Group, Group_one = 1, Group_3 =  3, Group_7 = 7, Group_11 = 11)) %>%
+# #   arrange(Group) %>%
+# #   filter(Group == 7) %>%
+# #   arrange(ID) %>%
+# #   slice(16:39)
+# #
+# 
+# SUMMARY.final_data_isolates <- selected_isolates %>% 
+#   group_by(Group) %>% 
+#   summarize(Total_isolates = n()) 
+#  ##For boscalid test
+# 
+#   selected_isolates %>% filter(Group == 7) %>% arrange(ID) %>% kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
+#    write2pdf("List_of_isolates_to_test_BOSCALID.pdf")
+# 
+#   
+# # selected_isolates %>%
+# #kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
+# #   write2pdf("List_of_isolates_to_test.pdf")
+# 
+#  
+#  
+# # fusarium%>%
+# #   write_csv("clean data/table_ouliers_together.csv")
+# 
+# # Groupone <- Compendium %>% filter(Group== "Group_one")
+# # Groupone %>%
+# # kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
+# #   write2pdf("Group_uno.pdf")
+# 
+# # Group3 <- Compendium %>% filter(Group== "Group_3")
+# # Group3 %>%
+# # kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
+# #   write2pdf("Group_tres.pdf")
+# 
+# # Group7 <- Compendium %>% filter(Group== "Group_7")
+# # Group7 %>%
+# # kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
+# #   write2pdf("Group_siete.pdf")
+# 
+# # Group11 <- Compendium %>% filter(Group== "Group_11")
+# # Group11 %>%
+# # kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
+# #   write2pdf("Group_once.pdf")
+# 
+# 
+#  #creating the table in pdf
+# # 
+# # FieldSS_ %>%
+# # kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
+# #   kable_styling(font_size = 5, full_width = 10 ) %>%
+# #   write2pdf("summary_ouliers.pdf")
+# # 
+# # FieldSS_ <- FieldSS_ %>% ungroup
+# # pdf( "summary_outliers.pdf")
+# # FieldSS_ <- FieldSS_ %>% ungroup
+# # dev.off()
+# # 
+# # write.csv(FieldSS_, "clean data/summary_outliers.csv")
+# # 
+# 
+# # Groupone <- Compendium %>% filter(Group== "Group_one")
+# # Groupone %>%
+# # kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
+# # write2pdf("Group_XX.pdf")
+# 
+# #checking the structure of datframe
+# 
+# 
+# #glimpse(Compendium)
+# #the following Iam getting the Sum by row but because I dont know how to use apply in dplyr. Iwa screating many objects and doing step by step
+# 
+# #creating a new dataset for use later
+# #boscalid complete is which have less ID so this
+# WM4 <- WM3_ %>%
+#   mutate(Fungicide_status= ifelse(
+#     ID %in% boscalid.complete$ID, #Iam selecting boscalid because is the one that has less number of isolates tested
+#     "tested",
+#     "no_tested"), 
+#     Fungicide_status= 
+#       as.factor(Fungicide_status), 
+#     Selection_fungicides = ifelse(
+#     ID %in% selected_isolates$ID, #From the real selected to test, here the change
+#     "selected", # its better to keep it separate and taht form I can differentiate, when I need to filter it should be, == No_tested & selected/no_selected 
+#     "no_selected") ) %>% 
+#    mutate(Origin = as.factor(Origin)) %>% 
+#     mutate(Source = case_when(
+#   ID %in% baseline_isolates_2 ~ "Baseline",
+#   TRUE ~ as.character(Origin)
+# )) %>% 
+#   mutate(Source= as.factor(Source))  %>% 
+#   mutate(Source = recode(Source, Survey = "Farmer fields", trial = "Fungicide field trials")) %>% 
+#     select(-Origin)
+# 
+# 
+# 
+# #write_csv(WM4, "clean data/clean_data.csv")
+# #summarizing
+# 
+# 
+# # Just corroboring 
+# summa_notested <- WM4 %>% left_join(summary.field.sourceal) %>%
+# filter(Fungicide_status == "no_tested", 
+# Group_MOA_current_season=="Group_one"|
+# Group_MOA_current_season=="Group_3"|
+# Group_MOA_current_season=="Group_7"|
+# Group_MOA_current_season=="Group_11") %>%
+# group_by(Field, Group_MOA_current_season, Source) %>% 
+# summarize(N= n()) #%>% filter(N>=5)
+# 
+# 
+# summa_tested <- WM4 %>% left_join(summary.field.sourceal) %>%
+# filter(Fungicide_status == "tested", 
+#        Group_MOA_current_season=="Group_one"|
+# Group_MOA_current_season=="Group_3"|
+# Group_MOA_current_season=="Group_7"|
+# Group_MOA_current_season=="Group_11")%>%
+# group_by(Field, Group_MOA_current_season, Source) %>% 
+# summarize(N= n())
+# 
+# 
+# 
+# 
+# 
+# which(summa_tested$Field %in% summa_notested$Field)
+# #Good corroboration
+# 
+# #Data
+# info_tested <- summa_tested %>% #using summa_tested and no drybeans with WM_Production
+#   mutate(tested_more_than4 = N >= 4)
+# 
+# #Outlier fields for each fungicide
+# out_bos_field <- boscalid.complete.2 %>% 
+#   mutate(fungicide_outier = "Bos") %>% 
+#   inner_join(WM4) %>% 
+#   select(Field, fungicide_outier) %>% 
 #   unique() %>% 
-#   group_by(Field, Group) %>% 
-#   arrange(Group)
-#### Godd before here
-
-# set.seed(2016)# to be randomly the same
-# final_data_isolates <- id_selected_isolates %>%
-#   left_join(info_selected_isolates) %>% ## GOOD UNTIL HERE
-#   arrange(Group) %>%
-#   group_by(Field, Group) %>%
-#   sample_n(size = Nextra) %>%
-#   select(ID, Group, State, Year, Field, Nperfield, N_iso_not_tested, Ntested, Nselect, Nextra, Nmax_per_field) %>%
-#   ungroup() %>%
-#    mutate(Group = recode(Group, Group_one = 1, Group_3 =  3, Group_7 = 7, Group_11 = 11)) %>%
-#   arrange(Group) %>%
-#   filter(Group == 7) %>%
-#   arrange(ID) %>%
-#   slice(16:39)
-#
-
-SUMMARY.final_data_isolates <- selected_isolates %>% 
-  group_by(Group) %>% 
-  summarize(Total_isolates = n()) 
- ##For boscalid test
-
-  selected_isolates %>% filter(Group == 7) %>% arrange(ID) %>% kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
-   write2pdf("List_of_isolates_to_test_BOSCALID.pdf")
-
-  
-# selected_isolates %>%
-#kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
-#   write2pdf("List_of_isolates_to_test.pdf")
-
- 
- 
-# fusarium%>%
-#   write_csv("clean data/table_ouliers_together.csv")
-
-# Groupone <- Compendium %>% filter(Group== "Group_one")
-# Groupone %>%
-# kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
-#   write2pdf("Group_uno.pdf")
-
-# Group3 <- Compendium %>% filter(Group== "Group_3")
-# Group3 %>%
-# kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
-#   write2pdf("Group_tres.pdf")
-
-# Group7 <- Compendium %>% filter(Group== "Group_7")
-# Group7 %>%
-# kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
-#   write2pdf("Group_siete.pdf")
-
-# Group11 <- Compendium %>% filter(Group== "Group_11")
-# Group11 %>%
-# kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
-#   write2pdf("Group_once.pdf")
-
-
- #creating the table in pdf
+#   filter(Field != "")
 # 
-# FieldSS_ %>%
-# kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
-#   kable_styling(font_size = 5, full_width = 10 ) %>%
-#   write2pdf("summary_ouliers.pdf")
+# out_TM_field <- TM.complete.3 %>% 
+#   mutate(fungicide_outier = "TM") %>% 
+#   inner_join(WM4) %>% 
+#   select(Field, fungicide_outier) %>% 
+#   unique() %>% 
+#   filter(Field != "")
 # 
-# FieldSS_ <- FieldSS_ %>% ungroup
-# pdf( "summary_outliers.pdf")
-# FieldSS_ <- FieldSS_ %>% ungroup
-# dev.off()
+# out_tet_field <- tetraconazole.complete.2 %>% 
+#   mutate(fungicide_outier = "Tet") %>% 
+#   inner_join(WM4) %>% 
+#   select(Field, fungicide_outier) %>% 
+#   unique() %>% 
+#   filter(Field != "")
 # 
-# write.csv(FieldSS_, "clean data/summary_outliers.csv")
+# out_pico_field <- picoxystrobin.complete.2 %>% 
+#   mutate(fungicide_outier = "Pico") %>% 
+#   inner_join(WM4) %>% 
+#   select(Field, fungicide_outier) %>% 
+#   unique() %>% 
+#   filter(Field != "")
 # 
-
-# Groupone <- Compendium %>% filter(Group== "Group_one")
-# Groupone %>%
-# kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
-# write2pdf("Group_XX.pdf")
-
-#checking the structure of datframe
-
-
-#glimpse(Compendium)
-#the following Iam getting the Sum by row but because I dont know how to use apply in dplyr. Iwa screating many objects and doing step by step
-
-#creating a new dataset for use later
-#boscalid complete is which have less ID so this
-WM4 <- WM3_ %>%
-  mutate(Fungicide_status= ifelse(
-    ID %in% boscalid.complete$ID, #Iam selecting boscalid because is the one that has less number of isolates tested
-    "tested",
-    "no_tested"), 
-    Fungicide_status= 
-      as.factor(Fungicide_status), 
-    Selection_fungicides = ifelse(
-    ID %in% selected_isolates$ID, #From the real selected to test, here the change
-    "selected", # its better to keep it separate and taht form I can differentiate, when I need to filter it should be, == No_tested & selected/no_selected 
-    "no_selected") ) %>% 
-   mutate(Origin = as.factor(Origin)) %>% 
-    mutate(Source = case_when(
-  ID %in% baseline_isolates_2 ~ "Baseline",
-  TRUE ~ as.character(Origin)
-)) %>% 
-  mutate(Source= as.factor(Source))  %>% 
-  mutate(Source = recode(Source, Survey = "Farmer fields", trial = "Fungicide field trials")) %>% 
-    select(-Origin)
-
-
-
-#write_csv(WM4, "clean data/clean_data.csv")
-#summarizing
-
-
-# Just corroboring 
-summa_notested <- WM4 %>% left_join(summary.field.sourceal) %>%
-filter(Fungicide_status == "no_tested", 
-Group_MOA_current_season=="Group_one"|
-Group_MOA_current_season=="Group_3"|
-Group_MOA_current_season=="Group_7"|
-Group_MOA_current_season=="Group_11") %>%
-group_by(Field, Group_MOA_current_season, Source) %>% 
-summarize(N= n()) #%>% filter(N>=5)
-
-
-summa_tested <- WM4 %>% left_join(summary.field.sourceal) %>%
-filter(Fungicide_status == "tested", 
-       Group_MOA_current_season=="Group_one"|
-Group_MOA_current_season=="Group_3"|
-Group_MOA_current_season=="Group_7"|
-Group_MOA_current_season=="Group_11")%>%
-group_by(Field, Group_MOA_current_season, Source) %>% 
-summarize(N= n())
-
-
-
-
-
-which(summa_tested$Field %in% summa_notested$Field)
-#Good corroboration
-
-#Data
-info_tested <- summa_tested %>% #using summa_tested and no drybeans with WM_Production
-  mutate(tested_more_than4 = N >= 4)
-
-#Outlier fields for each fungicide
-out_bos_field <- boscalid.complete.2 %>% 
-  mutate(fungicide_outier = "Bos") %>% 
-  inner_join(WM4) %>% 
-  select(Field, fungicide_outier) %>% 
-  unique() %>% 
-  filter(Field != "")
-
-out_TM_field <- TM.complete.3 %>% 
-  mutate(fungicide_outier = "TM") %>% 
-  inner_join(WM4) %>% 
-  select(Field, fungicide_outier) %>% 
-  unique() %>% 
-  filter(Field != "")
-
-out_tet_field <- tetraconazole.complete.2 %>% 
-  mutate(fungicide_outier = "Tet") %>% 
-  inner_join(WM4) %>% 
-  select(Field, fungicide_outier) %>% 
-  unique() %>% 
-  filter(Field != "")
-
-out_pico_field <- picoxystrobin.complete.2 %>% 
-  mutate(fungicide_outier = "Pico") %>% 
-  inner_join(WM4) %>% 
-  select(Field, fungicide_outier) %>% 
-  unique() %>% 
-  filter(Field != "")
-
-out_fungicide_field <- out_bos_field %>% 
-  full_join(out_TM_field) %>% 
-  full_join(out_tet_field) %>%
-  full_join(out_pico_field) 
-
-info_tested_fields <- info_tested %>%
-  full_join(out_fungicide_field)
-
-info_out_field <- info_tested_fields %>% 
-  ungroup() %>% 
-  mutate(Outlier_Field = info_tested_fields$Field %in% out_fungicide_field$Field)  %>% 
-  filter(Group_MOA_current_season != "NA") #filtering out fields with no info
-
-#Fields that were not outliers and the number of tested isolates were less than 4
-field_not_out_less_tested <- info_out_field %>% #only one such field
-  filter(Outlier_Field == FALSE & tested_more_than4 == FALSE) %>% 
-  mutate(num_test_isolates = 4-N) #Subtracting number of tested isolates (N) from number 4. This column contains the number of isolates that I need to test per field.
-
-tested_fields <- summa_tested %>% 
-  ungroup() %>% 
-  select(Field) %>% 
-  unique() 
-
-total_fields <- summa_notested %>% 
-  full_join(summa_tested) %>% 
-  ungroup() %>% 
-  select(Field) %>% 
-  unique()
-
-total_fields <- total_fields %>% 
-  mutate(Tested = total_fields$Field %in% tested_fields$Field)
-
-not_tested_fields <- total_fields %>% 
-  filter(Tested == FALSE) #only two fields that were not tested
-
-select_fields_not_tested <- summa_notested %>% 
-  ungroup() %>% 
-  filter(summa_notested$Field %in% not_tested_fields$Field)
+# out_fungicide_field <- out_bos_field %>% 
+#   full_join(out_TM_field) %>% 
+#   full_join(out_tet_field) %>%
+#   full_join(out_pico_field) 
+# 
+# info_tested_fields <- info_tested %>%
+#   full_join(out_fungicide_field)
+# 
+# info_out_field <- info_tested_fields %>% 
+#   ungroup() %>% 
+#   mutate(Outlier_Field = info_tested_fields$Field %in% out_fungicide_field$Field)  %>% 
+#   filter(Group_MOA_current_season != "NA") #filtering out fields with no info
+# 
+# #Fields that were not outliers and the number of tested isolates were less than 4
+# field_not_out_less_tested <- info_out_field %>% #only one such field
+#   filter(Outlier_Field == FALSE & tested_more_than4 == FALSE) %>% 
+#   mutate(num_test_isolates = 4-N) #Subtracting number of tested isolates (N) from number 4. This column contains the number of isolates that I need to test per field.
+# 
+# tested_fields <- summa_tested %>% 
+#   ungroup() %>% 
+#   select(Field) %>% 
+#   unique() 
+# 
+# total_fields <- summa_notested %>% 
+#   full_join(summa_tested) %>% 
+#   ungroup() %>% 
+#   select(Field) %>% 
+#   unique()
+# 
+# total_fields <- total_fields %>% 
+#   mutate(Tested = total_fields$Field %in% tested_fields$Field)
+# 
+# not_tested_fields <- total_fields %>% 
+#   filter(Tested == FALSE) #only two fields that were not tested
+# 
+# select_fields_not_tested <- summa_notested %>% 
+#   ungroup() %>% 
+#   filter(summa_notested$Field %in% not_tested_fields$Field)
 
 #Question: How do I have different N for the same no tested field?
 ```
 
 ```{r, Creating summary list, include= FALSE }
 # To be tested
-casa <-WM3_ %>% # selecting variables more important 
-     select(colnames(boscalid.complete.2), Field,  Year, State,#  tested
-            Group_MOA_current_season, Host) %>%
-   left_join(summary.field.sourceal)  %>% # joining with table of summary of how many isolates are per field
-   mutate(Group_MOA_current_season = na_if(Group_MOA_current_season, "")) %>%
-     arrange(ID) %>% 
-      rename(N_iso_perfield =Num_sourceal_isolates, Group= Group_MOA_current_season) %>% 
-        mutate(source = ifelse(
-    ID %in% baseline_isolates_2,
-    "Baseline",
-    ifelse(
-      ID %in% Farmer_fields,
-      "FF","FFT"
-    ))) %>% 
-    mutate(source = as.factor(source), Host= as.factor(Host), Field= as.factor(Field) ) %>% filter(Group== "Group_one"|Group=="Group_3"|Group=="Group_7"|Group=="Group_11")%>% 
-    mutate(Group = recode(Group, Group_one = 1, Group_3 =  3, Group_7 = 7, Group_11 = 11)) %>% 
-group_by(Group, State, Year, source, Field) %>% 
-  summarize(Total = n()) %>% 
-  filter(Total >= 5 ) %>% 
-     arrange(Group,Year) 
-  
-  casa[ , "N_to test"] <- ""
+
+# casa <-WM3_ %>% # selecting variables more important 
+#      select(colnames(boscalid.complete.2), Field,  Year, State,#  tested
+#             Group_MOA_current_season, Host) %>%
+#    left_join(summary.field.sourceal)  %>% # joining with table of summary of how many isolates are per field
+#    mutate(Group_MOA_current_season = na_if(Group_MOA_current_season, "")) %>%
+#      arrange(ID) %>% 
+#       rename(N_iso_perfield =Num_sourceal_isolates, Group= Group_MOA_current_season) %>% 
+#         mutate(source = ifelse(
+#     ID %in% baseline_isolates_2,
+#     "Baseline",
+#     ifelse(
+#       ID %in% Farmer_fields,
+#       "FF","FFT"
+#     ))) %>% 
+#     mutate(source = as.factor(source), Host= as.factor(Host), Field= as.factor(Field) ) %>% filter(Group== "Group_one"|Group=="Group_3"|Group=="Group_7"|Group=="Group_11")%>% 
+#     mutate(Group = recode(Group, Group_one = 1, Group_3 =  3, Group_7 = 7, Group_11 = 11)) %>% 
+# group_by(Group, State, Year, source, Field) %>% 
+#   summarize(Total = n()) %>% 
+#   filter(Total >= 5 ) %>% 
+#      arrange(Group,Year) 
+#   
+#   casa[ , "N_to test"] <- ""
 
 #   casa %>% 
 # kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
@@ -2783,6 +3227,6 @@ group_by(Group, State, Year, source, Field) %>%
 ```
 
 ```{r}
-casa
+# casa
 ```
 
