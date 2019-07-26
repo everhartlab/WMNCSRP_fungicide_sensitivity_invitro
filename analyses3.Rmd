@@ -927,6 +927,7 @@ fig.2<- ggplot(final.boscalid.DC.0.2, aes(x = Estimate.50, y = Estimate.50DC)) +
 
 ##  Use of the Discriminatory Concentration (DC) 
 ```{r Using the DC Boscalid and the model, echo = FALSE}
+# combining previous data of DC with new data of DC using 10 isolates per field/plot
 boscalid_data <- survey.data.3 %>%
   select(ID,
          repeats,
@@ -1165,13 +1166,26 @@ boscalid.complete<- boscalid.complete%>%
   "Mexico",
   ifelse(ID %in% brazilian.isolates,
   "Brazil", "USA")
-  )) 
-boscalid.complete.2 <- boscalid.complete%>%
+  )) %>% 
+  filter(Field== "MI:East_Lansing"| 
+           Field== "IA_Nashua"|
+         Field== "WI_Hancock"|
+         Field== "MI_Montcalm_2017"|
+         Field== "MI_Montcalm_2017"|
+         Field== "MI_Montcalm_2015"|
+         Field== "No_fungicide_exposure"|
+         Country== "Mexico"|
+         Country== "Brazil") %>% 
+  arrange(EC50DC)
+
+###
+boscalid.complete.2 <- boscalid.complete%>% 
+  filter( !Field == "potato", !Field == "other_fields")
+
+boscalid.complete.3 <- boscalid.complete%>%
   filter(
     !Country =="Brazil" & !Country == "Mexico"  
   )
-boscalid.complete.3 <- boscalid.complete%>% 
-  filter( !Field == "potato", !Field == "other_fields")
 
 
 ###
