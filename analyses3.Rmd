@@ -1144,7 +1144,7 @@ boscalid.complete<- boscalid.complete%>%
   "MI_Montcalm_2015",
   ifelse(ID %in% potato, 
          "potato", ifelse(ID %in% baseline_isolates_2, 
-         "No_fungicide_exposure", "other_fields"
+         "Baseline", "other_fields"
  
  )
   )
@@ -1173,10 +1173,11 @@ boscalid.complete<- boscalid.complete%>%
          Field== "MI_Montcalm_2017"|
          Field== "MI_Montcalm_2017"|
          Field== "MI_Montcalm_2015"|
-         Field== "No_fungicide_exposure"|
+         Field== "Baseline"|
          Country== "Mexico"|
          Country== "Brazil") %>% 
-  arrange(EC50DC)
+  arrange(EC50DC) %>% 
+mutate(Field = fct_recode(Field, "Mexico_Brazil" = "other_fields"))
 
 ###
 boscalid.complete.2 <- boscalid.complete%>% 
@@ -1423,9 +1424,47 @@ plot.bos.3 <- boscalid.complete.3%>%
 
 plot.bos.3
 
+####
+boscalid.complete$Field <- factor(boscalid.complete$Field, c("WI_Hancock", "MI_Montcalm_2017", "IA_Nashua","MI_Montcalm_2015", "Baseline",  "Mexico_Brazil","MI:East_Lansing"))
 
+plot.bos.3 <- boscalid.complete%>%
+  ggplot(aes(x = Field, y = EC50DC)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 21,
+    color = "black",
+    fill = "chartreuse2",
+    size = 2,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 22,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs(x = "Field", y = "EC50DC (ppm)") + theme(
+  panel.border = element_rect(
+  colour = "black",
+  fill = NA,
+  size = 1
+  ),
+  axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+  axis.text.x =  element_text(
+  face = "bold",
+  size = 8.5,
+  family = "Arial",
+  angle = 30,
+  hjust = 1
+  ),
+  panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+  
+plot.bos.3
 
-
+##
 ```
 
 ```{r, echo= FALSE}
@@ -1716,6 +1755,7 @@ picoxystrobin.filtered. <- picoxystrobin.filtered. %>%
 ```{r, include=FALSE}
 picoxystrobin.filtered.
 ```
+
 ```{r, echo= FALSE, }
  #####PICOXYSTROBIN##
 
@@ -1731,23 +1771,154 @@ picoxystrobin.complete <- final.picoxystrobin.DC %>%
   top_n(1, EC50DC) %>%# taking out the duplication and keeping the one with highest value
   ungroup() %>% 
   arrange((EC50DC)) %>% 
-  mutate(source = ifelse(
-    ID %in% baseline_isolates_2,
-    "Baseline",
-    ifelse(
-      ID %in% Farmer_fields,
-      "FF","FFT"
-    )), Host = ifelse(
-    ID %in% drybean,
-    "Drybean", ifelse(
-      ID %in% soybean,
-      "Soybean","different_host"
-    ))) %>% 
-    mutate(source = as.factor(source), Host= as.factor(Host)) %>%
+  mutate(
+  source = ifelse(
+  ID %in% baseline_isolates_2,
+  "Baseline",
+  ifelse(ID %in% Farmer_fields,
+  "FF", "FFT")
+  ),
+  Host = ifelse(
+  ID %in% drybean,
+  "Drybean",
+  ifelse(ID %in% soybean,
+  "Soybean", "different_host")
+  ),
+  Field = ifelse(
+  ID %in% MI_East_Lansing,
+  "MI:East_Lansing",
+  ifelse(
+  ID %in% IA_Nashua,
+  "IA_Nashua",
+  ifelse(
+  ID %in% WI_Hancock,
+  "WI_Hancock",
+  ifelse(
+  ID %in% MI_Montcalm_2017,
+  "MI_Montcalm_2017",
+  ifelse(
+  ID %in% MI_Montcalm_2015,
+  "MI_Montcalm_2015",
+  ifelse(
+  ID %in% WI_Cerny,
+  "WI_Cerny",
+  ifelse(ID %in% potato, 
+         "potato", ifelse(ID %in% baseline_isolates_2, 
+         "Baseline", "other_field"
+         )
+         )
+  )
+  )
+  )
+  )
+  )
+  )
+  ) %>%
+  mutate(
+  source = as.factor(source),
+  Host = as.factor(Host),
+  Field = as.factor(Field)
+  ) %>%
   #taking out "different host" becuse does not belong to drybean nor soybean
-  filter(!ID == 8,!ID == 129 )
+  filter(!ID == 8, !ID == 129) %>%  
+  mutate(Country = ifelse(
+  ID %in% mexican.isolates,
+  "Mexico",
+  ifelse(ID %in% brazilian.isolates,
+  "Brazil", "USA")
+  )) %>% 
+  filter(Field== "MI:East_Lansing"| 
+           Field== "IA_Nashua"|
+         Field== "WI_Hancock"|
+         Field== "MI_Montcalm_2017"|
+         Field== "MI_Montcalm_2017"|
+         Field== "MI_Montcalm_2015"|
+         Field== "Baseline"|
+        Field== "WI_Cerny"|
+         Country== "Mexico"|
+         Country== "Brazil") %>% 
+  arrange(EC50DC) %>% 
+  mutate(Field = fct_recode(Field, "Mexico_Brazil" = "other_field"))
+
+
+    
+
+ 
+
   
-##new
+
+
+picoxystrobin.filtered. %>%
+  mutate(
+  source = ifelse(
+  ID %in% baseline_isolates_2,
+  "Baseline",
+  ifelse(ID %in% Farmer_fields,
+  "FF", "FFT")
+  ),
+  Host = ifelse(
+  ID %in% drybean,
+  "Drybean",
+  ifelse(ID %in% soybean,
+  "Soybean", "different_host")
+  ),
+  Field = ifelse(
+  ID %in% MI_East_Lansing,
+  "MI:East_Lansing",
+  ifelse(
+  ID %in% IA_Nashua,
+  "IA_Nashua",
+  ifelse(
+  ID %in% WI_Hancock,
+  "WI_Hancock",
+  ifelse(
+  ID %in% MI_Montcalm_2017,
+  "MI_Montcalm_2017",
+  ifelse(
+  ID %in% MI_Montcalm_2015,
+  "MI_Montcalm_2015",
+  ifelse(
+  ID %in% WI_Cerny,
+  "WI_Cerny",
+  ifelse(ID %in% potato, 
+         "potato", "other_field"
+  )
+  )
+  )
+  )
+  )
+  )
+  )
+  ) %>%
+  mutate(
+  source = as.factor(source),
+  Host = as.factor(Host),
+  Field = as.factor(Field)
+  ) %>%
+  #taking out "different host" becuse does not belong to drybean nor soybean
+  filter(!ID == 8, !ID == 129) 
+  mutate(Country = ifelse(
+  ID %in% mexican.isolates,
+  "Mexico",
+  ifelse(ID %in% brazilian.isolates,
+  "Brazil", "USA")
+  )) %>% 
+  filter(Field== "MI:East_Lansing"| 
+           Field== "IA_Nashua"|
+         Field== "WI_Hancock"|
+         Field== "MI_Montcalm_2017"|
+         Field== "MI_Montcalm_2017"|
+         Field== "MI_Montcalm_2015"|
+         Field== "No_fungicide_exposure"|
+         Country== "Mexico"|
+         Country== "Brazil") %>% 
+  arrange(EC50DC)
+ 
+
+
+
+
+  ##new
 picoxystrobin.filtered. <- picoxystrobin.filtered. %>%
   mutate(
   source = ifelse(
@@ -1797,7 +1968,22 @@ picoxystrobin.filtered. <- picoxystrobin.filtered. %>%
   ) %>%
   #taking out "different host" becuse does not belong to drybean nor soybean
   filter(!ID == 8, !ID == 129) 
-  
+  mutate(Country = ifelse(
+  ID %in% mexican.isolates,
+  "Mexico",
+  ifelse(ID %in% brazilian.isolates,
+  "Brazil", "USA")
+  )) %>% 
+  filter(Field== "MI:East_Lansing"| 
+           Field== "IA_Nashua"|
+         Field== "WI_Hancock"|
+         Field== "MI_Montcalm_2017"|
+         Field== "MI_Montcalm_2017"|
+         Field== "MI_Montcalm_2015"|
+         Field== "No_fungicide_exposure"|
+         Country== "Mexico"|
+         Country== "Brazil") %>% 
+  arrange(EC50DC)
  
 picoxystrobin.filtered.2 <- picoxystrobin.filtered. %>%
   filter( !Field == "potato", !Field == "other_field")
@@ -1851,9 +2037,16 @@ shapiro.test.pico.2 <-picoxystrobin.filtered.2 %>%
   do(tidy(shapiro.test(.$EC50DC)))
 shapiro.test.pico.2 
 ```
-ANOVA, There is no difference, p value is 0.0613
+ANOVA, There is difference, p value is 0.0613
 ```{r, echo= FALSE}
-summary(aov (EC50DC ~ Field, data = picoxystrobin.filtered.2))
+summary(aov (EC50DC ~ Field, data = picoxystrobin.complete))
+model <- lm(EC50DC ~ Field, data = picoxystrobin.complete)
+ANOVA <- aov(model)
+tukey.test <- TukeyHSD(ANOVA)
+tukey.test.2 <- HSD.test(ANOVA, trt = 'Field')
+HSD.test(model, "Field")
+summary(model)
+summary(ANOVA)
 
 ```
 
@@ -1997,6 +2190,8 @@ plot.pico.2 <- picoxystrobin.filtered.%>%
     width = .1,
     height = 0,
     shape = 21,
+    color = "black",
+    fill = "chocolate1",
     size = 2,
     alpha = 3 / 4
   ) + stat_summary(
@@ -2050,6 +2245,48 @@ plot.pico.3 <-picoxystrobin.filtered.2%>%
 
 
 plot.pico.3
+
+##
+picoxystrobin.complete$Field <- factor(picoxystrobin.complete$Field, c("Mexico_Brazil","MI_Montcalm_2015", "WI_Hancock", "MI:East_Lansing", "MI_Montcalm_2017", "IA_Nashua", "WI_Cerny",  "Baseline"))
+
+plot.pico.3 <-picoxystrobin.complete%>%
+  ggplot(aes(x = Field, y = EC50DC)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 21,
+    color = "black",
+    fill = "chocolate1",
+    size = 2,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 22,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs(x = "Field", y = "EC50DC (ppm)") +
+  theme(
+  panel.border = element_rect(
+  colour = "black",
+  fill = NA,
+  size = 1
+  ),
+  axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+  axis.text.x  = element_text(
+  face = "bold",
+  size = 8.5,
+  family = "Arial",
+  angle = 30,
+  hjust = 1
+  ),
+  panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+  
+plot.pico.3
+
 ```
 
 # Tetraconazole 
