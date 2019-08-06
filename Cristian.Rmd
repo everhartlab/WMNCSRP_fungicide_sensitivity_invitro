@@ -53,7 +53,7 @@ Field applications of fungicides in the United States on soybean show control of
 ```{r read data, echo = FALSE}
 #
 ##  Reading and subsetting data 
-boscalid.data <-
+boscalid.dat <-
   read.csv("data/boscalid_serialdilution_baseline(validationdata).csv")
   boscalid.data <- subset(boscalid.data, select = -X)
   boscalid.data$repeats <- rep_len(1:4, length.out = nrow(boscalid.data))
@@ -284,11 +284,11 @@ TMdata$ID <- as.numeric(TMdata$ID)
         boscalid.ecuatorial + control.boscalid.polar
         ) / 2),
         
-        control.growth.boscalid.36hrs = ((
-        control.boscalid.ecuatorial.36hrs + control.boscalid.polar.36hrs
+        control.growth.boscalid.37hrs = ((
+        control.boscalid.ecuatorial.37hrs + control.boscalid.polar.37hrs
         ) / 2),
-        boscalid.growth.36hrs = ((
-        boscalid.ecuatorial.36hrs + boscalid.polar.36hrs
+        boscalid.growth.37hrs = ((
+        boscalid.ecuatorial.37hrs + boscalid.polar.37hrs
         ) / 2),
         sham.growth.picoxystrobin = ((sham.ecuatorial + sham.polar) / 2),
         picoxystrobin.growth = ((
@@ -310,8 +310,8 @@ TMdata$ID <- as.numeric(TMdata$ID)
           experimental_replicate,
           boscalid.growth,
           control.growth.boscalid,
-          boscalid.growth.36hrs,
-          control.growth.boscalid.36hrs,
+          boscalid.growth.37hrs,
+          control.growth.boscalid.37hrs,
           picoxystrobin.growth,
           sham.growth.picoxystrobin,
           tetraconazole.growth,
@@ -328,8 +328,8 @@ TMdata$ID <- as.numeric(TMdata$ID)
           experimental_replicate,
           boscalid.growth,
           control.growth.boscalid,
-          #boscalid.growth.36hrs,# taking out this for a meantime
-          #control.growth.boscalid.36hrs,# taking out this for a meantime
+          #boscalid.growth.37hrs,# taking out this for a meantime
+          #control.growth.boscalid.37hrs,# taking out this for a meantime
           new) %>% 
      rename(control.growth= control.growth.boscalid)
    #Picoxystrobin Data
@@ -987,6 +987,7 @@ boscalid_data <- survey.data.3 %>%
          control.growth, new) %>%
   rbind(survey.data.Cristian.drybeans.boscalid) %>% 
   rename(response = boscalid.growth, control = control.growth) %>% mutate(new= as.factor(new))
+#check why after the function is taking som much obeservations out, almost the middle
 
 # Using the previous  function in order to take out the outliers
 boscalid.filtered.survey <- boscalid_data %>%
