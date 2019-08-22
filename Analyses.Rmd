@@ -2394,10 +2394,8 @@ plot_tetra <- tetraconazole_complete_3%>%
 plot_tetra
 
 
+###
 
-```
-
-```{r}
 #Taking out uncertain host isolates
 boscalid_complete_4 <- boscalid_complete_3 %>% filter(!ID == "8" & !ID == "129")
 plot_bos_2 <- boscalid_complete_4%>%
@@ -2494,6 +2492,201 @@ plot_tetra_2 <- tetraconazole_complete_4%>%
     panel.background = element_rect(fill = "white", colour = "grey50")
   )
 plot_tetra_2
+
+
+
+
+```
+
+```{r}
+
+#for publication
+plot_bos <- boscalid_complete_3%>%
+  ggplot(aes(x = Origin, y = EC50)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 18,
+    color = "chartreuse2",
+    size = 2,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 22,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs( x = "Origin", y = "EC50D (ppm)") + theme(
+    panel.border = element_rect(colour = "black", fill=NA, size=1),
+    axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 14,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50" )
+  )
+
+plot_bos
+
+##
+plot_pico <- picoxystrobin_complete_3%>%
+  ggplot(aes(x = Origin, y = EC50)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 19,
+    color = "chocolate1",
+    size = 2,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 22,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs(x = "Origin", y = "EC50D (ppm)") + theme(panel.border = element_rect(colour = "black", fill=NA, size=1),
+        axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 14,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+plot_pico
+####
+plot_tetra <- tetraconazole_complete_3%>%
+  ggplot(aes(x = Origin, y = EC50)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 20,
+    color = "deepskyblue",
+    size = 2,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 22,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs( x = "Origin", y = "EC50D (ppm)") + theme(panel.border = element_rect(colour = "black", fill=NA, size=1),
+        axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 14,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+plot_tetra
+
+
+###
+
+#Taking out uncertain host isolates
+boscalid_complete_4 <- boscalid_complete_3 %>% filter(!ID == "8" & !ID == "129")
+plot_bos_2 <- boscalid_complete_4%>%
+  ggplot(aes(x = Host, y = EC50)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 18,
+    color = "chartreuse2",
+    size = 2,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 22,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs( x = "Host", y = "EC50D (ppm)") + theme(
+    panel.border = element_rect(colour = "black", fill=NA, size=1),
+        axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 14,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+plot_bos_2
+
+picoxystrobin_complete_4 <- picoxystrobin_complete_3 %>% filter(!ID == "8"&!ID == "129"  )
+
+plot_pico_2 <- picoxystrobin_complete_4%>%
+  ggplot(aes(x = Host, y = EC50)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 19,
+    color = "chocolate1",
+    size = 2,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 22,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs( x = "Host", y = "EC50D (ppm)") + theme(
+    panel.border = element_rect(colour = "black", fill=NA, size=1),
+        axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 14,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+plot_pico_2
+
+tetraconazole_complete_4 <- tetraconazole_complete_3 %>% filter(!ID == "8"&!ID == "129"  )
+
+plot_tetra_2 <- tetraconazole_complete_4%>%
+  ggplot(aes(x = Host, y = EC50)) +
+  geom_jitter(
+    width = .1,
+    height = 0.5,
+    shape = 20,
+    color = "deepskyblue",
+    size = 2,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 20,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs( x = "Host", y = "EC50D (ppm)") + theme(
+        panel.border = element_rect(colour = "black", fill=NA, size=1),
+
+        axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 14,
+      family = "Verdana"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+plot_tetra_2
+
+plot_grid(plot_bos, plot_pico, plot_tetra)
+plot_grid(plot_bos_2, plot_pico_2, plot_tetra_2)
 
 
 ```
