@@ -997,7 +997,33 @@ fig.2<- ggplot(final.boscalid.DC.0.2, aes(x = Estimate.50, y = Estimate.50DC)) +
 ##  Use of the Discriminatory Concentration (DC) 
 ```{r Using the DC Boscalid and the model, echo = FALSE}
 # combining previous data of DC with new data of DC using 10 isolates per field/plot
+
 boscalid_data <- survey.data.3 %>%
+  select(ID,
+         repeats,
+         experimental_replicate,
+         boscalid.growth,
+         control.growth) %>% 
+rename(response = boscalid.growth, control = control.growth)
+# Using the previous  function in order to take out the outliers
+boscalid.filtered.survey <- boscalid_data %>%
+  group_by(ID) %>%
+  mutate(response_range = list(get_range(response))) %>%
+  unnest() %>%
+  mutate(control_range = list(get_range(control))) %>%
+  unnest() %>%
+  filter(response <= upper &
+           response >= lower,
+         control <= upper1 & control >= lower1) %>%
+  ungroup() %>%
+  select(c(ID, experimental_replicate, repeats, response, control))
+
+
+
+###
+
+
+boscalid_data.2 <- survey.data.3 %>%
   select(ID,
          repeats,
          experimental_replicate,
@@ -1007,7 +1033,7 @@ boscalid_data <- survey.data.3 %>%
   rename(response = boscalid.growth, control = control.growth) %>% mutate(new= as.factor(new))
 
 # Using the previous  function in order to take out the outliers
-boscalid.filtered.survey <- boscalid_data %>%
+boscalid.filtered.survey.2 <- boscalid_data.2 %>%
   group_by(ID) %>%
   mutate(response_range = list(get_range(response))) %>%
   unnest() %>%
@@ -1020,7 +1046,7 @@ boscalid.filtered.survey <- boscalid_data %>%
   select(c(ID, experimental_replicate, repeats, response, control, new))
 
 #Creating a vector object with yes for new tested
-boscalid.filtered.survey.yes <- boscalid.filtered.survey %>% filter(boscalid.filtered.survey$new== "Yes") %>% 
+boscalid.filtered.survey.yes <- boscalid.filtered.survey.2 %>% filter(boscalid.filtered.survey.2$new== "Yes") %>% 
   mutate(new =  as.factor(new)) %>% 
   pull(ID) %>% unique() %>% as.numeric()
 
@@ -1042,10 +1068,31 @@ boscalid.filtered. <- boscalid.filtered.survey %>%
    select(c(ID, EC50DC)) %>% 
   mutate(new = ifelse(
     ID %in% boscalid.filtered.survey.yes,
-    "Yes","No")) 
+    "Yes","No")) #%>% 
+#mutate(new= as.factor(new))
 
-boscalid.filtered. <- boscalid.filtered. %>% 
-  mutate(new= as.factor(new))
+
+#  Using the model to estimate the EC50DC
+
+boscalid.filtered.2 <- boscalid.filtered.survey.2 %>%
+  group_by(ID) %>%
+  summarise(
+  mean_response = mean(response, na.rm = TRUE),
+  mean_control = mean(control, na.rm = TRUE)
+  ) %>%
+  mutate(RG = (mean_response / mean_control) * 100) %>%
+  
+  mutate(Estimate.50DC = exp # exponential is the opposite of log
+        #using the model the intercept and the coefficient of the model
+          (finalRG0.2[[1]][[1]] + finalRG0.2[[1]][[2]] * RG)) %>% ungroup() %>% 
+  rename(EC50DC= Estimate.50DC) %>% 
+  mutate(ID = as.numeric(ID)) %>% 
+   select(c(ID, EC50DC)) %>% 
+  mutate(new = ifelse(
+    ID %in% boscalid.filtered.survey.yes,
+    "Yes","No")) %>% 
+mutate(new= as.factor(new))
+
 
 
 # ##new survey data Using the previous  function in order to take out the outliers
@@ -1138,16 +1185,47 @@ boscalid.filtered. <- boscalid.filtered. %>%
 
 ```{r, echo= FALSE, include= FALSE }
 boscalid.filtered.
+boscalid.filtered.2
 ```
 
 ```{r wrangling Boscalid, echo = FALSE, warning= FALSE}
+
+#Selecting the EC50D from the serial dilution
+boscalid.semi.complete <- final.boscalid.DC %>% 
+ ####WATCH OUT, Based on EC50DC
+   rename(EC50DC = Estimate.50DC) %>% 
+  select(ID, EC50DC) %>% 
+  bind_rows(boscalid.filtered.) %>% 
+ungroup() %>% 
+# keeping juts the highest value of the repeated ID value
+  mutate( ID= as.numeric(ID)) %>% 
+  group_by(ID) %>%
+  top_n(1, EC50DC) %>% #keeping the highest value of each ID value
+  ungroup() %>% 
+    mutate(source = ifelse(
+    ID %in% baseline_isolates_2,
+    "Baseline",
+    ifelse(
+      ID %in% Farmer_fields,
+      "FF","FFT"
+    )), Host = ifelse(
+    ID %in% drybean,
+    "Drybean", ifelse(
+      ID %in% soybean,
+      "Soybean","different_host")))  %>%
+  mutate(
+  source = as.factor(source),
+  Host = as.factor(Host)) %>%    
+#taking out "different host" becuse does not belong to drybean nor soybean
+  filter(!ID == 8, !ID == 129)
+
 
 #Selecting the EC50D from the serial dilution
 boscalid.complete <- final.boscalid.DC %>% 
  ####WATCH OUT, Based on EC50DC
    rename(EC50DC = Estimate.50DC) %>% 
   select(ID, EC50DC) %>% 
-  bind_rows(boscalid.filtered.) %>% 
+  bind_rows(boscalid.filtered.2) %>% 
 ungroup() 
 
 ## Testing controls between Serial dilution and Duscriminatory concentration
@@ -1260,61 +1338,6 @@ mutate(Field = fct_recode(Field, "Mexico_Brazil" = "other_fields"))
 #   filter(
 #     !Country =="Brazil" & !Country == "Mexico"  
 #   )
-
-
-###
-
- boscalid.filtered. <- boscalid.filtered. %>%
-  mutate(
-  source = ifelse(
-  ID %in% baseline_isolates_2,
-  "Baseline",
-  ifelse(ID %in% Farmer_fields,
-  "FF", "FFT")
-  ),
-  Host = ifelse(
-  ID %in% drybean,
-  "Drybean",
-  ifelse(ID %in% soybean,
-  "Soybean", "different_host")
-  ),
-  Field = ifelse(
-  ID %in% MI_East_Lansing,
-  "MI:East_Lansing",
-  ifelse(
-  ID %in% IA_Nashua,
-  "IA_Nashua",
-  ifelse(
-  ID %in% WI_Hancock,
-  "WI_Hancock",
-  ifelse(
-  ID %in% MI_Montcalm_2017,
-  "MI_Montcalm_2017",
-  ifelse(
-  ID %in% MI_Montcalm_2015,
-  "MI_Montcalm_2015",
-  ifelse(ID %in% potato, 
-         "potato", "other_field"
-  )
-  )
-  )
-  )
-  )
-  )
-  ) %>%
-  mutate(
-  source = as.factor(source),
-  Host = as.factor(Host),
-  Field = as.factor(Field)
-  ) %>%
-  #taking out "different host" becuse does not belong to drybean nor soybean
-  filter(!ID == 8, !ID == 129) #%>% 
-  #filter( !Field == "potato", !Field == "other_field")
-##
- boscalid.filtered.2 <- boscalid.filtered. %>%
-  filter( !Field == "potato", !Field == "other_field")
-
-
 
 
 
@@ -1463,7 +1486,7 @@ plot.bos <- boscalid.complete%>%
 ```
 
 ```{r}
-plot.bos.2 <- boscalid.complete.2%>%
+plot.bos.2 <- boscalid.complete%>%
   ggplot(aes(x = source, y = EC50DC)) +
   geom_jitter(
     width = .1,
@@ -3335,7 +3358,7 @@ plot.TM.2 <- TM.complete%>%
 #Boscalid
 # Using the function to detect outliers from all tested and keep them
 
-boscalid.complete.2<- boscalid.complete%>% 
+boscalid.complete.2<- boscalid.semi.complete%>% 
 group_by(source)%>%
 mutate(EC50DC_outlier = list(get_range2(EC50DC)))%>%
 unnest() %>% 
