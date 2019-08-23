@@ -22,6 +22,7 @@ library(kableExtra)
 library(arsenal)
 library(DescTools)
 library(knitr)
+library(agricolae)
 
 
 
@@ -305,10 +306,50 @@ select(ID, repeats, experimental_replicate, sham.ecuatorial, sham.polar, picoxys
     ) / 2), ID = as.character(ID), new= "Yes") %>% 
       select(ID, repeats, experimental_replicate, sham.growth, picoxystrobin.growth, new)
     
-    
-
+     #Discriminatory dose tetraconazole
+   
+    survey.data.tetraconazole <- 
+      read.csv("data/DD_survey-WMNCSRP_tetraconazole.csv")
+    survey.data.tetraconazole<-survey.data.tetraconazole %>% 
+select(ID, repeats, experimental_replicate, control.ecuatorial, control.polar, tetraconazole.ecuatorial, tetraconazole.polar) %>% 
+      # group_by(
+      #   ID,
+      #   repeats,
+      #   experimental_replicate,
+      #   sham.ecuatorial,
+      #   sham.polar,
+      #   picoxystrobin.ecuatorial,
+      #   picoxystrobin.polar
+      #   )  %>%
+        mutate(
+    control.growth = ((control.ecuatorial + control.polar) / 2),
+    tetraconazole.growth = ((
+    tetraconazole.ecuatorial + tetraconazole.polar
+    ) / 2), ID = as.character(ID), new= "Yes") %>% 
+      select(ID, repeats, experimental_replicate, control.growth, tetraconazole.growth, new)
+   
+#Discriminatory dose tetraconazole
              
-         
+    survey.data.TM <- 
+      read.csv("data/DD_survey-WMNCSRP_TM.csv")
+    survey.data.TM<-survey.data.TM %>% 
+select(ID, repeats, experimental_replicate, control.ecuatorial, control.polar, TM.ecuatorial, TM.polar) %>% 
+      # group_by(
+      #   ID,
+      #   repeats,
+      #   experimental_replicate,
+      #   sham.ecuatorial,
+      #   sham.polar,
+      #   picoxystrobin.ecuatorial,
+      #   picoxystrobin.polar
+      #   )  %>%
+        mutate(
+    control.growth = ((control.ecuatorial + control.polar) / 2),
+    TM.growth = ((
+    TM.ecuatorial + TM.polar
+    ) / 2), ID = as.character(ID), new= "Yes") %>% 
+      select(ID, repeats, experimental_replicate, control.growth, TM.growth, new)
+        
 
 # reading the inventory Sclerotinia collection with some of my update modifications
                             WM <- read.csv("data/WM-fixingproductnamesID2573_modifyingforactiveingredient_10.csv", stringsAsFactors = TRUE)
@@ -737,6 +778,34 @@ WI_Cerny <- WM3_ %>%
   filter(WM3_$Field== "cer") %>% 
   pull(ID)
 
+NE_Holt <- WM3_ %>% 
+  filter(WM3_$Field== "holt") %>% 
+  pull(ID)
+NE_Field_34 <- WM3_ %>% 
+  filter(WM3_$Field== "34") %>% 
+  pull(ID)
+
+NE_Field_67 <- WM3_ %>% 
+  filter(WM3_$Field== "67") %>% 
+  pull(ID)
+
+NE_Field_75 <- WM3_ %>% 
+  filter(WM3_$Field== "75") %>% 
+  pull(ID)
+
+NE_Field_97 <- WM3_ %>% 
+  filter(WM3_$Field== "97") %>% 
+  pull(ID)
+
+NE_Field_98 <- WM3_ %>% 
+  filter(WM3_$Field== "98") %>% 
+  pull(ID)
+
+NE_Field_101 <- WM3_ %>% 
+  filter(WM3_$Field== "101") %>% 
+  pull(ID)
+
+
 potato <- c(2570:2573)
 
 mexican.isolates <- c(242, 248, 615:632, 779, 1857: 1940)
@@ -1110,12 +1179,14 @@ tested.bocalid.controls
 
 ##From the 21, there are 4 that are statistically differenet
 
-# keeping juts the highest value of the repeated ID value and taking out Mexico and Brazil
+# keeping juts the highest value of the repeated ID value
 boscalid.complete<- boscalid.complete%>%  
   mutate( ID= as.numeric(ID)) %>% 
   group_by(ID) %>%
   top_n(1, EC50DC) %>% #keeping the highest value of each ID value
-  ungroup() %>% 
+  ungroup() 
+#Filterring specific fields by field scale
+boscalid.complete <- boscalid.complete%>% 
     mutate(source = ifelse(
     ID %in% baseline_isolates_2,
     "Baseline",
@@ -1166,9 +1237,11 @@ boscalid.complete<- boscalid.complete%>%
   "Mexico",
   ifelse(ID %in% brazilian.isolates,
   "Brazil", "USA")
-  )) %>% 
+  )) 
+
+boscalid.complete.fields <- boscalid.complete%>% 
   filter(Field== "MI:East_Lansing"| 
-           Field== "IA_Nashua"|
+         Field== "IA_Nashua"|
          Field== "WI_Hancock"|
          Field== "MI_Montcalm_2017"|
          Field== "MI_Montcalm_2017"|
@@ -1180,13 +1253,13 @@ boscalid.complete<- boscalid.complete%>%
 mutate(Field = fct_recode(Field, "Mexico_Brazil" = "other_fields"))
 
 ###
-boscalid.complete.2 <- boscalid.complete%>% 
-  filter( !Field == "potato", !Field == "other_fields")
-
-boscalid.complete.3 <- boscalid.complete%>%
-  filter(
-    !Country =="Brazil" & !Country == "Mexico"  
-  )
+# boscalid.complete.2 <- boscalid.complete%>% 
+#   filter( !Field == "potato", !Field == "other_fields")
+# 
+# boscalid.complete.3 <- boscalid.complete%>%
+#   filter(
+#     !Country =="Brazil" & !Country == "Mexico"  
+#   )
 
 
 ###
@@ -1250,65 +1323,96 @@ boscalid.complete.3 <- boscalid.complete%>%
 
 
 ## Statistical analysis
-### By Field (previous Source)
+### By source 
 No normality
 ```{r, include= FALSE}
 
 
 ##NORMALITY TEST-Shapiro_test
 
-# shapiro.test.boscal <- boscalid.complete %>%
-#   group_by(source) %>%
-#   do(tidy(shapiro.test(.$EC50DC)))
-# shapiro.test.boscal 
+shapiro.test.boscal <- boscalid.complete %>%
+    do(tidy(shapiro.test(.$EC50DC)))
+  shapiro.test.boscal[[2]][[1]]
+ ##No normals
 
 
-
- #NO NORMALILTY thats is why  krusKal
+ #NO NORMALILTY 0.00000125 , thats is why  krusKal
 #by source
 
 object.1 <- kruskal.test(EC50DC ~ source, data = boscalid.complete)
+object.1[[3]][[1]]
 
-#There is difference p-value = 1.25 *10 -05
+#There is difference p-value = -3.70 x 10-1
 
 object.2 <-  DunnTest(EC50DC ~ source, data = boscalid.complete, method = "bonferroni")
-#P VALUE 0.00057 *** FF-Baseline
-#P VALUE 0.00093 *** FFT-FF
 
-###
-shapiro.test.boscal <- boscalid.filtered.2  %>%
-  do(tidy(shapiro.test(.$EC50DC)))
-
-shapiro.test.boscal
-
-shapiro.test.boscal.2 <- boscalid.filtered.2 %>%
-  group_by(Field) %>%
-  do(tidy(shapiro.test(.$EC50DC)))
-
-shapiro.test.boscal.2 
-
+# No difference
+# FF-Baseline        0.00084 ***   
+# FFT-Baseline       1.0000    
+# FFT-FF             1.9e-09 ***
+#There IS difference by mean ranks
+# ###
+# shapiro.test.boscal <- boscalid.filtered.2  %>%
+#   do(tidy(shapiro.test(.$EC50DC)))
+# 
+# shapiro.test.boscal
+# 
+# shapiro.test.boscal.2 <- boscalid.filtered.2 %>%
+#   group_by(Field) %>%
+#   do(tidy(shapiro.test(.$EC50DC)))
+# 
+# shapiro.test.boscal.2 
+# 
 
 ```
 
 ```{r}
-shapiro.test.boscal <- boscalid.filtered.2  %>%
-  do(tidy(shapiro.test(.$EC50DC)))
-
-shapiro.test.boscal
-
-shapiro.test.boscal.2 <- boscalid.filtered.2 %>%
-  group_by(Field) %>%
-  do(tidy(shapiro.test(.$EC50DC)))
-
-shapiro.test.boscal.2 
+# shapiro.test.boscal <- boscalid.filtered.2  %>%
+#   do(tidy(shapiro.test(.$EC50DC)))
+# 
+# shapiro.test.boscal
+# 
+# shapiro.test.boscal.2 <- boscalid.filtered.2 %>%
+#   group_by(Field) %>%
+#   do(tidy(shapiro.test(.$EC50DC)))
+# 
+# shapiro.test.boscal.2 
 
 ```
 
-#kruskal wallis test
-There is NO difference, P value is 0.07562
+# by Field  kruskal wallis test 
+There is NO difference, P value is 0.1686
 ```{r}
-object.1 <- kruskal.test(EC50DC ~ Field, data = boscalid.filtered.2)
-object.1[[3]][[1]] 
+shapiro.test.boscal.fields <- boscalid.complete.fields %>%
+   do(tidy(shapiro.test(.$EC50DC)))
+shapiro.test.boscal.fields
+# Almost but not 0.0450
+object.3 <- kruskal.test(EC50DC ~ Field, data = boscalid.complete.fields)
+object.3[[3]][[1]] 
+#There is NO difference, P value is 0.1686772
+```
+# by Host  kruskal wallis test 
+There is NO difference, P value is 0.99
+
+```{r}
+shapiro.test.boscal.fields <- boscalid.complete.fields %>%
+   do(tidy(shapiro.test(.$EC50DC)))
+shapiro.test.boscal.fields
+# Almost but not 0.0450
+object.4 <- kruskal.test(EC50DC ~ Host, data = boscalid.complete.fields)
+object.4[[3]][[1]] 
+
+```
+# by SOurce  kruskal wallis test 
+There is NO difference, P value is 0.45
+```{r}
+shapiro.test.boscal.fields <- boscalid.complete.fields %>%
+   do(tidy(shapiro.test(.$EC50DC)))
+shapiro.test.boscal.fields
+# Almost but not 0.0450
+object.5 <- kruskal.test(EC50DC ~ source, data = boscalid.complete.fields)
+object.5[[3]][[1]] 
+
 ```
 
 ```{r, echo= FALSE, include= FALSE}
@@ -1393,7 +1497,7 @@ plot.bos.2 <- boscalid.complete.2%>%
 ```
 
 ```{r echo= FALSE}
-plot.bos.3 <- boscalid.complete.3%>%
+plot.bos.3 <- boscalid.complete.fields%>%
   ggplot(aes(x = Field, y = EC50DC)) +
   geom_jitter(
     width = .1,
@@ -1425,9 +1529,9 @@ plot.bos.3 <- boscalid.complete.3%>%
 plot.bos.3
 
 ####
-boscalid.complete$Field <- factor(boscalid.complete$Field, c("WI_Hancock", "MI_Montcalm_2017", "IA_Nashua","MI_Montcalm_2015", "Baseline",  "Mexico_Brazil","MI:East_Lansing"))
+boscalid.complete.fields$Field <- factor(boscalid.complete.fields$Field, c("WI_Hancock", "MI_Montcalm_2017", "IA_Nashua","MI_Montcalm_2015", "Baseline",  "Mexico_Brazil","MI:East_Lansing"))
 
-plot.bos.3 <- boscalid.complete%>%
+plot.bos.3 <- boscalid.complete.fields%>%
   ggplot(aes(x = Field, y = EC50DC)) +
   geom_jitter(
     width = .1,
@@ -1765,7 +1869,17 @@ picoxystrobin.complete <- final.picoxystrobin.DC %>%
    rename(EC50DC = Estimate.50DC) %>% 
   select(ID, EC50DC) %>%
   bind_rows(picoxystrobin.filtered.) %>% 
-  ungroup() %>%
+  ungroup() 
+
+picoxystrobin.complete.controls <- picoxystrobin.complete %>% 
+  mutate(controls = ifelse(
+    ID %in% picoxystrobin.controls,
+    "Yes", "No")) %>% 
+  filter(controls== "Yes")
+  
+# keeping juts the highest value of the repeated ID value and taking out Mexico and Brazil
+
+picoxystrobin.complete <- picoxystrobin.complete%>%
   mutate( ID= as.numeric(ID)) %>% 
   group_by(ID) %>%
   top_n(1, EC50DC) %>%# taking out the duplication and keeping the one with highest value
@@ -1804,7 +1918,7 @@ picoxystrobin.complete <- final.picoxystrobin.DC %>%
   "WI_Cerny",
   ifelse(ID %in% potato, 
          "potato", ifelse(ID %in% baseline_isolates_2, 
-         "Baseline", "other_field"
+         "Baseline", "other_fields"
          )
          )
   )
@@ -1826,7 +1940,8 @@ picoxystrobin.complete <- final.picoxystrobin.DC %>%
   "Mexico",
   ifelse(ID %in% brazilian.isolates,
   "Brazil", "USA")
-  )) %>% 
+  )) 
+picoxystrobin.complete.fields <- picoxystrobin.complete%>% 
   filter(Field== "MI:East_Lansing"| 
            Field== "IA_Nashua"|
          Field== "WI_Hancock"|
@@ -1838,7 +1953,7 @@ picoxystrobin.complete <- final.picoxystrobin.DC %>%
          Country== "Mexico"|
          Country== "Brazil") %>% 
   arrange(EC50DC) %>% 
-  mutate(Field = fct_recode(Field, "Mexico_Brazil" = "other_field"))
+  mutate(Field = fct_recode(Field, "Mexico_Brazil" = "other_fields"))
 
 
     
@@ -1896,7 +2011,7 @@ picoxystrobin.filtered. %>%
   Field = as.factor(Field)
   ) %>%
   #taking out "different host" becuse does not belong to drybean nor soybean
-  filter(!ID == 8, !ID == 129) 
+  filter(!ID == 8, !ID == 129) %>% 
   mutate(Country = ifelse(
   ID %in% mexican.isolates,
   "Mexico",
@@ -1967,7 +2082,7 @@ picoxystrobin.filtered. <- picoxystrobin.filtered. %>%
   Field = as.factor(Field)
   ) %>%
   #taking out "different host" becuse does not belong to drybean nor soybean
-  filter(!ID == 8, !ID == 129) 
+  filter(!ID == 8, !ID == 129) %>% 
   mutate(Country = ifelse(
   ID %in% mexican.isolates,
   "Mexico",
@@ -1992,7 +2107,7 @@ picoxystrobin.filtered.2 <- picoxystrobin.filtered. %>%
 
 
 ## Statistical analysis
-### By Field (previous source)
+### By source
 ```{r include= FALSE}
 ####### pico
 
@@ -2001,23 +2116,36 @@ picoxystrobin.filtered.2 <- picoxystrobin.filtered. %>%
 ##NORMALITY TEST-Shapiro_test
 
 shapiro.test.pico <-picoxystrobin.complete %>%
-  group_by(source) %>%
-  do(tidy(shapiro.test(.$EC50DC)))
+   do(tidy(shapiro.test(.$EC50DC)))
 shapiro.test.pico 
-  ##NO normals
-shapiro.test.pico.2 <-picoxystrobin.complete %>%
-  group_by(Host) %>%
-  do(tidy(shapiro.test(.$EC50DC)))
-shapiro.test.pico.2
+#NO NORMALILTY 0.00000111 , thats is why  krusKal
+#by source
+
+# shapiro.test.pico <-picoxystrobin.complete %>%
+#   group_by(source) %>%
+#   do(tidy(shapiro.test(.$EC50DC)))
+# shapiro.test.pico 
+#   ##NO normals
+# shapiro.test.pico.2 <-picoxystrobin.complete %>%
+#   group_by(Host) %>%
+#   do(tidy(shapiro.test(.$EC50DC)))
+# shapiro.test.pico.2
 
  #NO NORMALILTY thats is why  krusKal
 #by source
 
-kruskal.test(EC50DC ~ source, data = picoxystrobin.complete)
+object.6 <- kruskal.test(EC50DC ~ source, data = picoxystrobin.complete)
+object.6[[3]][[1]]
 
-#There IS difference p-value = 0.0001368
+#There IS difference p-value = 0.001368
 
+object.7 <-  DunnTest(EC50DC ~ source, data = picoxystrobin.complete, method = "bonferroni")
+
+# FF-Baseline        0.4603    
+# FFT-Baseline       0.0022 **   
+# FFT-FF             0.0012 **
 #
+#There is differnec by ranks
 summary(aov (EC50DC ~ Field, data = picoxystrobin.filtered.))
 shapiro.test.picoXX <- picoxystrobin.filtered. %>% 
    group_by(Field) %>%
@@ -2025,29 +2153,96 @@ do(tidy(shapiro.test(.$EC50DC)))
  shapiro.test.picoXX 
 
 ```
+BY host
+```{r}
+shapiro.test.pico <-picoxystrobin.complete %>%
+   do(tidy(shapiro.test(.$EC50DC)))
+shapiro.test.pico 
+#NO NORMALILTY  , thats is why  krusKal
+object.8 <- kruskal.test(EC50DC ~ Host, data = picoxystrobin.complete)
+object.8[[3]][[1]]
+#There is difference between host ,  0.044
+object.9 <-  DunnTest(EC50DC ~ Host, data = picoxystrobin.complete, method = "bonferroni")
+object.9 
+
+#Drybean-different_host       1.0000    
+# Soybean-different_host       1.0000    
+# Soybean-Drybean              0.0382 *
+```
 
 # there is normality
 ```{r}
-shapiro.test.pico <-picoxystrobin.filtered.2 %>%
-  do(tidy(shapiro.test(.$EC50DC)))
-shapiro.test.pico
-
-shapiro.test.pico.2 <-picoxystrobin.filtered.2 %>%
-  group_by(Field) %>%
-  do(tidy(shapiro.test(.$EC50DC)))
-shapiro.test.pico.2 
+# shapiro.test.pico <-picoxystrobin.filtered.2 %>%
+#   do(tidy(shapiro.test(.$EC50DC)))
+# shapiro.test.pico
+# 
+# shapiro.test.pico.2 <-picoxystrobin.filtered.2 %>%
+#   group_by(Field) %>%
+#   do(tidy(shapiro.test(.$EC50DC)))
+# shapiro.test.pico.2 
 ```
+
+
+
+By field
 ANOVA, There is difference, p value is 0.0613
 ```{r, echo= FALSE}
-summary(aov (EC50DC ~ Field, data = picoxystrobin.complete))
-model <- lm(EC50DC ~ Field, data = picoxystrobin.complete)
+shapiro.test.pico.fields <-picoxystrobin.complete.fields %>%
+   do(tidy(shapiro.test(.$EC50DC)))
+shapiro.test.pico.fields 
+#NO NORMALILTY  0.0000454, thats is why  krusKal
+
+# in case not NORMAL
+object.10 <- kruskal.test(EC50DC ~ Field, data = picoxystrobin.complete.fields)
+object.10[[3]][[1]]
+#There is difference 0.001431
+
+object.11 <- DunnTest(EC50DC ~ Field, data = picoxystrobin.complete.fields, method = "bonferroni")
+
+# there are differenets
+#Baseline-Mexico_Brazil   0.0088 **
+#Baseline-MI_Montcalm_2015 0.0673  . 
+#Baseline-WI_Hancock       0.0108 *
+
+#by host
+object.12 <- kruskal.test(EC50DC ~ Host, data = picoxystrobin.complete.fields)
+object.12[[3]][[1]]
+#There is  no difference 0.1599
+
+#by source
+object.13 <- kruskal.test(EC50DC ~ source, data = picoxystrobin.complete.fields)
+object.13[[3]][[1]]
+#There is   difference 0.001414
+
+object.14 <- DunnTest(EC50DC ~ source, data = picoxystrobin.complete.fields, method = "bonferroni")
+object.14
+# FF-Baseline       0.0166 *  
+# FFT-Baseline     0.0012 ** 
+# FFT-FF           1.0000  
+# in case  NORMAL distributed
+shapiro.test.pico.3 <-picoxystrobin.complete.fields %>%
+  group_by(Field) %>%
+  do(tidy(shapiro.test(.$EC50DC)))
+shapiro.test.pico.3
+#There are normal distributed that is why ANOVA
+summary(aov (EC50DC ~ Field, data = picoxystrobin.complete.fields))
+model <- lm(EC50DC ~ Field, data = picoxystrobin.complete.fields)
 ANOVA <- aov(model)
 tukey.test <- TukeyHSD(ANOVA)
 tukey.test.2 <- HSD.test(ANOVA, trt = 'Field')
 HSD.test(model, "Field")
 summary(model)
 summary(ANOVA)
+# in case not NORMAL
+kruskal.test(EC50DC ~ Field, data = picoxystrobin.complete)
+#There is difference 0.001431
 
+DunnTest(EC50DC ~ Field, data = picoxystrobin.complete, method = "bonferroni")
+
+# there are differenets
+#Baseline-Mexico_Brazil   0.0088 **
+#Baseline-MI_Montcalm_2015 0.0673  . 
+#Baseline-WI_Hancock       0.0108 *
 ```
 
 ```{r, echo= FALSE, include= FALSE}
@@ -2422,8 +2617,11 @@ tetraconazole_data <- survey.data.3 %>%
   repeats,
   experimental_replicate,
   tetraconazole.growth,
-  control.growth) %>%
-  rename(response = tetraconazole.growth, control = control.growth) 
+  control.growth,
+  new) %>%
+ rbind(survey.data.tetraconazole) %>% 
+  rename(response = tetraconazole.growth, control = control.growth) %>% mutate(new= as.factor(new))
+
  
 # Using the function in order to take out the outliers#
 
@@ -2465,12 +2663,25 @@ tetraconazole.complete <- final.tetraconazole.DC %>%
   rename(EC50DC = Estimate.50DC) %>% 
   select(ID, EC50DC) %>% ungroup() %>% 
 bind_rows(tetraconazole.filtered.) %>% 
-  ungroup() %>%
+  ungroup() 
+## Testing controls between Serial dilution and Duscriminatory concentration
+
+tetraconazole.controls <- tetraconazole.complete$ID[duplicated(tetraconazole.complete$ID)]
+# 20 repeats
+
+tetraconazole.complete.controls <- tetraconazole.complete %>% 
+  mutate(controls = ifelse(
+    ID %in% boscalid.controls,
+    "Yes", "No")) %>% 
+  filter(controls== "Yes")
+
+# keeping juts the highest value of the repeated ID value and taking out Mexico and Brazil
+  tetraconazole.complete<- tetraconazole.complete%>%  
   mutate( ID= as.numeric(ID)) %>% 
   group_by(ID) %>%
-  top_n(1, EC50DC) %>%
+  top_n(1, EC50DC) %>% #keeping the highest value of each ID value
   ungroup() %>% 
-   mutate(source = ifelse(
+    mutate(source = ifelse(
     ID %in% baseline_isolates_2,
     "Baseline",
     ifelse(
@@ -2480,12 +2691,69 @@ bind_rows(tetraconazole.filtered.) %>%
     ID %in% drybean,
     "Drybean", ifelse(
       ID %in% soybean,
-      "Soybean","different_host"
-    ))) %>% 
-    mutate(source = as.factor(source), Host= as.factor(Host)) %>% #taking out "different host" becuse does not belong to drybean nor soybean
-  filter(!ID == 8,!ID == 129 )
-# that is the diffrenece
-####WATCH OUT, Based on EC50DC
+      "Soybean","different_host")),
+       Field = ifelse(
+  ID %in% NE_Holt,
+  "MI:Holt",
+  ifelse(
+  ID %in% NE_Field_34,
+  "NE:Field_34",
+  ifelse(
+  ID %in% NE_Field_67,
+  "NE:Field_67",
+  ifelse(
+  ID %in% NE_Field_75,
+  "NE:Field_75",
+  ifelse(
+  ID %in% NE_Field_97,
+  "NE:Field_97",
+  ifelse(
+  ID %in% NE_Field_98,
+  "NE:Field_98",
+  ifelse(
+  ID %in% NE_Field_101,
+  "NE:Field_101",
+  ifelse(ID %in% potato, 
+         "potato", ifelse(ID %in% baseline_isolates_2, 
+         "Baseline", "other_fields"
+)
+)
+ )
+  )
+  )
+  )
+  )
+  )
+  )
+ )  %>%
+  mutate(
+  source = as.factor(source),
+  Host = as.factor(Host),
+  Field = as.factor(Field)
+  ) %>%    
+#taking out "different host" becuse does not belong to drybean nor soybean
+  filter(!ID == 8, !ID == 129)%>%
+  mutate(Country = ifelse(
+  ID %in% mexican.isolates,
+  "Mexico",
+  ifelse(ID %in% brazilian.isolates,
+  "Brazil", "USA")
+  )) 
+  
+  tetraconazole.complete.fields <- tetraconazole.complete %>% 
+  filter(Field== "NE:Holt"| 
+           Field== "NE:Field_34"|
+         Field== "NE:Field_67"|
+         Field== "NE:Field_75"|
+         Field== "NE:Field_97"|
+         Field== "NE:Field_98"|
+           Field== "NE:Field_101"|
+         Field== "Baseline"|
+         Country== "Mexico"|
+         Country== "Brazil") %>% 
+  arrange(EC50DC) %>% 
+mutate(Field = fct_recode(Field, "Mexico_Brazil" = "other_fields"))
+
 
 
 ```
@@ -2501,24 +2769,35 @@ bind_rows(tetraconazole.filtered.) %>%
 ##NORMALITY TEST-Shapiro_test
 
 shapiro.test.tetra <- tetraconazole.complete %>%
-  group_by(source) %>%
   do(tidy(shapiro.test(.$EC50DC)))
 shapiro.test.tetra 
+# 0.478 X10 -13
+
 # No normals
-shapiro.test.tetra.2 <- tetraconazole.complete %>%
-  group_by(Host) %>%
-  do(tidy(shapiro.test(.$EC50DC)))
-shapiro.test.tetra.2
-
  #NO NORMALILTY thats is why  krusKal
-#by source
-
-kruskal.test(EC50DC ~ source, data = tetraconazole.complete)
-
-#There NO difference p-value = 0.05979
 
 
+object.14 <- kruskal.test(EC50DC ~ source, data = tetraconazole.complete)
+object.14[[3]][[1]]
+#There NO difference p-value = 0.4244
 
+
+```
+By host
+```{r}
+##NORMALITY TEST-Shapiro_test
+
+shapiro.test.tetra <- tetraconazole.complete %>%
+  do(tidy(shapiro.test(.$EC50DC)))
+shapiro.test.tetra 
+# 0.478 X10 -13
+
+# No normals
+ #NO NORMALILTY thats is why  krusKal
+
+object.15 <- kruskal.test(EC50DC ~ Host, data = tetraconazole.complete)
+object.15[[3]][[1]]
+#There NO difference p-value = 0.2349112
 
 ```
 
@@ -2598,15 +2877,7 @@ mutate(group =ifelse(
 
 ```
 
-### By Host
-```{r}
-#by hosts
 
-kruskal.test(EC50DC ~ Host, data = tetraconazole.complete)
-#There is NO difference p-value 0.4241
-
-
-```
 
 ```{r}
 plot.tetra.2 <- tetraconazole.complete%>%
@@ -2661,6 +2932,132 @@ plot.tetra.2 <- tetraconazole.complete%>%
 # 
 
 ```
+By Field
+```{r}
+
+#Shapiro test
+shapiro.test.tetra.fields <- tetraconazole.complete.fields %>%
+  do(tidy(shapiro.test(.$EC50DC)))
+shapiro.test.tetra.fields
+
+#P value 0.0000000413, that is why kruskal 
+object.16 <- kruskal.test(EC50DC ~ Field, data = tetraconazole.complete.fields)
+object.16[[3]][[1]]
+#There is YES difference p-value 0.008304
+object.17 <- DunnTest(EC50DC ~ Field, data = tetraconazole.complete.fields, method = "bonferroni")
+object.17
+#No differenec between ranks due to no any value less or equal to 0.05
+#by host
+
+object.18 <- kruskal.test(EC50DC ~ Host, data = tetraconazole.complete.fields)
+object.18[[3]][[1]]
+
+# P values is 0.0242661, there IS diferenec between hosts
+
+#by source
+
+object.19 <- kruskal.test(EC50DC ~ source, data = tetraconazole.complete.fields)
+object.19[[3]][[1]]
+#Thre is NO differnece teween source, P value is 0.1383376
+
+
+#P values is 0.0242661, there i diferenec between hosts
+summary(aov (EC50DC ~ Field, data = tetraconazole.complete.fields))
+model <- lm(EC50DC ~ Field, data = tetraconazole.complete.fields)
+ANOVA <- aov(model)
+tukey.test <- TukeyHSD(ANOVA)
+tukey.test.2 <- HSD.test(ANOVA, trt = 'Field')
+HSD.test(model, "Field")
+summary(model)
+summary(ANOVA)
+
+```
+
+```{r}
+plot.tetra.3 <-tetraconazole.complete.fields%>%
+  ggplot(aes(x = Field, y = EC50DC)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 21,
+    color = "black",
+    fill = "deepskyblue",
+    size = 2,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 22,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs(x = "Field", y = "EC50DC (ppm)") +
+  theme(
+  panel.border = element_rect(
+  colour = "black",
+  fill = NA,
+  size = 1
+  ),
+  axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+  axis.text.x  = element_text(
+  face = "bold",
+  size = 7,
+  family = "Arial",
+  angle = 30,
+  hjust = 1
+  ),
+  panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+  
+
+
+plot.tetra.3
+
+##
+tetraconazole.complete.fields$Field <- factor(tetraconazole.complete.fields$Field, c("NE:Field_34","NE:Field_67","NE:Field_101","NE:Field_98", "NE:Field_97", "Baseline", "NE:Field_75", "Mexico_Brazil"))
+
+plot.tetra.3 <-tetraconazole.complete.fields%>%
+  ggplot(aes(x = Field, y = EC50DC)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 21,
+    color = "black",
+    fill = "deepskyblue",
+    size = 2,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 22,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs(x = "Field", y = "EC50DC (ppm)") +
+  theme(
+  panel.border = element_rect(
+  colour = "black",
+  fill = NA,
+  size = 1
+  ),
+  axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+  axis.text.x  = element_text(
+  face = "bold",
+  size = 8.5,
+  family = "Arial",
+  angle = 30,
+  hjust = 1
+  ),
+  panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+  
+plot.tetra.3
+
+
+```
+
 
 # Thiophanate methyl 
 ## Serial dilution
@@ -2853,7 +3250,7 @@ plot.TM <- TM.complete%>%
 
 ##  Use of the Discriminatory Concentration (DC)  
 
-Because  the results of  EC50 by this model, the Discriminatory Conecntration (DC) was not trustable, and the DC selected was the highest concentartion (10 ppm). This concentration will alow to classified the isolates in resistant or susceptible. The criteria of classificattion was more than 24% grotwh for resistant. 
+Because  the results of  EC50 by this model, the Discriminatory Conecntration (DC) was not trustable, and the DC selected was the highest concentration (10 ppm). This concentration will alow to classified the isolates in resistant or susceptible. The criteria of classificattion was more than 24% growth for resistant. 
 
 ```{r Using the DC Thiophanate methyl and the model, echo = FALSE}
 TM_data <- survey.data.3 %>%
@@ -2863,8 +3260,21 @@ TM_data <- survey.data.3 %>%
   summarise(mean_response =mean(response, na.rm = TRUE), mean_control =mean(control, na.rm = TRUE)) %>% 
   mutate(RG= (mean_response/mean_control)*100)  %>% 
 mutate(resistance = ifelse(RG >24,#more or equal to 25%, in literature is used approx greater than 50 % 
-                           "resistant", "nonresistant")) 
+                           "resistant", "nonresistant")) %>% 
+  arrange(RG)
 
+TM.data.2 <- survey.data.3 %>%
+  select(ID, repeats, experimental_replicate, TM.growth, control.growth, new) %>%
+  rbind(survey.data.TM) %>% 
+  rename(response = TM.growth, control = control.growth)%>% 
+    mutate(new= as.factor(new)) %>% 
+  group_by(ID) %>% 
+  summarise(mean_response =mean(response, na.rm = TRUE), mean_control =mean(control, na.rm = TRUE)) %>% 
+  mutate(RG= (mean_response/mean_control)*100)  %>% 
+mutate(resistance = ifelse(RG >24,#more or equal to 25%, in literature is used approx greater than 50 % 
+                           "resistant", "nonresistant")) %>% 
+  arrange(RG)
+TM.data.2
 
 ```
 
@@ -3016,6 +3426,7 @@ ungroup() %>%
 select(ID)
   
 #TM.data
+
 
 ```
 
