@@ -756,53 +756,861 @@ WM3_ <- WM3%>%
        molecule.s._previous_seasons%in% Group_3_not_considered~ "Group_3&not_considered",
        molecule.s._previous_seasons%in% unknown~ "unknown", #this consider the control CHECK this out unknown
              TRUE ~ "unknown"# in case of not, naming "not_selected""
-    ) )   
+    ) )  %>%  
+mutate(Field_Names= paste( Year,Field, sep = "_")) 
 
+ 
+  WM_publication <- WM3_ %>% 
+    filter(Year == 2015 | Year == 2016 | Year == 2017) %>%
+  ungroup() %>%
+  group_by(State, Field, Year, molecule.s._current_season, Rate ) %>%
+  summarize(N_isolates= n()) %>%
+    ungroup() %>%
+    add_row(State = "Total", N_isolates = sum(.$N_isolates))
+ 
+WM_AB  <- WM3_ %>%
+  filter(WM3_$State== "AB") %>% 
+  pull(ID)
+ WM_AZ  <- WM3_ %>%
+  filter(WM3_$State== "AZ") %>% 
+  pull(ID)
+WM_BA  <- WM3_ %>%
+  filter(WM3_$State== "BA") %>% 
+  pull(ID)
+ WM_CA  <- WM3_ %>%
+  filter(WM3_$State== "CA") %>% 
+  pull(ID)
+ 
+WM_CO  <- WM3_ %>%
+  filter(WM3_$State== "CO") %>% 
+  pull(ID)
+ WM_DE  <- WM3_ %>%
+  filter(WM3_$State== "DE") %>% 
+  pull(ID)
+ WM_DF  <- WM3_ %>%
+  filter(WM3_$State== "DF") %>% 
+  pull(ID)
+ WM_FL  <- WM3_ %>%
+  filter(WM3_$State== "FL") %>% 
+  pull(ID)
+ WM_GA  <- WM3_ %>%
+  filter(WM3_$State== "GA") %>% 
+  pull(ID)
+ WM_GO  <- WM3_ %>%
+  filter(WM3_$State== "GO") %>% 
+  pull(ID)
+ WM_IA  <- WM3_ %>%
+  filter(WM3_$State== "IA") %>% 
+  pull(ID)
+ WM_ID  <- WM3_ %>%
+  filter(WM3_$State== "ID") %>% 
+  pull(ID)
+ WM_KS  <- WM3_ %>%
+  filter(WM3_$State== "KS") %>% 
+  pull(ID)
+ WM_KY  <- WM3_ %>%
+  filter(WM3_$State== "KY") %>% 
+  pull(ID)
+ WM_LA  <- WM3_ %>%
+  filter(WM3_$State== "LA") %>% 
+  pull(ID)
+ WM_MD  <- WM3_ %>%
+  filter(WM3_$State== "MD") %>% 
+  pull(ID)
+ WM_MG  <- WM3_ %>%
+  filter(WM3_$State== "MG") %>% 
+  pull(ID)
+ WM_MI  <- WM3_ %>%
+  filter(WM3_$State== "MI") %>% 
+  pull(ID)
+ WM_MN  <- WM3_ %>%
+  filter(WM3_$State== "MN") %>% 
+  pull(ID)
+ WM_MO  <- WM3_ %>%
+  filter(WM3_$State== "MO") %>% 
+  pull(ID)
+ WM_MS  <- WM3_ %>%
+  filter(WM3_$State== "MS") %>% 
+  pull(ID)
+ WM_MT  <- WM3_ %>%
+  filter(WM3_$State== "MT") %>% 
+  pull(ID)
+ WM_NC  <- WM3_ %>%
+  filter(WM3_$State== "NC") %>% 
+  pull(ID)
+ WM_ND  <- WM3_ %>%
+  filter(WM3_$State== "ND") %>% 
+  pull(ID)
+ WM_NE  <- WM3_ %>%
+  filter(WM3_$State== "NE") %>% 
+  pull(ID)
+ WM_NY  <- WM3_ %>%
+  filter(WM3_$State== "NY") %>% 
+  pull(ID)
+ WM_OH  <- WM3_ %>%
+  filter(WM3_$State== "OH") %>% 
+  pull(ID)
+ WM_OK  <- WM3_ %>%
+  filter(WM3_$State== "OK") %>% 
+  pull(ID)
+ WM_ON  <- WM3_ %>%
+  filter(WM3_$State== "ON") %>% 
+  pull(ID)
+ WM_OR  <- WM3_ %>%
+  filter(WM3_$State== "OR") %>% 
+  pull(ID)
+ WM_PA  <- WM3_ %>%
+  filter(WM3_$State== "PA") %>% 
+  pull(ID)
+ WM_PR  <- WM3_ %>%
+  filter(WM3_$State== "PR") %>% 
+  pull(ID)
+ WM_QUE  <- WM3_ %>%
+  filter(WM3_$State== "QUE") %>% 
+  pull(ID)
+ WM_RS  <- WM3_ %>%
+  filter(WM3_$State== "RS") %>% 
+  pull(ID)
+ WM_SC  <- WM3_ %>%
+  filter(WM3_$State== "SC") %>% 
+  pull(ID)
+ WM_SIN  <- WM3_ %>%
+  filter(WM3_$State== "SIN") %>% 
+  pull(ID)
+ WM_SK  <- WM3_ %>%
+  filter(WM3_$State== "SK") %>% 
+  pull(ID)
+ WM_WI  <- WM3_ %>%
+  filter(WM3_$State== "WI") %>% 
+  pull(ID)
+ WM_WA  <- WM3_ %>%
+  filter(WM3_$State== "WA") %>% 
+  pull(ID)
+ 
+ 
+WM_1963  <- WM3_ %>%
+  filter(WM3_$Field_Names== "1963_") %>% 
+  pull(ID)
+
+ WM_1965<- WM3_ %>%
+  filter(WM3_$Field_Names== "1965_") %>% 
+  pull(ID)
+
+ WM_1969<- WM3_ %>%
+  filter(WM3_$Field_Names== "1969_") %>% 
+  pull(ID)
+
+ WM_1973<- WM3_ %>%
+  filter(WM3_$Field_Names== "1973_") %>% 
+  pull(ID)
+
+ WM_1974<- WM3_ %>%
+  filter(WM3_$Field_Names== "1974_") %>% 
+  pull(ID)
+
+WM_1975 <- WM3_ %>%
+  filter(WM3_$Field_Names== "1975_") %>% 
+  pull(ID)
+
+ WM_1976<- WM3_ %>%
+  filter(WM3_$Field_Names== "1976_") %>% 
+  pull(ID)
+
+WM_1977 <- WM3_ %>%
+  filter(WM3_$Field_Names== "1977_") %>% 
+  pull(ID)
+
+ WM_1978<- WM3_ %>%
+  filter(WM3_$Field_Names== "1978_") %>% 
+  pull(ID)
+
+WM_1979 <- WM3_ %>%
+  filter(WM3_$Field_Names== "1979_") %>% 
+  pull(ID)
+
+ WM_1980<- WM3_ %>%
+  filter(WM3_$Field_Names== "1980_") %>% 
+  pull(ID)
+
+ WM_1981<- WM3_ %>%
+  filter(WM3_$Field_Names== "1981_") %>% 
+  pull(ID)
+
+ WM_1982<- WM3_ %>%
+  filter(WM3_$Field_Names== "1982_") %>% 
+  pull(ID)
+
+WM_1983 <- WM3_ %>%
+  filter(WM3_$Field_Names== "1983_") %>% 
+  pull(ID)
+
+ WM_1984<- WM3_ %>%
+  filter(WM3_$Field_Names== "1984_") %>% 
+  pull(ID)
+
+ WM_1985<- WM3_ %>%
+  filter(WM3_$Field_Names== "1985") %>% 
+  pull(ID)
+
+ WM_1987<- WM3_ %>%
+  filter(WM3_$Field_Names== "1987_") %>% 
+  pull(ID)
+
+ WM_1989<- WM3_ %>%
+  filter(WM3_$Field_Names== "1989_") %>% 
+  pull(ID)
+
+ WM_1990<- WM3_ %>%
+  filter(WM3_$Field_Names== "1990_") %>% 
+  pull(ID)
+
+WM_1991 <- WM3_ %>%
+  filter(WM3_$Field_Names== "1991_") %>% 
+  pull(ID)
+
+ WM_1992<- WM3_ %>%
+  filter(WM3_$Field_Names== "1992_") %>% 
+  pull(ID)
+
+ WM_1993<- WM3_ %>%
+  filter(WM3_$Field_Names== "1993_") %>% 
+  pull(ID)
+
+ WM_1994<- WM3_ %>%
+  filter(WM3_$Field_Names== "1994_") %>% 
+  pull(ID)
+
+ WM_1995<- WM3_ %>%
+  filter(WM3_$Field_Names== "1995_") %>% 
+  pull(ID)
+
+ WM_1996<- WM3_ %>%
+  filter(WM3_$Field_Names== "1996_") %>% 
+  pull(ID)
+
+ WM_1997<- WM3_ %>%
+  filter(WM3_$Field_Names== "1997_") %>% 
+  pull(ID)
+
+ WM_1997_WM_production_31<- WM3_ %>%
+  filter(WM3_$Field_Names== "1997_WM_production_31") %>% 
+  pull(ID)
+
+ WM_1997_WM_production_32<- WM3_ %>%
+  filter(WM3_$Field_Names== "1997_WM_production_32") %>% 
+  pull(ID)
+
+ WM_1988<- WM3_ %>%
+  filter(WM3_$Field_Names== "1988_") %>% 
+  pull(ID)
+
+ WM_1998<- WM3_ %>%
+  filter(WM3_$Field_Names== "1998_") %>% 
+  pull(ID)
+
+ WM_1999<- WM3_ %>%
+  filter(WM3_$Field_Names== "1999_") %>% 
+  pull(ID)
+
+ WM_2000<- WM3_ %>%
+  filter(WM3_$Field_Names== "2000_") %>% 
+  pull(ID)
+
+ WM_2002<- WM3_ %>%
+  filter(WM3_$Field_Names== "2002_") %>% 
+  pull(ID)
+
+ WM_2003<- WM3_ %>%
+  filter(WM3_$Field_Names== "2003_") %>% 
+  pull(ID)
+
+ WM_1997_WM_production_33<- WM3_ %>%
+  filter(WM3_$Field_Names== "1997_WM_production_33") %>% 
+  pull(ID)
+
+ WM_2003_WM_nursery_1<- WM3_ %>%
+  filter(WM3_$Field_Names== "2003_WM_nursery_1") %>% 
+  pull(ID)
+
+ WM_2003_WM_nursery_2<- WM3_ %>%
+  filter(WM3_$Field_Names== "2003_WM_nursery_2") %>% 
+  pull(ID)
+
+ WM_2003_WM_nursery_3<- WM3_ %>%
+  filter(WM3_$Field_Names== "2003_WM_nursery_3") %>% 
+  pull(ID)
+
+ WM_1996_WM_nursery_4<- WM3_ %>%
+  filter(WM3_$Field_Names== "1996_WM_nursery_4") %>% 
+  pull(ID)
+
+ WM_2003_WM_nursery_5<- WM3_ %>%
+  filter(WM3_$Field_Names== "2003_WM_nursery_5") %>% 
+  pull(ID)
+
+ WM_2004<- WM3_ %>%
+  filter(WM3_$Field_Names== "2004_") %>% 
+  pull(ID)
+
+ WM_2005<- WM3_ %>%
+  filter(WM3_$Field_Names== "2005_") %>% 
+  pull(ID)
+
+ WM_2006<- WM3_ %>%
+  filter(WM3_$Field_Names== "2006_") %>% 
+  pull(ID)
+
+ WM_2004_WM_nursery_6<- WM3_ %>%
+  filter(WM3_$Field_Names== "2004_WM_nursery_6") %>% 
+  pull(ID)
+
+ WM_2004_WM_nursery_7<- WM3_ %>%
+  filter(WM3_$Field_Names== "2004_WM_nursery_7") %>% 
+  pull(ID)
+
+ WM_2004_WM_nursery_8<- WM3_ %>%
+  filter(WM3_$Field_Names== "2004_WM_nursery_8") %>% 
+  pull(ID)
+
+ WM_2004_WM_nursery_9<- WM3_ %>%
+  filter(WM3_$Field_Names== "2004_WM_nursery_9") %>% 
+  pull(ID)
+
+ WM_2004_WM_nursery_10<- WM3_ %>%
+  filter(WM3_$Field_Names== "2004_WM_nursery_10") %>% 
+  pull(ID)
+
+ WM_2004_WM_nursery_11<- WM3_ %>%
+  filter(WM3_$Field_Names== "2004_WM_nursery_11") %>% 
+  pull(ID)
+
+ WM_2004_WM_nursery_12<- WM3_ %>%
+  filter(WM3_$Field_Names== "2004_WM_nursery_12") %>% 
+  pull(ID)
+
+ WM_2005_WM_nursery_13<- WM3_ %>%
+  filter(WM3_$Field_Names== "2005_WM_nursery_13") %>% 
+  pull(ID)
+
+ WM_2005_WM_nursery_14<- WM3_ %>%
+  filter(WM3_$Field_Names== "2005_WM_nursery_14") %>% 
+  pull(ID)
+
+ WM_2005_WM_nursery_15<- WM3_ %>%
+  filter(WM3_$Field_Names== "2005_WM_nursery_15") %>% 
+  pull(ID)
+
+ WM_2005_WM_nursery_16<- WM3_ %>%
+  filter(WM3_$Field_Names== "2005_WM_nursery_16") %>% 
+  pull(ID)
+
+ WM_2005_WM_nursery_17<- WM3_ %>%
+  filter(WM3_$Field_Names== "2005_WM_nursery_17") %>% 
+  pull(ID)
+
+ WM_2005_WM_nursery_18<- WM3_ %>%
+  filter(WM3_$Field_Names== "2005_WM_nursery_18") %>% 
+  pull(ID)
+
+ WM_2006_WM_nursery_19<- WM3_ %>%
+  filter(WM3_$Field_Names== "2006_WM_nursery_19") %>% 
+  pull(ID)
+
+ WM_2007<- WM3_ %>%
+  filter(WM3_$Field_Names== "2007_") %>% 
+  pull(ID)
+
+ WM_2007_WM_production_1<- WM3_ %>%
+  filter(WM3_$Field_Names== "2007_WM_production_1") %>% 
+  pull(ID)
+
+ WM_2007_WM_production_2<- WM3_ %>%
+  filter(WM3_$Field_Names== "2007_WM_production_2") %>% 
+  pull(ID)
+
+ WM_2007_WM_production_3<- WM3_ %>%
+  filter(WM3_$Field_Names== "2007_WM_production_3") %>% 
+  pull(ID)
+
+ WM_2007_WM_production_4<- WM3_ %>%
+  filter(WM3_$Field_Names== "2007_WM_production_4") %>% 
+  pull(ID)
+
+ WM_2007_WM_production_5<- WM3_ %>%
+  filter(WM3_$Field_Names== "2007_WM_production_5") %>% 
+  pull(ID)
+
+ WM_2007_WM_production_6<- WM3_ %>%
+  filter(WM3_$Field_Names== "2007_WM_production_6") %>% 
+  pull(ID)
+
+ WM_2007_WM_production_7<- WM3_ %>%
+  filter(WM3_$Field_Names== "2007_WM_production_7") %>% 
+  pull(ID)
+
+ WM_2007_WM_production_8<- WM3_ %>%
+  filter(WM3_$Field_Names== "2007_WM_production_8") %>% 
+  pull(ID)
+
+ WM_2007_WM_production_9<- WM3_ %>%
+  filter(WM3_$Field_Names== "2007_WM_production_9") %>% 
+  pull(ID)
+
+ WM_2008<- WM3_ %>%
+  filter(WM3_$Field_Names== "2008_") %>% 
+  pull(ID)
+
+ WM_2008_WM_production_10<- WM3_ %>%
+  filter(WM3_$Field_Names== "2008_WM_production_10") %>% 
+  pull(ID)
+
+ WM_2008_WM_nursery_20<- WM3_ %>%
+  filter(WM3_$Field_Names== "2008_WM_nursery_20") %>% 
+  pull(ID)
+
+ WM_2008_WM_production_11<- WM3_ %>%
+  filter(WM3_$Field_Names== "2008_WM_production_11") %>% 
+  pull(ID)
+
+ WM_2008_WM_production_12<- WM3_ %>%
+  filter(WM3_$Field_Names== "2008_WM_production_12") %>% 
+  pull(ID)
+
+ WM_2008_WM_production_13<- WM3_ %>%
+  filter(WM3_$Field_Names== "2008_WM_production_13") %>% 
+  pull(ID)
+
+ WM_2009<- WM3_ %>%
+  filter(WM3_$Field_Names== "2009_") %>% 
+  pull(ID)
+
+ WM_2008_WM_nursery_21<- WM3_ %>%
+  filter(WM3_$Field_Names== "2008_WM_nursery_21") %>% 
+  pull(ID)
+
+ WM_2009_WM_nursery_22<- WM3_ %>%
+  filter(WM3_$Field_Names== "2009_WM_nursery_22") %>% 
+  pull(ID)
+
+ WM_2009_WM_nursery_23<- WM3_ %>%
+  filter(WM3_$Field_Names== "2009_WM_nursery_23") %>% 
+  pull(ID)
+
+ WM_2009_WM_production_14<- WM3_ %>%
+  filter(WM3_$Field_Names== "2009_WM_production_14") %>% 
+  pull(ID)
+
+ WM_2009_WM_production_15<- WM3_ %>%
+  filter(WM3_$Field_Names== "2009_WM_production_15") %>% 
+  pull(ID)
+
+ WM_2009_WM_production_16<- WM3_ %>%
+  filter(WM3_$Field_Names== "2009_WM_production_16") %>% 
+  pull(ID)
+
+ WM_2009_WM_production_17<- WM3_ %>%
+  filter(WM3_$Field_Names== "2009_WM_production_17") %>% 
+  pull(ID)
+
+ WM_2009_WM_production_18<- WM3_ %>%
+  filter(WM3_$Field_Names== "2009_WM_production_18") %>% 
+  pull(ID)
+
+ WM_2009_WM_production_19<- WM3_ %>%
+  filter(WM3_$Field_Names== "2009_WM_production_19") %>% 
+  pull(ID)
+
+ WM_2009_WM_production_20<- WM3_ %>%
+  filter(WM3_$Field_Names== "2009_WM_production_20") %>% 
+  pull(ID)
+
+ WM_2010_WM_production_21<- WM3_ %>%
+  filter(WM3_$Field_Names== "2010_WM_production_21") %>% 
+  pull(ID)
+
+ WM_2010_WM_production_22<- WM3_ %>%
+  filter(WM3_$Field_Names== "2010_WM_production_22") %>% 
+  pull(ID)
+
+ WM_2010_WM_production_23<- WM3_ %>%
+  filter(WM3_$Field_Names== "2010_WM_production_23") %>% 
+  pull(ID)
+
+ WM_2010_WM_production_24<- WM3_ %>%
+  filter(WM3_$Field_Names== "2010_WM_production_24") %>% 
+  pull(ID)
+
+ WM_2010_WM_production_25<- WM3_ %>%
+  filter(WM3_$Field_Names== "2010_WM_production_25") %>% 
+  pull(ID)
+
+ WM_2010_WM_production_26<- WM3_ %>%
+  filter(WM3_$Field_Names== "2010_WM_production_26") %>% 
+  pull(ID)
+
+ WM_2010_WM_production_27<- WM3_ %>%
+  filter(WM3_$Field_Names== "2010_WM_production_27") %>% 
+  pull(ID)
+
+ WM_2010_WM_production_28<- WM3_ %>%
+  filter(WM3_$Field_Names== "2010_WM_production_28") %>% 
+  pull(ID)
+
+ WM_2010_WM_production_29<- WM3_ %>%
+  filter(WM3_$Field_Names== "2010_WM_production_29") %>% 
+  pull(ID)
+
+ WM_2010_WM_production_30<- WM3_ %>%
+  filter(WM3_$Field_Names== "2010_WM_production_30") %>% 
+  pull(ID)
+
+ WM_2011<- WM3_ %>%
+  filter(WM3_$Field_Names== "2011_") %>% 
+  pull(ID)
+
+ WM_2012<- WM3_ %>%
+  filter(WM3_$Field_Names== "2012_") %>% 
+  pull(ID)
+
+ WM_2013<- WM3_ %>%
+  filter(WM3_$Field_Names== "2013_") %>% 
+  pull(ID)
+
+ WM_2014<- WM3_ %>%
+  filter(WM3_$Field_Names== "2014_") %>% 
+  pull(ID)
+
+ WM_2016<- WM3_ %>%
+  filter(WM3_$Field_Names== "2016_") %>% 
+  pull(ID)
+
+ WM_2016_po<- WM3_ %>%
+  filter(WM3_$Field_Names== "2016_po") %>% 
+  pull(ID)
+
+ WM_2016_flo<- WM3_ %>%
+  filter(WM3_$Field_Names== "2016_flo") %>% 
+  pull(ID)
+
+ WM_2016_lan<- WM3_ %>%
+  filter(WM3_$Field_Names== "2016_lan") %>% 
+  pull(ID)
+
+ WM_2017_ho<- WM3_ %>%
+  filter(WM3_$Field_Names== "2017_ho") %>% 
+  pull(ID)
+
+ WM_2017_an<- WM3_ %>%
+  filter(WM3_$Field_Names== "2017_an") %>% 
+  pull(ID)
+
+ WM_2017_dod<- WM3_ %>%
+  filter(WM3_$Field_Names== "2017_dod") %>% 
+  pull(ID)
+
+ WM_2017_va<- WM3_ %>%
+  filter(WM3_$Field_Names== "2017_va") %>% 
+  pull(ID)
+
+ WM_2017_na<- WM3_ %>%
+  filter(WM3_$Field_Names== "2017_na") %>% 
+  pull(ID)
+
+ WM_2017_sa<- WM3_ %>%
+  filter(WM3_$Field_Names== "2017_sa") %>% 
+  pull(ID)
+
+ WM_2017_ha<- WM3_ %>%
+  filter(WM3_$Field_Names== "2017_han") %>% 
+  pull(ID)
+
+ WM_2017_cu<- WM3_ %>%
+  filter(WM3_$Field_Names== "2017_cu") %>% 
+  pull(ID)
+
+ WM_2017_mon<- WM3_ %>%
+  filter(WM3_$Field_Names== "2017_mon") %>% 
+  pull(ID)
+
+ WM_2017_ant<- WM3_ %>%
+  filter(WM3_$Field_Names== "2017_ant") %>% 
+  pull(ID)
+
+ WM_2017_holt<- WM3_ %>%
+  filter(WM3_$Field_Names== "2017_holt") %>% 
+  pull(ID)
+
+ WM_2017_arr<- WM3_ %>%
+  filter(WM3_$Field_Names== "2017_arr") %>% 
+  pull(ID)
+
+ WM_2017_ini<- WM3_ %>%
+  filter(WM3_$Field_Names== "2017_ini") %>% 
+  pull(ID)
+
+ WM_2017_ley<- WM3_ %>%
+  filter(WM3_$Field_Names== "2017_ley") %>% 
+  pull(ID)
+
+ WM_2017_pre<- WM3_ %>%
+  filter(WM3_$Field_Names== "2017_pre") %>% 
+  pull(ID)
+
+ WM_2017_ru<- WM3_ %>%
+  filter(WM3_$Field_Names== "2017_ru") %>% 
+  pull(ID)
+
+ WM_2017_ca<- WM3_ %>%
+  filter(WM3_$Field_Names== "2017_ca") %>% 
+  pull(ID)
+
+ WM_2017_st<- WM3_ %>%
+  filter(WM3_$Field_Names== "2017_st") %>% 
+  pull(ID)
+
+ WM_2015_6<- WM3_ %>%
+  filter(WM3_$Field_Names== "2015_6") %>% 
+  pull(ID)
+
+ WM_2015_8<- WM3_ %>%
+  filter(WM3_$Field_Names== "2015_8") %>% 
+  pull(ID)
+
+ WM_2015_9<- WM3_ %>%
+  filter(WM3_$Field_Names== "2015_9") %>% 
+  pull(ID)
+
+ WM_2015_10<- WM3_ %>%
+  filter(WM3_$Field_Names== "2015_10") %>% 
+  pull(ID)
+
+ WM_2015_11<- WM3_ %>%
+  filter(WM3_$Field_Names== "2015_11") %>% 
+  pull(ID)
+
+ WM_2015_18<- WM3_ %>%
+  filter(WM3_$Field_Names== "2015_18") %>% 
+  pull(ID)
+
+ WM_2015_19<- WM3_ %>%
+  filter(WM3_$Field_Names== "2015_19") %>% 
+  pull(ID)
+
+ WM_2015_20<- WM3_ %>%
+  filter(WM3_$Field_Names== "2015_20") %>% 
+  pull(ID)
+
+ WM_2015_21<- WM3_ %>%
+  filter(WM3_$Field_Names== "2015_21") %>% 
+  pull(ID)
+
+ WM_2015_22<- WM3_ %>%
+  filter(WM3_$Field_Names== "2015_22") %>% 
+  pull(ID)
+
+ WM_2015_23<- WM3_ %>%
+  filter(WM3_$Field_Names== "2015_23") %>% 
+  pull(ID)
+
+ WM_2015_24<- WM3_ %>%
+  filter(WM3_$Field_Names== "2015_24") %>% 
+  pull(ID)
+
+ WM_2015_25<- WM3_ %>%
+  filter(WM3_$Field_Names== "2015_25") %>% 
+  pull(ID)
+
+ WM_2015_34<- WM3_ %>%
+  filter(WM3_$Field_Names== "2015_34") %>% 
+  pull(ID)
+
+ WM_2015_35<- WM3_ %>%
+  filter(WM3_$Field_Names== "2015_35") %>% 
+  pull(ID)
+
+ WM_2015_45<- WM3_ %>%
+  filter(WM3_$Field_Names== "2015_45") %>% 
+  pull(ID)
+
+ WM_2015_46<- WM3_ %>%
+  filter(WM3_$Field_Names== "2015_46") %>% 
+  pull(ID)
+
+ WM_2015_47<- WM3_ %>%
+  filter(WM3_$Field_Names== "2015_47") %>% 
+  pull(ID)
+
+ WM_2015_48<- WM3_ %>%
+  filter(WM3_$Field_Names== "2015_48") %>% 
+  pull(ID)
+
+ WM_2015_60<- WM3_ %>%
+  filter(WM3_$Field_Names== "2015_60") %>% 
+  pull(ID)
+
+ WM_2015_62<- WM3_ %>%
+  filter(WM3_$Field_Names== "2015_62") %>% 
+  pull(ID)
+
+ WM_2015_66<- WM3_ %>%
+  filter(WM3_$Field_Names== "2015_66") %>% 
+  pull(ID)
+
+WM_2015_67 <- WM3_ %>%
+  filter(WM3_$Field_Names== "2015_67") %>% 
+  pull(ID)
+
+ WM_2015_68<- WM3_ %>%
+  filter(WM3_$Field_Names== "2015_68") %>% 
+  pull(ID)
+
+ WM_2015_69<- WM3_ %>%
+  filter(WM3_$Field_Names== "2015_69") %>% 
+  pull(ID)
+
+ WM_2015_75<- WM3_ %>%
+  filter(WM3_$Field_Names== "2015_75") %>% 
+  pull(ID)
+
+ WM_2015_78<- WM3_ %>%
+  filter(WM3_$Field_Names== "2015_78") %>% 
+  pull(ID)
+
+ WM_2015_97<- WM3_ %>%
+  filter(WM3_$Field_Names== "2015_97") %>% 
+  pull(ID)
+
+ WM_2015_98<- WM3_ %>%
+  filter(WM3_$Field_Names== "2015_98") %>% 
+  pull(ID)
+
+ WM_2015_99<- WM3_ %>%
+  filter(WM3_$Field_Names== "2015_99") %>% 
+  pull(ID)
+
+ WM_2015_100<- WM3_ %>%
+  filter(WM3_$Field_Names== "2015_100") %>% 
+  pull(ID)
+
+ WM_2015_101<- WM3_ %>%
+  filter(WM3_$Field_Names== "2015_101") %>% 
+  pull(ID)
+
+ WM_2015_102<- WM3_ %>%
+  filter(WM3_$Field_Names== "2015_102") %>% 
+  pull(ID)
+
+ WM_2015_103<- WM3_ %>%
+  filter(WM3_$Field_Names== "2015_103") %>% 
+  pull(ID)
+
+ WM_2015_104<- WM3_ %>%
+  filter(WM3_$Field_Names== "2015_104") %>% 
+  pull(ID)
+
+ WM_2015_Al<- WM3_ %>%
+  filter(WM3_$Field_Names== "2015_Al") %>% 
+  pull(ID)
+
+ WM_2015_Hi<- WM3_ %>%
+  filter(WM3_$Field_Names== "2015_Hi") %>% 
+  pull(ID)
+
+ WM_2015_In<- WM3_ %>%
+  filter(WM3_$Field_Names== "2015_In") %>% 
+  pull(ID)
+
+ WM_2015_mont<- WM3_ %>%
+  filter(WM3_$Field_Names== "2015_mont") %>% 
+  pull(ID)
+
+ WM_2015_Sand<- WM3_ %>%
+  filter(WM3_$Field_Names== "2015_Sand") %>% 
+  pull(ID)
+
+ WM_2015_Sani<- WM3_ %>%
+  filter(WM3_$Field_Names== "2015_Sani") %>% 
+  pull(ID)
+
+ WM_2015_St<- WM3_ %>%
+  filter(WM3_$Field_Names== "2015_St") %>% 
+  pull(ID)
+
+ WM_2015_wau<- WM3_ %>%
+  filter(WM3_$Field_Names== "2015_wau") %>% 
+  pull(ID)
+
+ WM_2015_la<- WM3_ %>%
+  filter(WM3_$Field_Names== "2015_la") %>% 
+  pull(ID)
+
+ WM_2015_co<- WM3_ %>%
+  filter(WM3_$Field_Names== "2015_co") %>% 
+  pull(ID)
+
+ WM_2015_cern<- WM3_ %>%
+  filter(WM3_$Field_Names== "2015_cern") %>% 
+  pull(ID)
+
+ WM_2015_cer<- WM3_ %>%
+  filter(WM3_$Field_Names== "2015_cer") %>% 
+  pull(ID)
+
+ WM_2010<- WM3_ %>%
+  filter(WM3_$Field_Names== "2010_") %>% 
+  pull(ID)
+
+ WM_2017<- WM3_ %>%
+  filter(WM3_$Field_Names== "2017_") %>% 
+  pull(ID)
+
+###
 
   MI_East_Lansing <- WM3_ %>% 
-  filter(WM3_$Field== "lan") %>% 
+  filter(WM3_$Field_Names== "lan") %>% 
   pull(ID)
 IA_Nashua <- WM3_ %>% 
-  filter(WM3_$Field== "na") %>% 
+  filter(WM3_$Field_Names== "na") %>% 
   pull(ID)
 WI_Hancock <- WM3_ %>% 
-  filter(WM3_$Field== "han") %>% 
+  filter(WM3_$Field_Names== "han") %>% 
   pull(ID)
 MI_Montcalm_2017 <- WM3_ %>% 
-  filter(WM3_$Field== "mon") %>% 
+  filter(WM3_$Field_Names== "mon") %>% 
   pull(ID)
 MI_Montcalm_2015 <- WM3_ %>% 
-  filter(WM3_$Field== "mont") %>% 
+  filter(WM3_$Field_Names== "mont") %>% 
   pull(ID)
 WI_Cerny <- WM3_ %>% 
-  filter(WM3_$Field== "cer") %>% 
+  filter(WM3_$Field_Names== "cer") %>% 
   pull(ID)
 
 NE_Holt <- WM3_ %>% 
-  filter(WM3_$Field== "holt") %>% 
-  pull(ID)
-NE_Field_34 <- WM3_ %>% 
-  filter(WM3_$Field== "34") %>% 
+  filter(WM3_$Field_Names== "holt") %>% 
   pull(ID)
 
-NE_Field_67 <- WM3_ %>% 
-  filter(WM3_$Field== "67") %>% 
+NE_Field_Names_34 <- WM3_ %>% 
+  filter(WM3_$Field_Names== "34") %>% 
   pull(ID)
 
-NE_Field_75 <- WM3_ %>% 
-  filter(WM3_$Field== "75") %>% 
+NE_Field_Names_67 <- WM3_ %>% 
+  filter(WM3_$Field_Names== "67") %>% 
   pull(ID)
 
-NE_Field_97 <- WM3_ %>% 
-  filter(WM3_$Field== "97") %>% 
+NE_Field_Names_75 <- WM3_ %>% 
+  filter(WM3_$Field_Names== "75") %>% 
   pull(ID)
 
-NE_Field_98 <- WM3_ %>% 
-  filter(WM3_$Field== "98") %>% 
+NE_Field_Names_97 <- WM3_ %>% 
+  filter(WM3_$Field_Names== "97") %>% 
   pull(ID)
 
-NE_Field_101 <- WM3_ %>% 
-  filter(WM3_$Field== "101") %>% 
+NE_Field_Names_98 <- WM3_ %>% 
+  filter(WM3_$Field_Names== "98") %>% 
+  pull(ID)
+
+NE_Field_Names_101 <- WM3_ %>% 
+  filter(WM3_$Field_Names== "101") %>% 
   pull(ID)
 
 
@@ -985,6 +1793,56 @@ fig.2<- ggplot(final.boscalid.DC.0.2, aes(x = Estimate.50, y = Estimate.50DC)) +
 
 
  
+```
+Modification for publication
+```{r}
+fig.1.boscalid <-
+  ggplot(finalRG0.2, aes(x = RG0.2, y = logEC50)) +  geom_point(
+  shape = 21,
+  fill = "black",
+  size = 2,
+  alpha = 3 / 4
+  
+  ) + geom_smooth(method = "lm") +  theme(
+  plot.title = element_text(
+  size = 8,
+  face = "bold",
+  hjust = 0.5,
+  family = "Arial"
+  ),
+  axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
+  axis.text = element_text(
+  face = "bold",
+  size = 14,
+  family = "Arial"
+  ),
+  panel.background = element_rect(fill = "white", colour = "grey50")
+  ) + labs( x =
+    "Relative growth (%)", y = "Log EC50")
+
+fig.2.boscalid<- ggplot(final.boscalid.DC.0.2, aes(x = Estimate.50, y = Estimate.50DC)) +  geom_point(
+  shape = 21,
+  fill = "black",
+  size = 2,
+  alpha = 3 / 4
+  
+  ) + geom_smooth(method = "lm") +  theme(
+  plot.title = element_text(
+  size = 8,
+  face = "bold",
+  hjust = 0.5,
+  family = "Arial"
+  ),
+  axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
+  axis.text = element_text(
+  face = "bold",
+  size = 14,
+  family = "Arial"
+  ),
+  panel.background = element_rect(fill = "white", colour = "grey50")
+  ) + labs( x =
+    " EC50 (ppm)", y = "EC50(D) (ppm)")
+
 ```
 
 ```{r, echo= FALSE}
@@ -1657,7 +2515,7 @@ kruskal.test(EC50DC ~ Host, data = boscalid.complete)
 
 
 ```{r, echo = FALSE}
-plot.bos.4 <- boscalid.complete.3%>%
+plot.bos.4 <- boscalid.complete%>%
   ggplot(aes(x = Host, y = EC50DC)) +
   geom_jitter(
     width = .1,
@@ -1783,6 +2641,26 @@ finalRG0.01 <- lm(logEC50 ~ RG0.01, final.picoxystrobin.clean)
 summary(finalRG0.01)
 plot(finalRG0.01)
 
+# Linear Regression graph of log EC50 and relative growth at 0.2 ppm
+
+ fig.1 <-    ggplot(finalRG0.01, aes(x = RG0.01, y = logEC50)) +  geom_point() + geom_smooth(method = "lm") +  theme(
+    plot.title = element_text(
+    size = 8,
+    face = "bold",
+    hjust = 0.5,
+    family = "Arial"
+    ),
+    axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+    face = "bold",
+    size = 14,
+    family = "Arial"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+    ) + labs(title = "Linear regression between EC50 values & relative growth of Picoxystrobin at 0.01 ppm", x =
+    "Relative growth (%)", y = "Log EC50")
+    
+
 # Getting the EC50DC according to the model
 final.picoxystrobin.DC <-
   final.picoxystrobin.clean %>% 
@@ -1817,6 +2695,61 @@ fig.2 <- ggplot(final.picoxystrobin.DC.0.01,
        "EC50 (ppm)", y = "EC50(D) (ppm)") + geom_point() + geom_smooth(method = "lm")
      
 #dev.off()
+```
+
+Modification for publication
+```{r}
+fig.1.picoxystrobin <-
+  ggplot(finalRG0.01, aes(x = RG0.01, y = logEC50)) +  geom_point(
+  shape = 23,
+  fill = "black",
+  size = 2,
+  alpha = 3 / 4
+  
+  ) + geom_smooth(method = "lm") +  theme(
+  plot.title = element_text(
+  size = 8,
+  face = "bold",
+  hjust = 0.5,
+  family = "Arial"
+  ),
+  axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
+  axis.text = element_text(
+  face = "bold",
+  size = 14,
+  family = "Arial"
+  ),
+  panel.background = element_rect(fill = "white", colour = "grey50")
+  ) + labs( x =
+    "Relative growth (%)", y = "Log EC50")
+
+fig.2.picoxystrobin <- ggplot(final.picoxystrobin.DC.0.01,
+       aes(x = Estimate.50, y = Estimate.50DC)) + 
+    geom_point(
+  shape = 23,
+  fill = "black",
+  size = 2,
+  alpha = 3 / 4
+  
+  ) + geom_smooth(method = "lm") +  theme(
+  plot.title = element_text(
+  size = 8,
+  face = "bold",
+  hjust = 0.5,
+  family = "Arial"
+  ),
+  axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
+  axis.text = element_text(
+  face = "bold",
+  size = 14,
+  family = "Arial"
+  ),
+  panel.background = element_rect(fill = "white", colour = "grey50")
+  ) + labs( x =
+    "EC50 (ppm)", y = "EC50(D) (ppm)")
+      
+
+
 ```
 
 ```{r, include= FALSE}
@@ -1893,6 +2826,8 @@ picoxystrobin.complete <- final.picoxystrobin.DC %>%
   select(ID, EC50DC) %>%
   bind_rows(picoxystrobin.filtered.) %>% 
   ungroup() 
+
+picoxystrobin.controls <- picoxystrobin.complete$ID[duplicated(picoxystrobin.complete$ID)]
 
 picoxystrobin.complete.controls <- picoxystrobin.complete %>% 
   mutate(controls = ifelse(
@@ -1985,7 +2920,7 @@ picoxystrobin.complete.fields <- picoxystrobin.complete%>%
 
   
 
-
+####
 picoxystrobin.filtered. %>%
   mutate(
   source = ifelse(
@@ -2593,7 +3528,27 @@ ggplot(finalRG2, aes(x = RG2, y =  logEC50)) +  theme(plot.title = element_text(
                                                                                                                                 "Relative growth(%)", y = "logEC50") + theme (axis.title.x = element_text(size = 12, face = "bold", hjust = 0.5)) + theme(axis.title.y = element_text(size = 12, face = "bold", hjust = 0.5)) +
                                                                                                                                 theme(axis.text.x = element_text(size = 12)) + theme(axis.text.y = element_text(size = 12)) + theme (axis.line = element_line(colour = "grey50", size = 1)) +
                                                                                                                                 geom_point() + geom_smooth(method = "lm")
-                                                                              # Getting the EC50DC according to the model
+                                                                             
+fig.1 <-    ggplot(finalRG2, aes(x = RG2, y = logEC50)) +  geom_point() + geom_smooth(method = "lm") +  theme(
+    plot.title = element_text(
+    size = 8,
+    face = "bold",
+    hjust = 0.5,
+    family = "Arial"
+    ),
+    axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+    face = "bold",
+    size = 14,
+    family = "Arial"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+    ) + labs(title = "Linear regression between EC50 values & relative growth of Tetraconazole at 2.0 ppm", x =
+    "Relative growth (%)", y = "Log EC50")
+    
+
+
+ # Getting the EC50DC according to the model
 final.tetraconazole.DC <- final.tetraconazole.clean %>%
   #using the model the intercept and the coefficient of the model
   mutate(Estimate.50DC = exp(finalRG2[[1]][[1]] + finalRG2[[1]][[2]]*RG2)) %>% # here I need to do this dynamic
@@ -2623,6 +3578,59 @@ fig.3 <- ggplot(final.tetraconazole.DC.2,
           ),
         panel.background = element_rect(fill = "white",colour = "grey50")) + labs(title= "Linear regression between EC50 and EC50(D) values of Tetraconazole", x =
        "EC50 (ppm)", y = "EC50(D) (ppm)") + geom_point(shape=21) + geom_smooth(method = "lm")
+
+
+```
+For publication
+```{r}
+fig.1.tetraconazole <-
+  ggplot(finalRG2, aes(x = RG2, y = logEC50)) +  geom_point(
+  shape = 17,
+  fill = "black",
+  size = 2,
+  alpha = 3 / 4
+  
+  ) + geom_smooth(method = "lm") +  theme(
+  plot.title = element_text(
+  size = 8,
+  face = "bold",
+  hjust = 0.5,
+  family = "Arial"
+  ),
+  axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
+  axis.text = element_text(
+  face = "bold",
+  size = 14,
+  family = "Arial"
+  ),
+  panel.background = element_rect(fill = "white", colour = "grey50")
+  ) + labs( x =
+    "Relative growth (%)", y = "Log EC50")
+
+
+fig.2.tetraconazole <- ggplot(final.tetraconazole.DC.2,
+       aes(x = Estimate.50, y = Estimate.50DC)) +  geom_point(
+  shape = 17,
+  fill = "black",
+  size = 2,
+  alpha = 3 / 4
+  
+  ) + geom_smooth(method = "lm") +  theme(
+  plot.title = element_text(
+  size = 8,
+  face = "bold",
+  hjust = 0.5,
+  family = "Arial"
+  ),
+  axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
+  axis.text = element_text(
+  face = "bold",
+  size = 14,
+  family = "Arial"
+  ),
+  panel.background = element_rect(fill = "white", colour = "grey50")
+  ) + labs( x =
+    "EC50 (ppm)", y = "EC50(D) (ppm)")
 
 
 ```
