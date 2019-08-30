@@ -768,6 +768,9 @@ mutate(Field_Names= paste( Year,Field, sep = "_"))
     ungroup() %>%
     add_row(State = "Total", N_isolates = sum(.$N_isolates))
  
+  WM_publication %>% kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
+  write2pdf("table_publication.pdf")
+
 WM_AB  <- WM3_ %>%
   filter(WM3_$State== "AB") %>% 
   pull(ID)
@@ -1613,6 +1616,52 @@ NE_Field_Names_101 <- WM3_ %>%
   filter(WM3_$Field_Names== "101") %>% 
   pull(ID)
 
+##
+ MI_East_Lansing <- WM3_ %>% 
+  filter(WM3_$Field== "lan") %>% 
+  pull(ID)
+IA_Nashua <- WM3_ %>% 
+  filter(WM3_$Field== "na") %>% 
+  pull(ID)
+WI_Hancock <- WM3_ %>% 
+  filter(WM3_$Field== "han") %>% 
+  pull(ID)
+MI_Montcalm_2017 <- WM3_ %>% 
+  filter(WM3_$Field== "mon") %>% 
+  pull(ID)
+MI_Montcalm_2015 <- WM3_ %>% 
+  filter(WM3_$Field== "mont") %>% 
+  pull(ID)
+WI_Cerny <- WM3_ %>% 
+  filter(WM3_$Field== "cer") %>% 
+  pull(ID)
+
+NE_Holt <- WM3_ %>% 
+  filter(WM3_$Field== "holt") %>% 
+  pull(ID)
+NE_Field_34 <- WM3_ %>% 
+  filter(WM3_$Field== "34") %>% 
+  pull(ID)
+
+NE_Field_67 <- WM3_ %>% 
+  filter(WM3_$Field== "67") %>% 
+  pull(ID)
+
+NE_Field_75 <- WM3_ %>% 
+  filter(WM3_$Field== "75") %>% 
+  pull(ID)
+
+NE_Field_97 <- WM3_ %>% 
+  filter(WM3_$Field== "97") %>% 
+  pull(ID)
+
+NE_Field_98 <- WM3_ %>% 
+  filter(WM3_$Field== "98") %>% 
+  pull(ID)
+
+NE_Field_101 <- WM3_ %>% 
+  filter(WM3_$Field== "101") %>% 
+  pull(ID)
 
 potato <- c(2570:2573)
 
@@ -3183,11 +3232,11 @@ shapiro.test.pico.3 <-picoxystrobin.complete.fields %>%
   do(tidy(shapiro.test(.$EC50DC)))
 shapiro.test.pico.3
 #There are normal distributed that is why ANOVA
-summary(aov (EC50DC ~ Field, data = picoxystrobin.complete.fields))
+AOV <- (aov (EC50DC ~ Field, data = picoxystrobin.complete.fields))
 model <- lm(EC50DC ~ Field, data = picoxystrobin.complete.fields)
 ANOVA <- aov(model)
 tukey.test <- TukeyHSD(ANOVA)
-tukey.test.2 <- HSD.test(ANOVA, trt = 'Field')
+tukey.test.2 <- HSD.test(AOV, trt = 'Field' )
 HSD.test(model, "Field")
 summary(model)
 summary(ANOVA)
@@ -3975,7 +4024,7 @@ shapiro.test.tetra.fields
 object.16 <- kruskal.test(EC50DC ~ Field, data = tetraconazole.complete.fields)
 object.16[[3]][[1]]
 #There is YES difference p-value 0.008304
-object.17 <- DunnTest(EC50DC ~ Field, data = tetraconazole.complete.fields, method = "bonferroni")
+object.17 <- DunnTest(EC50DC ~ Field, data = tetraconazole.complete.fields)
 object.17
 #No differenec between ranks due to no any value less or equal to 0.05
 #by host
@@ -3993,11 +4042,11 @@ object.19[[3]][[1]]
 
 
 #P values is 0.0242661, there i diferenec between hosts
-summary(aov (EC50DC ~ Field, data = tetraconazole.complete.fields))
+AOV.2 <- aov (EC50DC ~ Field, data = tetraconazole.complete.fields)
 model <- lm(EC50DC ~ Field, data = tetraconazole.complete.fields)
 ANOVA <- aov(model)
 tukey.test <- TukeyHSD(ANOVA)
-tukey.test.2 <- HSD.test(ANOVA, trt = 'Field')
+tukey.test.2 <- HSD.test(AOV.2, trt = 'Field')
 HSD.test(model, "Field")
 summary(model)
 summary(ANOVA)
