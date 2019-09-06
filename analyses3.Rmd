@@ -1867,7 +1867,7 @@ fig.1.boscalid <-
   ),
   panel.background = element_rect(fill = "white", colour = "grey50")
   ) + labs( x =
-              "Relative growth (%)", y = "Log EC50") + expand_limits(x = c(23, 50)) + scale_x_continuous(name = waiver(), breaks = c(25, 30, 35, 40, 45, 50)) 
+              "Relative growth (%)", y = "Log EC50") + expand_limits(x = c(15, 65)) + scale_x_continuous(name = waiver(), breaks = c(15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65)) 
 
 fig.2.boscalid<- ggplot(final.boscalid.DC.0.2, aes(x = Estimate.50, y = Estimate.50DC)) +  geom_point(
   shape = 17,
@@ -2916,7 +2916,7 @@ fig.1.picoxystrobin <-
   ),
   panel.background = element_rect(fill = "white", colour = "grey50")
   ) + labs( x =
-              "Relative growth (%)", y = "Log EC50") + expand_limits(x = c(38, 65)) + scale_x_continuous(name = waiver(), breaks = c(40, 45, 50, 55, 60, 65)) 
+              "Relative growth (%)", y = "Log EC50") + expand_limits(x = c(15, 65)) + scale_x_continuous(name = waiver(), breaks = c(15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65)) 
 
 fig.2.picoxystrobin <- ggplot(final.picoxystrobin.DC.0.01,
        aes(x = Estimate.50, y = Estimate.50DC)) + 
@@ -3875,7 +3875,9 @@ fig.1.tetraconazole <-
   size = 2,
   alpha = 3 / 4
   
-  ) + geom_smooth(method = "lm", se= FALSE) +  theme(
+  ) + geom_smooth(method = "lm", se = FALSE) + labs(x =
+  "Relative growth (%)", y = expression(Log ~ EC[50])) + expand_limits(x = c(15, 65)) + scale_x_continuous(
+  breaks = c(15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65)) +  theme(
   plot.title = element_text(
   size = 8,
   face = "bold",
@@ -3889,9 +3891,8 @@ fig.1.tetraconazole <-
   family = "Arial"
   ),
   panel.background = element_rect(fill = "white", colour = "grey50")
-  ) + labs( x =
-              "Relative growth (%)", y = "Log EC50") +  expand_limits(x = c(15, 45)) + scale_x_continuous(name = waiver(), breaks = c(15, 20, 25, 30, 35, 40, 45))
-
+  )
+  
 
 fig.2.tetraconazole <- ggplot(final.tetraconazole.DC.2,
        aes(x = Estimate.50, y = Estimate.50DC)) +  geom_point(
