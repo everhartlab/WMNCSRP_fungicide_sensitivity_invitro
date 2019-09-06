@@ -1742,7 +1742,7 @@ boscalid.xx <-
      mutate(fungicide = "Boscalid") %>% 
   mutate(group = recode(group, survey_isolates = "Farmer fields", treatmentyear2016_isolates = "Fungicide field trials", baseline = "Baseline")) %>% mutate(group = as.factor(group)) %>% 
   ungroup()
-
+ summary(xx)
 ```
 
 ```{r, echo = FALSE, include= FALSE}
@@ -1847,12 +1847,12 @@ Modification for publication
 ```{r}
 fig.1.boscalid <-
   ggplot(finalRG0.2, aes(x = RG0.2, y = logEC50)) +  geom_point(
-  shape = 21,
+  shape = 17,
   fill = "black",
   size = 2,
   alpha = 3 / 4
   
-  ) + geom_smooth(method = "lm") +  theme(
+  ) + geom_smooth(method = "lm", se = FALSE) +  theme(
   plot.title = element_text(
   size = 8,
   face = "bold",
@@ -1867,15 +1867,15 @@ fig.1.boscalid <-
   ),
   panel.background = element_rect(fill = "white", colour = "grey50")
   ) + labs( x =
-    "Relative growth (%)", y = "Log EC50")
+              "Relative growth (%)", y = "Log EC50") + expand_limits(x = c(23, 50)) + scale_x_continuous(name = waiver(), breaks = c(25, 30, 35, 40, 45, 50)) 
 
 fig.2.boscalid<- ggplot(final.boscalid.DC.0.2, aes(x = Estimate.50, y = Estimate.50DC)) +  geom_point(
-  shape = 21,
+  shape = 17,
   fill = "black",
   size = 2,
   alpha = 3 / 4
   
-  ) + geom_smooth(method = "lm") +  theme(
+  ) + geom_smooth(method = "lm", se= FALSE) +  theme(
   plot.title = element_text(
   size = 8,
   face = "bold",
@@ -1891,7 +1891,10 @@ fig.2.boscalid<- ggplot(final.boscalid.DC.0.2, aes(x = Estimate.50, y = Estimate
   panel.background = element_rect(fill = "white", colour = "grey50")
   ) + labs( x =
     " EC50 (ppm)", y = "EC50(D) (ppm)")
+  
 
+ fig.1.boscalid
+ fig.2.boscalid
 ```
 
 ```{r, echo= FALSE}
@@ -2114,7 +2117,7 @@ ungroup() %>%
     "Baseline",
     ifelse(
       ID %in% Farmer_fields,
-      "FF","FFT"
+      "Producer Fields","Fungicide Field Trials"
     )), Host = ifelse(
     ID %in% drybean,
     "Drybean", ifelse(
@@ -2177,7 +2180,7 @@ boscalid.complete <- boscalid.complete%>%
     "Baseline",
     ifelse(
       ID %in% Farmer_fields,
-      "FF","FFT"
+      "Producer Fields","Fungicide Field Trials"
     )), Host = ifelse(
     ID %in% drybean,
     "Drybean", ifelse(
@@ -2223,6 +2226,14 @@ boscalid.complete <- boscalid.complete%>%
   ifelse(ID %in% brazilian.isolates,
   "Brazil", "USA")
   )) 
+
+###For comparisons between hosts I had to take out the ones coming from baseline otherwise would not be fair
+
+boscalid.complete.host <- boscalid.complete %>% 
+  filter(!source=="Baseline")
+  
+###For isolates from that have reduced sensitivity, assess sensitivity for isolates in the same field to account for heterogeneicity
+
 
 boscalid.complete.fields <- boscalid.complete%>% 
   filter(Field== "MI:East_Lansing"| 
@@ -2275,11 +2286,12 @@ object.1[[3]][[1]]
 #There is difference p-value = -3.70 x 10-1
 
 object.2 <-  DunnTest(EC50DC ~ source, data = boscalid.complete, method = "bonferroni")
+object.2 
 
 # No difference
-# FF-Baseline        0.00084 ***   
-# FFT-Baseline       1.0000    
-# FFT-FF             1.9e-09 ***
+# Fungicide Field Trials-Baseline        0.00084 ***   
+# Fungicide Field Trials-Baseline       1.0000    
+# Fungicide Field Trials-Farmer Fields             1.9e-09 ***
 #There IS difference by mean ranks
 # ###
 # shapiro.test.boscal <- boscalid.filtered.2  %>%
@@ -2296,6 +2308,142 @@ object.2 <-  DunnTest(EC50DC ~ source, data = boscalid.complete, method = "bonfe
 
 ```
 
+### By Host
+```{r, echo = FALSE, include= FALSE}
+#by hosts
+#Here It was taken out the baseline isolates
+##NORMALITY TEST-Shapiro_test
+
+shapiro.test.boscal <- boscalid.complete.host %>%
+    do(tidy(shapiro.test(.$EC50DC)))
+  shapiro.test.boscal[[2]][[1]]
+# NO Normals
+  
+
+
+object.3 <- kruskal.test(EC50DC ~ Host, data = boscalid.complete.host)
+object.3[[3]][[1]]
+
+#There is difference p-value = 6.366529e-05
+
+object.4 <-  DunnTest(EC50DC ~ Host, data = boscalid.complete.host, method = "bonferroni")
+
+object.4
+# Drybean-different_host      -73.52612 0.17317    
+# Soybean-different_host      -37.56746 0.99798    
+# Soybean-Drybean              35.95866 0.00044 ***
+
+
+
+```
+
+
+### By Field
+```{r, echo = FALSE, include= FALSE}
+#by field
+
+##NORMALITY TEST-Shapiro_test
+
+shapiro.test.boscal <- boscalid.complete %>%
+    do(tidy(shapiro.test(.$EC50DC)))
+  shapiro.test.boscal[[2]][[1]]
+# No normals
+object.5 <- kruskal.test(EC50DC ~ Field, data = boscalid.complete)
+object.5[[3]][[1]]
+
+#There is difference p-value = 1.65 10-6
+
+object.6 <-  DunnTest(EC50DC ~ Field, data = boscalid.complete, method = "bonferroni")
+
+#                                   mean.rank.diff   pval    
+# IA_Nashua-Baseline                     47.261513 0.9123    
+# MI_Montcalm_2015-Baseline              58.267361 1.0000    
+# MI_Montcalm_2017-Baseline              50.744485 0.7504    
+# MI:East_Lansing-Baseline                2.934028 1.0000    
+# other_fields-Baseline                 -20.310855 1.0000    
+# potato-Baseline                        55.906250 1.0000    
+# WI_Hancock-Baseline                    53.771635 0.9032    
+# MI_Montcalm_2015-IA_Nashua             11.005848 1.0000    
+# MI_Montcalm_2017-IA_Nashua              3.482972 1.0000    
+# MI:East_Lansing-IA_Nashua             -44.327485 1.0000    
+# other_fields-IA_Nashua                -67.572368 0.0077 ** 
+# potato-IA_Nashua                        8.644737 1.0000    
+# WI_Hancock-IA_Nashua                    6.510121 1.0000    
+# MI_Montcalm_2017-MI_Montcalm_2015      -7.522876 1.0000    
+# MI:East_Lansing-MI_Montcalm_2015      -55.333333 1.0000    
+# other_fields-MI_Montcalm_2015         -78.578216 0.0756 .  
+# potato-MI_Montcalm_2015                -2.361111 1.0000    
+# WI_Hancock-MI_Montcalm_2015            -4.495726 1.0000    
+# MI:East_Lansing-MI_Montcalm_2017      -47.810458 1.0000    
+# other_fields-MI_Montcalm_2017         -71.055341 0.0077 ** 
+# potato-MI_Montcalm_2017                 5.161765 1.0000    
+# WI_Hancock-MI_Montcalm_2017             3.027149 1.0000    
+# other_fields-MI:East_Lansing          -23.244883 1.0000    
+# potato-MI:East_Lansing                 52.972222 1.0000    
+# WI_Hancock-MI:East_Lansing             50.837607 1.0000    
+# potato-other_fields                    76.217105 1.0000    
+# WI_Hancock-other_fields                74.082490 0.0220 *  
+# WI_Hancock-potato                      -2.134615 1.0000 
+# 
+
+
+```
+
+
+```{r, echo = FALSE}
+plot.bos.4 <- boscalid.complete%>%
+  ggplot(aes(x = Host, y = EC50DC)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 21,
+    color = "black",
+    fill = "chartreuse2",
+    size = 2,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 22,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs( x = "Group", y = "EC50DC (ppm)") + theme(
+    panel.border = element_rect(colour = "black", fill=NA, size=1),
+        axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 7,
+      family = "Arial"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+
+#plot.bos.2
+
+# boscalid.complete.groups%>%
+# group_by(Host, group) %>%
+# summarize(N_isolates= n()) %>%
+# ggplot(aes(x = group, y= N_isolates, fill= Host)) +
+# geom_bar(stat = "identity", position=position_dodge()) +
+# geom_smooth(method = "loess", se = FALSE, aes(color= Host))+
+# theme_minimal() +
+#   labs( x = "EC50DC", y = "Number of isolates") + theme(
+#     panel.border = element_rect(colour = "black", fill=NA, size=1),
+#     axis.title = element_text(size = 12, face = "bold", hjust = 0.5),
+#     axis.text = element_text(
+#       face = "bold",
+#       size = 12,
+#       family = "Arial"
+#     ),
+#     panel.background = element_rect(fill = "white", colour = "grey50" )
+#   ) 
+
+```
+
+
+
 ```{r}
 # shapiro.test.boscal <- boscalid.filtered.2  %>%
 #   do(tidy(shapiro.test(.$EC50DC)))
@@ -2310,27 +2458,44 @@ object.2 <-  DunnTest(EC50DC ~ source, data = boscalid.complete, method = "bonfe
 
 ```
 
-# by Field  kruskal wallis test 
-There is NO difference, P value is 0.1686
+# by Field specifically kruskal wallis test 
+There is NO difference, P value is 0.06
 ```{r}
 shapiro.test.boscal.fields <- boscalid.complete.fields %>%
    do(tidy(shapiro.test(.$EC50DC)))
 shapiro.test.boscal.fields
 # Almost but not 0.0450
-object.3 <- kruskal.test(EC50DC ~ Field, data = boscalid.complete.fields)
-object.3[[3]][[1]] 
-#There is NO difference, P value is 0.1686772
+#Now 0.0563
+
+#ANOVA
+AOV.1 <- (aov (EC50DC ~ Field, data = boscalid.complete.fields))
+#P value of 0.0602, there is no difference, close but not 
+tukey.test.1 <- HSD.test(AOV.1, trt = 'Field' )
+
+#by kruskall
+object.7 <- kruskal.test(EC50DC ~ Field, data = boscalid.complete.fields)
+object.7[[3]][[1]] 
+#There is NO difference, P value is 0.05653691, 0.1686772
+
+
 ```
 # by Host  kruskal wallis test 
-There is NO difference, P value is 0.99
+#P value of 0.0389 *, there is  difference, but thos ecoming from baseline
 
 ```{r}
 shapiro.test.boscal.fields <- boscalid.complete.fields %>%
    do(tidy(shapiro.test(.$EC50DC)))
 shapiro.test.boscal.fields
 # Almost but not 0.0450
-object.4 <- kruskal.test(EC50DC ~ Host, data = boscalid.complete.fields)
-object.4[[3]][[1]] 
+#Now 0.0563
+#ANOVA
+AOV.2 <- (aov (EC50DC ~ Host, data = boscalid.complete.fields))
+#P value of 0.0389 *, there is  difference, but thos ecoming from baseline
+tukey.test.2 <- HSD.test(AOV.2, trt = 'Host' )
+
+object.7.1 <- kruskal.test(EC50DC ~ Host, data = boscalid.complete.fields)
+object.7.1[[3]][[1]]
+
 
 ```
 # by SOurce  kruskal wallis test 
@@ -2340,8 +2505,22 @@ shapiro.test.boscal.fields <- boscalid.complete.fields %>%
    do(tidy(shapiro.test(.$EC50DC)))
 shapiro.test.boscal.fields
 # Almost but not 0.0450
-object.5 <- kruskal.test(EC50DC ~ source, data = boscalid.complete.fields)
-object.5[[3]][[1]] 
+#Now 0.0563
+
+#ANOVA
+AOV.3 <- (aov (EC50DC ~source, data = boscalid.complete.fields))
+#P value of 0.0398 *, there is  difference
+tukey.test.3 <- HSD.test(AOV.3, trt = 'source' )
+
+
+#                            EC50DC groups
+# Fungicide Field Trials 0.11058566      a
+# Producer Fields        0.09958449     ab
+# Baseline               0.09696227      b
+
+object.7.2 <- kruskal.test(EC50DC ~ source, data = boscalid.complete.fields)
+object.7.2[[3]][[1]]
+
 
 ```
 
@@ -2500,6 +2679,43 @@ plot.bos.3
 
 ##
 ```
+For publication
+```{r}
+fig.3.boscalid <- boscalid.complete.fields%>%
+  ggplot(aes(x = Field, y = EC50DC)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 17,
+    size = 2,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 22,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs(x = "Field", y = "EC50DC (ppm)") + theme(
+  panel.border = element_rect(
+  colour = "black",
+  fill = NA,
+  size = 1
+  ),
+  axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+  axis.text.x =  element_text(
+  face = "bold",
+  size = 8.5,
+  family = "Arial",
+  angle = 30,
+  hjust = 1
+  ),
+  panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+fig.3.boscalid
+```
+
 
 ```{r, echo= FALSE}
 hola <- (max(boscalid.complete$EC50DC)-min(boscalid.complete$EC50DC))/7
@@ -2542,76 +2758,6 @@ mutate(group =ifelse(
 #   ) 
 # 
 
-
-```
-
-
-### By Host
-```{r, echo = FALSE, include= FALSE}
-#by hosts
-
-# No normals
-shapiro.test.boscal.2 <- boscalid.complete%>%
-  group_by(Host) %>%
-  do(tidy(shapiro.test(.$EC50DC)))
-shapiro.test.boscal.2
-
-
-kruskal.test(EC50DC ~ Host, data = boscalid.complete)
-#There is NO difference p-value 0.06043
-
-```
-
-
-```{r, echo = FALSE}
-plot.bos.4 <- boscalid.complete%>%
-  ggplot(aes(x = Host, y = EC50DC)) +
-  geom_jitter(
-    width = .1,
-    height = 0,
-    shape = 21,
-    color = "black",
-    fill = "chartreuse2",
-    size = 2,
-    alpha = 3 / 4
-  ) + stat_summary(
-    fun.y = mean,
-    geom = "point",
-    shape = 95,
-    size = 22,
-    color = "black"
-  ) +
-  theme_minimal() +
-  labs( x = "Group", y = "EC50DC (ppm)") + theme(
-    panel.border = element_rect(colour = "black", fill=NA, size=1),
-        axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
-    axis.text = element_text(
-      face = "bold",
-      size = 7,
-      family = "Arial"
-    ),
-    panel.background = element_rect(fill = "white", colour = "grey50")
-  )
-
-#plot.bos.2
-
-# boscalid.complete.groups%>%
-# group_by(Host, group) %>%
-# summarize(N_isolates= n()) %>%
-# ggplot(aes(x = group, y= N_isolates, fill= Host)) +
-# geom_bar(stat = "identity", position=position_dodge()) +
-# geom_smooth(method = "loess", se = FALSE, aes(color= Host))+
-# theme_minimal() +
-#   labs( x = "EC50DC", y = "Number of isolates") + theme(
-#     panel.border = element_rect(colour = "black", fill=NA, size=1),
-#     axis.title = element_text(size = 12, face = "bold", hjust = 0.5),
-#     axis.text = element_text(
-#       face = "bold",
-#       size = 12,
-#       family = "Arial"
-#     ),
-#     panel.background = element_rect(fill = "white", colour = "grey50" )
-#   ) 
 
 ```
 
@@ -2750,12 +2896,12 @@ Modification for publication
 ```{r}
 fig.1.picoxystrobin <-
   ggplot(finalRG0.01, aes(x = RG0.01, y = logEC50)) +  geom_point(
-  shape = 23,
+  shape = 17,
   fill = "black",
   size = 2,
   alpha = 3 / 4
   
-  ) + geom_smooth(method = "lm") +  theme(
+  ) + geom_smooth(method = "lm", se = FALSE) +  theme(
   plot.title = element_text(
   size = 8,
   face = "bold",
@@ -2770,7 +2916,7 @@ fig.1.picoxystrobin <-
   ),
   panel.background = element_rect(fill = "white", colour = "grey50")
   ) + labs( x =
-    "Relative growth (%)", y = "Log EC50")
+              "Relative growth (%)", y = "Log EC50") + expand_limits(x = c(38, 65)) + scale_x_continuous(name = waiver(), breaks = c(40, 45, 50, 55, 60, 65)) 
 
 fig.2.picoxystrobin <- ggplot(final.picoxystrobin.DC.0.01,
        aes(x = Estimate.50, y = Estimate.50DC)) + 
@@ -2780,7 +2926,7 @@ fig.2.picoxystrobin <- ggplot(final.picoxystrobin.DC.0.01,
   size = 2,
   alpha = 3 / 4
   
-  ) + geom_smooth(method = "lm") +  theme(
+  ) + geom_smooth(method = "lm", se = FALSE) +  theme(
   plot.title = element_text(
   size = 8,
   face = "bold",
@@ -2897,7 +3043,7 @@ picoxystrobin.complete <- picoxystrobin.complete%>%
   ID %in% baseline_isolates_2,
   "Baseline",
   ifelse(ID %in% Farmer_fields,
-  "FF", "FFT")
+  "Producer Fields", "Fungicide Field Trials")
   ),
   Host = ifelse(
   ID %in% drybean,
@@ -2948,6 +3094,15 @@ picoxystrobin.complete <- picoxystrobin.complete%>%
   ifelse(ID %in% brazilian.isolates,
   "Brazil", "USA")
   )) 
+
+###For comparisons between hosts I had to take out the ones coming from baseline otherwise would not be fair
+
+picoxystrobin.complete.host <- picoxystrobin.complete %>% 
+  filter(!source=="Baseline")
+
+
+###For isolates from that have reduced sensitivity, assess sensitivity for isolates in the same field to account for heterogeneicity
+
 picoxystrobin.complete.fields <- picoxystrobin.complete%>% 
   filter(Field== "MI:East_Lansing"| 
            Field== "IA_Nashua"|
@@ -2976,7 +3131,7 @@ picoxystrobin.filtered. %>%
   ID %in% baseline_isolates_2,
   "Baseline",
   ifelse(ID %in% Farmer_fields,
-  "FF", "FFT")
+  "Producer Fields", "Fungicide Field Trials")
   ),
   Host = ifelse(
   ID %in% drybean,
@@ -3047,7 +3202,7 @@ picoxystrobin.filtered. <- picoxystrobin.filtered. %>%
   ID %in% baseline_isolates_2,
   "Baseline",
   ifelse(ID %in% Farmer_fields,
-  "FF", "FFT")
+  "Producer Fields", "Fungicide Field Trials")
   ),
   Host = ifelse(
   ID %in% drybean,
@@ -3141,16 +3296,16 @@ shapiro.test.pico
  #NO NORMALILTY thats is why  krusKal
 #by source
 
-object.6 <- kruskal.test(EC50DC ~ source, data = picoxystrobin.complete)
-object.6[[3]][[1]]
+object.8 <- kruskal.test(EC50DC ~ source, data = picoxystrobin.complete)
+object.8[[3]][[1]]
 
 #There IS difference p-value = 0.001368
 
-object.7 <-  DunnTest(EC50DC ~ source, data = picoxystrobin.complete, method = "bonferroni")
-
-# FF-Baseline        0.4603    
-# FFT-Baseline       0.0022 **   
-# FFT-FF             0.0012 **
+object.9 <-  DunnTest(EC50DC ~ source, data = picoxystrobin.complete, method = "bonferroni")
+object.9
+# Fungicide Field Trials-Baseline              59.57201 0.0022 ** 
+# Producer Fields-Baseline                     24.18495 0.4603    
+# Producer Fields-Fungicide Field Trials      -35.38706 0.0012 **
 #
 #There is differnec by ranks
 summary(aov (EC50DC ~ Field, data = picoxystrobin.filtered.))
@@ -3162,19 +3317,20 @@ do(tidy(shapiro.test(.$EC50DC)))
 ```
 BY host
 ```{r}
-shapiro.test.pico <-picoxystrobin.complete %>%
+# I took out the baseline isolates
+shapiro.test.pico <-picoxystrobin.complete.host%>%
    do(tidy(shapiro.test(.$EC50DC)))
 shapiro.test.pico 
 #NO NORMALILTY  , thats is why  krusKal
-object.8 <- kruskal.test(EC50DC ~ Host, data = picoxystrobin.complete)
-object.8[[3]][[1]]
-#There is difference between host ,  0.044
-object.9 <-  DunnTest(EC50DC ~ Host, data = picoxystrobin.complete, method = "bonferroni")
-object.9 
+object.10 <- kruskal.test(EC50DC ~ Host, data = picoxystrobin.complete.host)
+object.10[[3]][[1]]
+#There is NO difference between host ,  0.1563135
+object.11 <-  DunnTest(EC50DC ~ Host, data = picoxystrobin.complete.host, method = "bonferroni")
+object.11
 
-#Drybean-different_host       1.0000    
-# Soybean-different_host       1.0000    
-# Soybean-Drybean              0.0382 *
+# Drybean-different_host      -3.768519 1.0000    
+# Soybean-different_host      13.405738 1.0000    
+# Soybean-Drybean             17.174256 0.1645
 ```
 
 # there is normality
@@ -3189,9 +3345,45 @@ object.9
 # shapiro.test.pico.2 
 ```
 
-
-
 By field
+
+```{r}
+shapiro.test.pico <-picoxystrobin.complete %>%
+   do(tidy(shapiro.test(.$EC50DC)))
+shapiro.test.pico 
+#NO NORMALILTY  , thats is why  krusKal
+object.12 <- kruskal.test(EC50DC ~ Field, data = picoxystrobin.complete)
+object.12[[3]][[1]]
+#There is difference between Field ,  0.039
+object.13 <-  DunnTest(EC50DC ~ Field, data = picoxystrobin.complete, method = "bonferroni")
+object.13
+
+#                                   mean.rank.diff   pval    
+# WI_Hancock-MI_Montcalm_2015             1.842857 1.0000    
+# MI:East_Lansing-MI_Montcalm_2015       -8.466667 1.0000    
+# MI_Montcalm_2017-MI_Montcalm_2015     -15.947059 1.0000    
+# IA_Nashua-MI_Montcalm_2015            -18.668421 1.0000    
+# WI_Cerny-MI_Montcalm_2015             -27.100000 1.0000    
+# Baseline-MI_Montcalm_2015             -37.481818 0.0433 *  
+# MI:East_Lansing-WI_Hancock            -10.309524 1.0000    
+# MI_Montcalm_2017-WI_Hancock           -17.789916 1.0000    
+# IA_Nashua-WI_Hancock                  -20.511278 1.0000    
+# WI_Cerny-WI_Hancock                   -28.942857 0.5968    
+# Baseline-WI_Hancock                   -39.324675 0.0065 ** 
+# MI_Montcalm_2017-MI:East_Lansing       -7.480392 1.0000    
+# IA_Nashua-MI:East_Lansing             -10.201754 1.0000    
+# WI_Cerny-MI:East_Lansing              -18.633333 1.0000    
+# Baseline-MI:East_Lansing              -29.015152 0.0884 .  
+# IA_Nashua-MI_Montcalm_2017             -2.721362 1.0000    
+# WI_Cerny-MI_Montcalm_2017             -11.152941 1.0000    
+# Baseline-MI_Montcalm_2017             -21.534759 0.7678    
+# WI_Cerny-IA_Nashua                     -8.431579 1.0000    
+# Baseline-IA_Nashua                    -18.813397 1.0000    
+# Baseline-WI_Cerny                     -10.381818 1.0000    
+
+```
+
+By field in complete fields
 ANOVA, There is difference, p value is 0.0613
 ```{r, echo= FALSE}
 shapiro.test.pico.fields <-picoxystrobin.complete.fields %>%
@@ -3200,56 +3392,67 @@ shapiro.test.pico.fields
 #NO NORMALILTY  0.0000454, thats is why  krusKal
 
 # in case not NORMAL
-object.10 <- kruskal.test(EC50DC ~ Field, data = picoxystrobin.complete.fields)
-object.10[[3]][[1]]
+object.14 <- kruskal.test(EC50DC ~ Field, data = picoxystrobin.complete.fields)
+object.14[[3]][[1]]
 #There is difference 0.001431
 
-object.11 <- DunnTest(EC50DC ~ Field, data = picoxystrobin.complete.fields, method = "bonferroni")
+object.15 <- DunnTest(EC50DC ~ Field, data = picoxystrobin.complete.fields, method = "bonferroni")
 
-# there are differenets
-#Baseline-Mexico_Brazil   0.0088 **
-#Baseline-MI_Montcalm_2015 0.0673  . 
-#Baseline-WI_Hancock       0.0108 *
+# Dunn's test of multiple comparisons using rank sums : bonferroni  
+# 
+#                                   mean.rank.diff   pval    
+# IA_Nashua-Baseline                     20.236842 1.0000    
+# MI_Montcalm_2015-Baseline              40.600000 0.0673 .  
+# MI_Montcalm_2017-Baseline              22.970588 1.0000    
+# MI:East_Lansing-Baseline               31.333333 0.1383    
+# Mexico_Brazil-Baseline                 46.681818 0.0088 ** 
+# WI_Cerny-Baseline                      11.000000 1.0000    
+# WI_Hancock-Baseline                    42.571429 0.0108 *  
+# MI_Montcalm_2015-IA_Nashua             20.363158 1.0000    
+# MI_Montcalm_2017-IA_Nashua              2.733746 1.0000    
+# MI:East_Lansing-IA_Nashua              11.096491 1.0000    
+# Mexico_Brazil-IA_Nashua                26.444976 1.0000    
+# WI_Cerny-IA_Nashua                     -9.236842 1.0000    
+# WI_Hancock-IA_Nashua                   22.334586 1.0000    
+# MI_Montcalm_2017-MI_Montcalm_2015     -17.629412 1.0000    
+# MI:East_Lansing-MI_Montcalm_2015       -9.266667 1.0000    
+# Mexico_Brazil-MI_Montcalm_2015          6.081818 1.0000    
+# WI_Cerny-MI_Montcalm_2015             -29.600000 1.0000    
+# WI_Hancock-MI_Montcalm_2015             1.971429 1.0000    
+# MI:East_Lansing-MI_Montcalm_2017        8.362745 1.0000    
+# Mexico_Brazil-MI_Montcalm_2017         23.711230 1.0000    
+# WI_Cerny-MI_Montcalm_2017             -11.970588 1.0000    
+# WI_Hancock-MI_Montcalm_2017            19.600840 1.0000    
+# Mexico_Brazil-MI:East_Lansing          15.348485 1.0000    
+# WI_Cerny-MI:East_Lansing              -20.333333 1.0000    
+# WI_Hancock-MI:East_Lansing             11.238095 1.0000    
+# WI_Cerny-Mexico_Brazil                -35.681818 0.5570    
+# WI_Hancock-Mexico_Brazil               -4.110390 1.0000    
+# WI_Hancock-WI_Cerny                    31.571429 0.8316
 
+object.15
 #by host
-object.12 <- kruskal.test(EC50DC ~ Host, data = picoxystrobin.complete.fields)
-object.12[[3]][[1]]
+object.16 <- kruskal.test(EC50DC ~ Host, data = picoxystrobin.complete.fields)
+object.16[[3]][[1]]
 #There is  no difference 0.1599
 
 #by source
-object.13 <- kruskal.test(EC50DC ~ source, data = picoxystrobin.complete.fields)
-object.13[[3]][[1]]
+object.17 <- kruskal.test(EC50DC ~ source, data = picoxystrobin.complete.fields)
+object.17[[3]][[1]]
 #There is   difference 0.001414
 
-object.14 <- DunnTest(EC50DC ~ source, data = picoxystrobin.complete.fields, method = "bonferroni")
-object.14
-# FF-Baseline       0.0166 *  
-# FFT-Baseline     0.0012 ** 
-# FFT-FF           1.0000  
+object.18 <- DunnTest(EC50DC ~ source, data = picoxystrobin.complete.fields, method = "bonferroni")
+object.18
+# Fungicide Field Trials-Baseline            30.0128205 0.0012 ** 
+# Producer Fields-Baseline                   29.6904762 0.0166 *  
+# Producer Fields-Fungicide Field Trials     -0.3223443 1.0000   
 # in case  NORMAL distributed
-shapiro.test.pico.3 <-picoxystrobin.complete.fields %>%
-  group_by(Field) %>%
-  do(tidy(shapiro.test(.$EC50DC)))
-shapiro.test.pico.3
-#There are normal distributed that is why ANOVA
-AOV <- (aov (EC50DC ~ Field, data = picoxystrobin.complete.fields))
-model <- lm(EC50DC ~ Field, data = picoxystrobin.complete.fields)
-ANOVA <- aov(model)
-tukey.test <- TukeyHSD(ANOVA)
-tukey.test.2 <- HSD.test(AOV, trt = 'Field' )
-HSD.test(model, "Field")
-summary(model)
-summary(ANOVA)
-# in case not NORMAL
-kruskal.test(EC50DC ~ Field, data = picoxystrobin.complete)
-#There is difference 0.001431
 
-DunnTest(EC50DC ~ Field, data = picoxystrobin.complete, method = "bonferroni")
+#In case of normal distributed that is why ANOVA
+AOV.4 <- (aov (EC50DC ~ Field, data = picoxystrobin.complete.fields))
 
-# there are differenets
-#Baseline-Mexico_Brazil   0.0088 **
-#Baseline-MI_Montcalm_2015 0.0673  . 
-#Baseline-WI_Hancock       0.0108 *
+tukey.test.4 <- HSD.test(AOV.4, trt = 'Field' )
+
 ```
 
 ```{r, echo= FALSE, include= FALSE}
@@ -3326,12 +3529,6 @@ mutate(group =ifelse(
 
 ### By Host
 
-```{r include= FALSE}
-#by hosts
-
-kruskal.test(EC50DC ~ Host, data = picoxystrobin.complete)
-#There IS difference p-value 0.04489
-```
 
 ```{r, include= FALSE}
 plot.pico.2 <- picoxystrobin.complete%>%
@@ -3449,7 +3646,7 @@ plot.pico.3 <-picoxystrobin.filtered.2%>%
 plot.pico.3
 
 ##
-picoxystrobin.complete$Field <- factor(picoxystrobin.complete$Field, c("Mexico_Brazil","MI_Montcalm_2015", "WI_Hancock", "MI:East_Lansing", "MI_Montcalm_2017", "IA_Nashua", "WI_Cerny",  "Baseline"))
+picoxystrobin.complete.fields$Field <- factor(picoxystrobin.complete.fields$Field, c("Mexico_Brazil","MI_Montcalm_2015", "WI_Hancock", "MI:East_Lansing", "MI_Montcalm_2017", "IA_Nashua", "WI_Cerny",  "Baseline"))
 
 plot.pico.3 <-picoxystrobin.complete%>%
   ggplot(aes(x = Field, y = EC50DC)) +
@@ -3488,6 +3685,45 @@ plot.pico.3 <-picoxystrobin.complete%>%
   )
   
 plot.pico.3
+
+```
+Figure for publication
+```{r}
+fig.3.picoxystrobin <-picoxystrobin.complete.fields%>%
+  ggplot(aes(x = Field, y = EC50DC)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 17,
+    size = 2,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 22,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs(x = "Field", y = "EC50DC (ppm)") +
+  theme(
+  panel.border = element_rect(
+  colour = "black",
+  fill = NA,
+  size = 1
+  ),
+  axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+  axis.text.x  = element_text(
+  face = "bold",
+  size = 8.5,
+  family = "Arial",
+  angle = 30,
+  hjust = 1
+  ),
+  panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+  
+fig.3.picoxystrobin
 
 ```
 
@@ -3639,7 +3875,7 @@ fig.1.tetraconazole <-
   size = 2,
   alpha = 3 / 4
   
-  ) + geom_smooth(method = "lm") +  theme(
+  ) + geom_smooth(method = "lm", se= FALSE) +  theme(
   plot.title = element_text(
   size = 8,
   face = "bold",
@@ -3654,7 +3890,7 @@ fig.1.tetraconazole <-
   ),
   panel.background = element_rect(fill = "white", colour = "grey50")
   ) + labs( x =
-    "Relative growth (%)", y = "Log EC50")
+              "Relative growth (%)", y = "Log EC50") +  expand_limits(x = c(15, 45)) + scale_x_continuous(name = waiver(), breaks = c(15, 20, 25, 30, 35, 40, 45))
 
 
 fig.2.tetraconazole <- ggplot(final.tetraconazole.DC.2,
@@ -3664,7 +3900,7 @@ fig.2.tetraconazole <- ggplot(final.tetraconazole.DC.2,
   size = 2,
   alpha = 3 / 4
   
-  ) + geom_smooth(method = "lm") +  theme(
+  ) + geom_smooth(method = "lm",se= FALSE) +  theme(
   plot.title = element_text(
   size = 8,
   face = "bold",
@@ -3766,7 +4002,7 @@ tetraconazole.complete.controls <- tetraconazole.complete %>%
     "Baseline",
     ifelse(
       ID %in% Farmer_fields,
-      "FF","FFT"
+      "Producer Fields","Fungicide Field Trials"
     )), Host = ifelse(
     ID %in% drybean,
     "Drybean", ifelse(
@@ -3774,7 +4010,7 @@ tetraconazole.complete.controls <- tetraconazole.complete %>%
       "Soybean","different_host")),
        Field = ifelse(
   ID %in% NE_Holt,
-  "MI:Holt",
+  "NE:Holt",
   ifelse(
   ID %in% NE_Field_34,
   "NE:Field_34",
@@ -3819,7 +4055,14 @@ tetraconazole.complete.controls <- tetraconazole.complete %>%
   ifelse(ID %in% brazilian.isolates,
   "Brazil", "USA")
   )) 
+ 
+  ###For comparisons between hosts I had to take out the ones coming from baseline otherwise would not be fair
+
+tetraconazole.complete.host <- tetraconazole.complete %>% 
+  filter(!source=="Baseline")
+
   
+   ###For isolates from that have reduced sensitivity, assess sensitivity for isolates in the same field to account for heterogeneicity
   tetraconazole.complete.fields <- tetraconazole.complete %>% 
   filter(Field== "NE:Holt"| 
            Field== "NE:Field_34"|
@@ -3857,13 +4100,30 @@ shapiro.test.tetra
  #NO NORMALILTY thats is why  krusKal
 
 
-object.14 <- kruskal.test(EC50DC ~ source, data = tetraconazole.complete)
-object.14[[3]][[1]]
+object.19 <- kruskal.test(EC50DC ~ source, data = tetraconazole.complete)
+object.19[[3]][[1]]
 #There NO difference p-value = 0.4244
 
 
 ```
 By host
+```{r}
+##NORMALITY TEST-Shapiro_test
+
+shapiro.test.tetra <- tetraconazole.complete.host %>%
+  do(tidy(shapiro.test(.$EC50DC)))
+shapiro.test.tetra 
+# 0.478 X10 -13
+
+# No normals
+ #NO NORMALILTY thats is why  krusKal
+
+object.20 <- kruskal.test(EC50DC ~ Host, data = tetraconazole.complete.host)
+object.20[[3]][[1]]
+#There NO difference p-value = 0.2349112
+
+```
+By Field
 ```{r}
 ##NORMALITY TEST-Shapiro_test
 
@@ -3875,11 +4135,61 @@ shapiro.test.tetra
 # No normals
  #NO NORMALILTY thats is why  krusKal
 
-object.15 <- kruskal.test(EC50DC ~ Host, data = tetraconazole.complete)
-object.15[[3]][[1]]
-#There NO difference p-value = 0.2349112
+object.21 <- kruskal.test(EC50DC ~ Field, data = tetraconazole.complete)
+object.21[[3]][[1]]
+#There IS difference p-value = 7.2 x 10_1
 
+object.22 <- DunnTest(EC50DC ~ Field, data = tetraconazole.complete)
+object.22
+
+#                        mean.rank.diff   pval    
+# MI:Holt-Baseline             -82.1547619 0.2259    
+# NE:Field_101-Baseline         58.3174603 1.0000    
+# NE:Field_34-Baseline          71.8095238 0.7024    
+# NE:Field_67-Baseline          72.0952381 0.3961    
+# NE:Field_75-Baseline         -10.0476190 1.0000    
+# NE:Field_97-Baseline           0.4952381 1.0000    
+# NE:Field_98-Baseline          15.8452381 1.0000    
+# other_fields-Baseline         -4.2157375 1.0000    
+# potato-Baseline               32.0952381 1.0000    
+# NE:Field_101-MI:Holt         140.4722222 0.0022 ** 
+# NE:Field_34-MI:Holt          153.9642857 0.0014 ** 
+# NE:Field_67-MI:Holt          154.2500000 0.0004 ***
+# NE:Field_75-MI:Holt           72.1071429 1.0000    
+# NE:Field_97-MI:Holt           82.6500000 0.5011    
+# NE:Field_98-MI:Holt           98.0000000 0.2311    
+# other_fields-MI:Holt          77.9390244 0.1061    
+# potato-MI:Holt               114.2500000 0.3337    
+# NE:Field_34-NE:Field_101      13.4920635 1.0000    
+# NE:Field_67-NE:Field_101      13.7777778 1.0000    
+# NE:Field_75-NE:Field_101     -68.3650794 1.0000    
+# NE:Field_97-NE:Field_101     -57.8222222 1.0000    
+# NE:Field_98-NE:Field_101     -42.4722222 1.0000    
+# other_fields-NE:Field_101    -62.5331978 0.3806    
+# potato-NE:Field_101          -26.2222222 1.0000    
+# NE:Field_67-NE:Field_34        0.2857143 1.0000    
+# NE:Field_75-NE:Field_34      -81.8571429 0.9624    
+# NE:Field_97-NE:Field_34      -71.3142857 1.0000    
+# NE:Field_98-NE:Field_34      -55.9642857 1.0000    
+# other_fields-NE:Field_34     -76.0252613 0.2275    
+# potato-NE:Field_34           -39.7142857 1.0000    
+# NE:Field_75-NE:Field_67      -82.1428571 0.7208    
+# NE:Field_97-NE:Field_67      -71.6000000 0.9045    
+# NE:Field_98-NE:Field_67      -56.2500000 1.0000    
+# other_fields-NE:Field_67     -76.3109756 0.0760 .  
+# potato-NE:Field_67           -40.0000000 1.0000    
+# NE:Field_97-NE:Field_75       10.5428571 1.0000    
+# NE:Field_98-NE:Field_75       25.8928571 1.0000    
+# other_fields-NE:Field_75       5.8318815 1.0000    
+# potato-NE:Field_75            42.1428571 1.0000    
+# NE:Field_98-NE:Field_97       15.3500000 1.0000    
+# other_fields-NE:Field_97      -4.7109756 1.0000    
+# potato-NE:Field_97            31.6000000 1.0000    
+# other_fields-NE:Field_98     -20.0609756 1.0000    
+# potato-NE:Field_98            16.2500000 1.0000    
+# potato-other_fields           36.3109756 1.0000
 ```
+
 
 
 ```{r}
@@ -4021,35 +4331,80 @@ shapiro.test.tetra.fields <- tetraconazole.complete.fields %>%
 shapiro.test.tetra.fields
 
 #P value 0.0000000413, that is why kruskal 
-object.16 <- kruskal.test(EC50DC ~ Field, data = tetraconazole.complete.fields)
-object.16[[3]][[1]]
+object.23 <- kruskal.test(EC50DC ~ Field, data = tetraconazole.complete.fields)
+object.23[[3]][[1]]
 #There is YES difference p-value 0.008304
-object.17 <- DunnTest(EC50DC ~ Field, data = tetraconazole.complete.fields)
-object.17
-#No differenec between ranks due to no any value less or equal to 0.05
+object.24 <- DunnTest(EC50DC ~ Field, data = tetraconazole.complete.fields, method ="bonferroni")
+object.24
+#Yes differenec between ranks due to no any value less or equal to 0.05
+# Dunn's test of multiple comparisons using rank sums : holm  
+# 
+#                      mean.rank.diff    pval    
+# NE:Field_67-NE:Field_34         0.3809524 1.00000    
+# NE:Field_101-NE:Field_34       -5.9523810 1.00000    
+# NE:Field_98-NE:Field_34       -20.6607143 1.00000    
+# NE:Field_97-NE:Field_34       -28.2857143 1.00000    
+# Baseline-NE:Field_34          -26.8095238 0.67339    
+# NE:Field_75-NE:Field_34       -30.4285714 1.00000    
+# Mexico_Brazil-NE:Field_34     -29.3766234 0.72118    
+# NE:Holt-NE:Field_34           -56.6607143 0.00100 ** 
+# NE:Field_101-NE:Field_67       -6.3333333 1.00000    
+# NE:Field_98-NE:Field_67       -21.0416667 1.00000    
+# NE:Field_97-NE:Field_67       -28.6666667 0.60952    
+# Baseline-NE:Field_67          -27.1904762 0.32369    
+# NE:Field_75-NE:Field_67       -30.8095238 0.69393    
+# Mexico_Brazil-NE:Field_67     -29.7575758 0.40568    
+# NE:Holt-NE:Field_67           -57.0416667 0.00025 ***
+# NE:Field_98-NE:Field_101      -14.7083333 1.00000    
+# NE:Field_97-NE:Field_101      -22.3333333 1.00000    
+# Baseline-NE:Field_101         -20.8571429 1.00000    
+# NE:Field_75-NE:Field_101      -24.4761905 1.00000    
+# Mexico_Brazil-NE:Field_101    -23.4242424 1.00000    
+# NE:Holt-NE:Field_101          -50.7083333 0.00233 ** 
+# NE:Field_97-NE:Field_98        -7.6250000 1.00000    
+# Baseline-NE:Field_98           -6.1488095 1.00000    
+# NE:Field_75-NE:Field_98        -9.7678571 1.00000    
+# Mexico_Brazil-NE:Field_98      -8.7159091 1.00000    
+# NE:Holt-NE:Field_98           -36.0000000 0.21064    
+# Baseline-NE:Field_97            1.4761905 1.00000    
+# NE:Field_75-NE:Field_97        -2.1428571 1.00000    
+# Mexico_Brazil-NE:Field_97      -1.0909091 1.00000    
+# NE:Holt-NE:Field_97           -28.3750000 0.79323    
+# NE:Field_75-Baseline           -3.6190476 1.00000    
+# Mexico_Brazil-Baseline         -2.5670996 1.00000    
+# NE:Holt-Baseline              -29.8511905 0.21441    
+# Mexico_Brazil-NE:Field_75       1.0519481 1.00000    
+# NE:Holt-NE:Field_75           -26.2321429 1.00000    
+# NE:Holt-Mexico_Brazil         -27.2840909 0.88562
 #by host
 
-object.18 <- kruskal.test(EC50DC ~ Host, data = tetraconazole.complete.fields)
-object.18[[3]][[1]]
+object.25 <- kruskal.test(EC50DC ~ Host, data = tetraconazole.complete.fields)
+object.25[[3]][[1]]
 
-# P values is 0.0242661, there IS diferenec between hosts
+# P values is 0.18, there NO diferenec between hosts but it shoudl be from the baseline
+
+object.26 <- DunnTest(EC50DC ~ Host, data = tetraconazole.complete.fields)
+object.26
+
+#     mean.rank.diff   pval    
+# Soybean-Drybean       12.14625 0.1857
 
 #by source
 
-object.19 <- kruskal.test(EC50DC ~ source, data = tetraconazole.complete.fields)
-object.19[[3]][[1]]
-#Thre is NO differnece teween source, P value is 0.1383376
+object.27 <- kruskal.test(EC50DC ~ source, data = tetraconazole.complete.fields)
+object.27[[3]][[1]]
+#Thre is NO differnece teween source, P value is 0.4201814
 
 
 #P values is 0.0242661, there i diferenec between hosts
-AOV.2 <- aov (EC50DC ~ Field, data = tetraconazole.complete.fields)
-model <- lm(EC50DC ~ Field, data = tetraconazole.complete.fields)
-ANOVA <- aov(model)
-tukey.test <- TukeyHSD(ANOVA)
-tukey.test.2 <- HSD.test(AOV.2, trt = 'Field')
-HSD.test(model, "Field")
-summary(model)
-summary(ANOVA)
+# AOV.2 <- aov (EC50DC ~ Field, data = tetraconazole.complete.fields)
+# model <- lm(EC50DC ~ Field, data = tetraconazole.complete.fields)
+# ANOVA <- aov(model)
+# tukey.test <- TukeyHSD(ANOVA)
+# tukey.test.2 <- HSD.test(AOV.2, trt = 'Field')
+# HSD.test(model, "Field")
+# summary(model)
+# summary(ANOVA)
 
 ```
 
@@ -4095,7 +4450,7 @@ plot.tetra.3 <-tetraconazole.complete.fields%>%
 plot.tetra.3
 
 ##
-tetraconazole.complete.fields$Field <- factor(tetraconazole.complete.fields$Field, c("NE:Field_34","NE:Field_67","NE:Field_101","NE:Field_98", "NE:Field_97", "Baseline", "NE:Field_75", "Mexico_Brazil"))
+tetraconazole.complete.fields$Field <- factor(tetraconazole.complete.fields$Field, c("NE:Field34","NE:Field_67","NE:Field_101","NE:Field_98", "NE:Field_97", "Baseline", "NE:Field_75", "Mexico_Brazil", "NE:Holt"))
 
 plot.tetra.3 <-tetraconazole.complete.fields%>%
   ggplot(aes(x = Field, y = EC50DC)) +
@@ -4137,6 +4492,46 @@ plot.tetra.3
 
 
 ```
+For publication
+```{r}
+fig.3.tetraconazole <- tetraconazole.complete.fields%>%
+  ggplot(aes(x = Field, y = EC50DC)) +
+  geom_jitter(
+    width = .1,
+    height = 0,
+    shape = 17,
+    size = 2,
+    alpha = 3 / 4
+  ) + stat_summary(
+    fun.y = mean,
+    geom = "point",
+    shape = 95,
+    size = 22,
+    color = "black"
+  ) +
+  theme_minimal() +
+  labs(x = "Field", y = "EC50DC (ppm)") +
+  theme(
+  panel.border = element_rect(
+  colour = "black",
+  fill = NA,
+  size = 1
+  ),
+  axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+  axis.text.x  = element_text(
+  face = "bold",
+  size = 8.5,
+  family = "Arial",
+  angle = 30,
+  hjust = 1
+  ),
+  panel.background = element_rect(fill = "white", colour = "grey50")
+  )
+  
+fig.3.tetraconazole
+
+```
+
 
 
 # Thiophanate methyl 
