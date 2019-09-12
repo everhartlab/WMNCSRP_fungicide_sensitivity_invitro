@@ -1859,15 +1859,15 @@ fig.1.boscalid <-
   hjust = 0.5,
   family = "Arial"
   ),
-  axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
+  axis.title = element_text(size = 8, face = "bold", hjust = 0.5),
   axis.text = element_text(
   face = "bold",
-  size = 14,
+  size = 8,
   family = "Arial"
   ),
   panel.background = element_rect(fill = "white", colour = "grey50")
   ) + labs( x =
-              "Relative growth (%)", y = expression(bold(Log ~  (EC[bold("50")])))) + expand_limits(x = c(15, 65)) + scale_x_continuous(name = waiver(), breaks = c(15, 25, 35, 45, 55, 65)) + scale_y_continuous(breaks = c(-3, -2.75, -2.5, -2.25, -2.0, -1.75, -1.5))
+              "Relative growth (%)", y = expression(bold(Log  (EC[bold("50")])))) + expand_limits(x = c(15, 65)) + scale_x_continuous(name = waiver(), breaks = c(15, 25, 35, 45, 55, 65)) + scale_y_continuous(breaks = c(-3, -2.75, -2.5, -2.25, -2.0, -1.75, -1.5))
 
 fig.2.boscalid<- ggplot(final.boscalid.DC.0.2, aes(x = Estimate.50, y = Estimate.50DC)) +  geom_point(
   shape = 17,
@@ -1875,28 +1875,31 @@ fig.2.boscalid<- ggplot(final.boscalid.DC.0.2, aes(x = Estimate.50, y = Estimate
   size = 2,
   alpha = 3 / 4
   
-  ) + geom_smooth(method = "lm", se= FALSE, colour= "black") +  theme(
+  ) + geom_smooth(method = "lm", se= FALSE, colour= "black"
+#fullrange=TRUE
+  ) +  theme(
   plot.title = element_text(
   size = 8,
   face = "bold",
   hjust = 0.5,
   family = "Arial"
   ),
-  axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
+  axis.title = element_text(size = 8, face = "bold", hjust = 0.5),
   axis.text = element_text(
   face = "bold",
-  size = 14,
+  size = 8,
   family = "Arial"
   ),
   panel.background = element_rect(fill = "white", colour = "grey50")
   ) + labs( x =
-expression(bold(EC[bold("50")])~( bold(ppm))), y = expression(bold(EC[bold("50")~(bold("D"))])~( bold(ppm))))+ geom_abline(
-                intercept = final.boscalid.DC.0.2[[1]][[1]],
+expression(bold(EC[bold("50")])~( bold(ppm ~bold("a.i.")))), y = expression(bold(EC[bold("50")~(bold("D"))])~( bold(ppm ~bold("a.i.")))))+ geom_abline(
+                intercept = 0,
                 slope = 1,
                 color = "black",
                 lty = "dashed",
                 lwd = 1
-                ) 
+                ) +  expand_limits(x = c(0, 0.25), y= c(0, 0.25))+ scale_x_continuous(name = waiver(), breaks = c(0, 0.05, 0.1, 0.15, 0.20, 0.25)) + scale_y_continuous(breaks = c(0, 0.05, 0.1, 0.15, 0.20, 0.25))
+
 
 
  fig.1.boscalid
@@ -3142,15 +3145,15 @@ fig.1.picoxystrobin <-
   hjust = 0.5,
   family = "Arial"
   ),
-  axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
+  axis.title = element_text(size = 8, face = "bold", hjust = 0.5),
   axis.text = element_text(
   face = "bold",
-  size = 14,
+  size = 8,
   family = "Arial"
   ),
   panel.background = element_rect(fill = "white", colour = "grey50")
   ) + labs( x =
-              "Relative growth (%)", y =  expression(bold(Log ~  (EC[bold("50")])))) + expand_limits(x = c(15, 65)) + scale_x_continuous(name = waiver(), breaks = c(15, 25, 35, 45, 55, 65)) 
+              "Relative growth (%)", y =  expression(bold(Log  (EC[bold("50")])))) + expand_limits(x = c(15, 65)) + scale_x_continuous(name = waiver(), breaks = c(15, 25, 35, 45, 55, 65)) 
 
 fig.2.picoxystrobin <- ggplot(final.picoxystrobin.DC.0.01,
        aes(x = Estimate.50, y = Estimate.50DC)) + 
@@ -3160,33 +3163,35 @@ fig.2.picoxystrobin <- ggplot(final.picoxystrobin.DC.0.01,
   size = 2,
   alpha = 3 / 4
   
-  ) + geom_smooth(method = "lm", se = FALSE, color = "black") +  theme(
+  ) + geom_smooth(method = "lm", se = FALSE, color = "black"
+  #fullrange=TRUE                
+  ) +  theme(
   plot.title = element_text(
   size = 8,
   face = "bold",
   hjust = 0.5,
   family = "Arial"
   ),
-  axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
+  axis.title = element_text(size = 8, face = "bold", hjust = 0.5),
   axis.text = element_text(
   face = "bold",
-  size = 14,
+  size = 8,
   family = "Arial"
   ),
   panel.background = element_rect(fill = "white", colour = "grey50")
   ) + labs( x =
 expression(bold(EC[bold("50")])~( bold(ppm))), y = expression(bold(EC[bold("50")~(bold("D"))])~( bold(ppm)))) + geom_abline(
-                intercept =final.picoxystrobin.DC.0.01 [[1]][[1]],
+                intercept = 0,
                 slope = 1,
                 color = "black",
                 lty = "dashed",
                 lwd = 1
- ) + expand_limits(x = c(0.0075, 0.018), y = c(0.0075, 0.016)) + scale_x_continuous(name = waiver(),
-breaks = c(0.0075, 0.01, 0.0125, 0.015,  0.018)) + scale_y_continuous(name = waiver(),
-breaks = c(0.0075, 0.01, 0.0125, 0.015,  0.018))
+ ) + expand_limits(x = c(0, 0.0075, 0.018), y = c(0, 0.0075, 0.018)) + scale_x_continuous(name = waiver(),
+breaks = c(0.0025,0.0050,0.0075, 0.01, 0.0125, 0.015,  0.018)) + scale_y_continuous(name = waiver(),
+breaks = c(0.0025,0.0050,0.0075, 0.01, 0.0125, 0.015,  0.018))
 
-
-
+fig.1.picoxystrobin
+fig.2.picoxystrobin
 ```
 
 ```{r, include= FALSE}
@@ -4341,17 +4346,17 @@ fill = "black",
 size = 2,
 alpha = 3 / 4
 ) + geom_smooth(method = "lm", se = FALSE, color = "black") + labs(x =
-"Relative growth (%)", y = expression(bold(Log ~  (EC[bold("50")])))) + expand_limits(x = c(15, 65))  +  theme(
+"Relative growth (%)", y = expression(bold(Log   (EC[bold("50")])))) + expand_limits(x = c(15, 65))  +  theme(
 plot.title = element_text(
 size = 8,
 face = "bold",
 hjust = 0.5,
 family = "Arial"
 ),
-axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
+axis.title = element_text(size = 8, face = "bold", hjust = 0.5),
 axis.text = element_text(
 face = "bold",
-size = 14,
+size = 8,
 family = "Arial"
 ),
 panel.background = element_rect(fill = "white", colour = "grey50")
@@ -4370,23 +4375,23 @@ face = "bold",
 hjust = 0.5,
 family = "Arial"
 ),
-axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
+axis.title = element_text(size = 8, face = "bold", hjust = 0.5),
 axis.text = element_text(
 face = "bold",
-size = 14,
+size = 8,
 family = "Arial"
 ),
 panel.background = element_rect(fill = "white", colour = "grey50")
 ) + labs( x =
 expression(bold(EC[bold("50")])~( bold(ppm))), y = expression(bold(EC[bold("50")~(bold("D"))])~( bold(ppm)))) + geom_abline(
-                intercept = final.tetraconazole.DC.2[[1]][[1]],
+                intercept = 0,
                 slope = 1,
                 color = "black",
                 lty = "dashed",
                 lwd = 1
-                ) + scale_x_continuous(breaks = c(0.6, 0.9, 1.2, 1.5))
-                
-
+                ) + expand_limits(x = c(0, 1.8), y = c(0, 1.8))+ scale_x_continuous(breaks = c(0.3,0.6, 0.9, 1.2, 1.5, 1.8))+ scale_y_continuous(breaks = c(0.3,0.6, 0.9, 1.2, 1.5, 1.8))
+fig.1.tetraconazole                
+fig.2.tetraconazole
 ```
 
 ```{r}
