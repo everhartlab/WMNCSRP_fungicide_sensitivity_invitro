@@ -1898,7 +1898,7 @@ expression(bold(EC[bold("50")])~( bold(ppm ~bold("a.i.")))), y = expression(bold
                 color = "black",
                 lty = "dashed",
                 lwd = 1
-                ) +  expand_limits(x = c(0, 0.25), y= c(0, 0.25))+ scale_x_continuous(name = waiver(), breaks = c(0, 0.05, 0.1, 0.15, 0.20, 0.25)) + scale_y_continuous(breaks = c(0, 0.05, 0.1, 0.15, 0.20, 0.25))
+                )+  expand_limits(x = c(0.04, 0.25), y= c(0.04, 0.25))      + scale_x_continuous(name = waiver(), breaks = c(0.05, 0.1, 0.15, 0.20, 0.25)) + scale_y_continuous(breaks = c(0.05, 0.1, 0.15, 0.20, 0.25))
 
 
 
@@ -3180,15 +3180,15 @@ fig.2.picoxystrobin <- ggplot(final.picoxystrobin.DC.0.01,
   ),
   panel.background = element_rect(fill = "white", colour = "grey50")
   ) + labs( x =
-expression(bold(EC[bold("50")])~( bold(ppm))), y = expression(bold(EC[bold("50")~(bold("D"))])~( bold(ppm)))) + geom_abline(
+expression(bold(EC[bold("50")])~( bold(ppm~bold("a.i.")))), y = expression(bold(EC[bold("50")~(bold("D"))])~( bold(ppm~bold("a.i."))))) + geom_abline(
                 intercept = 0,
                 slope = 1,
                 color = "black",
                 lty = "dashed",
                 lwd = 1
- ) + expand_limits(x = c(0, 0.0075, 0.018), y = c(0, 0.0075, 0.018)) + scale_x_continuous(name = waiver(),
-breaks = c(0.0025,0.0050,0.0075, 0.01, 0.0125, 0.015,  0.018)) + scale_y_continuous(name = waiver(),
-breaks = c(0.0025,0.0050,0.0075, 0.01, 0.0125, 0.015,  0.018))
+ ) + expand_limits(x = c(0.0075, 0.018), y = c(0.0075, 0.018)) + scale_x_continuous(name = waiver(),
+breaks = c(0.0075, 0.01, 0.0125, 0.015,  0.018)) + scale_y_continuous(name = waiver(),
+breaks = c(0.0075, 0.01, 0.0125, 0.015,  0.018))
 
 fig.1.picoxystrobin
 fig.2.picoxystrobin
@@ -4383,13 +4383,13 @@ family = "Arial"
 ),
 panel.background = element_rect(fill = "white", colour = "grey50")
 ) + labs( x =
-expression(bold(EC[bold("50")])~( bold(ppm))), y = expression(bold(EC[bold("50")~(bold("D"))])~( bold(ppm)))) + geom_abline(
+expression(bold(EC[bold("50")])~( bold(ppm~bold("a.i.")))), y = expression(bold(EC[bold("50")~(bold("D"))])~( bold(ppm~bold("a.i."))))) + geom_abline(
                 intercept = 0,
                 slope = 1,
                 color = "black",
                 lty = "dashed",
                 lwd = 1
-                ) + expand_limits(x = c(0, 1.8), y = c(0, 1.8))+ scale_x_continuous(breaks = c(0.3,0.6, 0.9, 1.2, 1.5, 1.8))+ scale_y_continuous(breaks = c(0.3,0.6, 0.9, 1.2, 1.5, 1.8))
+                 )+ expand_limits(x = c(0.3, 1.8), y = c(0.3, 1.8))     + scale_x_continuous(breaks = c(0.3,0.6, 0.9, 1.2, 1.5, 1.8))+ scale_y_continuous(breaks = c(0.3,0.6, 0.9, 1.2, 1.5, 1.8))
 fig.1.tetraconazole                
 fig.2.tetraconazole
 ```
