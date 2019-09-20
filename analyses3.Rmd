@@ -1854,15 +1854,15 @@ fig.1.boscalid <-
   
   ) + geom_smooth(method = "lm", se = FALSE, colour= "black") +  theme(
   plot.title = element_text(
-  size = 8,
+  size = 9,
   face = "bold",
   hjust = 0.5,
   family = "Arial"
   ),
-  axis.title = element_text(size = 8, face = "bold", hjust = 0.5),
+  axis.title = element_text(size = 9, face = "bold", hjust = 0.5),
   axis.text = element_text(
   face = "bold",
-  size = 8,
+  size = 9,
   family = "Arial"
   ),
   panel.background = element_rect(fill = "white", colour = "grey50")
@@ -1879,15 +1879,15 @@ fig.2.boscalid<- ggplot(final.boscalid.DC.0.2, aes(x = Estimate.50, y = Estimate
 #fullrange=TRUE
   ) +  theme(
   plot.title = element_text(
-  size = 8,
+  size = 9,
   face = "bold",
   hjust = 0.5,
   family = "Arial"
   ),
-  axis.title = element_text(size = 8, face = "bold", hjust = 0.5),
+  axis.title = element_text(size = 9, face = "bold", hjust = 0.5),
   axis.text = element_text(
   face = "bold",
-  size = 8,
+  size = 9,
   family = "Arial"
   ),
   panel.background = element_rect(fill = "white", colour = "grey50")
@@ -2930,23 +2930,27 @@ fig.3.boscalid <- boscalid.complete.fields%>%
     fun.y = mean,
     geom = "point",
     shape = 95,
-    size = 22,
+    size = 10,
     color = "black"
-  ) +
-  theme_minimal() +
-  labs(x = "Field", y = expression(bold(EC[bold("50")~(bold("D"))])~( bold(ppm)))) + theme(
+  ) +#+
+  #theme_minimal() 
+  labs(x = "Field", y = expression(bold(EC[bold("50")~(bold("D"))])~( bold(ppm~bold("a.i."))))) + theme(
   panel.border = element_rect(
   colour = "black",
   fill = NA,
   size = 1
   ),
-  axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+  axis.title = element_text(size = 9, face = "bold", hjust = 0.5),
   axis.text.x =  element_text(
   face = "bold",
-  size = 8.5,
+  size = 9,
   family = "Arial",
   angle = 30,
   hjust = 1
+  ), axis.text.y =  element_text(
+  face = "bold",
+  size = 9,
+  family = "Arial"
   ),
   panel.background = element_rect(fill = "white", colour = "grey50")
   ) + expand_limits(y = c(0.06, 0.18)) + scale_y_continuous(breaks = c(0.06, 0.08, 0.1, 0.12, 0.14, 0.16, 0.18))
@@ -3140,15 +3144,15 @@ fig.1.picoxystrobin <-
   
   ) + geom_smooth(method = "lm", se = FALSE, color = "black") +  theme(
   plot.title = element_text(
-  size = 8,
+  size = 9,
   face = "bold",
   hjust = 0.5,
   family = "Arial"
   ),
-  axis.title = element_text(size = 8, face = "bold", hjust = 0.5),
+  axis.title = element_text(size = 9, face = "bold", hjust = 0.5),
   axis.text = element_text(
   face = "bold",
-  size = 8,
+  size = 9,
   family = "Arial"
   ),
   panel.background = element_rect(fill = "white", colour = "grey50")
@@ -3167,15 +3171,15 @@ fig.2.picoxystrobin <- ggplot(final.picoxystrobin.DC.0.01,
   #fullrange=TRUE                
   ) +  theme(
   plot.title = element_text(
-  size = 8,
+  size = 9,
   face = "bold",
   hjust = 0.5,
   family = "Arial"
   ),
-  axis.title = element_text(size = 8, face = "bold", hjust = 0.5),
+  axis.title = element_text(size = 9, face = "bold", hjust = 0.5),
   axis.text = element_text(
   face = "bold",
-  size = 8,
+  size = 9,
   family = "Arial"
   ),
   panel.background = element_rect(fill = "white", colour = "grey50")
@@ -3186,7 +3190,7 @@ expression(bold(EC[bold("50")])~( bold(ppm~bold("a.i.")))), y = expression(bold(
                 color = "black",
                 lty = "dashed",
                 lwd = 1
- ) + expand_limits(x = c(0.0075, 0.018), y = c(0.0075, 0.018)) + scale_x_continuous(name = waiver(),
+ ) + expand_limits(x = c(0.0060, 0.018), y = c(0.0060, 0.018)) + scale_x_continuous(name = waiver(),
 breaks = c(0.0075, 0.01, 0.0125, 0.015,  0.018)) + scale_y_continuous(name = waiver(),
 breaks = c(0.0075, 0.01, 0.0125, 0.015,  0.018))
 
@@ -4173,26 +4177,31 @@ fig.3.picoxystrobin <-picoxystrobin.complete.fields%>%
     fun.y = mean,
     geom = "point",
     shape = 95,
-    size = 22,
+    size = 10,
     color = "black"
-  ) +
-  theme_minimal() +
-  labs(x = "Field", y = expression(bold(EC[bold("50")~(bold("D"))])~( bold(ppm)))) +
+  ) +#
+  #theme_minimal() 
+  labs(x = "Field", y = expression(bold(EC[bold("50")~(bold("D"))])~( bold(ppm~bold("a.i."))))) +
   theme(
   panel.border = element_rect(
   colour = "black",
   fill = NA,
   size = 1
   ),
-  axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+  axis.title = element_text(size = 9, face = "bold", hjust = 0.5),
   axis.text.x  = element_text(
   face = "bold",
-  size = 8.5,
+  size = 9,
   family = "Arial",
   angle = 30,
   hjust = 1
   ),
-  panel.background = element_rect(fill = "white", colour = "grey50") ) + scale_y_continuous(breaks = c(0.008, 0.01, 0.012, 0.014, 0.016, 0.018, 0.020,0.022,0.024))
+   axis.text.y   = element_text(
+  face = "bold",
+  size = 9,
+  family = "Arial"),
+   panel.background = element_rect(fill = "white", colour = "grey50") 
+  ) + scale_y_continuous(breaks = c(0.008, 0.01, 0.012, 0.014, 0.016, 0.018, 0.020,0.022,0.024))
   
 fig.3.picoxystrobin
 
@@ -4348,15 +4357,15 @@ alpha = 3 / 4
 ) + geom_smooth(method = "lm", se = FALSE, color = "black") + labs(x =
 "Relative growth (%)", y = expression(bold(Log   (EC[bold("50")])))) + expand_limits(x = c(15, 65))  +  theme(
 plot.title = element_text(
-size = 8,
+size = 9,
 face = "bold",
 hjust = 0.5,
 family = "Arial"
 ),
-axis.title = element_text(size = 8, face = "bold", hjust = 0.5),
+axis.title = element_text(size = 9, face = "bold", hjust = 0.5),
 axis.text = element_text(
 face = "bold",
-size = 8,
+size = 9,
 family = "Arial"
 ),
 panel.background = element_rect(fill = "white", colour = "grey50")
@@ -4370,15 +4379,15 @@ size = 2,
 alpha = 3 / 4
 ) + geom_smooth(method = "lm",se= FALSE, color= "black") +  theme(
 plot.title = element_text(
-size = 8,
+size = 9,
 face = "bold",
 hjust = 0.5,
 family = "Arial"
 ),
-axis.title = element_text(size = 8, face = "bold", hjust = 0.5),
+axis.title = element_text(size = 9, face = "bold", hjust = 0.5),
 axis.text = element_text(
 face = "bold",
-size = 8,
+size = 9,
 family = "Arial"
 ),
 panel.background = element_rect(fill = "white", colour = "grey50")
@@ -4759,7 +4768,6 @@ tetraconazole.complete.host <- tetraconazole.complete %>%
 
   
    ###For isolates from that have reduced sensitivity, assess sensitivity for isolates in the same field to account for heterogeneicity
-  tetraconazole.complete.fields <- tetraconazole.complete %>% 
   filter(Field== "NE:Holt"| 
            Field== "NE:Dodge"|
          Field== "NE:Cedar 1"|
@@ -5191,39 +5199,44 @@ plot.tetra.3
 ```
 For publication
 ```{r}
-fig.3.tetraconazole <- tetraconazole.complete.fields%>%
+fig.3.tetraconazole<- tetraconazole.complete.fields %>%
   ggplot(aes(x = Field, y = EC50DC)) +
   geom_jitter(
-    width = .1,
-    height = 0,
-    shape = 17,
-    size = 2,
-    alpha = 3 / 4
+  width = .1,
+  height = 0,
+  shape = 17,
+  size = 2,
+  alpha = 3 / 4
   ) + stat_summary(
-    fun.y = mean,
-    geom = "point",
-    shape = 95,
-    size = 22,
-    color = "black"
-  ) +
-  theme_minimal() +
-  labs(x = "Field", y = expression(bold(EC[bold("50")~(bold("D"))])~( bold(ppm)))) +
+  fun.y = mean,
+  geom = "point",
+  shape = 95,
+  size = 10,
+  color = "black"
+  )+ #+  theme_minimal() 
+  labs(x = "Field", y = expression(bold(EC[bold("50") ~ (bold("D"))]) ~
+  (bold(ppm~bold("a.i."))))) +
   theme(
   panel.border = element_rect(
   colour = "black",
   fill = NA,
   size = 1
   ),
-  axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+  axis.title = element_text(size = 9, face = "bold", hjust = 0.5),
   axis.text.x  = element_text(
   face = "bold",
-  size = 8.5,
+  size = 9,
   family = "Arial",
   angle = 30,
   hjust = 1
   ),
-  panel.background = element_rect(fill = "white", colour = "grey50")
-  )+ scale_y_continuous(breaks = c(0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6))
+  axis.text.y  = element_text(
+  face = "bold",
+  size = 9,
+  family = "Arial"
+    ),
+  panel.background = element_rect(fill = "white")
+  ) + scale_y_continuous(breaks = c(0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6))
   
 fig.3.tetraconazole
 
@@ -5888,9 +5901,10 @@ table_publication.2 <- boscalid.complete %>%
 group_by(source, Host, Year_Field, State ) %>%
   summarize(N= n()) %>%
     ungroup() %>%
-        add_row(source = "Total", N  = sum(.$N))
+        add_row(source = "Total", N  = sum(.$N))%>%# kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
+  # write2pdf("table_publication.pdf")
 
- table_publication.2 %>% 
+ dd <- table_publication.2 %>% 
 group_by(source, Host, Year_Field, State ) %>%
   summarize(N= n()) 
 
@@ -6315,6 +6329,6 @@ select_max_iso_field <- num_isolates_selected %>%
 
 ```{r}
 # casa
-%>% group_by(Host) %>% summarise(EC50mean= mean(EC50DC),sd =sd(EC50DC), n= n(), se= sd/sqrt(n)
+ %>% group_by(Host) %>% summarise(EC50mean= mean(EC50DC),sd =sd(EC50DC), n= n(), se= sd/sqrt(n)
 ```
 
