@@ -1859,10 +1859,10 @@ fig.1.boscalid <-
   hjust = 0.5,
   family = "Arial"
   ),
-  axis.title = element_text(size = 9, face = "bold", hjust = 0.5),
+  axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
   axis.text = element_text(
   face = "bold",
-  size = 9,
+  size = 10,
   family = "Arial"
   ),
   panel.background = element_rect(fill = "white", colour = "grey50")
@@ -1879,7 +1879,7 @@ fig.2.boscalid<- ggplot(final.boscalid.DC.0.2, aes(x = Estimate.50, y = Estimate
 #fullrange=TRUE
   ) +  theme(
   plot.title = element_text(
-  size = 9,
+  size = 10,
   face = "bold",
   hjust = 0.5,
   family = "Arial"
@@ -1887,7 +1887,7 @@ fig.2.boscalid<- ggplot(final.boscalid.DC.0.2, aes(x = Estimate.50, y = Estimate
   axis.title = element_text(size = 9, face = "bold", hjust = 0.5),
   axis.text = element_text(
   face = "bold",
-  size = 9,
+  size = 10,
   family = "Arial"
   ),
   panel.background = element_rect(fill = "white", colour = "grey50")
@@ -3149,10 +3149,10 @@ fig.1.picoxystrobin <-
   hjust = 0.5,
   family = "Arial"
   ),
-  axis.title = element_text(size = 9, face = "bold", hjust = 0.5),
+  axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
   axis.text = element_text(
   face = "bold",
-  size = 9,
+  size = 10,
   family = "Arial"
   ),
   panel.background = element_rect(fill = "white", colour = "grey50")
@@ -3176,10 +3176,10 @@ fig.2.picoxystrobin <- ggplot(final.picoxystrobin.DC.0.01,
   hjust = 0.5,
   family = "Arial"
   ),
-  axis.title = element_text(size = 9, face = "bold", hjust = 0.5),
+  axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
   axis.text = element_text(
   face = "bold",
-  size = 9,
+  size = 10,
   family = "Arial"
   ),
   panel.background = element_rect(fill = "white", colour = "grey50")
@@ -4362,10 +4362,10 @@ face = "bold",
 hjust = 0.5,
 family = "Arial"
 ),
-axis.title = element_text(size = 9, face = "bold", hjust = 0.5),
+axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
 axis.text = element_text(
 face = "bold",
-size = 9,
+size = 10,
 family = "Arial"
 ),
 panel.background = element_rect(fill = "white", colour = "grey50")
@@ -4379,15 +4379,15 @@ size = 2,
 alpha = 3 / 4
 ) + geom_smooth(method = "lm",se= FALSE, color= "black") +  theme(
 plot.title = element_text(
-size = 9,
+size = 10,
 face = "bold",
 hjust = 0.5,
 family = "Arial"
 ),
-axis.title = element_text(size = 9, face = "bold", hjust = 0.5),
+axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
 axis.text = element_text(
 face = "bold",
-size = 9,
+size = 10,
 family = "Arial"
 ),
 panel.background = element_rect(fill = "white", colour = "grey50")
@@ -4768,7 +4768,8 @@ tetraconazole.complete.host <- tetraconazole.complete %>%
 
   
    ###For isolates from that have reduced sensitivity, assess sensitivity for isolates in the same field to account for heterogeneicity
-  filter(Field== "NE:Holt"| 
+tetraconazole.complete.fields <- tetraconazole.complete%>%  
+filter(Field== "NE:Holt"| 
            Field== "NE:Dodge"|
          Field== "NE:Cedar 1"|
          Field== "NE:Antelope"|
