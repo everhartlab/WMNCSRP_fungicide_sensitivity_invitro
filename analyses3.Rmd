@@ -328,7 +328,7 @@ select(ID, repeats, experimental_replicate, control.ecuatorial, control.polar, t
     ) / 2), ID = as.character(ID), new= "Yes") %>% 
       select(ID, repeats, experimental_replicate, control.growth, tetraconazole.growth, new)
    
-#Discriminatory dose tetraconazole
+#Discriminatory dose TM
              
     survey.data.TM <- 
       read.csv("data/DD_survey-WMNCSRP_TM.csv")
@@ -5902,7 +5902,7 @@ table_publication.2 <- boscalid.complete %>%
 group_by(source, Host, Year_Field, State ) %>%
   summarize(N= n()) %>%
     ungroup() %>%
-        add_row(source = "Total", N  = sum(.$N))%>%# kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
+        add_row(source = "Total", N  = sum(.$N))# %>% kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
   # write2pdf("table_publication.pdf")
 
  dd <- table_publication.2 %>% 
