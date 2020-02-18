@@ -12,7 +12,7 @@ output:
 ```{r}
 ## restore the saved values to the user's workspace
 load("all.Rdata", .GlobalEnv)
-unlink("all.Rdata")
+#unlink("all.Rdata")
 
 ```
 
