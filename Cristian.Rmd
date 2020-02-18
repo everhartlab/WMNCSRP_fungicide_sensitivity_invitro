@@ -53,7 +53,7 @@ Field applications of fungicides in the United States on soybean show control of
 ```{r read data, echo = FALSE}
 #
 ##  Reading and subsetting data 
-boscalid.dat <-
+boscalid.data <-
   read.csv("data/boscalid_serialdilution_baseline(validationdata).csv")
   boscalid.data <- subset(boscalid.data, select = -X)
   boscalid.data$repeats <- rep_len(1:4, length.out = nrow(boscalid.data))

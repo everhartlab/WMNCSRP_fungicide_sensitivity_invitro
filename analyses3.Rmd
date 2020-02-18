@@ -82,7 +82,7 @@ boscalid.data <-
  boscalid.data$ID <- as.numeric(boscalid.data$ID)
  ## Discarding dose at 0.4 ppm and isolate 800 because it has just one experimental replication ##
  
- # Filter out 
+ # Filter out those doses that not have 2nd experimental replication or they were not needed according to the model
   boscalid.data <- boscalid.data %>%
      filter(!dose ==  0.4 & !ID == 800) %>%
     mutate(polar= replace(polar, polar == 0, 0.6)) %>%  #replacing 0 cm growth for the size of plug that is 0.6
@@ -119,7 +119,7 @@ boscalid.data <-
    ####Transforming to $ID to numeric
 picoxystrobin.data$ID <- as.numeric(picoxystrobin.data$ID)
    
-  #Filter out 
+  #Filter out those doses that not have 2nd experimental replication or they were not needed according to the model
     picoxystrobin.data <- picoxystrobin.data %>%
       mutate(polar= replace(polar, polar == 0, 0.6)) %>%  #replacing 0 cm growth for the size of plug that is 0.6
     mutate(ecuatorial= replace(ecuatorial, ecuatorial == 0, 0.6)) %>% 
@@ -154,7 +154,7 @@ tetraconazole.data <-
 
     ####Transforming to $ID to numeric
 tetraconazole.data$ID <- as.numeric(tetraconazole.data$ID)
-   # Filter out 
+   # Filter out those doses that not have 2nd experimental replication or they were not needed according to the model
   tetraconazole.data <- tetraconazole.data %>%
      mutate(polar= replace(polar, polar == 0, 0.6)) %>%  #replacing 0 cm growth for the size of plug that is 0.6
     mutate(ecuatorial= replace(ecuatorial, ecuatorial == 0, 0.6)) %>% 
@@ -188,7 +188,7 @@ tetraconazole.data$ID <- as.numeric(tetraconazole.data$ID)
 
  ####Transforming to $ID to numeric
 TMdata$ID <- as.numeric(TMdata$ID)   
-  #Filter out the control observations tomething weird happened with the repeats 3 so Iam revoming those
+  #Filter out the control observations something weird happened with the repeats 3 so Iam revoming those
     TMdata <- TMdata %>%
       group_by(ID, experimental_replicate, dose, ecuatorial, polar, repeats) %>%
       filter(!experimental_replicate == 1 |
