@@ -4595,6 +4595,8 @@ select_max_iso_field <- num_isolates_selected %>%
 ```
 
 ```{r}
+save(list = ls(all=TRUE), file= "Analyses.Data.Rdata")
+ rm(list = ls())
 # casa
  %>% group_by(Host) %>% summarise(EC50mean= mean(EC50DC),sd =sd(EC50DC), n= n(), se= sd/sqrt(n)
 ```
