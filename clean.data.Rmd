@@ -13,6 +13,20 @@ output:
 ## restore the saved values to the user's workspace
 load("all.Rdata", .GlobalEnv)
 #unlink("all.Rdata")
+library(tidyverse)
+library(ggplot2)
+library(ezec)
+#library(NRES803)
+library(broom)
+library(ggridges)
+library(cowplot)
+library(gridExtra)
+library(kableExtra)
+library(arsenal)
+library(DescTools)
+library(knitr)
+library(agricolae)
+
 
 ```
 

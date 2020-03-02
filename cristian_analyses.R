@@ -1,11 +1,26 @@
 
-load("Analyses.Data.Rdata", .GlobalEnv)
+load("Main.Rdata", .GlobalEnv)
+library(tidyverse)
+library(ggplot2)
+library(ezec)
+#library(NRES803)
+library(broom)
+library(ggridges)
+library(cowplot)
+library(gridExtra)
+library(kableExtra)
+library(arsenal)
+library(DescTools)
+library(knitr)
+library(agricolae)
+
+
 boscalid.data.cristian <-
   read.csv("data/boscalid_cristian_01.15.20.csv")
  glimpse(boscalid.data.cristian)
  
- 
- 
+ boscalid.data.isolates.cristian <- read.csv("data/Isolates_Cristian_Wulkop.csv")
+ glimpse( boscalid.data.isolates.cristian)
  
  boscalid.data.cristian.2 <- boscalid.data.cristian %>%
  rename(ecuatorial= Radial_growth1..mm., polar= Radial_growth2..mm.) %>% 
@@ -28,12 +43,15 @@ boscalid.data.cristian <-
    rename(control= Control, response= '0.2 ppm')
  
    ##
- isolates.cristian <- boscalid.data.cristian.2 %>% 
-   pull(ID) %>% 
-   unique() %>%
-   as.numeric()
+ isolates.cristian <- boscalid.data.isolates.cristian$ID %>% 
+  as.character() %>% 
+    as.numeric() %>%
+    na.omit() %>% 
+     pull() %>%
+         unique()
    
- isolates.cristian <- isolates.cristian[!isolates.cristian == 461]
+   
+ #isolates.cristian <- isolates.cristian[!isolates.cristian == 461]
  # I cannot use the function for outliers beacuse I need values of the second experimental replicate
  
    
@@ -522,7 +540,7 @@ boscalid.data.cristian <-
  
 
  
- ### picoxystrobin
+ ### ###########picoxystrobin
  
  picoxystrobin.data.cristian <-
    read.csv("data/picoxystrobin_cristian_01.15.20.csv")
@@ -578,7 +596,7 @@ boscalid.data.cristian <-
    select(ID, EC50DC) %>% 
    bind_rows(picoxystrobin.filtered. ) %>% 
    #mutate(new= as.character(new)) %>% 
-   bind_rows(picoxystrobin.cristian.filtered. ) %>% 
+   bind_rows(picoxystrobin.cristian.filtered. ) %>% # HEREIS THE BUG, it was coming from alreday less data
    mutate(new= as.factor(new)) %>% 
    ungroup()
  
@@ -1573,15 +1591,19 @@ boscalid.data.cristian <-
  # 
  
  
- ####
+ #############################
+ 
  
  Mexico.cristian.isolates <- c(1857:1861, 1868, 1869, 1871, 1873, 1874)
  
  Cristian <- c(isolates.cristian, Mexico.cristian.isolates)
 
-  
+ Mexico_Brazil <- picoxystrobin.complete.fields %>% 
+    filter(Field== "Mexico & Brazil") %>% 
+    pull(ID)
+ 
   boscalid.complete.cris.2 <-   boscalid.complete.cris %>% 
-  add_row(ID= Mexico.cristian.isolates) %>% 
+  add_row(ID= Cristian) %>% 
      mutate(Year_Field= case_when(
         ID %in%WM_1963~"1963",
         ID %in%WM_1965~"1965",
@@ -1805,20 +1827,301 @@ boscalid.data.cristian <-
             Field = replace_na(Field, "other_fields"),
             source = replace_na(source, "Producer Fields"),
             Host = replace_na(Host, "Drybean"),
-            Country = replace_na(Country, "Mexico"),
-            State = replace_na(State, "SIN"))
+            State = replace_na(State, "SIN")) %>% 
+             mutate(Country = ifelse(
+          ID %in% mexican.isolates,
+          "Mexico",
+          ifelse(
+             ID %in% brazilian.isolates,
+             "Brazil", "USA"
+          ))) %>% 
+            #Country = replace_na(Country, "USA"))  %>% 
+     select(-EC50DC) %>% 
+     unique()
            
 
   boscalid.complete.cris.3 <-   boscalid.complete.cris.2 %>%
      unique() %>% 
      group_by(source, Host, Year_Field, Field, Country, State ) %>%
-     summarize(N= n()) %>%
+     summarize(N_tested= n()) %>%
      ungroup() %>%
-     add_row(source = "Total", N  = sum(.$N))
+      add_row(source = "Total", N_tested  = sum(.$N_tested))  
+   
+     
+  boscalid.complete.cris.3 %>% kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
+     write2pdf("Boscalid.complete.with.cristian.isolates.pdf")
+  
+  boscalid.complete.cris.4 <- boscalid.complete.cris.3  %>% 
+     full_join( boscalid.complete.cris.2) %>% 
+     filter(Country== "Brazil"| Country == "Mexico") %>% 
+     arrange(desc(N_tested))  
+  
+  boscalid.complete.cris.4 %>% kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
+     write2pdf("Boscalid.complete.with.cristian.isolates.MexicoandBrazil.pdf")
   
   
+  #summary of how many isolates are per field
+  WM3_fields <- WM3_ %>% 
+     mutate(Year_Field= case_when(
+        ID %in%WM_1963~"1963",
+        ID %in%WM_1965~"1965",
+        ID %in%WM_1969~"1969",
+        ID %in%WM_1973~"1973",
+        ID %in%WM_1974~"1974",
+        ID %in%WM_1975~"1975",
+        ID %in%WM_1976~"1976",
+        ID %in%WM_1977~"1977",
+        ID %in%WM_1978~"1978",
+        ID %in%WM_1979~"1979",
+        ID %in%WM_1980~"1980",
+        ID %in%WM_1981~"1981",
+        ID %in%WM_1982~"1982",
+        ID %in%WM_1983~"1983",
+        ID %in%WM_1984~"1984",
+        ID %in%WM_1985~"1985",
+        ID %in%WM_1987~"1987",
+        ID %in%WM_1989~"1989",
+        ID %in%WM_1990~"1990",
+        ID %in%WM_1991~"1991",
+        ID %in%WM_1992~"1992",
+        ID %in%WM_1993~"1993",
+        ID %in%WM_1994~"1994",
+        ID %in%WM_1995~"1995",
+        ID %in%WM_1996~"1996",
+        ID %in%WM_1997~"1997",
+        ID %in%WM_1997_WM_production_31~"1997_production_31",
+        ID %in%WM_1997_WM_production_32~"1997_production_32",
+        ID %in%WM_1988~"1988",
+        ID %in%WM_1998~"1998",
+        ID %in%WM_1999~"1999",
+        ID %in%WM_2000~"2000",
+        ID %in%WM_2002~"2002",
+        ID %in%WM_2003~"2003",
+        ID %in%WM_1997_WM_production_33~"1997_production_33",
+        ID %in%WM_2003_WM_nursery_1~"2003_nursery_1",
+        ID %in%WM_2003_WM_nursery_2~"2003_nursery_2",
+        ID %in%WM_2003_WM_nursery_3~"2003_nursery_3",
+        ID %in%WM_1996_WM_nursery_4~"1996_nursery_4",
+        ID %in%WM_2003_WM_nursery_5~"2003_nursery_5",
+        ID %in%WM_2004~"2004",
+        ID %in%WM_2005~"2005",
+        ID %in%WM_2006~"2006",
+        ID %in%WM_2004_WM_nursery_6~"2004_nursery_6",
+        ID %in%WM_2004_WM_nursery_7~"2004_nursery_7",
+        ID %in%WM_2004_WM_nursery_8~"2004_nursery_8",
+        ID %in%WM_2004_WM_nursery_9~"2004_nursery_9",
+        ID %in%WM_2004_WM_nursery_10~"2004_nursery_10",
+        ID %in%WM_2004_WM_nursery_11~"2004_nursery_11",
+        ID %in%WM_2004_WM_nursery_12~"2004_nursery_12",
+        ID %in%WM_2005_WM_nursery_13~"2005_nursery_13",
+        ID %in%WM_2005_WM_nursery_14~"2005_nursery_14",
+        ID %in%WM_2005_WM_nursery_15~"2005_nursery_15",
+        ID %in%WM_2005_WM_nursery_16~"2005_nursery_16",
+        ID %in%WM_2005_WM_nursery_17~"2005_nursery_17",
+        ID %in%WM_2005_WM_nursery_18~"2005_nursery_18",
+        ID %in%WM_2006_WM_nursery_19~"2006_nursery_19",
+        ID %in%WM_2007~"2007",
+        ID %in%WM_2007_WM_production_1~"2007_production_1",
+        ID %in%WM_2007_WM_production_2~"2007_production_2",
+        ID %in%WM_2007_WM_production_3~"2007_production_3",
+        ID %in%WM_2007_WM_production_4~"2007_production_4",
+        ID %in%WM_2007_WM_production_5~"2007_production_5",
+        ID %in%WM_2007_WM_production_6~"2007_production_6",
+        ID %in%WM_2007_WM_production_7~"2007_production_7",
+        ID %in%WM_2007_WM_production_8~"2007_production_8",
+        ID %in%WM_2007_WM_production_9~"2007_production_9",
+        ID %in%WM_2008~"2008",
+        ID %in%WM_2008_WM_production_10~"2008_production_10",
+        ID %in%WM_2008_WM_nursery_20~"2008_nursery_20",
+        ID %in%WM_2008_WM_production_11~"2008_production_11",
+        ID %in%WM_2008_WM_production_12~"2008_production_12",
+        ID %in%WM_2008_WM_production_13~"2008_production_13",
+        ID %in%WM_2009~"2009",
+        ID %in%WM_2008_WM_nursery_21~"2008_nursery_21",
+        ID %in%WM_2009_WM_nursery_22~"2009_nursery_22",
+        ID %in%WM_2009_WM_nursery_23~"2009_nursery_23",
+        ID %in%WM_2009_WM_production_14~"2009_production_14",
+        ID %in%WM_2009_WM_production_15~"2009_production_15",
+        ID %in%WM_2009_WM_production_16~"2009_production_16",
+        ID %in%WM_2009_WM_production_17~"2009_production_17",
+        ID %in%WM_2009_WM_production_18~"2009_production_18",
+        ID %in%WM_2009_WM_production_19~"2009_production_19",
+        ID %in%WM_2009_WM_production_20~"2009_production_20",
+        ID %in%WM_2010_WM_production_21~"2010_production_21",
+        ID %in%WM_2010_WM_production_22~"2010_production_22",
+        ID %in%WM_2010_WM_production_23~"2010_production_23",
+        ID %in%WM_2010_WM_production_24~"2010_production_24",
+        ID %in%WM_2010_WM_production_25~"2010_production_25",
+        ID %in%WM_2010_WM_production_26~"2010_production_26",
+        ID %in%WM_2010_WM_production_27~"2010_production_27",
+        ID %in%WM_2010_WM_production_28~"2010_production_28",
+        ID %in%WM_2010_WM_production_29~"2010_production_29",
+        ID %in%WM_2010_WM_production_30~"2010_production_30",
+        ID %in%WM_2011~"2011",
+        ID %in%WM_2013~"2013",
+        ID %in%WM_2014~"2014",
+        ID %in%WM_2016~"2016",
+        ID %in%WM_2016_po~"2016_po",
+        ID %in%WM_2016_flo~"2016_flo",
+        ID %in%WM_2016_lan~"2016_lan",
+        ID %in%WM_2017_ho~"2017_ho",
+        ID %in%WM_2017_an~"2017_an",
+        ID %in%WM_2017_dod~"2017_dod",
+        ID %in%WM_2017_va~"2017_va",
+        ID %in%WM_2017_na~"2017_na",
+        ID %in%WM_2017_sa~"2017_sa",
+        ID %in%WM_2017_ha~"2017_ha",
+        ID %in%WM_2017_cu~"2017_cu",
+        ID %in%WM_2017_mon~"2017_mon",
+        ID %in%WM_2017_ant~"2017_ant",
+        ID %in%WM_2017_holt~"2017_holt",
+        ID %in%WM_2017_arr~"2017_arr",
+        ID %in%WM_2017_ini~"2017_ini",
+        ID %in%WM_2017_ley~"2017_ley",
+        ID %in%WM_2017_pre~"2017_pre",
+        ID %in%WM_2017_ru~"2017_ru",
+        ID %in%WM_2017_ca~"2017_ca",
+        ID %in%WM_2017_st~"2017_st",
+        ID %in%WM_2015_6~"2015_6",
+        ID %in%WM_2015_8~"2015_8",
+        ID %in%WM_2015_9~"2015_9",
+        ID %in%WM_2015_10~"2015_10",
+        ID %in%WM_2015_11~"2015_11",
+        ID %in%WM_2015_18~"2015_18",
+        ID %in%WM_2015_19~"2015_19",
+        ID %in%WM_2015_20~"2015_20",
+        ID %in%WM_2015_21~"2015_21",
+        ID %in%WM_2015_22~"2015_22",
+        ID %in%WM_2015_23~"2015_23",
+        ID %in%WM_2015_24~"2015_24",
+        ID %in%WM_2015_25~"2015_25",
+        ID %in%WM_2015_34~"2015_34",
+        ID %in%WM_2015_35~"2015_35",
+        ID %in%WM_2015_45~"2015_45",
+        ID %in%WM_2015_46~"2015_46",
+        ID %in%WM_2015_47~"2015_47",
+        ID %in%WM_2015_48~"2015_48",
+        ID %in%WM_2015_60~"2015_60",
+        ID %in%WM_2015_62~"2015_62",
+        ID %in%WM_2015_66~"2015_66",
+        ID %in%WM_2015_67~"2015_67",
+        ID %in%WM_2015_68~"2015_68",
+        ID %in%WM_2015_69~"2015_69",
+        ID %in%WM_2015_75~"2015_75",
+        ID %in%WM_2015_78~"2015_78",
+        ID %in%WM_2015_97~"2015_97",
+        ID %in%WM_2015_98~"2015_98",
+        ID %in%WM_2015_99~"2015_99",
+        ID %in%WM_2015_100~"2015_100",
+        ID %in%WM_2015_101~"2015_101",
+        ID %in%WM_2015_102~"2015_102",
+        ID %in%WM_2015_103~"2015_103",
+        ID %in%WM_2015_104~"2015_104",
+        ID %in%WM_2015_Al~"2015_Al",
+        ID %in%WM_2015_Hi~"2015_Hi",
+        ID %in%WM_2015_In~"2015_In",
+        ID %in%WM_2015_mont~"2015_mont",
+        ID %in%WM_2015_Sand~"2015_Sand",
+        ID %in%WM_2015_Sani~"2015_Sani",
+        ID %in%WM_2015_St~"2015_St",
+        ID %in%WM_2015_wau~"2015_wau",
+        ID %in%WM_2015_la~"2015_la",
+        ID %in%WM_2015_co~"2015_co",
+        ID %in%WM_2015_cern~"2015_cern",
+        ID %in%WM_2015_cer~"2015_cer",
+        ID %in%WM_2010~"2010",
+        ID %in%WM_2017~"2017",
+        TRUE ~ "no specific field"
+     ),
+     State= case_when(
+        ID %in%WM_AB~"AB",
+        ID %in%WM_AZ~"AZ",
+        ID %in%WM_BA~"BA",
+        ID %in%WM_CA~"CA",
+        ID %in%WM_CO~"CO",
+        ID %in%WM_DE~"DE",
+        ID %in%WM_DF~"DF",
+        ID %in%WM_FL~"FL",
+        ID %in%WM_GA~"GA",
+        ID %in%WM_GO~"GO",
+        
+        ID %in%WM_IA~"IA",
+        ID %in%WM_ID~"ID",
+        ID %in%WM_KS~"KS",
+        ID %in%WM_KY~"KY",
+        ID %in%WM_LA~"LA",
+        ID %in%WM_MD~"MD",
+        ID %in%WM_MG~"MG",
+        ID %in%WM_MI~"MI",
+        ID %in%WM_MN~"MN",
+        ID %in%WM_MO~"MO",
+        
+        ID %in%WM_MS~"MS",
+        ID %in%WM_MT~"MT",
+        ID %in%WM_NC~"NC",
+        ID %in%WM_ND~"ND",
+        ID %in%WM_NE~"NE",
+        ID %in%WM_NY~"NY",
+        ID %in%WM_OH~"OH",
+        ID %in%WM_OK~"OK",
+        ID %in%WM_ON~"ON",
+        ID %in%WM_OR~"OR",
+        
+        ID %in%WM_PA~"PA",
+        ID %in%WM_PR~"PR",
+        ID %in%WM_QUE~"QUE",
+        ID %in%WM_RS~"RS",
+        ID %in%WM_SC~"SC",
+        ID %in%WM_SIN~"SIN",
+        ID %in%WM_SK~"SK",
+        ID %in%WM_WI~"WI",
+        ID %in%WM_WA~"WA"
+        
+     )
+     )%>% 
+     mutate(Country = as.factor(Country),
+            Year_Field = as.factor(Year_Field),
+            State= as.factor(State))
+  
+  summary.fields <- WM3_fields %>%
+     select(Field,
+            Host,
+            Year_Field,
+            ID,
+            Group_MOA_current_season,
+            Country,
+            State,
+            County) %>% # Important to include Group of fungicides
+     unique() %>%
+     group_by(Year_Field,
+              forcats::fct_explicit_na(State),
+              County,
+              Host,
+              Country) %>% # Group also by fungicides and control's are discard since is established as unknown
+     summarize(Num_isolates_per_field = n()) %>%
+     filter(Country == "mexico" |
+               Country == "Brazil" |
+               Country == "brazil")  %>%
+     filter(Num_isolates_per_field >= 7) #%>% 
+    # full_join(WM3_fields, by = "ID") %>% 
+  #select(ID,Field, Year_Field, Host,  Group_MOA_current_season,Country, State, Num_isolates_per_field  ) %>% 
+     
+    
+  summary.fields %>% kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
+     write2pdf("Summary.fields.MexicoandBrazil.pdf")
+  
+  
+  
+  #filtering those greater or eauql than 4 isolates/field
+  # Fields_more_8 <- summary.fields %>% 
+  #    filter(Num_isolates_per_field >= 8) # the minimum numer requierd for isolates /field
+  
+     
+  
+  
+  #d
   picoxystrobin.complete.cris.2 <-   picoxystrobin.complete.cris %>% 
-     add_row(ID= Mexico.cristian.isolates) %>% 
+     add_row(ID= Cristian) %>% 
      mutate(Year_Field= case_when(
         ID %in%WM_1963~"1963",
         ID %in%WM_1965~"1965",
@@ -2042,20 +2345,45 @@ boscalid.data.cristian <-
             Field = replace_na(Field, "other_fields"),
             source = replace_na(source, "Producer Fields"),
             Host = replace_na(Host, "Drybean"),
-            Country = replace_na(Country, "Mexico"),
-            State = replace_na(State, "SIN"))
+            State = replace_na(State, "SIN")) %>% 
+     mutate(Country = ifelse(
+        ID %in% mexican.isolates,
+        "Mexico",
+        ifelse(
+           ID %in% brazilian.isolates,
+           "Brazil", "USA"
+        ))) %>% 
+     #Country = replace_na(Country, "USA"))  %>% 
+     select(-EC50DC) %>% 
+     unique()
   
   
-  picoxystrobin.complete.cris.3 <-   picoxystrobin.complete.cris.2 %>% 
+  picoxystrobin.complete.cris.3 <-   picoxystrobin.complete.cris.2 %>%
      unique() %>% 
      group_by(source, Host, Year_Field, Field, Country, State ) %>%
-     summarize(N= n()) %>%
+     summarize(N_tested= n()) %>%
      ungroup() %>%
-     add_row(source = "Total", N  = sum(.$N))
+     add_row(source = "Total", N_tested  = sum(.$N_tested))  
   
+  
+  picoxystrobin.complete.cris.3 %>% kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
+     write2pdf("picoxystrobin.complete.with.cristian.isolates.pdf")
+  
+  picoxystrobin.complete.cris.4 <- picoxystrobin.complete.cris.3  %>% 
+     full_join( picoxystrobin.complete.cris.2) %>% 
+     filter(Country== "Brazil"| Country == "Mexico") %>% 
+     arrange(desc(N_tested))  
+  
+  picoxystrobin.complete.cris.4 %>% kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
+     write2pdf("picoxystrobin.complete.with.cristian.isolates.MexicoandBrazil.pdf")
+  
+  
+  
+
+  ####
   
   tetraconazole.complete.cris.2 <-   tetraconazole.complete.cris %>% 
-     add_row(ID= Mexico.cristian.isolates) %>% 
+     add_row(ID= Cristian) %>% 
      mutate(Year_Field= case_when(
         ID %in%WM_1963~"1963",
         ID %in%WM_1965~"1965",
@@ -2279,18 +2607,45 @@ boscalid.data.cristian <-
             Field = replace_na(Field, "other_fields"),
             source = replace_na(source, "Producer Fields"),
             Host = replace_na(Host, "Drybean"),
-            Country = replace_na(Country, "Mexico"),
-            State = replace_na(State, "SIN"))
+            State = replace_na(State, "SIN")) %>% 
+     mutate(Country = ifelse(
+        ID %in% mexican.isolates,
+        "Mexico",
+        ifelse(
+           ID %in% brazilian.isolates,
+           "Brazil", "USA"
+        ))) %>% 
+     #Country = replace_na(Country, "USA"))  %>% 
+     select(-EC50DC) %>% 
+     unique()
   
-  tetraconazole.complete.cris.3 <-   tetraconazole.complete.cris.2 %>% 
+  
+  tetraconazole.complete.cris.3 <-   tetraconazole.complete.cris.2 %>%
      unique() %>% 
      group_by(source, Host, Year_Field, Field, Country, State ) %>%
-     summarize(N= n()) %>%
+     summarize(N_tested= n()) %>%
      ungroup() %>%
-     add_row(source = "Total", N  = sum(.$N))
+     add_row(source = "Total", N_tested  = sum(.$N_tested))  
   
-  TM.complete.5 <- TM.complete.4 %>% 
-     add_row(ID= Mexico.cristian.isolates) %>% 
+  
+  tetraconazole.complete.cris.3 %>% kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
+     write2pdf("tetraconazole.complete.with.cristian.isolates.pdf")
+  
+  tetraconazole.complete.cris.4 <- tetraconazole.complete.cris.3  %>% 
+     full_join( tetraconazole.complete.cris.2) %>% 
+     filter(Country== "Brazil"| Country == "Mexico") %>% 
+     arrange(desc(N_tested))  
+  
+  tetraconazole.complete.cris.4 %>% kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
+     write2pdf("tetraconazole.complete.with.cristian.isolates.MexicoandBrazil.pdf")
+  
+  
+  
+  
+ ### 
+  
+  TM.complete.cristian <- TM.complete.4  %>% 
+     add_row(ID= Cristian) %>% 
      mutate(Year_Field= case_when(
         ID %in%WM_1963~"1963",
         ID %in%WM_1965~"1965",
@@ -2508,19 +2863,47 @@ boscalid.data.cristian <-
         
      )
      )%>% 
-     mutate(Year_Field = as.factor(Year_Field),
+     mutate(Country = as.factor(Country),
+            Year_Field = as.factor(Year_Field),
             State= as.factor(State),
+            Field = replace_na(Field, "other_fields"),
             source = replace_na(source, "Producer Fields"),
             Host = replace_na(Host, "Drybean"),
-            State = replace_na(State, "SIN"))
+            State = replace_na(State, "SIN")) %>% 
+     mutate(Country = ifelse(
+        ID %in% mexican.isolates,
+        "Mexico",
+        ifelse(
+           ID %in% brazilian.isolates,
+           "Brazil", "USA"
+        ))) %>% 
+     #Country = replace_na(Country, "USA"))  %>% 
+     select(-EC50DC) %>% 
+     unique()
   
-  TM.complete.6 <- TM.complete.5 %>% 
+  TM.complete.cristian.2 <- TM.complete.cristian  %>% 
      unique() %>% 
-     group_by(source, Host, Year_Field, State ) %>%
-     summarize(N= n()) %>%
+     group_by(source, Host, Year_Field, , State ) %>%
+     summarize(N_tested= n()) %>%
      ungroup() %>%
-     add_row(source = "Total", N  = sum(.$N))
-   
+     add_row(source = "Total", N_tested  = sum(.$N_tested))  
+  
+  
+  TM.complete.cristian.2 %>% kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
+     write2pdf("TM.complete.with.cristian.isolates.pdf")
+  
+  TM.complete.cristian.3 <- TM.complete.cristian.2  %>%  
+     full_join( TM.complete.cristian) %>% 
+     filter(State == "GO"|
+            (State== "MG"|
+              State == "SIN")) %>% 
+     arrange(desc(N_tested))  
+  
+  TM.complete.cristian.3 %>% kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
+     write2pdf("TM.complete.with.cristian.isolates.MexicoandBrazil.pdf")
+  
+  
+   ##
   tablee <-  boscalid.complete.cris.2%>% 
     bind_rows(picoxystrobin.complete.cris.2) %>%
     bind_rows(tetraconazole.complete.cris.2) %>% 
