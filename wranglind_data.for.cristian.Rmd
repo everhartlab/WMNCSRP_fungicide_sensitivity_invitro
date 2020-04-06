@@ -1,0 +1,170 @@
+---
+title: Survey fungicide sensitivity of S. sclerotiorum from drybean and soybean from
+  the U.S.
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+ 
+
+```{r set packages, warning= FALSE, include=FALSE}
+library(tidyverse)
+library(ggplot2)
+library(ezec)
+#library(NRES803)
+library(broom)
+library(ggridges)
+library(cowplot)
+library(gridExtra)
+library(kableExtra)
+library(arsenal)
+library(DescTools)
+library(knitr)
+library(agricolae)
+
+
+
+```
+
+#  Background   
+
+Knowledge of baseline sensitivity of a pathogen population to fungicides is important for detection of resistance and for achieving effective disease management strategies (Brent and Holloman 2007). QoI, DMI, MBC and SDHI fungicides are used to control _S. sclerotiorum_ in an IPM approach in soybean and dry bean in the U.S. DMI fungicides are considered to medium risk of resistance emergence, whereas QoI, SDHI and MBC are high risk (Fungicide Resistance Action Committee 2016). MBC and dicarboximide fungicides are used for white mold in Brazil, wherein resistance to MBC fungicide, Thiophanate methyl, has been reported (Lehner et al. 2015). Fungicide resistance has also been reported in China to the MBC, Carbendazim and dicarboximide, Dimethachlon (Ma et al. 2009).
+
+COMMONLY USED FUNGICIDES FOR WM .
+
+Thiophanate methyl (MBC) fair control; launched 1970
+Tetraconazole (DMI)  fair control; launched 1988
+Picoxystrobin (QoI) good-very good control; launched 2000
+Boscalid (SDHI) very good control; launched 2003
+Examples of these include: Topsin, Domark, Aproach & Endura
+Several other products are mixtures
+
+MBC: Methyl Benzimidazole Carbamates 
+DMI: DeMethylation Inhibitors 
+QoI: Quinone outside Inhibitors 
+SDHI: Succinate dehydrogenase inhibitors 
+
+Field applications of fungicides in the United States on soybean show control of _S. sclerotiorum_ is low to fair for QoI, DMI and MBC fungicides, and good for SDHI fungicides (The North Central Regional Committee on Soybean Diseases 2015). However, it is unknown whether efficacy is related to reduce sensitivity within populations under study. 
+
+
+
+```{r read data and wrangling, echo = FALSE}
+  #Discriminatory dose boscalid
+   
+    boscalid.data.cristian <-
+      read.csv("data/.csv")
+      survey.data.boscalid <- survey.data.boscalid %>%
+      select(
+      ID,
+      repeats,
+      experimental_replicate,
+      control.ecuatorial,
+      control.polar,
+      boscalid.ecuatorial,
+      boscalid.polar
+      ) %>%
+      mutate(
+      control.growth = ((
+      control.polar + control.ecuatorial
+      ) / 2),
+      boscalid.growth = ((
+      boscalid.ecuatorial + boscalid.polar
+      ) / 2),
+      ID = as.character(ID),
+      new = "Yes"
+      ) %>%
+      select(ID,
+      repeats,
+      experimental_replicate,
+      control.growth,
+      boscalid.growth,
+      new)
+  
+     #Discriminatory dose picoxystrobin
+   
+      picoxystrobin.data.cristian <-
+        read.csv("data/.csv")
+        survey.data.picoxystrobin <- survey.data.picoxystrobin %>%
+        select(
+        ID,
+        repeats,
+        experimental_replicate,
+        sham.ecuatorial,
+        sham.polar,
+        picoxystrobin.ecuatorial,
+        picoxystrobin.polar
+        ) %>%
+        mutate(
+        sham.growth = ((sham.ecuatorial + sham.polar) / 2),
+        picoxystrobin.growth = ((
+        picoxystrobin.ecuatorial + picoxystrobin.polar
+        ) / 2),
+        ID = as.character(ID),
+        new = "Yes"
+        ) %>%
+        select(ID,
+        repeats,
+        experimental_replicate,
+        sham.growth,
+        picoxystrobin.growth,
+        new)
+        
+     #Discriminatory dose tetraconazole
+   
+        tetraconazole.data.cristian <-
+          read.csv("data/.csv")
+          survey.data.tetraconazole <- survey.data.tetraconazole %>%
+          select(
+          ID,
+          repeats,
+          experimental_replicate,
+          control.ecuatorial,
+          control.polar,
+          tetraconazole.ecuatorial,
+          tetraconazole.polar
+          ) %>%
+          mutate(
+          control.growth = ((control.ecuatorial + control.polar) / 2),
+          tetraconazole.growth = ((
+          tetraconazole.ecuatorial + tetraconazole.polar
+          ) / 2),
+          ID = as.character(ID),
+          new = "Yes"
+          ) %>%
+          select(ID,
+          repeats,
+          experimental_replicate,
+          control.growth,
+          tetraconazole.growth,
+          new)
+          
+#Discriminatory dose TM
+             
+          TM.data.cristian <-
+            read.csv("data/.csv")
+            survey.data.TM <- survey.data.TM %>%
+            select(
+            ID,
+            repeats,
+            experimental_replicate,
+            control.ecuatorial,
+            control.polar,
+            TM.ecuatorial,
+            TM.polar
+            ) %>%
+            mutate(
+            control.growth = ((control.ecuatorial + control.polar) / 2),
+            TM.growth = ((TM.ecuatorial + TM.polar) / 2),
+            ID = as.character(ID),
+            new = "Yes"
+            ) %>%
+            select(ID,
+            repeats,
+            experimental_replicate,
+            control.growth,
+            TM.growth,
+            new)
+        
+            

@@ -1,5 +1,6 @@
 
 load("Main.Rdata", .GlobalEnv)
+load("all.2.Rdata", .GlobalEnv)
 library(tidyverse)
 library(ggplot2)
 library(ezec)
@@ -15,32 +16,10 @@ library(knitr)
 library(agricolae)
 
 
-boscalid.data.cristian <-
-  read.csv("data/boscalid_cristian_01.15.20.csv")
  glimpse(boscalid.data.cristian)
  
  boscalid.data.isolates.cristian <- read.csv("data/Isolates_Cristian_Wulkop.csv")
  glimpse( boscalid.data.isolates.cristian)
- 
- boscalid.data.cristian.2 <- boscalid.data.cristian %>%
- rename(ecuatorial= Radial_growth1..mm., polar= Radial_growth2..mm.) %>% 
- mutate(polar= replace(polar, polar == 0, 6)) %>%  #replacing 0 cm growth for the size of plug that is 0.6 cm or 6 mm
-   mutate(ecuatorial= replace(ecuatorial, ecuatorial == 0, 6)) %>% #replacing 0 cm growth for the size of plug that is 0.6 or 6 mm
-      group_by(Isolate_ID, Treatment, Rep) %>%
-   mutate(growth = ((
-     ecuatorial + polar
-   ) / 2) / 10) %>% # getting average and transforming in cm
-   select(-c(ecuatorial, polar, Notes)) %>%
-   ungroup() %>%
-   mutate(experimental_replicate = 1) %>%
-   rename(repeats = Rep, ID = Isolate_ID) %>%
-   select(ID, repeats,  experimental_replicate, growth, Treatment) %>%
-   group_by(Treatment) %>% 
-   mutate(grouped_id = row_number()) %>%
-   spread(Treatment, growth) %>%
-   select(-grouped_id) %>% 
-   ungroup() %>% 
-   rename(control= Control, response= '0.2 ppm')
  
    ##
  isolates.cristian <- boscalid.data.isolates.cristian$ID %>% 
@@ -52,8 +31,16 @@ boscalid.data.cristian <-
    
    
  #isolates.cristian <- isolates.cristian[!isolates.cristian == 461]
- # I cannot use the function for outliers beacuse I need values of the second experimental replicate
- 
+ # Using the function to take out outliers
+ boscalid.data.cristian.2 <- boscalid.data.cristian %>%
+    group_by(ID) %>%
+    mutate(response_range = list(get_range(response))) %>%
+    unnest() %>%
+    mutate(control_range = list(get_range(control))) %>%
+    unnest() %>%
+    filter(response <= upper & response >= lower, control <= upper1 & control >= lower1) %>%
+    ungroup()%>% 
+    select(c(ID, experimental_replicate, repeats, response, control))
    
  #  Using the model to estimate the EC50DC
  boscalid.cristian.filtered. <- boscalid.data.cristian.2 %>%
@@ -542,35 +529,25 @@ boscalid.data.cristian <-
  
  ### ###########picoxystrobin
  
- picoxystrobin.data.cristian <-
-   read.csv("data/picoxystrobin_cristian_01.15.20.csv")
- glimpse(picoxystrobin.data.cristian)
+  glimpse(picoxystrobin.data.cristian)
+ 
+  # Using the function to take out outliers
+  picoxystrobin.data.cristian.2 <- picoxystrobin.data.cristian %>%
+     group_by(ID) %>%
+     mutate(response_range = list(get_range(response))) %>%
+     unnest() %>%
+     mutate(control_range = list(get_range(control))) %>%
+     unnest() %>%
+     filter(response <= upper & response >= lower, control <= upper1 & control >= lower1) %>%
+     ungroup()%>% 
+     select(c(ID, experimental_replicate, repeats, response, control))
+  
  
  
- 
- picoxystrobin.data.cristian.2 <-picoxystrobin.data.cristian %>%
-   rename(ecuatorial= Radial_growth1..mm., polar= Radial_growth2..mm.) %>% 
-   mutate(polar= replace(polar, polar == 0, 0.6)) %>%  #replacing 0 cm growth for the size of plug that is 0.6 cm or 6 mm
-   mutate(ecuatorial= replace(ecuatorial, ecuatorial == 0, 0.6)) %>% #replacing 0 cm growth for the size of plug that is 0.6 or 6 mm
-   group_by(Isolate_ID, Treatment, Rep) %>%
-   mutate(growth = ((
-     ecuatorial + polar
-   ) / 2) / 10) %>% # getting average and transforming in cm
-   select(-c(ecuatorial, polar, Notes)) %>%
-   ungroup() %>%
-   mutate(experimental_replicate = 1) %>%
-   rename(repeats = Rep, ID = Isolate_ID) %>%
-   select(ID, repeats,  experimental_replicate, growth, Treatment) %>%
-   group_by(Treatment) %>% 
-   mutate(grouped_id = row_number()) %>%
-   spread(Treatment, growth) %>%
-   select(-grouped_id) %>% 
-   ungroup() %>%
-   rename(control= Control, response= '0.01 ppm')
  
 
  #  Using the model to estimate the EC50DC
- picoxystrobin.cristian.filtered. <-picoxystrobin.data.cristian.2 %>%
+ picoxystrobin.cristian.filtered. <-picoxystrobin.data.cristian.2%>%
    group_by(ID) %>%
    summarise(
      mean_response = mean(response, na.rm = TRUE),
@@ -1065,29 +1042,19 @@ boscalid.data.cristian <-
  
  ###tetraconazole
  
- tetraconazole.data.cristian <-
-   read.csv("data/tetraconazole_cristian_01.15.20.csv")
- glimpse(tetraconazole.data.cristian)
- 
- tetraconazole.data.cristian.2 <-tetraconazole.data.cristian %>%
-   rename(ecuatorial= Radial_growth1..mm., polar= Radial_growth2..mm.) %>% 
-   mutate(polar= replace(polar, polar == 0, 0.6)) %>%  #replacing 0 cm growth for the size of plug that is 0.6 cm or 6 mm
-   mutate(ecuatorial= replace(ecuatorial, ecuatorial == 0, 0.6)) %>% #replacing 0 cm growth for the size of plug that is 0.6 or 6 mm
-   group_by(Isolate_ID, Treatment, Rep) %>%
-   mutate(growth = ((
-     ecuatorial + polar
-   ) / 2) / 10) %>% # getting average and transforming in cm
-   select(-c(ecuatorial, polar, Notes)) %>%
-   ungroup() %>%
-   mutate(experimental_replicate = 1) %>%
-   rename(repeats = Rep, ID = Isolate_ID) %>%
-   select(ID, repeats,  experimental_replicate, growth, Treatment) %>%
-   group_by(Treatment) %>% 
-   mutate(grouped_id = row_number()) %>%
-   spread(Treatment, growth) %>%
-   select(-grouped_id) %>% 
-   ungroup() %>%
-   rename(control= Control, response= '2 ppm')
+  glimpse(tetraconazole.data.cristian)
+  # Using the function to take out outliers
+  tetraconazole.data.cristian.2 <- tetraconazole.data.cristian %>%
+     group_by(ID) %>%
+     mutate(response_range = list(get_range(response))) %>%
+     unnest() %>%
+     mutate(control_range = list(get_range(control))) %>%
+     unnest() %>%
+     filter(response <= upper & response >= lower, control <= upper1 & control >= lower1) %>%
+     ungroup()%>% 
+     select(c(ID, experimental_replicate, repeats, response, control))
+  
+  
  
  #  Using the model to estimate the EC50DC
  tetraconazole.cristian.filtered. <-tetraconazole.data.cristian.2 %>%
@@ -2883,7 +2850,7 @@ boscalid.data.cristian <-
   
   TM.complete.cristian.2 <- TM.complete.cristian  %>% 
      unique() %>% 
-     group_by(source, Host, Year_Field, , State ) %>%
+     group_by(source, Host, Year_Field, State ) %>%
      summarize(N_tested= n()) %>%
      ungroup() %>%
      add_row(source = "Total", N_tested  = sum(.$N_tested))  
