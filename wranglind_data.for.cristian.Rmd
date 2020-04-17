@@ -55,7 +55,7 @@ Field applications of fungicides in the United States on soybean show control of
    
     boscalid.data.cristian <-
       read.csv("data/.csv")
-      survey.data.boscalid <- survey.data.boscalid %>%
+      boscalid.data.cristian <- boscalid.data.cristian %>%
       select(
       ID,
       repeats,
@@ -86,7 +86,7 @@ Field applications of fungicides in the United States on soybean show control of
    
       picoxystrobin.data.cristian <-
         read.csv("data/.csv")
-        survey.data.picoxystrobin <- survey.data.picoxystrobin %>%
+        picoxystrobin.data.cristian <- picoxystrobin.data.cristian %>%
         select(
         ID,
         repeats,
@@ -115,7 +115,7 @@ Field applications of fungicides in the United States on soybean show control of
    
         tetraconazole.data.cristian <-
           read.csv("data/.csv")
-          survey.data.tetraconazole <- survey.data.tetraconazole %>%
+          tetraconazole.data.cristian <- tetraconazole.data.cristian %>%
           select(
           ID,
           repeats,
@@ -144,7 +144,7 @@ Field applications of fungicides in the United States on soybean show control of
              
           TM.data.cristian <-
             read.csv("data/.csv")
-            survey.data.TM <- survey.data.TM %>%
+            TM.data.cristian <- TM.data.cristian %>%
             select(
             ID,
             repeats,
@@ -166,5 +166,7 @@ Field applications of fungicides in the United States on soybean show control of
             control.growth,
             TM.growth,
             new)
-        
+       
+            save(list = ls(all=TRUE), file= "all.2.Rdata")
+ rm(list = ls()) 
             

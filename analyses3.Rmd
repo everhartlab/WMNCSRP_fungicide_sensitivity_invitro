@@ -3702,7 +3702,7 @@ picoxystrobin.filtered. <- picoxystrobin.filtered. %>%
   ifelse(
   ID %in% WI_Cerny,
   "WI_Cerny",
-  ifelse(ID %in% potato, 
+  ifelse(ID %in% potato,
          "potato", "other_field"
   )
   )
@@ -3718,14 +3718,14 @@ picoxystrobin.filtered. <- picoxystrobin.filtered. %>%
   Field = as.factor(Field)
   ) %>%
   #taking out "different host" becuse does not belong to drybean nor soybean
-  filter(!ID == 8, !ID == 129) %>% 
+  filter(!ID == 8, !ID == 129) %>%
   mutate(Country = ifelse(
   ID %in% mexican.isolates,
   "Mexico",
   ifelse(ID %in% brazilian.isolates,
   "Brazil", "USA")
-  )) %>% 
-  filter(Field== "MI:East_Lansing"| 
+  )) %>%
+  filter(Field== "MI:East_Lansing"|
            Field== "IA_Nashua"|
          Field== "WI_Hancock"|
          Field== "MI_Montcalm_2017"|
@@ -3733,9 +3733,9 @@ picoxystrobin.filtered. <- picoxystrobin.filtered. %>%
          Field== "MI_Montcalm_2015"|
          Field== "No_fungicide_exposure"|
          Country== "Mexico"|
-         Country== "Brazil") %>% 
+         Country== "Brazil") %>%
   arrange(EC50DC)
- 
+
 picoxystrobin.filtered.2 <- picoxystrobin.filtered. %>%
   filter( !Field == "potato", !Field == "other_field")
  
@@ -5436,7 +5436,7 @@ plot.TM <- TM.complete%>%
 
 ##  Use of the Discriminatory Concentration (DC)  
 
-Because  the results of  EC50 by this model, the Discriminatory Conecntration (DC) was not trustable, and the DC selected was the highest concentration (10 ppm). This concentration will alow to classified the isolates in resistant or susceptible. The criteria of classificattion was more than 24% growth for resistant. 
+Because  the results of  EC50 by this model, the Discriminatory Concentration (DC) was not trustable, and the DC selected was the highest concentration (10 ppm). This concentration will alow to classified the isolates in resistant or susceptible. The criteria of classification was more than 24% growth for resistant. 
 
 ```{r Using the DC Thiophanate methyl and the model, echo = FALSE}
 TM_data <- survey.data.3 %>%
@@ -6329,7 +6329,33 @@ select_max_iso_field <- num_isolates_selected %>%
 ```
 
 ```{r}
+picoxystrobin.filtered. <- picoxystrobin.filtered.survey %>%
+  group_by(ID) %>%
+    summarise(
+      mean_response = mean(response, na.rm = TRUE),
+      mean_control = mean(control, na.rm = TRUE)
+       ) %>%
+         mutate(RG = (mean_response / mean_control) * 100) %>%
+           mutate(Estimate.50DC = exp # exponential is the opposite of log
+        #using the model the intercept and the coefficient of the model
+                  (finalRG0.01[[1]][[1]] + finalRG0.01[[1]][[2]] * RG)) %>%
+  ungroup() %>%
+  rename(EC50DC= Estimate.50DC) %>% 
+  mutate(ID = as.numeric(ID)) %>%
+   select(c(ID, EC50DC)) %>% 
+mutate(new = ifelse(
+    ID %in% picoxystrobin.filtered.survey.yes,"Yes","No"))
+
+picoxystrobin.filtered. <- picoxystrobin.filtered. %>% 
+  mutate(new= as.factor(new))
+
+```
+
+```{r}
 # casa
+save(list = ls(all=TRUE), file= "Main.Rdata")
+ rm(list = ls())
  %>% group_by(Host) %>% summarise(EC50mean= mean(EC50DC),sd =sd(EC50DC), n= n(), se= sd/sqrt(n)
 ```
+
 
