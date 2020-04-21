@@ -33,13 +33,16 @@ library(agricolae)
  #isolates.cristian <- isolates.cristian[!isolates.cristian == 461]
  # Using the function to take out outliers
  boscalid.data.cristian.2 <- boscalid.data.cristian %>%
-    group_by(ID) %>%
+    rename(response = boscalid.growth, control = control.growth) %>% 
+     group_by(ID) %>%
     mutate(response_range = list(get_range(response))) %>%
     unnest() %>%
     mutate(control_range = list(get_range(control))) %>%
     unnest() %>%
-    filter(response <= upper & response >= lower, control <= upper1 & control >= lower1) %>%
-    ungroup()%>% 
+    filter(response <= upper &
+              response >= lower,
+           control <= upper1 & control >= lower1) %>%
+    ungroup() %>%
     select(c(ID, experimental_replicate, repeats, response, control))
    
  #  Using the model to estimate the EC50DC
@@ -75,7 +78,7 @@ library(agricolae)
  ## Testing controls between Serial dilution and Duscriminatory concentration
  
  boscalid.controls.cristian <- boscalid.complete.cristian$ID[duplicated(boscalid.complete.cristian$ID)]
- # 24 repeats
+ # 25 repeats
  
  boscalid.complete.controls.cristian <- boscalid.complete.cristian %>% 
    mutate(controls = ifelse(
@@ -91,16 +94,19 @@ library(agricolae)
  shapiro.test.boscal.controls.cristian
  
  
- # All normals, t- test since the sample size for each sampe is 2, in other words grouping by ID
- 
+ # All normals, t- test since the sample size for each sample is 2, in other words grouping by ID
+  # P value = 0.0526
  tested.bocalid.controls.cristian <- boscalid.complete.controls.cristian %>% 
    group_by(ID) %>% 
    do(tidy(t.test(.$EC50DC))) %>% 
    filter(p.value<= 0.05)
  
  tested.bocalid.controls.cristian
- 
- ##From the 21, there are  that are statistically differenet
+ 461 %in%tested.bocalid.controls.cristian$ID
+ baseline_isolates %in% tested.bocalid.controls.cristian$ID
+ # there are 6 isolates different but anyone is 
+ # the ID 461 (ccurrent ontrol)  so that is good
+ ##From the 21 baseline, there are 2 that are statistically differenet
  
  # keeping juts the highest value of the repeated ID value
  boscalid.complete.cristian<- boscalid.complete.cristian%>%  
@@ -438,7 +444,7 @@ library(agricolae)
             Year_Field == "2007_production_29"|
             Year_Field == "2007_production_30"|
              State == "Baseline")
- 
+ # total 124 isolates
  ###
  # boscalid.complete.2 <- boscalid.complete%>% 
  #   filter( !Field == "potato", !Field == "other_fields")
@@ -489,7 +495,7 @@ library(agricolae)
  
  boscalid.complete.fields.cristian$State <-
    factor(boscalid.complete.fields.cristian$State,
-          c("Baseline", "WA", "ND", "CO", "MI", "NE"))
+          c("Baseline", "WA", "ND", "MI","CO", "NE"))
  
  
  #by field but because the name actually is "State"
@@ -499,33 +505,35 @@ library(agricolae)
  shapiro.test.boscal.cristian <- boscalid.complete.fields.cristian %>%
    do(tidy(shapiro.test(.$EC50DC)))
  shapiro.test.boscal.cristian[[2]][[1]]
- # No normals
+ # p value = 6.402496e-07, No normals
  object.1.cristian <- kruskal.test(EC50DC ~ State, data = boscalid.complete.fields.cristian)
  object.1.cristian[[3]][[1]]
  
- #There is difference p-value = 0.003064295
+ #There is difference p-value = 1.496384e-07
  
  object.2.cristian <-  DunnTest(EC50DC ~ State, data = boscalid.complete.fields.cristian, method = "bonferroni")
- 
- # mean.rank.diff   pval    
- # WA-Baseline     -3.2077922 1.0000    
- # ND-Baseline    -14.7142857 1.0000    
- # CO-Baseline    -15.1269841 1.0000    
- # MI-Baseline    -16.7252747 0.3825    
- # NE-Baseline    -29.4047619 0.0019 ** 
- #   ND-WA          -11.5064935 1.0000    
- # CO-WA          -11.9191919 1.0000    
- # MI-WA          -13.5174825 1.0000    
- # NE-WA          -26.1969697 0.0465 *  
- #   CO-ND           -0.4126984 1.0000    
- # MI-ND           -2.0109890 1.0000    
- # NE-ND          -14.6904762 1.0000    
- # MI-CO           -1.5982906 1.0000    
- # NE-CO          -14.2777778 1.0000    
- # NE-MI          -12.6794872 1.0000
- # 
- 
-
+ object.2.cristian 
+#  Dunn's test of multiple comparisons using rank sums : bonferroni  
+# 
+#             mean.rank.diff    pval    
+# WA-Baseline     -13.464286 1.00000    
+# ND-Baseline     -32.937888 0.03591 *  
+# MI-Baseline     -34.824176 0.09058 .  
+# CO-Baseline     -46.785714 0.00046 ***
+# NE-Baseline     -61.601504 9.3e-07 ***
+# ND-WA           -19.473602 0.81262    
+# MI-WA           -21.359890 1.00000    
+# CO-WA           -33.321429 0.02312 *  
+# NE-WA           -48.137218 9.9e-05 ***
+# MI-ND            -1.886288 1.00000    
+# CO-ND           -13.847826 1.00000    
+# NE-ND           -28.663616 0.15141    
+# CO-MI           -11.961538 1.00000    
+# NE-MI           -26.777328 0.57682    
+# NE-CO           -14.815789 1.00000    
+# ---
+# Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+# 
  
  ### ###########picoxystrobin
  
@@ -533,16 +541,18 @@ library(agricolae)
  
   # Using the function to take out outliers
   picoxystrobin.data.cristian.2 <- picoxystrobin.data.cristian %>%
+     rename(response = picoxystrobin.growth, control = sham.growth) %>% 
      group_by(ID) %>%
      mutate(response_range = list(get_range(response))) %>%
      unnest() %>%
      mutate(control_range = list(get_range(control))) %>%
      unnest() %>%
-     filter(response <= upper & response >= lower, control <= upper1 & control >= lower1) %>%
-     ungroup()%>% 
+     filter(response <= upper &
+               response >= lower,
+            control <= upper1 & control >= lower1) %>%
+     ungroup() %>%
      select(c(ID, experimental_replicate, repeats, response, control))
   
- 
  
  
 
@@ -576,6 +586,42 @@ library(agricolae)
    bind_rows(picoxystrobin.cristian.filtered. ) %>% # HEREIS THE BUG, it was coming from alreday less data
    mutate(new= as.factor(new)) %>% 
    ungroup()
+ 
+ ## Testing controls between Serial dilution and Duscriminatory concentration
+ 
+ picoxystrobin.controls.cristian <- picoxystrobin.complete.cristian$ID[duplicated(picoxystrobin.complete.cristian$ID)]
+ # 24 repeats
+ 
+ picoxystrobin.complete.controls.cristian <- picoxystrobin.complete.cristian %>% 
+    mutate(controls = ifelse(
+       ID %in% picoxystrobin.controls.cristian,
+       "Yes", "No")) %>% 
+    filter(controls== "Yes")
+ 
+ ## Normality test
+ 
+ shapiro.test.pico.controls.cristian <- picoxystrobin.complete.controls.cristian  %>%
+    do(tidy(shapiro.test(.$EC50DC)))
+ 
+ shapiro.test.pico.controls.cristian
+ 
+ # ther are  Normal
+ # No normals, t- test since the sample size for each sampe is 2, in other words grouping by ID
+ # P value = 0.0323
+ tested.pico.controls.cristian <- picoxystrobin.complete.controls.cristian %>% 
+    group_by(ID) %>% 
+    do(tidy(t.test(.$EC50DC))) %>% 
+    filter(p.value<= 0.05)
+ 
+ tested.pico.controls.cristian
+ 461 %in%tested.pico.controls.cristian$ID
+ baseline_isolates %in% tested.pico.controls.cristian$ID
+ # there are 14 isolates different but anyone is 
+ #  the ID 461 (control) is not in here so that is good
+ ##From the 21 baseline isolates, there are 8 that are statistically differenet
+ 
+ 
+ 
  
  # keeping juts the highest value of the repeated ID value
  picoxystrobin.complete.cristian<-picoxystrobin.complete.cristian%>%  
@@ -962,6 +1008,7 @@ library(agricolae)
             Year_Field == "2007_production_30"|
             State == "Baseline")
  
+ # total 125 isolates
  plot.pico.3.cristian <- picoxystrobin.complete.fields.cristian %>%
    ggplot(aes(x = State, y = EC50DC)) +
    geom_jitter(
@@ -1005,53 +1052,61 @@ library(agricolae)
  
  picoxystrobin.complete.fields.cristian$State <-
    factor(picoxystrobin.complete.fields.cristian$State,
-          c( "WA", "ND", "MI", "NE", "CO", "Baseline"))
+          c( "ND","NE","WA","MI","CO", "Baseline"))
 
 
  shapiro.test.pico.fields.cristian <-picoxystrobin.complete.fields.cristian %>%
    do(tidy(shapiro.test(.$EC50DC)))
  shapiro.test.pico.fields.cristian 
- # NO NORMALILTY  0.000142
+ # NO NORMALILTY  P value ==0.0179
  # is by Field but it is written State
- # No normals
+ 
  object.3.cristian <- kruskal.test(EC50DC ~ State, data = picoxystrobin.complete.fields.cristian)
  object.3.cristian[[3]][[1]]
  
- #There is difference p-value = 0.044
+ #There is difference p-value = 7.593402e-05
  
  object.4.cristian <-  DunnTest(EC50DC ~ State, data = picoxystrobin.complete.fields.cristian, method = "bonferroni")
  object.4.cristian
- # 
- # mean.rank.diff   pval    
- # ND-WA           -0.6103896 1.0000    
- # MI-WA           -2.1048951 1.0000    
- # NE-WA          -13.6818182 1.0000    
- # CO-WA          -18.8484848 0.7677    
- # Baseline-WA    -19.3181818 0.2249    
- # MI-ND           -1.4945055 1.0000    
- # NE-ND          -13.0714286 1.0000    
- # CO-ND          -18.2380952 1.0000    
- # Baseline-ND    -18.7077922 0.6751    
- # NE-MI          -11.5769231 1.0000    
- # CO-MI          -16.7435897 1.0000    
- # Baseline-MI    -17.2132867 0.3321    
- # CO-NE           -5.1666667 1.0000    
- # Baseline-NE     -5.6363636 1.0000    
- # Baseline-CO     -0.4696970 1.0000    
- # ---
+ 
+ 
+#  Dunn's test of multiple comparisons using rank sums : bonferroni  
+# 
+#             mean.rank.diff    pval    
+# NE-ND           -23.890160  0.5012    
+# WA-ND           -21.986025  0.4656    
+# MI-ND           -25.060201  0.6931    
+# CO-ND           -29.421739  0.1185    
+# Baseline-ND     -54.839921 5.8e-06 ***
+# WA-NE             1.904135  1.0000    
+# MI-NE            -1.170040  1.0000    
+# CO-NE            -5.531579  1.0000    
+# Baseline-NE     -30.949761  0.0957 .  
+# MI-WA            -3.074176  1.0000    
+# CO-WA            -7.435714  1.0000    
+# Baseline-WA     -32.853896  0.0219 *  
+# CO-MI            -4.361538  1.0000    
+# Baseline-MI     -29.779720  0.2818    
+# Baseline-CO     -25.418182  0.3473    
+# ---
+# Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+#  
  
  ###tetraconazole
  
   glimpse(tetraconazole.data.cristian)
   # Using the function to take out outliers
   tetraconazole.data.cristian.2 <- tetraconazole.data.cristian %>%
+     rename(response = tetraconazole.growth, control = control.growth) %>% 
      group_by(ID) %>%
      mutate(response_range = list(get_range(response))) %>%
      unnest() %>%
      mutate(control_range = list(get_range(control))) %>%
      unnest() %>%
-     filter(response <= upper & response >= lower, control <= upper1 & control >= lower1) %>%
-     ungroup()%>% 
+     filter(response <= upper &
+               response >= lower,
+            control <= upper1 & control >= lower1) %>%
+     ungroup() %>%
      select(c(ID, experimental_replicate, repeats, response, control))
   
   
@@ -1085,6 +1140,42 @@ library(agricolae)
    bind_rows(tetraconazole.cristian.filtered. ) %>% 
    mutate(new= as.factor(new)) %>% 
    ungroup()
+ 
+ ## Testing controls between Serial dilution and Duscriminatory concentration
+ 
+ tetraconazole.controls.cristian <- tetraconazole.complete.cristian$ID[duplicated(tetraconazole.complete.cristian$ID)]
+ # 24 repeats
+ 
+ tetraconazole.complete.controls.cristian <- tetraconazole.complete.cristian %>% 
+    mutate(controls = ifelse(
+       ID %in% tetraconazole.controls.cristian,
+       "Yes", "No")) %>% 
+    filter(controls== "Yes")
+ 
+ ## Normality test
+ 
+ shapiro.test.tetra.controls.cristian <- tetraconazole.complete.controls.cristian  %>%
+    do(tidy(shapiro.test(.$EC50DC)))
+ 
+ shapiro.test.tetra.controls.cristian
+ 
+ 
+ # NO normals, t- test since the sample size for each sampe is 2, in other words grouping by ID
+ # P value = 0.000000543
+ tested.tetraconazole.controls.cristian <- tetraconazole.complete.controls.cristian %>% 
+    group_by(ID) 
+ 
+ object.5.cristian <- kruskal.test(EC50DC ~ ID, data = tested.tetraconazole.controls.cristian)
+ object.5.cristian[[3]][[1]]
+ 
+ # There is no difference the P value is = 0.05680849
+ 
+ # the ID 461 (control) is not in here so that is good
+ ##From the 21 baseline, there are not statistically differenet
+ 
+ 
+ 
+ 
  
  # keeping juts the highest value of the repeated ID value
  tetraconazole.complete.cristian<-tetraconazole.complete.cristian%>%  
@@ -1476,6 +1567,8 @@ library(agricolae)
             State == "Baseline") %>% 
    arrange(EC50DC)
  
+ # total 124 isolates
+ 
  plot.tetra.3.cristian <- tetraconazole.complete.fields.cristian %>%
    ggplot(aes(x = State, y = EC50DC)) +
    geom_jitter(
@@ -1528,34 +1621,37 @@ library(agricolae)
  shapiro.test.tetra.cristian <- tetraconazole.complete.fields.cristian %>%
    do(tidy(shapiro.test(.$EC50DC)))
  shapiro.test.tetra.cristian[[2]][[1]]
- #1.159902e-05
+ #p value is = 8.589226e-05
  # No normals
- object.5.cristian <- kruskal.test(EC50DC ~ State, data = tetraconazole.complete.fields.cristian)
- object.5.cristian[[3]][[1]]
+ object.6.cristian <- kruskal.test(EC50DC ~ State, data = tetraconazole.complete.fields.cristian)
+ object.6.cristian[[3]][[1]]
  
- #There is difference p-value = 0.007581091
+ #There is difference difference,  p-value = 4.271203e-05
  
- object.6.cristian <-  DunnTest(EC50DC ~ State, data = tetraconazole.complete.fields.cristian, method = "bonferroni")
- object.6.cristian
+ object.7.cristian <-  DunnTest(EC50DC ~ State, data = tetraconazole.complete.fields.cristian, method = "bonferroni")
+ object.7.cristian
  
- 
- # mean.rank.diff   pval    
- # MI-WA             6.258741 1.0000    
- # Baseline-WA      -1.865801 1.0000    
- # ND-WA            -9.818182 1.0000    
- # CO-WA           -10.818182 1.0000    
- # NE-WA           -23.318182 0.0908 .  
- # Baseline-MI      -8.124542 1.0000    
- # ND-MI           -16.076923 1.0000    
- # CO-MI           -17.076923 1.0000    
- # NE-MI           -29.576923 0.0042 ** 
- #   ND-Baseline      -7.952381 1.0000    
- # CO-Baseline      -8.952381 1.0000    
- # NE-Baseline     -21.452381 0.0537 .  
- # CO-ND            -1.000000 1.0000    
- # NE-ND           -13.500000 1.0000    
- # NE-CO           -12.500000 1.0000
- # 
+#  Dunn's test of multiple comparisons using rank sums : bonferroni  
+# 
+#             mean.rank.diff    pval    
+# MI-WA             5.166209 1.00000    
+# Baseline-WA      -6.196429 1.00000    
+# ND-WA            -4.606366 1.00000    
+# CO-WA           -24.085714 0.33024    
+# NE-WA           -46.752820 0.00018 ***
+# Baseline-MI     -11.362637 1.00000    
+# ND-MI            -9.772575 1.00000    
+# CO-MI           -29.251923 0.33415    
+# NE-MI           -51.919028 0.00089 ***
+# ND-Baseline       1.590062 1.00000    
+# CO-Baseline     -17.889286 1.00000    
+# NE-Baseline     -40.556391 0.00544 ** 
+# CO-ND           -19.479348 1.00000    
+# NE-ND           -42.146453 0.00231 ** 
+# NE-CO           -22.667105 0.73328    
+# ---
+# Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+#  
  
  
  #############################
