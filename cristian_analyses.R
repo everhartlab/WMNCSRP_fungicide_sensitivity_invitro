@@ -605,20 +605,19 @@ library(agricolae)
  
  shapiro.test.pico.controls.cristian
  
- # ther are  Normal
+ # ther are NO Normal
  # No normals, t- test since the sample size for each sampe is 2, in other words grouping by ID
  # P value = 0.0323
  tested.pico.controls.cristian <- picoxystrobin.complete.controls.cristian %>% 
-    group_by(ID) %>% 
-    do(tidy(t.test(.$EC50DC))) %>% 
-    filter(p.value<= 0.05)
+    group_by(ID) 
+    
+    object.3.cristian <- kruskal.test(EC50DC ~ ID, data = picoxystrobin.complete.controls.cristian)
+ object.3.cristian[[3]][[1]]
+ # P value = 0.05813198, 
  
- tested.pico.controls.cristian
- 461 %in%tested.pico.controls.cristian$ID
- baseline_isolates %in% tested.pico.controls.cristian$ID
- # there are 14 isolates different but anyone is 
- #  the ID 461 (control) is not in here so that is good
- ##From the 21 baseline isolates, there are 8 that are statistically differenet
+  # there are no isolates different neither 
+ #  the ID 461 (control), good
+ # neither From the 21 baseline isolates, good!
  
  
  
@@ -1061,13 +1060,13 @@ library(agricolae)
  # NO NORMALILTY  P value ==0.0179
  # is by Field but it is written State
  
- object.3.cristian <- kruskal.test(EC50DC ~ State, data = picoxystrobin.complete.fields.cristian)
- object.3.cristian[[3]][[1]]
+ object.4.cristian <- kruskal.test(EC50DC ~ State, data = picoxystrobin.complete.fields.cristian)
+ object.4.cristian[[3]][[1]]
  
  #There is difference p-value = 7.593402e-05
  
- object.4.cristian <-  DunnTest(EC50DC ~ State, data = picoxystrobin.complete.fields.cristian, method = "bonferroni")
- object.4.cristian
+ object.5.cristian <-  DunnTest(EC50DC ~ State, data = picoxystrobin.complete.fields.cristian, method = "bonferroni")
+ object.5.cristian
  
  
 #  Dunn's test of multiple comparisons using rank sums : bonferroni  
@@ -1165,8 +1164,8 @@ library(agricolae)
  tested.tetraconazole.controls.cristian <- tetraconazole.complete.controls.cristian %>% 
     group_by(ID) 
  
- object.5.cristian <- kruskal.test(EC50DC ~ ID, data = tested.tetraconazole.controls.cristian)
- object.5.cristian[[3]][[1]]
+ object.6.cristian <- kruskal.test(EC50DC ~ ID, data = tested.tetraconazole.controls.cristian)
+ object.6.cristian[[3]][[1]]
  
  # There is no difference the P value is = 0.05680849
  
@@ -1623,13 +1622,13 @@ library(agricolae)
  shapiro.test.tetra.cristian[[2]][[1]]
  #p value is = 8.589226e-05
  # No normals
- object.6.cristian <- kruskal.test(EC50DC ~ State, data = tetraconazole.complete.fields.cristian)
- object.6.cristian[[3]][[1]]
+ object.7.cristian <- kruskal.test(EC50DC ~ State, data = tetraconazole.complete.fields.cristian)
+ object.7.cristian[[3]][[1]]
  
  #There is difference difference,  p-value = 4.271203e-05
  
- object.7.cristian <-  DunnTest(EC50DC ~ State, data = tetraconazole.complete.fields.cristian, method = "bonferroni")
- object.7.cristian
+ object.8.cristian <-  DunnTest(EC50DC ~ State, data = tetraconazole.complete.fields.cristian, method = "bonferroni")
+ object.8.cristian
  
 #  Dunn's test of multiple comparisons using rank sums : bonferroni  
 # 
