@@ -49,12 +49,10 @@ SDHI: Succinate dehydrogenase inhibitors
 Field applications of fungicides in the United States on soybean show control of _S. sclerotiorum_ is low to fair for QoI, DMI and MBC fungicides, and good for SDHI fungicides (The North Central Regional Committee on Soybean Diseases 2015). However, it is unknown whether efficacy is related to reduce sensitivity within populations under study. 
 
 
-
 ```{r read data and wrangling, echo = FALSE}
-  #Discriminatory dose boscalid
+#Discriminatory dose boscalid
    
-    boscalid.data.cristian <-
-      read.csv("data/.csv")
+    boscalid.data.cristian <-read.csv("data/Boscalid.Cristian.csv")
       boscalid.data.cristian <- boscalid.data.cristian %>%
       select(
       ID,
@@ -85,7 +83,7 @@ Field applications of fungicides in the United States on soybean show control of
      #Discriminatory dose picoxystrobin
    
       picoxystrobin.data.cristian <-
-        read.csv("data/.csv")
+        read.csv("data/Picoxystrobin.Cristian.csv")
         picoxystrobin.data.cristian <- picoxystrobin.data.cristian %>%
         select(
         ID,
@@ -114,7 +112,7 @@ Field applications of fungicides in the United States on soybean show control of
      #Discriminatory dose tetraconazole
    
         tetraconazole.data.cristian <-
-          read.csv("data/.csv")
+          read.csv("data/Tetraconazole.Cristian.csv")
           tetraconazole.data.cristian <- tetraconazole.data.cristian %>%
           select(
           ID,
@@ -143,7 +141,7 @@ Field applications of fungicides in the United States on soybean show control of
 #Discriminatory dose TM
              
           TM.data.cristian <-
-            read.csv("data/.csv")
+            read.csv("data/TM.Cristian.csv")
             TM.data.cristian <- TM.data.cristian %>%
             select(
             ID,
@@ -169,4 +167,9 @@ Field applications of fungicides in the United States on soybean show control of
        
             save(list = ls(all=TRUE), file= "all.2.Rdata")
  rm(list = ls()) 
-            
+ 
+ 
+```
+
+
+        

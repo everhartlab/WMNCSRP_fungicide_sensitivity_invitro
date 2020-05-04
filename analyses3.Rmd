@@ -55,7 +55,7 @@ Field applications of fungicides in the United States on soybean show control of
 ##  Reading and subsetting data 
 boscalid.data <-
   read.csv("data/boscalid_serialdilution_baseline(validationdata).csv")
-  boscalid.data <- subset(boscalid.data, select = -X)
+  #boscalid.data <- subset(boscalid.data, select = -X)
   boscalid.data$repeats <- rep_len(1:4, length.out = nrow(boscalid.data))
   boscalid.data$ID <- as.character(boscalid.data$ID)
   # renaming ID for the current names
@@ -129,7 +129,7 @@ picoxystrobin.data$ID <- as.numeric(picoxystrobin.data$ID)
 #Reading and subsetting data tetraconazole
 tetraconazole.data <-
   read.csv("data/tetraconazole_serialdi_BL-WMN_survey-WMNCSRP(validationdata).csv")
-  tetraconazole.data <- subset(tetraconazole.data, select = -(X:X.1))
+ # tetraconazole.data <- subset(tetraconazole.data, select = -(X:X.1))
   tetraconazole.data$repeats <- rep_len(1:4, length.out = nrow(tetraconazole.data))
   tetraconazole.data$ID <- as.character(tetraconazole.data$ID) 
   # renaming ID for the current names
@@ -163,7 +163,7 @@ tetraconazole.data$ID <- as.numeric(tetraconazole.data$ID)
 #Reading and subsetting data TM
   TMdata <-
     read.csv("data/TM_serialdi_BL-WMN_survey-WMNCSRP(validationdata).csv")
-    TMdata <- subset(TMdata, select = -(X:X.6))
+    #TMdata <- subset(TMdata, select = -(X:X.6))
     TMdata$repeats <- rep_len(1:4, length.out = nrow(TMdata))
     TMdata$ID <- as.character(TMdata$ID)
    # renaming ID for the current names
@@ -261,11 +261,11 @@ TMdata$ID <- as.numeric(TMdata$ID)
    #  ungroup()  
    #  
   #Discriminatory dose boscalid
-   
+   # its by default make at 30 hrs
     survey.data.boscalid <- 
       read.csv("data/DD_survey-WMNCSRP_boscalid.csv")
     survey.data.boscalid <-survey.data.boscalid %>% 
-select(ID, repeats, experimental_replicate, control.ecuatorial_30hr, control.polar_30hr, boscalid.ecuatorial.30hr, boscalid.polar_30hr) %>% 
+select(ID, repeats, experimental_replicate, control.ecuatorial, control.polar, boscalid.ecuatorial, boscalid.polar) %>% 
       # group_by(
       #   ID,
       #   repeats,
@@ -276,9 +276,9 @@ select(ID, repeats, experimental_replicate, control.ecuatorial_30hr, control.pol
       #   boscalid.polar
       #   )  %>%
         mutate(
-    control.growth = ((control.polar_30hr + control.ecuatorial_30hr) / 2),
+    control.growth = ((control.polar + control.ecuatorial) / 2),
     boscalid.growth = ((
-    boscalid.ecuatorial.30hr + boscalid.polar_30hr
+    boscalid.ecuatorial + boscalid.polar
     ) / 2), ID = as.character(ID), new= "Yes") %>% 
       select(ID, repeats, experimental_replicate, control.growth, boscalid.growth, new)
   
@@ -730,7 +730,11 @@ levels(WM3$Fungicide_previous_seasons)[levels(WM3$Fungicide_previous_seasons) ==
 
 levels(WM3$molecule.s._previous_seasons)[levels(WM3$molecule.s._previous_seasons) == ""] <- "unknown"
 
+levels(WM3$Country)[levels(WM3$Country) == ""] <- "unknown"
 
+levels(WM3$State)[levels(WM3$State) == ""] <- "Unknown"
+
+levels(WM3$County)[levels(WM3$County) == ""] <- "unknown"
 
 WM3_ <- WM3%>%
   # transforming this variable in character
