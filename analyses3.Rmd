@@ -352,9 +352,26 @@ select(ID, repeats, experimental_replicate, control.ecuatorial, control.polar, T
         
 
 # reading the inventory Sclerotinia collection with some of my update modifications
-                            WM <- read.csv("data/WM-fixingproductnamesID2573_modifyingforactiveingredient_10.csv", stringsAsFactors = TRUE)
+                            WM <- read.csv("data/WM-fixingproductnamesID2573_modifyingforactiveingredient_11.csv", stringsAsFactors = TRUE)
 WM$Collection_ID <- str_squish(WM$Collection_ID)
-# removing those isolates that are repated and have subsequent ID number becasue they are coming from the previous isolates, for example, 5 & 5A,both are the same, actually 5A is coming from 5,  removing then 5A
+WM[] <- lapply(WM, function(x) {
+    is.na(levels(x)) <- levels(x) == "NA"
+    x
+})
+#Still not working for NA
+WM[WM == ""] <- NA
+
+sum(is.na(WM$Year))
+# 18
+sum(is.na(WM$Country))
+# 3
+sum(is.na(WM$County))
+#323
+sum(is.na(WM$Field))
+# 863
+# need to ckec which isolates have been done with Kamvar article and ANthony Panullo in supplementary data
+
+## removing those isolates that are repated and have subsequent ID number becasue they are coming from the previous isolates, for example, 5 & 5A,both are the same, actually 5A is coming from 5,  removing then 5A
 WM2 <- 
 WM %>% filter(
   !Collection_ID == "5A",
@@ -1844,8 +1861,25 @@ fig.2<- ggplot(final.boscalid.DC.0.2, aes(x = Estimate.50, y = Estimate.50DC)) +
   ) + labs(title = "Linear regression between EC50 and EC50(D) values of Boscalid ", x =
   "EC50 (ppm)", y = "EC50(D) (ppm)") + geom_point(shape = 24) + geom_smooth(method = "lm")
 
+final.boscalid.DC.two <-
+ final.boscalid.DC %>% 
+ mutate(source = ifelse(
+    ID %in% baseline_isolates_2,
+    "Baseline",
+    ifelse(
+      ID %in% Farmer_fields,
+      "Producer Fields","Fungicide Field Trials"
+    )), Host = ifelse(
+    ID %in% drybean,
+    "Drybean", ifelse(
+      ID %in% soybean,
+      "Soybean","different_host")))  %>%
+  mutate(
+  source = as.factor(source),
+  Host = as.factor(Host)) #%>%    
+#taking out "different host" becuse does not belong to drybean nor soybean
+ # filter(!ID == 8, !ID == 129)
 
- 
 ```
 Modification for publication
 ```{r}
@@ -1908,6 +1942,38 @@ expression(bold(EC[bold("50")])~( bold(ppm ~bold("a.i.")))), y = expression(bold
 
  fig.1.boscalid
  fig.2.boscalid
+ 
+  ggplot(final.boscalid.DC.two, aes(x = Estimate.50, y = Estimate.50DC)) +  geom_point(aes(shape= Host, colour = source),
+     size = 2,
+     alpha = 3 / 4
+     
+ ) + geom_smooth(method = "lm", se= FALSE, colour= "black"
+                 #fullrange=TRUE
+ ) +  theme(
+     plot.title = element_text(
+         size = 10,
+         face = "bold",
+         hjust = 0.5,
+         family = "Arial"
+     ),
+     axis.title = element_text(size = 9, face = "bold", hjust = 0.5),
+     axis.text = element_text(
+         face = "bold",
+         size = 10,
+         family = "Arial"
+     ),
+     panel.background = element_rect(fill = "white", colour = "grey50")
+ ) + labs( x =
+               expression(bold(EC[bold("50")])~( bold(ppm ~bold("a.i.")))), y = expression(bold(EC[bold("50")~(bold("D"))])~( bold(ppm ~bold("a.i.")))))+ geom_abline(
+                   intercept = 0,
+                   slope = 1,
+                   color = "black",
+                   lty = "dashed",
+                   lwd = 1
+               )+  expand_limits(x = c(0.04, 0.25), y= c(0.04, 0.25))      + scale_x_continuous(name = waiver(), breaks = c(0.05, 0.1, 0.15, 0.20, 0.25)) + scale_y_continuous(breaks = c(0.05, 0.1, 0.15, 0.20, 0.25))
+         
+ 
+ 
 ```
 
 ```{r, echo= FALSE}
@@ -3135,6 +3201,25 @@ fig.2 <- ggplot(final.picoxystrobin.DC.0.01,
        "EC50 (ppm)", y = "EC50(D) (ppm)") + geom_point() + geom_smooth(method = "lm")
      
 #dev.off()
+
+final.picoxystrobin.DC.two <-
+ final.picoxystrobin.DC %>% 
+ mutate(source = ifelse(
+    ID %in% baseline_isolates_2,
+    "Baseline",
+    ifelse(
+      ID %in% Farmer_fields,
+      "Producer Fields","Fungicide Field Trials"
+    )), Host = ifelse(
+    ID %in% drybean,
+    "Drybean", ifelse(
+      ID %in% soybean,
+      "Soybean","different_host")))  %>%
+  mutate(
+  source = as.factor(source),
+  Host = as.factor(Host)) #%>%    
+#taking out "different host" becuse does not belong to drybean nor soybean
+ # filter(!ID == 8, !ID == 129)
 ```
 
 Modification for publication
@@ -3200,6 +3285,38 @@ breaks = c(0.0075, 0.01, 0.0125, 0.015,  0.018))
 
 fig.1.picoxystrobin
 fig.2.picoxystrobin
+
+ggplot(final.picoxystrobin.DC.two, aes(x = Estimate.50, y = Estimate.50DC)) +  geom_point(aes(shape= Host, colour = source),
+     size = 2,
+     alpha = 3 / 4
+      ) + geom_smooth(method = "lm", se = FALSE, color = "black"
+  #fullrange=TRUE                
+  ) +  theme(
+  plot.title = element_text(
+  size = 9,
+  face = "bold",
+  hjust = 0.5,
+  family = "Arial"
+  ),
+  axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+  axis.text = element_text(
+  face = "bold",
+  size = 10,
+  family = "Arial"
+  ),
+  panel.background = element_rect(fill = "white", colour = "grey50")
+  ) + labs( x =
+expression(bold(EC[bold("50")])~( bold(ppm~bold("a.i.")))), y = expression(bold(EC[bold("50")~(bold("D"))])~( bold(ppm~bold("a.i."))))) + geom_abline(
+                intercept = 0,
+                slope = 1,
+                color = "black",
+                lty = "dashed",
+                lwd = 1
+ ) + expand_limits(x = c(0.0060, 0.018), y = c(0.0060, 0.018)) + scale_x_continuous(name = waiver(),
+breaks = c(0.0075, 0.01, 0.0125, 0.015,  0.018)) + scale_y_continuous(name = waiver(),
+breaks = c(0.0075, 0.01, 0.0125, 0.015,  0.018))
+
+
 ```
 
 ```{r, include= FALSE}
@@ -4349,8 +4466,28 @@ fig.3 <- ggplot(final.tetraconazole.DC.2,
        "EC50 (ppm)", y = "EC50(D) (ppm)") + geom_point(shape=21) + geom_smooth(method = "lm")
 
 
+final.tetraconazole.DC.two <-
+ final.tetraconazole.DC %>% 
+ mutate(source = ifelse(
+    ID %in% baseline_isolates_2,
+    "Baseline",
+    ifelse(
+      ID %in% Farmer_fields,
+      "Producer Fields","Fungicide Field Trials"
+    )), Host = ifelse(
+    ID %in% drybean,
+    "Drybean", ifelse(
+      ID %in% soybean,
+      "Soybean","different_host")))  %>%
+  mutate(
+  source = as.factor(source),
+  Host = as.factor(Host)) #%>%    
+#taking out "different host" becuse does not belong to drybean nor soybean
+ # filter(!ID == 8, !ID == 129)
+
+
 ```
-For publication
+Modification For publication
 ```{r}
 fig.1.tetraconazole <-
 ggplot(finalRG2, aes(x = RG2, y = logEC50)) +  geom_point(
@@ -4405,6 +4542,33 @@ expression(bold(EC[bold("50")])~( bold(ppm~bold("a.i.")))), y = expression(bold(
                  )+ expand_limits(x = c(0.3, 1.8), y = c(0.3, 1.8))     + scale_x_continuous(breaks = c(0.3,0.6, 0.9, 1.2, 1.5, 1.8))+ scale_y_continuous(breaks = c(0.3,0.6, 0.9, 1.2, 1.5, 1.8))
 fig.1.tetraconazole                
 fig.2.tetraconazole
+
+ggplot(final.tetraconazole.DC.two, aes(x = Estimate.50, y = Estimate.50DC)) +  geom_point(aes(shape= Host, colour = source),
+     size = 2,
+     alpha = 3 / 4
+      )      + geom_smooth(method = "lm",se= FALSE, color= "black") +  theme(
+plot.title = element_text(
+size = 10,
+face = "bold",
+hjust = 0.5,
+family = "Arial"
+),
+axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+axis.text = element_text(
+face = "bold",
+size = 10,
+family = "Arial"
+),
+panel.background = element_rect(fill = "white", colour = "grey50")
+) + labs( x =
+expression(bold(EC[bold("50")])~( bold(ppm~bold("a.i.")))), y = expression(bold(EC[bold("50")~(bold("D"))])~( bold(ppm~bold("a.i."))))) + geom_abline(
+                intercept = 0,
+                slope = 1,
+                color = "black",
+                lty = "dashed",
+                lwd = 1
+                 )+ expand_limits(x = c(0.3, 1.8), y = c(0.3, 1.8))     + scale_x_continuous(breaks = c(0.3,0.6, 0.9, 1.2, 1.5, 1.8))+ scale_y_continuous(breaks = c(0.3,0.6, 0.9, 1.2, 1.5, 1.8)) 
+ 
 ```
 
 ```{r}
