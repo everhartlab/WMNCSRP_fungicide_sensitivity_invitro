@@ -1870,7 +1870,281 @@ isolates_Mexico.Brazil.experiment.using <-  sort ( unique( c (461,
 
 
 ```
+Joinig all isolates tested so far 08/10/20, 
+I had to select to get the total, just
+```{r}
+boscalid.complete.cris <-
+   boscalid.complete.cris %>% select(-c(Field, Year_Field))
 
+tetraconazole.complete.cris <-
+   tetraconazole.complete.cris %>% select(-c(Field, Year_Field))
+
+picoxystrobin.complete.cris <-
+   picoxystrobin.complete.cris %>% select(-c(Field, Year_Field))
+
+adios <-
+   boscalid.complete.cris %>% full_join(tetraconazole.complete.cris) %>% full_join(picoxystrobin.complete.cris)
+
+adios <- adios %>% group_by(ID) %>%
+   top_n(1, EC50DC) %>% #keeping the highest value of each ID value
+   ungroup()
+levels(adios$State)
+
+View(adios %>% filter(State== "NE"))
+View(adios %>% filter(State== "WI"))
+View(adios %>% filter(State== "NE"))
+View(adios %>% filter(State== "WA"))
+View(adios %>% filter(State== "OR"))
+View(adios %>% filter(State== "ID"))
+View(adios %>% filter(State== "ND"))
+View(adios %>% filter(State== "CO"))
+View(adios %>% filter(State== "MN"))
+View(adios %>% filter(State== "IA"))
+View(adios %>% filter(State== "MI"))
+View(adios %>% filter(State== "DE"))
+```
+Temporary plots
+
+wrong thing
+```{r}
+ boscalid.complete.cris %>% 
+   mutate(Year_Field= as.character(Year_Field)) %>% 
+mutate(Year_Field =  ifelse(Field == "Baseline", "Baseline", Year_Field),
+      Year_Field = as.factor(Year_Field)) %>% 
+   count(Year_Field) %>% 
+   filter(n >= 9)
+
+boscalid.complete.cris <- boscalid.complete.cris %>% 
+   mutate(Year_Field= as.character(Year_Field)) %>% 
+mutate(Year_Field =  ifelse(Field == "Baseline", "Baseline", Year_Field),
+      Year_Field = as.factor(Year_Field)) %>% 
+filter(Year_Field == "2007_production_1"|
+       Year_Field == "2007_production_9"|
+          Year_Field == "2008_production_10"|
+          Year_Field == "2010_production_21"|
+          Year_Field == "2010_production_25"|
+          Year_Field == "2015_mont"|
+          Year_Field == "2016_lan"|
+          Year_Field == "2017_ha"|
+          Year_Field == "2017_mon"|
+          Year_Field == "2017_na"|
+          Year_Field == "Baseline"
+                    )
+            
+
+
+
+boscalid.complete.cris %>%
+   ggplot(aes(x = Year_Field, y = EC50DC)) +
+   geom_jitter(aes(color= State, shape = Host, size= source),
+      width = .1,
+      height = 0,
+         alpha = 3 / 4
+   ) + stat_summary(
+      fun.y = mean,
+      geom = "point",
+      shape = 95,
+      size = 15,
+      color = "black"
+   ) +
+   labs(x = "Year_Field", y = expression(bold(EC[bold("50") ~ (bold("D"))]) ~
+                                            (bold(ppm ~ bold(
+                                               "a.i."
+                                            ))))) + theme(
+                                               panel.border = element_rect(
+                                                  colour = "black",
+                                                  fill = NA,
+                                                  size = 1
+                                               ),
+                                               axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+                                               axis.text = element_text(
+                                                  face = "bold",
+                                                  size = 8,
+                                                  family = "Arial",
+                                                  angle = 30
+                                                  
+                                               ),
+                                               panel.background = element_rect(fill = "white", colour = "grey50")
+                                            ) +  expand_limits(y = c(0.06, 0.18)) + scale_y_continuous(breaks = c(0.06, 0.08, 0.1, 0.12, 0.14, 0.16, 0.18))
+
+
+
+boscalid.complete.cris$Year_Field <-
+   factor(
+      boscalid.complete.cris$Year_Field,
+      c(
+         "2017_ha",
+         "2017_mon",
+         "2017_na",
+         "2015_mont",
+         "Baseline",
+         "2010_production_21",
+         "2008_production_10",
+         "2016_lan",
+         "2007_production_9",
+         "2007_production_1",
+         "2010_production_25"
+      )
+   )
+
+picoxystrobin.complete.cris %>% 
+   mutate(Year_Field= as.character(Year_Field)) %>% 
+mutate(Year_Field =  ifelse(Field == "Baseline", "Baseline", Year_Field),
+      Year_Field = as.factor(Year_Field)) %>% 
+   count(Year_Field) %>% 
+   filter(n >= 9)
+
+picoxystrobin.complete.cris <- picoxystrobin.complete.cris %>% 
+   mutate(Year_Field= as.character(Year_Field)) %>% 
+mutate(Year_Field =  ifelse(Field == "Baseline", "Baseline", Year_Field),
+      Year_Field = as.factor(Year_Field)) %>% 
+filter(Year_Field == "2007_production_1"|
+       Year_Field == "2007_production_9"|
+          Year_Field == "2008_production_10"|
+          Year_Field == "2010_production_21"|
+          Year_Field == "2010_production_25"|
+          Year_Field == "2015_cer"|
+          Year_Field == "2015_mont"|
+          Year_Field == "2016_lan"|
+          Year_Field == "2017_ha"|
+          Year_Field == "2017_mon"|
+          Year_Field == "2017_na"|
+          Year_Field == "Baseline"
+                    )
+            
+
+
+ picoxystrobin.complete.cris %>%
+     ggplot(aes(x = Year_Field, y = EC50DC)) +
+   geom_jitter(aes(color= State, shape = Host, size= source),
+      width = .1,
+      alpha = 3 / 4
+   ) + stat_summary(
+     fun.y = mean,
+     geom = "point",
+     shape = 95,
+     size = 15,
+     color = "black"
+   ) +
+   labs(x = "Year_Field", y = expression(bold(EC[bold("50") ~ (bold("D"))]) ~
+                                      (bold(ppm ~ bold(
+                                        "a.i."
+                                      ))))) + theme(
+                                        panel.border = element_rect(
+                                          colour = "black",
+                                          fill = NA,
+                                          size = 1
+                                        ),
+                                        axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+                                        axis.text = element_text(
+                                          face = "bold",
+                                          size = 8,
+                                          family = "Arial",
+                                          angle = 30
+                                        ),
+                                        panel.background = element_rect(fill = "white", colour = "grey50")
+                                      ) + scale_y_continuous(breaks = c(0.008, 0.01, 0.012, 0.014, 0.016, 0.018, 0.020,0.022,0.024))
+ 
+ 
+ picoxystrobin.complete.cris$Year_Field <-
+   factor(
+      picoxystrobin.complete.cris$Year_Field,
+      c(
+         "2007_production_1",
+      	"2007_production_9",
+         "2015_mont",
+      	"2017_ha",
+"2008_production_10",
+"2016_lan",
+"2010_production_21",
+"2010_production_25",
+         "2017_mon",
+         "2017_na",
+         "2015_cer",
+         "Baseline"
+      )
+   )
+
+
+ 
+ tetraconazole.complete.cris %>% 
+    mutate(Year_Field= as.character(Year_Field)) %>% 
+mutate(Year_Field =  ifelse(Field == "Baseline", "Baseline", Year_Field),
+      Year_Field = as.factor(Year_Field)) %>% 
+   count(Year_Field) %>% 
+   filter(n >= 9)
+ 
+ tetraconazole.complete.cris <- tetraconazole.complete.cris %>%
+     mutate(Year_Field= as.character(Year_Field)) %>% 
+mutate(Year_Field =  ifelse(Field == "Baseline", "Baseline", Year_Field),
+      Year_Field = as.factor(Year_Field)) %>% 
+filter(Year_Field == "2007_production_1"|
+       Year_Field == "2007_production_9"|
+          Year_Field == "2008_production_10"|
+          Year_Field == "2010_production_21"|
+          Year_Field == "2010_production_25"|
+          Year_Field == "2015_101"|
+          Year_Field == "2015_67"|
+          Year_Field == "2015_97"|
+          Year_Field == "2016_lan"|
+          Year_Field == "2017_mon"|
+          Year_Field == "2017_na"|
+          Year_Field == "Baseline"
+                    )
+
+  tetraconazole.complete.cris %>%
+   ggplot(aes(x = Year_Field, y = EC50DC)) +
+    geom_jitter(aes(color= State, shape = Host, size= source),
+      width = .1,
+      alpha = 3 / 4
+     ) + stat_summary(
+     fun.y = mean,
+     geom = "point",
+     shape = 95,
+     size = 15,
+     color = "black"
+   ) +
+   labs(x = "Year_Field", y = expression(bold(EC[bold("50") ~ (bold("D"))]) ~
+                                      (bold(ppm ~ bold(
+                                        "a.i."
+                                      ))))) + theme(
+                                        panel.border = element_rect(
+                                          colour = "black",
+                                          fill = NA,
+                                          size = 1
+                                        ),
+                                        axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+                                        axis.text = element_text(
+                                          face = "bold",
+                                          size = 8,
+                                          family = "Arial",
+                                          angle = 30
+                                        ),
+                                        panel.background = element_rect(fill = "white", colour = "grey50")
+                                      ) + scale_y_continuous(breaks = c(0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6, 1.8, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0))
+ 
+  tetraconazole.complete.cris$Year_Field <-
+     factor(
+        tetraconazole.complete.cris$Year_Field,
+        c(
+           "2010_production_25",
+           "2015_67",
+           "2015_101",
+           "2016_lan",
+           "2017_na",
+           "2008_production_10",
+           "2007_production_9",
+           "2017_mon",
+           "2015_97",
+           "Baseline",
+           "2007_production_1",
+           "2010_production_21"
+        )
+     )
+ 
+
+
+```
 
 ```{r}
 save(list = ls(all=TRUE), file= "Cristian.Rdata")
