@@ -1978,12 +1978,12 @@ boscalid.complete.cris$Year_Field <-
          "2017_na",
          "2015_mont",
          "Baseline",
-         "2010_production_21",
+         "2010_production_25",
          "2008_production_10",
          "2016_lan",
          "2007_production_9",
          "2007_production_1",
-         "2010_production_25"
+         "2010_production_21"
       )
    )
 
@@ -2066,35 +2066,134 @@ filter(Year_Field == "2007_production_1"|
    )
 
 
+ # Check why NE fields no sum up 10 for tetraconazole. It must, Cristian made some and I have the rest to complte  N=10
  
- tetraconazole.complete.cris %>% 
-    mutate(Year_Field= as.character(Year_Field)) %>% 
-mutate(Year_Field =  ifelse(Field == "Baseline", "Baseline", Year_Field),
-      Year_Field = as.factor(Year_Field)) %>% 
-   count(Year_Field) %>% 
-   filter(n >= 9)
+ tetraconazole.complete.cris.2 <- tetraconazole.complete.cris %>%
+    mutate(Year_Field = as.character(Year_Field)) %>%
+    mutate(
+       Year_Field =  ifelse(
+          Field == "NE:Holt",
+          "NE:Holt",
+          ifelse(
+             Field == "NE:Dodge",
+             "NE:Dodge",
+             ifelse(
+                Field == "NE:Cedar 1",
+                "NE:Cedar 1",
+                ifelse(
+                   Field == "NE:Antelope",
+                   "NE:Antelope",
+                   ifelse(
+                      Field == "NE:Pierce",
+                      "NE:Pierce",
+                      ifelse(
+                         Field == "NE:Cedar 2",
+                         "NE:Cedar 2",
+                         ifelse(
+                            Field == "NE:Cedar 3",
+                            "NE:Cedar 3",
+                            ifelse(Field == "Baseline", "Baseline", Year_Field)
+                         )
+                      )
+                   )
+                )
+             )
+          )
+          
+       )
+    )%>% group_by(source, Host, Field, Country, Year_Field) %>%   filter(n() >= 7) %>% ungroup() %>% 
+        filter(
+       !Year_Field == "2016_lan",
+       !Year_Field == "2017_holt",
+       !Year_Field == "2017_mon",
+       !Year_Field == "2017_na",
+       !Year_Field == "no specific field",
+        !Year_Field == "2007_production_4",
+       !Year_Field == "2007_production_5",
+       !Year_Field == "2010_production_22",
+       !Year_Field == "2010_production_23",
+       !Year_Field == "2010_production_24",
+       !Year_Field == "2010_production_24",
+       
+    ) %>% mutate(Year_Field = as.factor(Year_Field)) 
  
- tetraconazole.complete.cris <- tetraconazole.complete.cris %>%
-     mutate(Year_Field= as.character(Year_Field)) %>% 
-mutate(Year_Field =  ifelse(Field == "Baseline", "Baseline", Year_Field),
-      Year_Field = as.factor(Year_Field)) %>% 
-filter(Year_Field == "2007_production_1"|
-       Year_Field == "2007_production_9"|
-          Year_Field == "2008_production_10"|
-          Year_Field == "2010_production_21"|
-          Year_Field == "2010_production_25"|
-          Year_Field == "2015_101"|
-          Year_Field == "2015_67"|
-          Year_Field == "2015_97"|
-          Year_Field == "2016_lan"|
-          Year_Field == "2017_mon"|
-          Year_Field == "2017_na"|
-          Year_Field == "Baseline"
-                    )
+ 
+ tetraconazole.complete.cris.3 <- tetraconazole.complete.cris %>%
+    mutate(Year_Field = as.character(Year_Field)) %>%
+    mutate(
+       Year_Field =  ifelse(
+          Field == "NE:Holt",
+          "NE:Holt",
+          ifelse(
+             Field == "NE:Dodge",
+             "NE:Dodge",
+             ifelse(
+                Field == "NE:Cedar 1",
+                "NE:Cedar 1",
+                ifelse(
+                   Field == "NE:Antelope",
+                   "NE:Antelope",
+                   ifelse(
+                      Field == "NE:Pierce",
+                      "NE:Pierce",
+                      ifelse(
+                         Field == "NE:Cedar 2",
+                         "NE:Cedar 2",
+                         ifelse(
+                            Field == "NE:Cedar 3",
+                            "NE:Cedar 3",
+                            ifelse(Field == "Baseline", "Baseline", Year_Field)
+                         )
+                      )
+                   )
+                )
+             )
+          )
+          
+       )
+    ) %>%     filter(
+       !Year_Field == "2016_lan",
+       !Year_Field == "2017_holt",
+       !Year_Field == "2017_mon",
+       !Year_Field == "2017_na",
+       !Year_Field == "no specific field",
+        !Year_Field == "2007_production_4",
+       !Year_Field == "2007_production_5",
+       !Year_Field == "2010_production_22",
+       !Year_Field == "2010_production_23",
+       !Year_Field == "2010_production_24",
+       !Year_Field == "2010_production_24",
+       
+    ) %>% mutate(Year_Field = as.factor(Year_Field)) %>%droplevels()
+    
+     
+    
+ 
+ # 
+ # tetraconazole.complete.cris <- tetraconazole.complete.cris %>%
+ #    mutate(Year_Field = as.character(Year_Field)) %>%
+ #    mutate(
+ #       Year_Field =  ifelse(Field == "Baseline", "Baseline", Year_Field),
+ #       Year_Field = as.factor(Year_Field)
+ #    ) %>%
+ #    filter(
+ #       Year_Field == "2007_production_1" |
+ #          Year_Field == "2007_production_9" |
+ #          Year_Field == "2008_production_10" |
+ #          Year_Field == "2010_production_21" |
+ #          Year_Field == "2010_production_25" |
+ #          Year_Field == "2015_101" |
+ #          Year_Field == "2015_67" |
+ #          Year_Field == "2015_97" |
+ #          Year_Field == "2016_lan" |
+ #          Year_Field == "2017_mon" |
+ #          Year_Field == "2017_na" |
+ #          Year_Field == "Baseline"
+                    #)
 
-  tetraconazole.complete.cris %>%
+  tetraconazole.complete.cris.2 %>%
    ggplot(aes(x = Year_Field, y = EC50DC)) +
-    geom_jitter(aes(color= State, shape = Host, size= source),
+    geom_jitter(aes(colour = State, shape = Host, size= source),
       width = .1,
       alpha = 3 / 4
      ) + stat_summary(
@@ -2123,20 +2222,23 @@ filter(Year_Field == "2007_production_1"|
                                         panel.background = element_rect(fill = "white", colour = "grey50")
                                       ) + scale_y_continuous(breaks = c(0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6, 1.8, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0))
  
-  tetraconazole.complete.cris$Year_Field <-
+  tetraconazole.complete.cris.2 %>% group_by( Year_Field) %>% summarise(average= mean(EC50DC)) %>% arrange(desc(average))
+  
+  tetraconazole.complete.cris.2$Year_Field <-
      factor(
-        tetraconazole.complete.cris$Year_Field,
+        tetraconazole.complete.cris.2$Year_Field,
         c(
            "2010_production_25",
-           "2015_67",
-           "2015_101",
-           "2016_lan",
-           "2017_na",
+           "NE:Dodge",
+           "NE:Cedar 1",
+           "NE:Cedar 2",
+           "2010_production_27",
+           "NE:Cedar 3",
            "2008_production_10",
            "2007_production_9",
-           "2017_mon",
-           "2015_97",
+           "NE:Pierce",
            "Baseline",
+           "NE:Antelope",
            "2007_production_1",
            "2010_production_21"
         )
