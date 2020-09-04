@@ -2537,7 +2537,7 @@ ID %in%WM_WA~"WA"
 boscalid.complete.host <- boscalid.complete %>% 
   filter(!source=="Baseline")
   
-###For isolates from that have reduced sensitivity, assess sensitivity for isolates in the same field to account for heterogeneicity
+###For isolates from that have reduced sensitivity, assess sensitivity for isolates in the same field to account for heterogeneicity. These fields/plots were also selected based on whether or not there was a single mode-of-action fungicide applied in the current year (N= 14) 
 
 
  
@@ -3697,7 +3697,7 @@ picoxystrobin.complete.host <- picoxystrobin.complete %>%
   filter(!source=="Baseline")
 
 
-###For isolates from that have reduced sensitivity, assess sensitivity for isolates in the same field to account for heterogeneicity
+###For isolates from that have reduced sensitivity, assess sensitivity for isolates in the same field to account for heterogeneicity.These fields/plots were also selected based on whether or not there was a single mode-of-action fungicide applied in the current year (N= 14) 
 
 picoxystrobin.complete.fields <- picoxystrobin.complete%>% 
   filter(Field== "MI:East Lansing"| 
@@ -4935,7 +4935,7 @@ tetraconazole.complete.host <- tetraconazole.complete %>%
   filter(!source=="Baseline")
 
   
-   ###For isolates from that have reduced sensitivity, assess sensitivity for isolates in the same field to account for heterogeneicity
+   ###For isolates from that have reduced sensitivity, assess sensitivity for isolates in the same field to account for heterogeneicity.These fields/plots were also selected based on whether or not there was a single mode-of-action fungicide applied in the current year (N= 14) 
 tetraconazole.complete.fields <- tetraconazole.complete%>%  
 filter(Field== "NE:Holt"| 
            Field== "NE:Dodge"|
