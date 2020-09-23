@@ -79,7 +79,39 @@ Field applications of fungicides in the United States on soybean show control of
       control.growth,
       boscalid.growth,
       new)
-  
+  # Mexico and Brazil
+      
+    boscalid.data.MX.BZ <-read.csv("data/DD_survey-WMNCSRP_boscalid.Brazilian.Mexican.csv")
+      boscalid.data.MX.BZ <- boscalid.data.MX.BZ %>%
+      select(
+      ID,
+      repeats,
+      experimental_replicate,
+      control.ecuatorial,
+      control.polar,
+      boscalid.ecuatorial,
+      boscalid.polar
+      ) %>%
+      mutate(
+      control.growth = ((
+      control.polar + control.ecuatorial
+      ) / 2),
+      boscalid.growth = ((
+      boscalid.ecuatorial + boscalid.polar
+      ) / 2),
+      ID = as.character(ID),
+      new = "Yes"
+      ) %>%
+      select(ID,
+      repeats,
+      experimental_replicate,
+      control.growth,
+      boscalid.growth,
+      new)
+    
+      
+      
+      
      #Discriminatory dose picoxystrobin
    
       picoxystrobin.data.cristian <-
@@ -108,6 +140,7 @@ Field applications of fungicides in the United States on soybean show control of
         sham.growth,
         picoxystrobin.growth,
         new)
+        
         
      #Discriminatory dose tetraconazole
    
