@@ -1922,7 +1922,7 @@ fig.2.boscalid<- ggplot(final.boscalid.DC.0.2, aes(x = Estimate.50, y = Estimate
   hjust = 0.5,
   family = "Arial"
   ),
-  axis.title = element_text(size = 9, face = "bold", hjust = 0.5),
+  axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
   axis.text = element_text(
   face = "bold",
   size = 10,
@@ -1935,7 +1935,7 @@ expression(bold(EC[bold("50")])~( bold(ppm ~bold("a.i.")))), y = expression(bold
                 slope = 1,
                 color = "black",
                 lty = "dashed",
-                lwd = 1
+                size = 0.3
                 )+  expand_limits(x = c(0.04, 0.25), y= c(0.04, 0.25))      + scale_x_continuous(name = waiver(), breaks = c(0.05, 0.1, 0.15, 0.20, 0.25)) + scale_y_continuous(breaks = c(0.05, 0.1, 0.15, 0.20, 0.25))
 
 
@@ -1943,35 +1943,49 @@ expression(bold(EC[bold("50")])~( bold(ppm ~bold("a.i.")))), y = expression(bold
  fig.1.boscalid
  fig.2.boscalid
  
-  ggplot(final.boscalid.DC.two, aes(x = Estimate.50, y = Estimate.50DC)) +  geom_point(aes(shape= Host, colour = source),
-     size = 2,
-     alpha = 3 / 4
-     
- ) + geom_smooth(method = "lm", se= FALSE, colour= "black"
-                 #fullrange=TRUE
- ) +  theme(
+ggplot(final.boscalid.DC.two, aes(x = Estimate.50, y = Estimate.50DC)) +  geom_point(aes(
+   shape = Host,
+   colour = source,
+   fill = Host
+ ),
+ size = 2,
+ alpha = 3 / 4) +
+   scale_color_grey(start = 0, end = 1) + scale_shape_manual(values = c(15, 16, 17)) +
+   geom_smooth(method = "lm",
+               se = FALSE,
+               colour = "black",
+               size = 0.3) +
+   theme(
      plot.title = element_text(
-         size = 10,
-         face = "bold",
-         hjust = 0.5,
-         family = "Arial"
+       size = 10,
+       face = "bold",
+       hjust = 0.5,
+       family = "Arial"
      ),
-     axis.title = element_text(size = 9, face = "bold", hjust = 0.5),
+     axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
      axis.text = element_text(
-         face = "bold",
-         size = 10,
-         family = "Arial"
+       face = "bold",
+       size = 10,
+       family = "Arial"
      ),
      panel.background = element_rect(fill = "white", colour = "grey50")
- ) + labs( x =
-               expression(bold(EC[bold("50")])~( bold(ppm ~bold("a.i.")))), y = expression(bold(EC[bold("50")~(bold("D"))])~( bold(ppm ~bold("a.i.")))))+ geom_abline(
-                   intercept = 0,
-                   slope = 1,
-                   color = "black",
-                   lty = "dashed",
-                   lwd = 1
-               )+  expand_limits(x = c(0.04, 0.25), y= c(0.04, 0.25))      + scale_x_continuous(name = waiver(), breaks = c(0.05, 0.1, 0.15, 0.20, 0.25)) + scale_y_continuous(breaks = c(0.05, 0.1, 0.15, 0.20, 0.25))
-         
+   ) +
+   labs(x =
+          expression(bold(EC[bold("50")]) ~ (bold(ppm ~ bold(
+            "a.i."
+          )))), y = expression(bold(EC[bold("50") ~ (bold("D"))]) ~ (bold(ppm ~ bold(
+            "a.i."
+          ))))) + geom_abline(
+            intercept = 0,
+            slope = 1,
+            color = "black",
+            lty = "dashed",
+            size = 0.3
+          
+          ) +
+   expand_limits(x = c(0.04, 0.25), y = c(0.04, 0.25))  + scale_x_continuous(name = waiver(),
+                                                                             breaks = c(0.05, 0.1, 0.15, 0.20, 0.25)) + scale_y_continuous(breaks = c(0.05, 0.1, 0.15, 0.20, 0.25))
+ 
  
  
 ```
@@ -3225,13 +3239,12 @@ final.picoxystrobin.DC.two <-
 Modification for publication
 ```{r}
 fig.1.picoxystrobin <-
-  ggplot(finalRG0.01, aes(x = RG0.01, y = logEC50)) +  geom_point(
-  shape = 17,
-  fill = "black",
-  size = 2,
-  alpha = 3 / 4
-  
-  ) + geom_smooth(method = "lm", se = FALSE, color = "black") +  theme(
+  ggplot(finalRG0.01, aes(x = RG0.01, y = logEC50)) +  geom_point(aes(shape= Host, colour = source, fill= Host),
+                                                                                          size = 2,
+                                                                                  alpha = 3 / 4
+) + 
+    scale_color_grey(start = 0,end = 1) + scale_shape_manual(values = c(15, 16, 17))
+ + geom_smooth(method = "lm", se = FALSE, color = "black") +  theme(
   plot.title = element_text(
   size = 9,
   face = "bold",
@@ -3286,36 +3299,53 @@ breaks = c(0.0075, 0.01, 0.0125, 0.015,  0.018))
 fig.1.picoxystrobin
 fig.2.picoxystrobin
 
-ggplot(final.picoxystrobin.DC.two, aes(x = Estimate.50, y = Estimate.50DC)) +  geom_point(aes(shape= Host, colour = source),
-     size = 2,
-     alpha = 3 / 4
-      ) + geom_smooth(method = "lm", se = FALSE, color = "black"
-  #fullrange=TRUE                
-  ) +  theme(
-  plot.title = element_text(
-  size = 9,
-  face = "bold",
-  hjust = 0.5,
-  family = "Arial"
-  ),
-  axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
-  axis.text = element_text(
-  face = "bold",
-  size = 10,
-  family = "Arial"
-  ),
-  panel.background = element_rect(fill = "white", colour = "grey50")
-  ) + labs( x =
-expression(bold(EC[bold("50")])~( bold(ppm~bold("a.i.")))), y = expression(bold(EC[bold("50")~(bold("D"))])~( bold(ppm~bold("a.i."))))) + geom_abline(
-                intercept = 0,
-                slope = 1,
-                color = "black",
-                lty = "dashed",
-                lwd = 1
- ) + expand_limits(x = c(0.0060, 0.018), y = c(0.0060, 0.018)) + scale_x_continuous(name = waiver(),
-breaks = c(0.0075, 0.01, 0.0125, 0.015,  0.018)) + scale_y_continuous(name = waiver(),
-breaks = c(0.0075, 0.01, 0.0125, 0.015,  0.018))
 
+
+ggplot(final.picoxystrobin.DC.two,
+       aes(x = Estimate.50, y = Estimate.50DC)) +  geom_point(aes(
+         shape = Host,
+         colour = source,
+         fill = Host
+       ),
+       size = 2,
+       alpha = 3 / 4) +
+  scale_color_grey(start = 0, end = 1) + scale_shape_manual(values = c(15, 16, 17))+
+  geom_smooth(
+    method = "lm",
+    se = FALSE,
+    color = "black",
+    size = 0.3
+    #fullrange=TRUE
+  ) +
+  theme(
+    plot.title = element_text(
+      size = 9,
+      face = "bold",
+      hjust = 0.5,
+      family = "Arial"
+    ),
+    axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 10,
+      family = "Arial"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  ) +
+  labs(x =
+         expression(bold(EC[bold("50")]) ~ (bold(ppm ~ bold(
+           "a.i."
+         )))), y = expression(bold(EC[bold("50") ~ (bold("D"))]) ~ (bold(ppm ~ bold(
+           "a.i."
+         ))))) + geom_abline(
+           intercept = 0,
+           slope = 1,
+           color = "black",
+           lty = "dashed",
+           size = 0.3,
+         ) + expand_limits(x = c(0.0060, 0.018), y = c(0.0060, 0.018)) + scale_x_continuous(name = waiver(),
+                                                                                            breaks = c(0.0075, 0.01, 0.0125, 0.015,  0.018)) + scale_y_continuous(name = waiver(),
+                                                                                                                                                                  breaks = c(0.0075, 0.01, 0.0125, 0.015,  0.018))
 
 ```
 
@@ -4543,32 +4573,44 @@ expression(bold(EC[bold("50")])~( bold(ppm~bold("a.i.")))), y = expression(bold(
 fig.1.tetraconazole                
 fig.2.tetraconazole
 
-ggplot(final.tetraconazole.DC.two, aes(x = Estimate.50, y = Estimate.50DC)) +  geom_point(aes(shape= Host, colour = source),
-     size = 2,
-     alpha = 3 / 4
-      )      + geom_smooth(method = "lm",se= FALSE, color= "black") +  theme(
-plot.title = element_text(
-size = 10,
-face = "bold",
-hjust = 0.5,
-family = "Arial"
-),
-axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
-axis.text = element_text(
-face = "bold",
-size = 10,
-family = "Arial"
-),
-panel.background = element_rect(fill = "white", colour = "grey50")
-) + labs( x =
-expression(bold(EC[bold("50")])~( bold(ppm~bold("a.i.")))), y = expression(bold(EC[bold("50")~(bold("D"))])~( bold(ppm~bold("a.i."))))) + geom_abline(
-                intercept = 0,
-                slope = 1,
-                color = "black",
-                lty = "dashed",
-                lwd = 1
-                 )+ expand_limits(x = c(0.3, 1.8), y = c(0.3, 1.8))     + scale_x_continuous(breaks = c(0.3,0.6, 0.9, 1.2, 1.5, 1.8))+ scale_y_continuous(breaks = c(0.3,0.6, 0.9, 1.2, 1.5, 1.8)) 
- 
+ggplot(final.tetraconazole.DC.two,
+       aes(x = Estimate.50, y = Estimate.50DC)) +  geom_point(aes(
+         shape = Host,
+         colour = "black",
+         fill = source
+       ),
+       size = 2,
+       alpha = 3 / 4) +     scale_color_grey(start = 0, end = 1) +   scale_shape_manual(values = c(21, 22, 24))+  geom_smooth(method = "lm", se = FALSE, color = "black") +
+  theme(
+    plot.title = element_text(
+      size = 10,
+      face = "bold",
+      hjust = 0.5,
+      family = "Arial"
+    ),
+    axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+      face = "bold",
+      size = 10,
+      family = "Arial"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+  ) + 
+  labs(x =
+             expression(bold(EC[bold("50")]) ~ (bold(ppm ~ bold(
+               "a.i."
+             )))), y = expression(bold(EC[bold("50") ~ (bold("D"))]) ~ (bold(ppm ~ bold(
+               "a.i."
+             ))))) + geom_abline(
+               intercept = 0,
+               slope = 1,
+               color = "black",
+               lty = "dashed",
+               size = 0.3
+             ) +
+  expand_limits(x = c(0.3, 1.8), y = c(0.3, 1.8)) + scale_x_continuous(breaks = c(0.3, 0.6, 0.9, 1.2, 1.5, 1.8)) +
+  scale_y_continuous(breaks = c(0.3, 0.6, 0.9, 1.2, 1.5, 1.8))
+
 ```
 
 ```{r}
