@@ -12,6 +12,7 @@ output:
 
 ```{r set packages, warning= FALSE, include=FALSE}
 load("Main.Rdata", .GlobalEnv)
+#dont read all.2 giving me an error in somewhere
 load("all.2.Rdata", .GlobalEnv)
 library(tidyverse)
 library(ggplot2)
@@ -640,7 +641,7 @@ Brazilian and Mexican recently added
    mutate(new = ifelse(ID %in% boscalid.filtered.survey.yes,
                        "Yes", "No")) #%>%
  #mutate(new= as.factor(new))
-  
+  #Following #423 lines or ID
  #Selecting the EC50D from the serial dilution
  boscalid.complete.MX.BZ <- final.boscalid.DC %>% 
    ####WATCH OUT, Based on EC50DC
@@ -703,6 +704,7 @@ From the 21 baseline, there are 2 that are statistically different
    group_by(ID) %>%
    top_n(1, EC50DC) %>% #keeping the highest value of each ID value
    ungroup() 
+#395
  #Filterring specific fields by field scale
    boscalid.complete.MX.BZ.complete <-   boscalid.complete.MX.BZ%>% 
    mutate(source = ifelse(
@@ -989,10 +991,9 @@ From the 21 baseline, there are 2 that are statistically different
      ID %in%WM_WA~"WA"
      
    )
-    ) 
-   # %>% select(-c(new)) 
-   %>% 
-   mutate(Country = as.factor(Country),
+    )     %>% 
+      select(-c(new)) %>%  
+      mutate(Country = as.factor(Country),
           Year_Field = as.factor(Year_Field),
           State= as.factor(State) ) %>% 
    arrange(ID)
@@ -2556,7 +2557,7 @@ mutate(Year_Field =  ifelse(Field == "Baseline", "Baseline", Year_Field),
    filter(n >= 9)
 
 
-boscalid.complete.MX.BZ.complete <- boscalid.complete.MX.BZ.complete %>% 
+boscalid.complete.MX.BZ.complete.2 <- boscalid.complete.MX.BZ.complete %>% 
    mutate(Year_Field= as.character(Year_Field)) %>% 
 mutate(Year_Field =  ifelse(Field == "Baseline", "Baseline", Year_Field),
       Year_Field = as.factor(Year_Field)) %>% 
@@ -2575,26 +2576,26 @@ filter(Year_Field == "2007_production_1"|
           Year_Field == "2017_pre"|
           Year_Field == "2010_Unai"|
           Year_Field == "2010_Lambari"|
-          Year_Field == "2017_Porto.Firme"|
+          Year_Field == "2010_Porto.Firme"|
           Year_Field == "Baseline"
                     )
 
-boscalid.complete.MX.BZ.complete$Year_Field <-
+boscalid.complete.MX.BZ.complete.2$Year_Field <-
    factor(
-      boscalid.complete.MX.BZ.complete$Year_Field,
+      boscalid.complete.MX.BZ.complete.2$Year_Field,
       c(
          "2010_production_21",
          "2007_production_1",
          "2007_production_9",
          "2016_lan",
-         "2007_production_10",
-         "2007_production_25",
-         "2017_mont",
+         "2008_production_10",
+         "2010_production_25",
          "Baseline",
+         "2015_mont",
          "2017_na",
          "2017_mon",
          "2017_ha",
-         "2017_Porto.Firme",
+         "2010_Porto.Firme",
          "2010_Unai",
          "2017_pre",
          "2017_ca",
