@@ -1,0 +1,113 @@
+---
+title: "Changes"
+output: 
+ pdf_document: default
+---
+
+
+```{r changes to analyses3}
+#Starting line 2320
+#We don't need mutual isolates
+  
+# select_max_iso_field <- num_isolates_selected %>% 
+#   ungroup() %>% 
+#   group_by(Field) %>% 
+#   mutate(Nmax_per_field = max(N_iso_to_pick_extra)) %>% 
+#   select(Field, Nmax_per_field) %>% 
+#   unique()
+
+isolates_field <- num_isolates_selected %>%
+  arrange(Group) %>% 
+  rename(Nperfield = N_iso_perfield , 
+         Ntested = N_iso_tested, 
+         Nselect  = N_iso_to_pick,
+         Nextra = N_iso_to_pick_extra) %>% 
+  ungroup() %>% 
+  mutate(Group = recode(Group, Group_one = 1, 
+                        Group_3 =  3, Group_7 = 7, Group_11 = 11)) %>% 
+  mutate(Random_sampling_possible = case_when(
+    N_iso_not_tested == Nextra ~ FALSE,
+    TRUE ~ TRUE
+    ))
+
+#Certain fields have less number of isolates. We cannot randomly select
+#from them. We have to choose all the remaining isolates.
+
+selected_remaining_iso <- isolates_field %>% 
+  filter(Random_sampling_possible == FALSE) %>% 
+  select(-Random_sampling_possible)
+
+set.seed(2016)
+
+randomly_selected_iso <- isolates_field %>% 
+  filter(Random_sampling_possible == TRUE) %>% 
+  select(-Random_sampling_possible) %>% 
+  group_by(Field, Group) %>% 
+  sample_n(size = Nextra)
+
+selected_isolates <- selected_remaining_iso %>% 
+  full_join(randomly_selected_iso)
+ 
+selected_isolates.2 <- selected_isolates %>% 
+mutate(source = ifelse(
+    ID %in% baseline_isolates_2,
+    "Baseline",
+    ifelse(
+      ID %in% Farmer_fields,
+      "Producer Fields","Fungicide Field Trials"
+    )))
+      
+csc <- selected_isolates.2 %>% select(ID, Field, Year, State, Group) %>% group_by(Group, Field, Year, State) %>% summarize() %>% arrange(Group)
+
+
+SUMMARY.final_data_isolates <- selected_isolates %>% 
+  group_by(Field, Group) %>% 
+  summarize(Total_isolates = n()) 
+ ##For boscalid test
+
+  selected_isolates %>% filter(Group == 7) %>% arrange(ID) %>% kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
+  write2pdf("List_of_isolates_to_test_BOSCALID.pdf")
+
+## to see which fields are not done for each group of fungicides
+  zz <- WM3_ %>% filter(Group_MOA_current_season=="Group_one") 
+unique(SUMMARY.final_data_isolates$Field)
+unique(zz$Field)
+
+
+```
+
+```{r}
+##For tetraconazole test
+
+  selected_isolates %>% filter(Group == 3) %>% arrange(ID) %>% kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
+  write2pdf("List_of_isolates_to_test_TETRACONAZOLE.pdf")
+
+## to see which fields are not done for each group of fungicides
+  zz <- WM3_ %>% filter(Group_MOA_current_season=="Group_one") 
+unique(SUMMARY.final_data_isolates$Field)
+unique(zz$Field)
+
+
+```
+
+```{r}
+View(selected_isolates <- selected_isolates %>% 
+  mutate(source = ifelse(
+    ID %in% baseline_isolates_2,
+    "Baseline",
+    ifelse(
+      ID %in% Farmer_fields,
+      "Producer Fields","Fungicide Field Trials"
+    )), Host = ifelse(
+    ID %in% drybean,
+    "Drybean", ifelse(
+      ID %in% soybean,
+      "Soybean","different_host"))) %>% 
+  select( Field, Year, State, Group, Nperfield, source, Host) %>% 
+  arrange(Group) %>% 
+    unique())
+
+# We need to try to fusion with the one whi has more isolate tested among boscalid.complete, picoxystrobin.complete, etc...
+boscalid.complete %>% select(-new) %>% group_by( Field) %>% mutate(Mean= mean(EC50DC)) %>% ungroup() %>% group_by(source,Host, Field, Country, Mean) %>% summarize()
+```
+
