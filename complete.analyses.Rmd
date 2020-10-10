@@ -1,0 +1,49 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+```{r functions}
+#Reading the sclerotinia inventory
+
+##Function.Reading data for serial.dilution
+reading_data_serial_dilution <- function(filename){
+  data <-
+  read.csv(filename)
+ # data <- subset(dareading_data("data/Benomyl.Colletotrichum.csv")ta, select = -X)
+  data$repeats <- rep_len(1:4, length.out = nrow(data))
+  
+  data <- data %>%
+         mutate(polar= replace(polar, polar == 0, 0.6)) %>%  #replacing 0 cm growth for the size of plug that is 0.6
+    mutate(ecuatorial= replace(ecuatorial, ecuatorial == 0, 0.6)) %>% #replacing 0 cm growth for the size of plug that is 0.6
+    group_by(ID, experimental_replicate, dose, ecuatorial, polar, repeats) %>%
+    mutate(growth = ((ecuatorial + polar) / 2))
+  }
+
+##Function.Reading data for Discriminatory concentration
+reading_data_discriminatory_concentration <- function(filename){
+  data <-
+  read.csv(filename)
+ # data <- subset(data, select = -X)
+  data$repeats <- rep_len(1:3, length.out = nrow(data))
+  
+  data <- data %>%
+         mutate(polar= replace(growth, growth == 0, 6)) %>%  #replacing 0 cm growth for the size of plug that is 0.6
+     group_by(ID, experimental_replicate, concentration, growth, repeats) %>%
+  rename(dose = concentration )
+}
+#getting EC50
+
+
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
