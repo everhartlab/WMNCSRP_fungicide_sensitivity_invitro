@@ -79,7 +79,7 @@ Field applications of fungicides in the United States on soybean show control of
       control.growth,
       boscalid.growth,
       new)
-  # Mexico and Brazil
+  ## Mexico and Brazil
       
     boscalid.data.MX.BZ <-read.csv("data/DD_survey-WMNCSRP_boscalid.Brazilian.Mexican.csv")
       boscalid.data.MX.BZ <- boscalid.data.MX.BZ %>%
@@ -141,12 +141,69 @@ Field applications of fungicides in the United States on soybean show control of
         picoxystrobin.growth,
         new)
         
+        ##Mexico and Brazil
+        
+        picoxystrobin.data.MX.BZ <-
+        read.csv("data/DD_survey-WMNCSRP_picoxystrobin.Mexican.Brazilian.csv")
+        picoxystrobin.data.MX.BZ <- picoxystrobin.data.MX.BZ %>%
+        select(
+        ID,
+        repeats,
+        experimental_replicate,
+        sham.ecuatorial,
+        sham.polar,
+        picoxystrobin.ecuatorial,
+        picoxystrobin.polar
+        ) %>%
+        mutate(
+        sham.growth = ((sham.ecuatorial + sham.polar) / 2),
+        picoxystrobin.growth = ((
+        picoxystrobin.ecuatorial + picoxystrobin.polar
+        ) / 2),
+        ID = as.character(ID),
+        new = "Yes"
+        ) %>%
+        select(ID,
+        repeats,
+        experimental_replicate,
+        sham.growth,
+        picoxystrobin.growth,
+        new)
         
      #Discriminatory dose tetraconazole
    
         tetraconazole.data.cristian <-
           read.csv("data/Tetraconazole.Cristian.csv")
           tetraconazole.data.cristian <- tetraconazole.data.cristian %>%
+          select(
+          ID,
+          repeats,
+          experimental_replicate,
+          control.ecuatorial,
+          control.polar,
+          tetraconazole.ecuatorial,
+          tetraconazole.polar
+          ) %>%
+          mutate(
+          control.growth = ((control.ecuatorial + control.polar) / 2),
+          tetraconazole.growth = ((
+          tetraconazole.ecuatorial + tetraconazole.polar
+          ) / 2),
+          ID = as.character(ID),
+          new = "Yes"
+          ) %>%
+          select(ID,
+          repeats,
+          experimental_replicate,
+          control.growth,
+          tetraconazole.growth,
+          new)
+          
+            ##Mexico and Brazil
+          
+           tetraconazole.data.MX.BZ <-
+          read.csv("data/DD_survey-WMNCSRP_tetraconazole.Mexican.Brazilian.csv")
+          tetraconazole.data.MX.BZ<- tetraconazole.data.MX.BZ %>%
           select(
           ID,
           repeats,

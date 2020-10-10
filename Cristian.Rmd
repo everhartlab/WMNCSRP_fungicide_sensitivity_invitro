@@ -661,42 +661,31 @@ Brazilian and Mexican recently added
 ```{r Testing controls in Boscalid, echo = FALSE, include=FALSE, warning= FALSE}
 ## Testing controls between Serial dilution and Duscriminatory concentration
  
- boscalid.controls.cristian <- boscalid.complete.cristian$ID[duplicated(boscalid.complete.cristian$ID)]
- # 25 repeats
+ boscalid.controls.MX.BZ <- boscalid.complete.MX.BZ$ID[duplicated(boscalid.complete.MX.BZ$ID)]
+ # 28 repeats
  
- boscalid.complete.controls.cristian <- boscalid.complete.cristian %>% 
+ boscalid.complete.controls.MX.BZ <- boscalid.complete.MX.BZ %>% 
    mutate(controls = ifelse(
-     ID %in% boscalid.controls.cristian,
+     ID %in% boscalid.controls.MX.BZ,
      "Yes", "No")) %>% 
    filter(controls== "Yes")
  
  ## Normality test
  
- shapiro.test.boscal.controls.cristian <- boscalid.complete.controls.cristian  %>%
+ shapiro.test.boscal.controls.MX.BZ <- boscalid.complete.controls.MX.BZ  %>%
    do(tidy(shapiro.test(.$EC50DC)))
  
- shapiro.test.boscal.controls.cristian
+ shapiro.test.boscal.controls.MX.BZ
  
  
- # All normals, t- test since the sample size for each sample is 2, in other words grouping by ID
-  # P value = 0.0526
- tested.bocalid.controls.cristian <- boscalid.complete.controls.cristian %>% 
-   group_by(ID) %>% 
-   do(tidy(t.test(.$EC50DC))) %>% 
-   filter(p.value<= 0.05)
- 
- tested.bocalid.controls.cristian
- 461 %in%tested.bocalid.controls.cristian$ID
- baseline_isolates %in% tested.bocalid.controls.cristian$ID
- # there are 6 isolates different but anyone is 
- # the ID 461 (ccurrent ontrol)  so that is good
- ##From the 21 baseline, there are 2 that are statistically differenet
- 
+ # No  normals, 
 ```
-## Normality, p value = `r shapiro.test.boscal.controls.cristian[[2]][[1]]`  
+## Normality, p value = `r shapiro.test.boscal.controls.MX.BZ[[2]][[1]]`  
 there are 6 isolates different but anyone is the ID 461 (ccurrent ontrol),  so that is good  
 From the 21 baseline, there are 2 that are statistically different
 ## Wrangling data in Boscalid
+
+
 ```{r Wrangling data in Boscalid, echo = FALSE, warning= FALSE}
 # keeping juts the highest value of the repeated ID value
    boscalid.complete.MX.BZ<-   boscalid.complete.MX.BZ%>%  
@@ -1003,165 +992,281 @@ From the 21 baseline, there are 2 that are statistically different
  
  ###For comparisons between hosts I had to take out the ones coming from baseline otherwise would not be fair
  
-  <- boscalid.complete %>% 
+  boscalid.complete.MX.BZ.complete.hosts<- boscalid.complete.MX.BZ.complete %>% 
    filter(!source=="Baseline")
  
  ###For isolates from that have reduced sensitivity, assess sensitivity for isolates in the same field to account for heterogeneicity
  
+ boscalid.complete.MX.BZ.complete %>% 
+   mutate(Year_Field= as.character(Year_Field)) %>% 
+mutate(Year_Field =  ifelse(Field == "Baseline", "Baseline", Year_Field),
+      Year_Field = as.factor(Year_Field)) %>% 
+   count(Year_Field) %>% 
+   filter(n >= 9)
+
+  boscalid.complete.MX.BZ.complete.fields <- boscalid.complete.MX.BZ.complete %>% 
+   mutate(Year_Field= as.character(Year_Field)) %>% 
+mutate(Year_Field =  ifelse(Field == "Baseline", "Baseline", Year_Field),
+      Year_Field = as.factor(Year_Field)) %>% 
+filter(Year_Field == "2007_production_1"|
+       Year_Field == "2007_production_9"|
+          Year_Field == "2008_production_10"|
+          Year_Field == "2010_production_21"|
+          Year_Field == "2010_production_25"|
+          Year_Field == "2015_mont"|
+          Year_Field == "2016_lan"|
+          Year_Field == "2017_ha"|
+          Year_Field == "2017_mon"|
+          Year_Field == "2017_na"|
+          Year_Field == "2017_ley"|
+          Year_Field == "2017_ca"|
+          Year_Field == "2017_pre"|
+          Year_Field == "2010_Unai"|
+          Year_Field == "2010_Lambari"|
+          Year_Field == "2010_Porto.Firme"|
+          Year_Field == "Baseline"
+                    )
+
+boscalid.complete.MX.BZ.complete.fields$Year_Field <-
+   factor(
+      boscalid.complete.MX.BZ.complete.fields$Year_Field,
+      c(
+         "2010_production_21",
+         "2007_production_1",
+         "2007_production_9",
+         "2016_lan",
+         "2008_production_10",
+         "2010_production_25",
+         "Baseline",
+         "2015_mont",
+         "2017_na",
+         "2017_mon",
+         "2017_ha",
+         "2010_Porto.Firme",
+         "2010_Unai",
+         "2017_pre",
+         "2017_ca",
+         "2010_Lambari", 
+         "2017_ley"
+               )
+   )
+
+
  
- 
- boscalid.complete.fields.cristian <- boscalid.complete.cris%>% 
-   filter(  Field== "Baseline"|
-            State== "CO"|
-            State== "NE"|
-              State== "ND"| 
-              State== "WA"|
-              State== "MI"
-              ) %>% 
-   arrange(source) %>% 
-   filter( !source == "Fungicide Field Trials") %>% 
-   
-    mutate(State= as.character(State), 
-      State =  ifelse(Field == "Baseline", "Baseline", State),
-      State = as.factor(State)) %>% 
-   filter(Year_Field == "2007_production_1"|
-            Year_Field == "2007_production_2"|
-            Year_Field == "2007_production_3"|
-            Year_Field == "2007_production_4"|
-            Year_Field == "2007_production_5"|
-            Year_Field == "2007_production_6"|
-            Year_Field == "2007_production_7"|
-            Year_Field == "2007_production_8"|
-            Year_Field == "2007_production_9"|
-            Year_Field == "2008_production_10"|
-            Year_Field == "2008_production_11"|
-            Year_Field == "2008_production_12"|
-            Year_Field == "2008_production_13"|
-            Year_Field == "2009_production_17"|
-            Year_Field == "2009_production_19"|
-            Year_Field == "2009_production_20"|
-            Year_Field == "2010_production_21"|
-            Year_Field == "2007_production_22"|
-            Year_Field == "2007_production_23"|
-            Year_Field == "2007_production_24"|
-            Year_Field == "2007_production_25"|
-            Year_Field == "2007_production_26"|
-            Year_Field == "2007_production_27"|
-            Year_Field == "2007_production_28"|
-            Year_Field == "2007_production_29"|
-            Year_Field == "2007_production_30"|
-             State == "Baseline")
- # total 124 isolates
- ###
- # boscalid.complete.2 <- boscalid.complete%>% 
- #   filter( !Field == "potato", !Field == "other_fields")
- # 
- # boscalid.complete.3 <- boscalid.complete%>%
- #   filter(
- #     !Country =="Brazil" & !Country == "Mexico"  
- #   )
- 
- boscalid.complete.fields.cristian$State <-
-   factor(boscalid.complete.fields.cristian$State,
-          c("Baseline", "WA", "ND", "MI","CO", "NE"))
  
 ```
 
 ## Statistical analysis  
-### By Field (previous Source) but because the name actually is "State"
-
+### By Year_Field (previous Source) 
 ```{r Normality in Boscalid, include= FALSE}
 
  ##NORMALITY TEST-Shapiro_test
  
- shapiro.test.boscal.cristian <- boscalid.complete.fields.cristian %>%
+ shapiro.test.boscal.MX.BZ.complete.fields <- boscalid.complete.MX.BZ.complete.fields %>%
    do(tidy(shapiro.test(.$EC50DC)))
- shapiro.test.boscal.cristian[[2]][[1]]
+shapiro.test.boscal.MX.BZ.complete.fields[[2]][[1]]
  # p value = 6.402496e-07, No normals
  
 ```
-## No normality, p value = `r shapiro.test.boscal.cristian[[2]][[1]]`    
+## No normality, p value = `r shapiro.test.boscal.MX.BZ.complete.fields[[2]][[1]]`    
 
 ## kruskal Wallis test
 
 ```{r kruskal wallis in Boscalid, echo = FALSE, include=FALSE, warning= FALSE}
-object.1.cristian <- kruskal.test(EC50DC ~ State, data = boscalid.complete.fields.cristian)
- object.1.cristian[[3]][[1]]
+object.1.boscal.MX.BZ.complete.fields <- kruskal.test(EC50DC ~ Year_Field, data = boscalid.complete.MX.BZ.complete.fields)
+object.1.boscal.MX.BZ.complete.fields[[3]][[1]]
  
- #There is difference p-value = 1.496384e-07
+ #There is difference p-value = 2.405078e-12
  
 ```
-## There is difference,  p value =  `r object.1.cristian[[3]][[1]]`  
+## There is difference,  p value =  `r object.1.boscal.MX.BZ.complete.fields[[3]][[1]]`  
 ## Dunn test
 
 ```{r Dunn test in Boscalid, echo= FALSE}
-object.2.cristian <-  DunnTest(EC50DC ~ State, data = boscalid.complete.fields.cristian, method = "bonferroni")
-object.2.cristian 
+object.2.MX.BZ.complete.fields <-  DunnTest(EC50DC ~ Year_Field, data = boscalid.complete.MX.BZ.complete.fields, method = "bonferroni")
+object.2.MX.BZ.complete.fields 
 #  Dunn's test of multiple comparisons using rank sums : bonferroni  
-# 
-#             mean.rank.diff    pval    
-# WA-Baseline     -13.464286 1.00000    
-# ND-Baseline     -32.937888 0.03591 *  
-# MI-Baseline     -34.824176 0.09058 .  
-# CO-Baseline     -46.785714 0.00046 ***
-# NE-Baseline     -61.601504 9.3e-07 ***
-# ND-WA           -19.473602 0.81262    
-# MI-WA           -21.359890 1.00000    
-# CO-WA           -33.321429 0.02312 *  
-# NE-WA           -48.137218 9.9e-05 ***
-# MI-ND            -1.886288 1.00000    
-# CO-ND           -13.847826 1.00000    
-# NE-ND           -28.663616 0.15141    
-# CO-MI           -11.961538 1.00000    
-# NE-MI           -26.777328 0.57682    
-# NE-CO           -14.815789 1.00000    
+# 2007_production_1-2010_production_21     
+# 2007_production_9-2010_production_21     
+# 2016_lan-2010_production_21              
+# 2008_production_10-2010_production_21    
+# 2010_production_25-2010_production_21    
+# Baseline-2010_production_21           *  
+# 2015_mont-2010_production_21          .  
+# 2017_na-2010_production_21            *  
+# 2017_mon-2010_production_21           ** 
+# 2017_ha-2010_production_21            ** 
+# 2010_Porto.Firme-2010_production_21   ** 
+# 2010_Unai-2010_production_21          ***
+# 2017_pre-2010_production_21           ***
+# 2017_ca-2010_production_21            ***
+# 2010_Lambari-2010_production_21       ***
+# 2017_ley-2010_production_21           ***
+# 2007_production_9-2007_production_1      
+# 2016_lan-2007_production_1               
+# 2008_production_10-2007_production_1     
+# 2010_production_25-2007_production_1     
+# Baseline-2007_production_1               
+# 2015_mont-2007_production_1              
+# 2017_na-2007_production_1                
+# 2017_mon-2007_production_1            .  
+# 2017_ha-2007_production_1             .  
+# 2010_Porto.Firme-2007_production_1    *  
+# 2010_Unai-2007_production_1           ** 
+# 2017_pre-2007_production_1            ** 
+# 2017_ca-2007_production_1             ** 
+# 2010_Lambari-2007_production_1        ***
+# 2017_ley-2007_production_1            ***
+# 2016_lan-2007_production_9               
+# 2008_production_10-2007_production_9     
+# 2010_production_25-2007_production_9     
+# Baseline-2007_production_9               
+# 2015_mont-2007_production_9              
+# 2017_na-2007_production_9                
+# 2017_mon-2007_production_9               
+# 2017_ha-2007_production_9                
+# 2010_Porto.Firme-2007_production_9       
+# 2010_Unai-2007_production_9           .  
+# 2017_pre-2007_production_9            *  
+# 2017_ca-2007_production_9             *  
+# 2010_Lambari-2007_production_9        ** 
+# 2017_ley-2007_production_9            ** 
+# 2008_production_10-2016_lan              
+# 2010_production_25-2016_lan              
+# Baseline-2016_lan                        
+# 2015_mont-2016_lan                       
+# 2017_na-2016_lan                         
+# 2017_mon-2016_lan                        
+# 2017_ha-2016_lan                         
+# 2010_Porto.Firme-2016_lan                
+# 2010_Unai-2016_lan                       
+# 2017_pre-2016_lan                        
+# 2017_ca-2016_lan                         
+# 2010_Lambari-2016_lan                 *  
+# 2017_ley-2016_lan                     *  
+# 2010_production_25-2008_production_10    
+# Baseline-2008_production_10              
+# 2015_mont-2008_production_10             
+# 2017_na-2008_production_10               
+# 2017_mon-2008_production_10              
+# 2017_ha-2008_production_10               
+# 2010_Porto.Firme-2008_production_10      
+# 2010_Unai-2008_production_10             
+# 2017_pre-2008_production_10              
+# 2017_ca-2008_production_10               
+# 2010_Lambari-2008_production_10          
+# 2017_ley-2008_production_10              
+# Baseline-2010_production_25              
+# 2015_mont-2010_production_25             
+# 2017_na-2010_production_25               
+# 2017_mon-2010_production_25              
+# 2017_ha-2010_production_25               
+# 2010_Porto.Firme-2010_production_25      
+# 2010_Unai-2010_production_25             
+# 2017_pre-2010_production_25              
+# 2017_ca-2010_production_25               
+# 2010_Lambari-2010_production_25          
+# 2017_ley-2010_production_25              
+# 2015_mont-Baseline                       
+# 2017_na-Baseline                         
+# 2017_mon-Baseline                        
+# 2017_ha-Baseline                         
+# 2010_Porto.Firme-Baseline                
+# 2010_Unai-Baseline                       
+# 2017_pre-Baseline                        
+# 2017_ca-Baseline                         
+# 2010_Lambari-Baseline                    
+# 2017_ley-Baseline                        
+# 2017_na-2015_mont                        
+# 2017_mon-2015_mont                       
+# 2017_ha-2015_mont                        
+# 2010_Porto.Firme-2015_mont               
+# 2010_Unai-2015_mont                      
+# 2017_pre-2015_mont                       
+# 2017_ca-2015_mont                        
+# 2010_Lambari-2015_mont                   
+# 2017_ley-2015_mont                       
+# 2017_mon-2017_na                         
+# 2017_ha-2017_na                          
+# 2010_Porto.Firme-2017_na                 
+# 2010_Unai-2017_na                        
+# 2017_pre-2017_na                         
+# 2017_ca-2017_na                          
+# 2010_Lambari-2017_na                     
+# 2017_ley-2017_na                         
+# 2017_ha-2017_mon                         
+# 2010_Porto.Firme-2017_mon                
+# 2010_Unai-2017_mon                       
+# 2017_pre-2017_mon                        
+# 2017_ca-2017_mon                         
+# 2010_Lambari-2017_mon                    
+# 2017_ley-2017_mon                        
+# 2010_Porto.Firme-2017_ha                 
+# 2010_Unai-2017_ha                        
+# 2017_pre-2017_ha                         
+# 2017_ca-2017_ha                          
+# 2010_Lambari-2017_ha                     
+# 2017_ley-2017_ha                         
+# 2010_Unai-2010_Porto.Firme               
+# 2017_pre-2010_Porto.Firme                
+# 2017_ca-2010_Porto.Firme                 
+# 2010_Lambari-2010_Porto.Firme            
+# 2017_ley-2010_Porto.Firme                
+# 2017_pre-2010_Unai                       
+# 2017_ca-2010_Unai                        
+# 2010_Lambari-2010_Unai                   
+# 2017_ley-2010_Unai                       
+# 2017_ca-2017_pre                         
+# 2010_Lambari-2017_pre                    
+# 2017_ley-2017_pre                        
+# 2010_Lambari-2017_ca                     
+# 2017_ley-2017_ca                         
+# 2017_ley-2010_Lambari                    
 # ---
 # Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-# 
  
+
 ```
 There is difference  
 
 ##  Plot
-```{r Plot in Boscalid, echo = FALSE, include=FALSE, warning= FALSE}
- plot.bos.3.cristian <- boscalid.complete.fields.cristian %>%
-   ggplot(aes(x = State, y = EC50DC)) +
-   geom_jitter(
-     width = .1,
-     height = 0,
-     shape = 21,
-     color = "black",
-     fill = "chartreuse2",
-     size = 2,
-     alpha = 3 / 4
+```{r r Plot in Boscalid, echo = FALSE, include=FALSE, warning= FALSE}
+boscalid.complete.MX.BZ.complete.fields %>%
+   ggplot(aes(x = Year_Field, y = EC50DC)) +
+   geom_jitter(aes(color= State, shape = Host),
+      width = .1,
+      height = 0,
+         alpha = 3 / 4
    ) + stat_summary(
-     fun.y = mean,
-     geom = "point",
-     shape = 95,
-     size = 15,
-     color = "black"
+      fun.y = mean,
+      geom = "point",
+      shape = 95,
+      size = 15,
+      color = "black"
    ) +
-   labs(x = "State", y = expression(bold(EC[bold("50") ~ (bold("D"))]) ~
-                                      (bold(ppm ~ bold(
-                                        "a.i."
-                                      ))))) + theme(
-                                        panel.border = element_rect(
-                                          colour = "black",
-                                          fill = NA,
-                                          size = 1
-                                        ),
-                                        axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
-                                        axis.text = element_text(
-                                          face = "bold",
-                                          size = 10,
-                                          family = "Arial"
-                                        ),
-                                        panel.background = element_rect(fill = "white", colour = "grey50")
-                                      ) +  expand_limits(y = c(0.06, 0.18)) + scale_y_continuous(breaks = c(0.06, 0.08, 0.1, 0.12, 0.14, 0.16, 0.18))
- 
- 
+   labs(x = "Year_Field", y = expression(bold(EC[bold("50") ~ (bold("D"))]) ~
+                                            (bold(ppm ~ bold(
+                                               "a.i."
+                                            ))))) + theme(
+                                               panel.border = element_rect(
+                                                  colour = "black",
+                                                  fill = NA,
+                                                  size = 1
+                                               ),
+                                               axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+                                               axis.text = element_text(
+                                                  face = "bold",
+                                                  size = 8,
+                                                  family = "Arial",
+                                                  angle = 30
+                                                  
+                                               ),
+                                               panel.background = element_rect(fill = "white", colour = "grey50")
+                                            ) +  expand_limits(y = c(0.06, 0.18)) + scale_y_continuous(breaks = c(0.06, 0.08, 0.1, 0.12, 0.14, 0.16, 0.18))
+
 
 ```
+
 
 
 
@@ -1762,6 +1867,756 @@ There is difference
 ```{r}
 plot.pico.3.cristian
 ```
+
+Brazilian and Mexican recently added
+
+## Discriminatory concentration in Picoxystrobin
+```{r Using the DC Picoxystrobin and the model, echo = FALSE, warning=  FALSE}
+ 
+  # Using the function to take out outliers
+  picoxystrobin.data.MX.BZ.2 <- picoxystrobin.data.MX.BZ %>%
+     rename(response = picoxystrobin.growth, control = sham.growth) %>% 
+     group_by(ID) %>%
+     mutate(response_range = list(get_range(response))) %>%
+     unnest() %>%
+     mutate(control_range = list(get_range(control))) %>%
+     unnest() %>%
+     filter(response <= upper &
+               response >= lower,
+            control <= upper1 & control >= lower1) %>%
+     ungroup() %>%
+     select(c(ID, experimental_replicate, repeats, response, control))
+  
+ 
+ 
+
+ #  Using the model to estimate the EC50DC
+ picoxystrobin.data.MX.BZ.filtered. <-picoxystrobin.data.MX.BZ.2%>%
+   group_by(ID) %>%
+   summarise(
+     mean_response = mean(response, na.rm = TRUE),
+     mean_control = mean(control, na.rm = TRUE)
+   ) %>%
+   mutate(RG = (mean_response / mean_control) * 100) %>%
+   
+   mutate(Estimate.50DC = exp # exponential is the opposite of log
+          #using the model the intercept and the coefficient of the model
+          (finalRG0.01[[1]][[1]] + finalRG0.01[[1]][[2]] * RG)) %>%
+   ungroup() %>%
+   rename(EC50DC= Estimate.50DC) %>% 
+   mutate(ID = as.numeric(ID)) %>%
+   select(c(ID, EC50DC)) %>% 
+   mutate(new = ifelse(
+     ID %in% picoxystrobin.filtered.survey.yes,
+     "Yes","No")) 
+ 
+ #Selecting the EC50D from the serial dilution
+ picoxystrobin.complete.MX.BZ <- final.picoxystrobin.DC %>% 
+   ####WATCH OUT, Based on EC50DC
+   rename(EC50DC = Estimate.50DC) %>% 
+   select(ID, EC50DC) %>% 
+   bind_rows(picoxystrobin.filtered. ) %>% 
+   #mutate(new= as.character(new)) %>% 
+   bind_rows(picoxystrobin.cristian.filtered. ) %>%
+    bind_rows(picoxystrobin.data.MX.BZ.filtered.) %>% 
+    # HEREIS THE BUG, it was coming from alreday less data
+   mutate(new= as.factor(new)) %>% 
+   ungroup()
+ 
+picoxystrobin.complete.MX.BZ
+```
+##  Testing controls
+
+```{r Testing controls in Picoxystrobin, echo = FALSE, include=FALSE, warning= FALSE}
+ ## Testing controls between Serial dilution and Duscriminatory concentration
+ 
+ picoxystrobin.controls.cristian <- picoxystrobin.complete.cristian$ID[duplicated(picoxystrobin.complete.cristian$ID)]
+ # 24 repeats
+ 
+ picoxystrobin.complete.controls.cristian <- picoxystrobin.complete.cristian %>% 
+    mutate(controls = ifelse(
+       ID %in% picoxystrobin.controls.cristian,
+       "Yes", "No")) %>% 
+    filter(controls== "Yes")
+ 
+ ## Normality test
+ 
+ shapiro.test.pico.controls.cristian <- picoxystrobin.complete.controls.cristian  %>%
+    do(tidy(shapiro.test(.$EC50DC)))
+ 
+ shapiro.test.pico.controls.cristian
+ 
+ # ther are NO Normal
+ # No normals, t- test since the sample size for each sampe is 2, in other words grouping by ID
+ # P value = 0.0323
+ tested.pico.controls.cristian <- picoxystrobin.complete.controls.cristian %>% 
+    group_by(ID) 
+    
+    object.3.cristian <- kruskal.test(EC50DC ~ ID, data = picoxystrobin.complete.controls.cristian)
+ object.3.cristian[[3]][[1]]
+ # P value = 0.05813198, 
+ 
+  # there are no isolates different neither 
+ #  the ID 461 (control), good
+ # neither From the 21 baseline isolates, good!
+
+```
+### No Normality, p value = `r shapiro.test.pico.controls.cristian[[2]][[1]]`  
+### Kruskal wallis test, p value = `r object.3.cristian[[3]][[1]]`  
+there are no isolates different, neither the ID 461 (control), good!  
+neither From the 21 baseline isolates, good!  
+## Wrangling data 
+```{r Wrangling data in Picoxystrobin, echo = FALSE, warning= FALSE}
+# keeping juts the highest value of the repeated ID value
+ picoxystrobin.complete.MX.BZ<-picoxystrobin.complete.MX.BZ%>%  
+   mutate( ID= as.numeric(ID)) %>% 
+   group_by(ID) %>%
+   top_n(1, EC50DC) %>% #keeping the highest value of each ID value
+   ungroup() 
+ #Filterring specific fields by field scale
+ picoxystrobin.complete.MX.BZ.complete <-picoxystrobin.complete.MX.BZ%>% 
+   mutate(source = ifelse(
+     ID %in% baseline_isolates_2,
+     "Baseline",
+     ifelse(
+       ID %in% Farmer_fields,
+       "Producer Fields","Fungicide Field Trials"
+     )), Host = ifelse(
+       ID %in% drybean,
+       "Drybean", ifelse(
+         ID %in% soybean,
+         "Soybean","different_host")),
+     Field = ifelse(
+       ID %in% MI_East_Lansing,
+       "MI:East Lansing",
+       ifelse(
+         ID %in% IA_Nashua,
+         "IA:Nashua",
+         ifelse(
+           ID %in% WI_Hancock,
+           "WI:Hancock",
+           ifelse(
+             ID %in% MI_Montcalm_2017,
+             "MI:Montcalm 2",
+             ifelse(
+               ID %in% MI_Montcalm_2015,
+               "MI: Montcalm 1",
+               ifelse(
+                 ID %in% WI_Cerny,
+                 "WI:Cerny",
+               ifelse(ID %in% potato, 
+                      "potato", ifelse(ID %in% baseline_isolates_2, 
+                                       "Baseline","other_fields"
+                      )                 
+                      )
+               )
+             )
+           )
+         )
+       )
+     )
+   )%>%
+   mutate(
+     source = as.factor(source),
+     Host = as.factor(Host),
+     Field = as.factor(Field)
+   ) %>%    
+   #taking out "different host" becuse does not belong to drybean nor soybean
+   filter(!ID == 8, !ID == 129)%>%
+   mutate(Country = ifelse(
+     ID %in% mexican.isolates,
+     "Mexico",
+     ifelse(ID %in% brazilian.isolates,
+            "Brazil", "USA")
+   )) 
+ 
+ picoxystrobin.complete.MX.BZ.complete <- picoxystrobin.complete.MX.BZ.complete %>% 
+   mutate(Year_Field= case_when(
+     ID %in%WM_1963~"1963",
+     ID %in%WM_1965~"1965",
+     ID %in%WM_1969~"1969",
+     ID %in%WM_1973~"1973",
+     ID %in%WM_1974~"1974",
+     ID %in%WM_1975~"1975",
+     ID %in%WM_1976~"1976",
+     ID %in%WM_1977~"1977",
+     ID %in%WM_1978~"1978",
+     ID %in%WM_1979~"1979",
+     ID %in%WM_1980~"1980",
+     ID %in%WM_1981~"1981",
+     ID %in%WM_1982~"1982",
+     ID %in%WM_1983~"1983",
+     ID %in%WM_1984~"1984",
+     ID %in%WM_1985~"1985",
+     ID %in%WM_1987~"1987",
+     ID %in%WM_1989~"1989",
+     ID %in%WM_1990~"1990",
+     ID %in%WM_1991~"1991",
+     ID %in%WM_1992~"1992",
+     ID %in%WM_1993~"1993",
+     ID %in%WM_1994~"1994",
+     ID %in%WM_1995~"1995",
+     ID %in%WM_1996~"1996",
+     ID %in%WM_1997~"1997",
+     ID %in%WM_1997_WM_production_31~"1997_production_31",
+     ID %in%WM_1997_WM_production_32~"1997_production_32",
+     ID %in%WM_1988~"1988",
+     ID %in%WM_1998~"1998",
+     ID %in%WM_1999~"1999",
+     ID %in%WM_2000~"2000",
+     ID %in%WM_2002~"2002",
+     ID %in%WM_2003~"2003",
+     ID %in%WM_1997_WM_production_33~"1997_production_33",
+     ID %in%WM_2003_WM_nursery_1~"2003_nursery_1",
+     ID %in%WM_2003_WM_nursery_2~"2003_nursery_2",
+     ID %in%WM_2003_WM_nursery_3~"2003_nursery_3",
+     ID %in%WM_1996_WM_nursery_4~"1996_nursery_4",
+     ID %in%WM_2003_WM_nursery_5~"2003_nursery_5",
+     ID %in%WM_2004~"2004",
+     ID %in%WM_2005~"2005",
+     ID %in%WM_2006~"2006",
+     ID %in%WM_2004_WM_nursery_6~"2004_nursery_6",
+     ID %in%WM_2004_WM_nursery_7~"2004_nursery_7",
+     ID %in%WM_2004_WM_nursery_8~"2004_nursery_8",
+     ID %in%WM_2004_WM_nursery_9~"2004_nursery_9",
+     ID %in%WM_2004_WM_nursery_10~"2004_nursery_10",
+     ID %in%WM_2004_WM_nursery_11~"2004_nursery_11",
+     ID %in%WM_2004_WM_nursery_12~"2004_nursery_12",
+     ID %in%WM_2005_WM_nursery_13~"2005_nursery_13",
+     ID %in%WM_2005_WM_nursery_14~"2005_nursery_14",
+     ID %in%WM_2005_WM_nursery_15~"2005_nursery_15",
+     ID %in%WM_2005_WM_nursery_16~"2005_nursery_16",
+     ID %in%WM_2005_WM_nursery_17~"2005_nursery_17",
+     ID %in%WM_2005_WM_nursery_18~"2005_nursery_18",
+     ID %in%WM_2006_WM_nursery_19~"2006_nursery_19",
+     ID %in%WM_2007~"2007",
+     ID %in%WM_2007_WM_production_1~"2007_production_1",
+     ID %in%WM_2007_WM_production_2~"2007_production_2",
+     ID %in%WM_2007_WM_production_3~"2007_production_3",
+     ID %in%WM_2007_WM_production_4~"2007_production_4",
+     ID %in%WM_2007_WM_production_5~"2007_production_5",
+     ID %in%WM_2007_WM_production_6~"2007_production_6",
+     ID %in%WM_2007_WM_production_7~"2007_production_7",
+     ID %in%WM_2007_WM_production_8~"2007_production_8",
+     ID %in%WM_2007_WM_production_9~"2007_production_9",
+     ID %in%WM_2008~"2008",
+     ID %in%WM_2008_WM_production_10~"2008_production_10",
+     ID %in%WM_2008_WM_nursery_20~"2008_nursery_20",
+     ID %in%WM_2008_WM_production_11~"2008_production_11",
+     ID %in%WM_2008_WM_production_12~"2008_production_12",
+     ID %in%WM_2008_WM_production_13~"2008_production_13",
+     ID %in%WM_2009~"2009",
+     ID %in%WM_2008_WM_nursery_21~"2008_nursery_21",
+     ID %in%WM_2009_WM_nursery_22~"2009_nursery_22",
+     ID %in%WM_2009_WM_nursery_23~"2009_nursery_23",
+     ID %in%WM_2009_WM_production_14~"2009_production_14",
+     ID %in%WM_2009_WM_production_15~"2009_production_15",
+     ID %in%WM_2009_WM_production_16~"2009_production_16",
+     ID %in%WM_2009_WM_production_17~"2009_production_17",
+     ID %in%WM_2009_WM_production_18~"2009_production_18",
+     ID %in%WM_2009_WM_production_19~"2009_production_19",
+     ID %in%WM_2009_WM_production_20~"2009_production_20",
+     ID %in%WM_2010_WM_production_21~"2010_production_21",
+     ID %in%WM_2010_WM_production_22~"2010_production_22",
+     ID %in%WM_2010_WM_production_23~"2010_production_23",
+     ID %in%WM_2010_WM_production_24~"2010_production_24",
+     ID %in%WM_2010_WM_production_25~"2010_production_25",
+     ID %in%WM_2010_WM_production_26~"2010_production_26",
+     ID %in%WM_2010_WM_production_27~"2010_production_27",
+     ID %in%WM_2010_WM_production_28~"2010_production_28",
+     ID %in%WM_2010_WM_production_29~"2010_production_29",
+     ID %in%WM_2010_WM_production_30~"2010_production_30",
+     ID %in%WM_2011~"2011",
+     ID %in%WM_2013~"2013",
+     ID %in%WM_2014~"2014",
+     ID %in%WM_2016~"2016",
+     ID %in%WM_2016_po~"2016_po",
+     ID %in%WM_2016_flo~"2016_flo",
+     ID %in%WM_2016_lan~"2016_lan",
+     ID %in%WM_2017_ho~"2017_ho",
+     ID %in%WM_2017_an~"2017_an",
+     ID %in%WM_2017_dod~"2017_dod",
+     ID %in%WM_2017_va~"2017_va",
+     ID %in%WM_2017_na~"2017_na",
+     ID %in%WM_2017_sa~"2017_sa",
+     ID %in%WM_2017_ha~"2017_ha",
+     ID %in%WM_2017_cu~"2017_cu",
+     ID %in%WM_2017_mon~"2017_mon",
+     ID %in%WM_2017_ant~"2017_ant",
+     ID %in%WM_2017_holt~"2017_holt",
+     ID %in%WM_2017_arr~"2017_arr",
+     ID %in%WM_2017_ini~"2017_ini",
+     ID %in%WM_2017_ley~"2017_ley",
+     ID %in%WM_2017_pre~"2017_pre",
+     ID %in%WM_2017_ru~"2017_ru",
+     ID %in%WM_2017_ca~"2017_ca",
+     ID %in%WM_2017_st~"2017_st",
+     ID %in%WM_2015_6~"2015_6",
+     ID %in%WM_2015_8~"2015_8",
+     ID %in%WM_2015_9~"2015_9",
+     ID %in%WM_2015_10~"2015_10",
+     ID %in%WM_2015_11~"2015_11",
+     ID %in%WM_2015_18~"2015_18",
+     ID %in%WM_2015_19~"2015_19",
+     ID %in%WM_2015_20~"2015_20",
+     ID %in%WM_2015_21~"2015_21",
+     ID %in%WM_2015_22~"2015_22",
+     ID %in%WM_2015_23~"2015_23",
+     ID %in%WM_2015_24~"2015_24",
+     ID %in%WM_2015_25~"2015_25",
+     ID %in%WM_2015_34~"2015_34",
+     ID %in%WM_2015_35~"2015_35",
+     ID %in%WM_2015_45~"2015_45",
+     ID %in%WM_2015_46~"2015_46",
+     ID %in%WM_2015_47~"2015_47",
+     ID %in%WM_2015_48~"2015_48",
+     ID %in%WM_2015_60~"2015_60",
+     ID %in%WM_2015_62~"2015_62",
+     ID %in%WM_2015_66~"2015_66",
+     ID %in%WM_2015_67~"2015_67",
+     ID %in%WM_2015_68~"2015_68",
+     ID %in%WM_2015_69~"2015_69",
+     ID %in%WM_2015_75~"2015_75",
+     ID %in%WM_2015_78~"2015_78",
+     ID %in%WM_2015_97~"2015_97",
+     ID %in%WM_2015_98~"2015_98",
+     ID %in%WM_2015_99~"2015_99",
+     ID %in%WM_2015_100~"2015_100",
+     ID %in%WM_2015_101~"2015_101",
+     ID %in%WM_2015_102~"2015_102",
+     ID %in%WM_2015_103~"2015_103",
+     ID %in%WM_2015_104~"2015_104",
+     ID %in%WM_2015_Al~"2015_Al",
+     ID %in%WM_2015_Hi~"2015_Hi",
+     ID %in%WM_2015_In~"2015_In",
+     ID %in%WM_2015_mont~"2015_mont",
+     ID %in%WM_2015_Sand~"2015_Sand",
+     ID %in%WM_2015_Sani~"2015_Sani",
+     ID %in%WM_2015_St~"2015_St",
+     ID %in%WM_2015_wau~"2015_wau",
+     ID %in%WM_2015_la~"2015_la",
+     ID %in%WM_2015_co~"2015_co",
+     ID %in%WM_2015_cern~"2015_cern",
+     ID %in%WM_2015_cer~"2015_cer",
+     ID %in%WM_2010~"2010",
+     ID %in%WM_2017~"2017",
+     ID %in%WM_2010_Lambari~"2010_Lambari",
+     ID %in%WM_2010_Porto.Firme~"2010_Porto.Firme",
+     ID %in%WM_2010_Unai~"2010_Unai",
+     TRUE ~ "no specific field"
+   ),
+   State= case_when(
+     ID %in%WM_AB~"AB",
+     ID %in%WM_AZ~"AZ",
+     ID %in%WM_BA~"BA",
+     ID %in%WM_CA~"CA",
+     ID %in%WM_CO~"CO",
+     ID %in%WM_DE~"DE",
+     ID %in%WM_DF~"DF",
+     ID %in%WM_FL~"FL",
+     ID %in%WM_GA~"GA",
+     ID %in%WM_GO~"GO",
+     
+     ID %in%WM_IA~"IA",
+     ID %in%WM_ID~"ID",
+     ID %in%WM_KS~"KS",
+     ID %in%WM_KY~"KY",
+     ID %in%WM_LA~"LA",
+     ID %in%WM_MD~"MD",
+     ID %in%WM_MG~"MG",
+     ID %in%WM_MI~"MI",
+     ID %in%WM_MN~"MN",
+     ID %in%WM_MO~"MO",
+     
+     ID %in%WM_MS~"MS",
+     ID %in%WM_MT~"MT",
+     ID %in%WM_NC~"NC",
+     ID %in%WM_ND~"ND",
+     ID %in%WM_NE~"NE",
+     ID %in%WM_NY~"NY",
+     ID %in%WM_OH~"OH",
+     ID %in%WM_OK~"OK",
+     ID %in%WM_ON~"ON",
+     ID %in%WM_OR~"OR",
+     
+     ID %in%WM_PA~"PA",
+     ID %in%WM_PR~"PR",
+     ID %in%WM_QUE~"QUE",
+     ID %in%WM_RS~"RS",
+     ID %in%WM_SC~"SC",
+     ID %in%WM_SIN~"SIN",
+     ID %in%WM_SK~"SK",
+     ID %in%WM_WI~"WI",
+     ID %in%WM_WA~"WA"
+     
+   )
+   ) %>% select(-c(new)) %>% 
+   mutate(Country = as.factor(Country),
+          Year_Field = as.factor(Year_Field),
+          State= as.factor(State) ) %>% 
+   arrange(ID)
+ 
+ ##
+ 
+ ###For comparisons between hosts I had to take out the ones coming from baseline otherwise would not be fair
+ 
+ picoxystrobin.complete.MX.BZ.complete.hosts <-picoxystrobin.complete.MX.BZ.complete %>% 
+   filter(!source=="Baseline")
+ 
+ ###For isolates from that have reduced sensitivity, assess sensitivity for isolates in the same field to account for heterogeneicity
+ ##WITH MEXICO & BRAZIL together
+ # picoxystrobin.complete.fields.cristian <-picoxystrobin.complete.cris%>%
+ #   filter(  Field== "Baseline"|
+ #              State== "CO"|
+ #              State== "NE"|
+ #              State== "ND"|
+ #              State== "WA"|
+ #              State== "MI"|
+ #              Country== "Mexico"|
+ #              Country== "Brazil"
+ #   ) %>%
+ #   arrange(source) %>%
+ #    #
+ #   mutate(State= as.character(State),
+ #          State =  ifelse(Field == "Baseline", "Baseline", State),
+ #          State = as.factor(State)) %>%
+ #   filter(Year_Field == "2007_production_1"|
+ #            Year_Field == "2007_production_2"|
+ #            Year_Field == "2007_production_3"|
+ #            Year_Field == "2007_production_4"|
+ #            Year_Field == "2007_production_5"|
+ #            Year_Field == "2007_production_6"|
+ #            Year_Field == "2007_production_7"|
+ #            Year_Field == "2007_production_8"|
+ #            Year_Field == "2007_production_9"|
+ #            Year_Field == "2008_production_10"|
+ #            Year_Field == "2008_production_11"|
+ #            Year_Field == "2008_production_12"|
+ #            Year_Field == "2008_production_13"|
+ #            Year_Field == "2009_production_17"|
+ #            Year_Field == "2009_production_19"|
+ #            Year_Field == "2009_production_20"|
+ #            Year_Field == "2010_production_21"|
+ #            Year_Field == "2007_production_22"|
+ #            Year_Field == "2007_production_23"|
+ #            Year_Field == "2007_production_24"|
+ #            Year_Field == "2007_production_25"|
+ #            Year_Field == "2007_production_26"|
+ #            Year_Field == "2007_production_27"|
+ #            Year_Field == "2007_production_28"|
+ #            Year_Field == "2007_production_29"|
+ #            Year_Field == "2007_production_30"|
+ #            State == "Baseline"|
+ #            Country== "Mexico"|
+ #            Country== "Brazil") %>% 
+ #           mutate(State = fct_recode(State, "Mexico & Brazil"= "SIN" , "Mexico & Brazil"= "GO", "Mexico & Brazil" = "MG"))
+ #          
+ # 
+ # picoxystrobin.complete.fields.cristian <-picoxystrobin.complete.cris%>% 
+ #   filter(  Field== "Baseline"|
+ #              State== "CO"|
+ #              State== "NE"|
+ #              State== "ND"| 
+ #              State== "WA"|
+ #              State== "MI"
+ #              
+ #   ) %>% 
+ #   arrange(source) %>% 
+ #   filter( !source == "Fungicide Field Trials") %>% 
+ #   
+ #   mutate(State= as.character(State), 
+ #          State =  ifelse(Field == "Baseline", "Baseline", State),
+ #          State = as.factor(State)) %>% 
+ #   filter(Year_Field == "2007_production_1"|
+ #            Year_Field == "2007_production_2"|
+ #            Year_Field == "2007_production_3"|
+ #            Year_Field == "2007_production_4"|
+ #            Year_Field == "2007_production_5"|
+ #            Year_Field == "2007_production_6"|
+ #            Year_Field == "2007_production_7"|
+ #            Year_Field == "2007_production_8"|
+ #            Year_Field == "2007_production_9"|
+ #            Year_Field == "2008_production_10"|
+ #            Year_Field == "2008_production_11"|
+ #            Year_Field == "2008_production_12"|
+ #            Year_Field == "2008_production_13"|
+ #            Year_Field == "2009_production_17"|
+ #            Year_Field == "2009_production_19"|
+ #            Year_Field == "2009_production_20"|
+ #            Year_Field == "2010_production_21"|
+ #            Year_Field == "2007_production_22"|
+ #            Year_Field == "2007_production_23"|
+ #            Year_Field == "2007_production_24"|
+ #            Year_Field == "2007_production_25"|
+ #            Year_Field == "2007_production_26"|
+ #            Year_Field == "2007_production_27"|
+ #            Year_Field == "2007_production_28"|
+ #            Year_Field == "2007_production_29"|
+ #            Year_Field == "2007_production_30"|
+ #            State == "Baseline")
+ # 
+ # # total 125 isolates
+ # picoxystrobin.complete.fields.cristian$State <-
+ #   factor(picoxystrobin.complete.fields.cristian$State,
+ #          c( "ND","NE","WA","MI","CO", "Baseline"))
+ # 
+ 
+ picoxystrobin.complete.MX.BZ.complete %>% 
+   mutate(Year_Field= as.character(Year_Field)) %>% 
+mutate(Year_Field =  ifelse(Field == "Baseline", "Baseline", Year_Field),
+      Year_Field = as.factor(Year_Field)) %>% 
+   count(Year_Field) %>% 
+   filter(n >= 9)
+ 
+  picoxystrobin.complete.MX.BZ.complete.fields <- picoxystrobin.complete.MX.BZ.complete%>% 
+   mutate(Year_Field= as.character(Year_Field)) %>% 
+mutate(Year_Field =  ifelse(Field == "Baseline", "Baseline", Year_Field),
+      Year_Field = as.factor(Year_Field))  %>% 
+     group_by(Year_Field) %>% filter(n()>=9) %>% 
+     ungroup() %>% 
+     filter(!Year_Field =="no specific field" ) %>% 
+     mutate(Year_Field = fct_reorder(Year_Field, EC50DC, mean))
+  
+     
+
+  
+  
+```
+
+## Statistical analysis
+### By Field (previous Source) but because the name actually is "State"
+
+```{r Normality in Picoxystrobin, include= FALSE}
+
+ ##NORMALITY TEST-Shapiro_test
+ 
+ shapiro.test.pico.MX.BZ.complete.fields <-picoxystrobin.complete.MX.BZ.complete.fields  %>%
+   do(tidy(shapiro.test(.$EC50DC)))
+ shapiro.test.pico.MX.BZ.complete.fields
+ # NO NORMALILTY  P value ==0.0000140
+ # is by Field but it is written State
+ 
+```
+## No normality, p value = `r shapiro.test.pico.MX.BZ.complete.fields[[2]][[1]]`     
+
+## By Field (previous Source) but because the nam
+## Kruskal Wallis test
+
+```{r kruskal wallis in Picoxystrobin, echo = FALSE, include=FALSE, warning= FALSE}
+ object.1.pico.MX.BZ.complete.fields <- kruskal.test(EC50DC ~ Year_Field, data = picoxystrobin.complete.MX.BZ.complete.fields)
+ object.1.pico.MX.BZ.complete.fields[[3]][[1]]
+ 
+ #There is difference p-value = 9.669486e-10
+
+ 
+```
+## There is difference,  p value =  `r object.1.pico.MX.BZ.complete.fields[[3]][[1]]`    
+## Dunn test
+```{r Dunn test in Picoxystrobin, echo= FALSE}
+object.2.pico.MX.BZ.complete.fields <-  DunnTest(EC50DC ~ Year_Field, data = picoxystrobin.complete.MX.BZ.complete.fields, method = "bonferroni")
+object.2.pico.MX.BZ.complete.fields
+#  
+#  Dunn's test of multiple comparisons using rank sums : bonferroni  
+# 
+#                                       mean.rank.diff    pval    
+# 2015_cer-Baseline                          10.090909 1.00000    
+# 2017_na-Baseline                           22.696172 1.00000    
+# 2017_mon-Baseline                          27.355615 1.00000    
+# 2010_production_25-Baseline                42.146465 1.00000    
+# 2010_production_21-Baseline                35.257576 1.00000    
+# 2016_lan-Baseline                          46.479798 1.00000    
+# 2008_production_10-Baseline                54.507576 1.00000    
+# 2010_Lambari-Baseline                      60.590909 1.00000    
+# 2017_ha-Baseline                           64.019481 0.69274    
+# 2015_mont-Baseline                         67.290909 1.00000    
+# 2007_production_9-Baseline                 73.340909 0.10930    
+# 2017_pre-Baseline                          75.890909 0.39099    
+# 2010_Porto.Firme-Baseline                  85.890909 0.09787 .  
+# 2007_production_1-Baseline                114.340909 0.00021 ***
+# 2010_Unai-Baseline                         96.090909 0.02045 *  
+# 2017_ca-Baseline                          127.290909 6.4e-05 ***
+# 2017_ley-Baseline                         140.772727 1.1e-06 ***
+# 2017_na-2015_cer                           12.605263 1.00000    
+# 2017_mon-2015_cer                          17.264706 1.00000    
+# 2010_production_25-2015_cer                32.055556 1.00000    
+# 2010_production_21-2015_cer                25.166667 1.00000    
+# 2016_lan-2015_cer                          36.388889 1.00000    
+# 2008_production_10-2015_cer                44.416667 1.00000    
+# 2010_Lambari-2015_cer                      50.500000 1.00000    
+# 2017_ha-2015_cer                           53.928571 1.00000    
+# 2015_mont-2015_cer                         57.200000 1.00000    
+# 2007_production_9-2015_cer                 63.250000 1.00000    
+# 2017_pre-2015_cer                          65.800000 1.00000    
+# 2010_Porto.Firme-2015_cer                  75.800000 1.00000    
+# 2007_production_1-2015_cer                104.250000 0.03416 *  
+# 2010_Unai-2015_cer                         86.000000 0.54361    
+# 2017_ca-2015_cer                          117.200000 0.01086 *  
+# 2017_ley-2015_cer                         130.681818 0.00088 ***
+# 2017_mon-2017_na                            4.659443 1.00000    
+# 2010_production_25-2017_na                 19.450292 1.00000    
+# 2010_production_21-2017_na                 12.561404 1.00000    
+# 2016_lan-2017_na                           23.783626 1.00000    
+# 2008_production_10-2017_na                 31.811404 1.00000    
+# 2010_Lambari-2017_na                       37.894737 1.00000    
+# 2017_ha-2017_na                            41.323308 1.00000    
+# 2015_mont-2017_na                          44.594737 1.00000    
+# 2007_production_9-2017_na                  50.644737 1.00000    
+# 2017_pre-2017_na                           53.194737 1.00000    
+# 2010_Porto.Firme-2017_na                   63.194737 1.00000    
+# 2007_production_1-2017_na                  91.644737 0.02519 *  
+# 2010_Unai-2017_na                          73.394737 0.67301    
+# 2017_ca-2017_na                           104.594737 0.00755 ** 
+# 2017_ley-2017_na                          118.076555 0.00035 ***
+# 2010_production_25-2017_mon                14.790850 1.00000    
+# 2010_production_21-2017_mon                 7.901961 1.00000    
+# 2016_lan-2017_mon                          19.124183 1.00000    
+# 2008_production_10-2017_mon                27.151961 1.00000    
+# 2010_Lambari-2017_mon                      33.235294 1.00000    
+# 2017_ha-2017_mon                           36.663866 1.00000    
+# 2015_mont-2017_mon                         39.935294 1.00000    
+# 2007_production_9-2017_mon                 45.985294 1.00000    
+# 2017_pre-2017_mon                          48.535294 1.00000    
+# 2010_Porto.Firme-2017_mon                  58.535294 1.00000    
+# 2007_production_1-2017_mon                 86.985294 0.07183 .  
+# 2010_Unai-2017_mon                         68.735294 1.00000    
+# 2017_ca-2017_mon                           99.935294 0.02200 *  
+# 2017_ley-2017_mon                         113.417112 0.00135 ** 
+# 2010_production_21-2010_production_25      -6.888889 1.00000    
+# 2016_lan-2010_production_25                 4.333333 1.00000    
+# 2008_production_10-2010_production_25      12.361111 1.00000    
+# 2010_Lambari-2010_production_25            18.444444 1.00000    
+# 2017_ha-2010_production_25                 21.873016 1.00000    
+# 2015_mont-2010_production_25               25.144444 1.00000    
+# 2007_production_9-2010_production_25       31.194444 1.00000    
+# 2017_pre-2010_production_25                33.744444 1.00000    
+# 2010_Porto.Firme-2010_production_25        43.744444 1.00000    
+# 2007_production_1-2010_production_25       72.194444 1.00000    
+# 2010_Unai-2010_production_25               53.944444 1.00000    
+# 2017_ca-2010_production_25                 85.144444 0.75951    
+# 2017_ley-2010_production_25                98.626263 0.13451    
+# 2016_lan-2010_production_21                11.222222 1.00000    
+# 2008_production_10-2010_production_21      19.250000 1.00000    
+# 2010_Lambari-2010_production_21            25.333333 1.00000    
+# 2017_ha-2010_production_21                 28.761905 1.00000    
+# 2015_mont-2010_production_21               32.033333 1.00000    
+# 2007_production_9-2010_production_21       38.083333 1.00000    
+# 2017_pre-2010_production_21                40.633333 1.00000    
+# 2010_Porto.Firme-2010_production_21        50.633333 1.00000    
+# 2007_production_1-2010_production_21       79.083333 1.00000    
+# 2010_Unai-2010_production_21               60.833333 1.00000    
+# 2017_ca-2010_production_21                 92.033333 0.36601    
+# 2017_ley-2010_production_21               105.515152 0.05697 .  
+# 2008_production_10-2016_lan                 8.027778 1.00000    
+# 2010_Lambari-2016_lan                      14.111111 1.00000    
+# 2017_ha-2016_lan                           17.539683 1.00000    
+# 2015_mont-2016_lan                         20.811111 1.00000    
+# 2007_production_9-2016_lan                 26.861111 1.00000    
+# 2017_pre-2016_lan                          29.411111 1.00000    
+# 2010_Porto.Firme-2016_lan                  39.411111 1.00000    
+# 2007_production_1-2016_lan                 67.861111 0.88292    
+# 2010_Unai-2016_lan                         49.611111 1.00000    
+# 2017_ca-2016_lan                           80.811111 0.28992    
+# 2017_ley-2016_lan                          94.292929 0.02869 *  
+# 2010_Lambari-2008_production_10             6.083333 1.00000    
+# 2017_ha-2008_production_10                  9.511905 1.00000    
+# 2015_mont-2008_production_10               12.783333 1.00000    
+# 2007_production_9-2008_production_10       18.833333 1.00000    
+# 2017_pre-2008_production_10                21.383333 1.00000    
+# 2010_Porto.Firme-2008_production_10        31.383333 1.00000    
+# 2007_production_1-2008_production_10       59.833333 1.00000    
+# 2010_Unai-2008_production_10               41.583333 1.00000    
+# 2017_ca-2008_production_10                 72.783333 1.00000    
+# 2017_ley-2008_production_10                86.265152 0.26471    
+# 2017_ha-2010_Lambari                        3.428571 1.00000    
+# 2015_mont-2010_Lambari                      6.700000 1.00000    
+# 2007_production_9-2010_Lambari             12.750000 1.00000    
+# 2017_pre-2010_Lambari                      15.300000 1.00000    
+# 2010_Porto.Firme-2010_Lambari              25.300000 1.00000    
+# 2007_production_1-2010_Lambari             53.750000 1.00000    
+# 2010_Unai-2010_Lambari                     35.500000 1.00000    
+# 2017_ca-2010_Lambari                       66.700000 1.00000    
+# 2017_ley-2010_Lambari                      80.181818 1.00000    
+# 2015_mont-2017_ha                           3.271429 1.00000    
+# 2007_production_9-2017_ha                   9.321429 1.00000    
+# 2017_pre-2017_ha                           11.871429 1.00000    
+# 2010_Porto.Firme-2017_ha                   21.871429 1.00000    
+# 2007_production_1-2017_ha                  50.321429 1.00000    
+# 2010_Unai-2017_ha                          32.071429 1.00000    
+# 2017_ca-2017_ha                            63.271429 1.00000    
+# 2017_ley-2017_ha                           76.753247 0.59324    
+# 2007_production_9-2015_mont                 6.050000 1.00000    
+# 2017_pre-2015_mont                          8.600000 1.00000    
+# 2010_Porto.Firme-2015_mont                 18.600000 1.00000    
+# 2007_production_1-2015_mont                47.050000 1.00000    
+# 2010_Unai-2015_mont                        28.800000 1.00000    
+# 2017_ca-2015_mont                          60.000000 1.00000    
+# 2017_ley-2015_mont                         73.481818 1.00000    
+# 2017_pre-2007_production_9                  2.550000 1.00000    
+# 2010_Porto.Firme-2007_production_9         12.550000 1.00000    
+# 2007_production_1-2007_production_9        41.000000 1.00000    
+# 2010_Unai-2007_production_9                22.750000 1.00000    
+# 2017_ca-2007_production_9                  53.950000 1.00000    
+# 2017_ley-2007_production_9                 67.431818 1.00000    
+# 2010_Porto.Firme-2017_pre                  10.000000 1.00000    
+# 2007_production_1-2017_pre                 38.450000 1.00000    
+# 2010_Unai-2017_pre                         20.200000 1.00000    
+# 2017_ca-2017_pre                           51.400000 1.00000    
+# 2017_ley-2017_pre                          64.881818 1.00000    
+# 2007_production_1-2010_Porto.Firme         28.450000 1.00000    
+# 2010_Unai-2010_Porto.Firme                 10.200000 1.00000    
+# 2017_ca-2010_Porto.Firme                   41.400000 1.00000    
+# 2017_ley-2010_Porto.Firme                  54.881818 1.00000    
+# 2010_Unai-2007_production_1               -18.250000 1.00000    
+# 2017_ca-2007_production_1                  12.950000 1.00000    
+# 2017_ley-2007_production_1                 26.431818 1.00000    
+# 2017_ca-2010_Unai                          31.200000 1.00000    
+# 2017_ley-2010_Unai                         44.681818 1.00000    
+# 2017_ley-2017_ca                           13.481818 1.00000    
+# ---
+# Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+```
+There is difference  
+
+## Plot
+```{r Plot in Picoxystrobin, echo = FALSE, include=FALSE, warning= FALSE}
+ picoxystrobin.complete.MX.BZ.complete.fields %>%
+   ggplot(aes(x = Year_Field, y = EC50DC)) +
+   geom_jitter(aes(color= State, shape = Host),
+      width = .1,
+      height = 0,
+         alpha = 3 / 4
+   ) + stat_summary(
+      fun = mean,
+      geom = "point",
+      shape = 95,
+      size = 15,
+      color = "black"
+   ) +
+   labs(x = "Year_Field", y = expression(bold(EC[bold("50") ~ (bold("D"))]) ~
+                                            (bold(ppm ~ bold(
+                                               "a.i."
+                                            ))))) + theme(
+                                               panel.border = element_rect(
+                                                  colour = "black",
+                                                  fill = NA,
+                                                  size = 1
+                                               ),
+                                               axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+                                               axis.text = element_text(
+                                                  face = "bold",
+                                                  size = 10,
+                                                  family = "Arial",
+                                                  angle = 30
+                                                  
+                                               ),
+                                               panel.background = element_rect(fill = "white", colour = "grey50")
+                                            ) +  expand_limits(y = c(0.008, 0.024)) + scale_y_continuous(breaks = c(0.008, 0.01, 0.012, 0.014, 0.016, 0.018, 0.020,0.022,0.024))
+
+
+   
+```
+
+
 # Tetraconazole
 ##  Reading the data 
 ```{r read data Tetraconazole, echo = FALSE, include= FALSE}
@@ -2364,6 +3219,756 @@ There is difference
 plot.tetra.3.cristian
 
 ```
+Brazilian and Mexican recently added
+
+## Discriminatory concentration 
+```{r Using the DC Tetraconazole and the model, echo = FALSE, warning=  FALSE}
+# Using the function to take out outliers
+  tetraconazole.data.MX.BZ.2 <- tetraconazole.data.MX.BZ %>%
+     rename(response = tetraconazole.growth, control = control.growth) %>% 
+     group_by(ID) %>%
+     mutate(response_range = list(get_range(response))) %>%
+     unnest() %>%
+     mutate(control_range = list(get_range(control))) %>%
+     unnest() %>%
+     filter(response <= upper &
+               response >= lower,
+            control <= upper1 & control >= lower1) %>%
+     ungroup() %>%
+     select(c(ID, experimental_replicate, repeats, response, control))
+  
+  
+ 
+ #  Using the model to estimate the EC50DC
+ tetraconazole.data.MX.BZ.filtered. <-tetraconazole.data.MX.BZ.2  %>%
+   group_by(ID) %>%
+   summarise(
+     mean_response = mean(response, na.rm = TRUE),
+     mean_control = mean(control, na.rm = TRUE)
+   ) %>%
+   mutate(RG = (mean_response / mean_control) * 100) %>%
+   
+   mutate(Estimate.50DC = exp (finalRG2[[1]][[1]] + finalRG2[[1]][[2]]*RG)) %>%
+   ungroup() %>%
+   rename(EC50DC= Estimate.50DC) %>% 
+   mutate(ID = as.numeric(ID)) %>%
+   select(c(ID, EC50DC)) %>% 
+   mutate(new = ifelse(
+     ID %in% picoxystrobin.filtered.survey.yes,
+     "Yes","No")) 
+ 
+ 
+ #Selecting the EC50D from the serial dilution
+ tetraconazole.complete.MX.BZ <- final.tetraconazole.DC %>% 
+   ####WATCH OUT, Based on EC50DC
+   rename(EC50DC = Estimate.50DC) %>% 
+   select(ID, EC50DC) %>% 
+   bind_rows(tetraconazole.filtered. ) %>% 
+   #mutate(new= as.character(new)) %>% 
+   bind_rows(tetraconazole.cristian.filtered.) %>% 
+     bind_rows(tetraconazole.data.MX.BZ.filtered.) %>% 
+   mutate(new= as.factor(new)) %>% 
+   ungroup()
+ 
+  tetraconazole.complete.MX.BZ
+
+```
+
+
+##  Testing controls
+```{r Testing controls in Tetraconazole, echo = FALSE, include=FALSE, warning= FALSE}
+#Selecting the EC50D from the serial dilution
+ tetraconazole.complete.cristian <- final.tetraconazole.DC %>% 
+   ####WATCH OUT, Based on EC50DC
+   rename(EC50DC = Estimate.50DC) %>% 
+   select(ID, EC50DC) %>% 
+   bind_rows(tetraconazole.filtered. ) %>% 
+   #mutate(new= as.character(new)) %>% 
+   bind_rows(tetraconazole.cristian.filtered. ) %>% 
+   mutate(new= as.factor(new)) %>% 
+   ungroup()
+ 
+ ## Testing controls between Serial dilution and Duscriminatory concentration
+ 
+ tetraconazole.controls.cristian <- tetraconazole.complete.cristian$ID[duplicated(tetraconazole.complete.cristian$ID)]
+ # 24 repeats
+ 
+ tetraconazole.complete.controls.cristian <- tetraconazole.complete.cristian %>% 
+    mutate(controls = ifelse(
+       ID %in% tetraconazole.controls.cristian,
+       "Yes", "No")) %>% 
+    filter(controls== "Yes")
+ 
+ ## Normality test
+ 
+ shapiro.test.tetra.controls.cristian <- tetraconazole.complete.controls.cristian  %>%
+    do(tidy(shapiro.test(.$EC50DC)))
+ 
+ shapiro.test.tetra.controls.cristian
+ 
+ 
+ # NO normals, t- test since the sample size for each sampe is 2, in other words grouping by ID
+ # P value = 0.000000543
+ tested.tetraconazole.controls.cristian <- tetraconazole.complete.controls.cristian %>% 
+    group_by(ID) 
+ 
+ object.6.cristian <- kruskal.test(EC50DC ~ ID, data = tested.tetraconazole.controls.cristian)
+ object.6.cristian[[3]][[1]]
+ 
+ # There is no difference the P value is = 0.05680849
+ 
+ # the ID 461 (control) is not in here so that is good
+ ##From the 21 baseline, there are not statistically differenet
+ 
+```
+## No normality, p value = `r shapiro.test.tetra.controls.cristian[[2]][[1]]`  
+## Kruskal Wallis, There is no difference,  p value =  `r object.6.cristian[[3]][[1]]`  
+there are no isolates different, neither the ID 461 (control), good!    
+neither From the 21 baseline isolates, good!  
+
+## Wrangling data
+```{r Wrangling data in Tetraconazole, echo = FALSE, warning= FALSE}
+# keeping juts the highest value of the repeated ID value
+ tetraconazole.complete.MX.BZ<-tetraconazole.complete.MX.BZ%>%  
+   mutate( ID= as.numeric(ID)) %>% 
+   group_by(ID) %>%
+   top_n(1, EC50DC) %>% #keeping the highest value of each ID value
+   ungroup() 
+ 
+ 
+ 
+ 
+ #Filterring specific fields by field scale
+ tetraconazole.complete.MX.BZ.complete  <-tetraconazole.complete.MX.BZ %>% 
+   mutate(source = ifelse(
+     ID %in% baseline_isolates_2,
+     "Baseline",
+     ifelse(
+       ID %in% Farmer_fields,
+       "Producer Fields","Fungicide Field Trials"
+     )), Host = ifelse(
+       ID %in% drybean,
+       "Drybean", ifelse(
+         ID %in% soybean,
+         "Soybean","different_host")),
+     Field = ifelse(
+       ID %in% NE_Holt,
+       "NE_Holt",
+       ifelse(
+         ID %in% NE_Field_34,
+         "NE:Dodge",
+         ifelse(
+           ID %in% NE_Field_67,
+           "NE:Cedar 1",
+           ifelse(
+             ID %in% NE_Field_75,
+             "NE:Antelope",
+             ifelse(
+               ID %in% NE_Field_97,
+               "NE:Pierce",
+               ifelse(
+                 ID %in% NE_Field_98,
+                 "NE:Cedar 3",
+                 ifelse(
+                   ID %in% NE_Field_101,
+                   "NE:Cedar 2",
+                   ifelse(ID %in% potato, 
+                          "potato", ifelse(ID %in% baseline_isolates_2, 
+                                           "Baseline","other_fields"
+                                           
+                          )))
+               )
+             )
+           )
+         )
+       )
+     )
+   )%>%
+   mutate(
+     source = as.factor(source),
+     Host = as.factor(Host),
+     Field = as.factor(Field)
+   ) %>%    
+   #taking out "different host" becuse does not belong to drybean nor soybean
+   filter(!ID == 8, !ID == 129)%>%
+   mutate(Country = ifelse(
+     ID %in% mexican.isolates,
+     "Mexico",
+     ifelse(ID %in% brazilian.isolates,
+            "Brazil", "USA")
+   )) 
+ 
+ tetraconazole.complete.MX.BZ.complete <- tetraconazole.complete.MX.BZ.complete  %>% 
+   mutate(Year_Field= case_when(
+     ID %in%WM_1963~"1963",
+     ID %in%WM_1965~"1965",
+     ID %in%WM_1969~"1969",
+     ID %in%WM_1973~"1973",
+     ID %in%WM_1974~"1974",
+     ID %in%WM_1975~"1975",
+     ID %in%WM_1976~"1976",
+     ID %in%WM_1977~"1977",
+     ID %in%WM_1978~"1978",
+     ID %in%WM_1979~"1979",
+     ID %in%WM_1980~"1980",
+     ID %in%WM_1981~"1981",
+     ID %in%WM_1982~"1982",
+     ID %in%WM_1983~"1983",
+     ID %in%WM_1984~"1984",
+     ID %in%WM_1985~"1985",
+     ID %in%WM_1987~"1987",
+     ID %in%WM_1989~"1989",
+     ID %in%WM_1990~"1990",
+     ID %in%WM_1991~"1991",
+     ID %in%WM_1992~"1992",
+     ID %in%WM_1993~"1993",
+     ID %in%WM_1994~"1994",
+     ID %in%WM_1995~"1995",
+     ID %in%WM_1996~"1996",
+     ID %in%WM_1997~"1997",
+     ID %in%WM_1997_WM_production_31~"1997_production_31",
+     ID %in%WM_1997_WM_production_32~"1997_production_32",
+     ID %in%WM_1988~"1988",
+     ID %in%WM_1998~"1998",
+     ID %in%WM_1999~"1999",
+     ID %in%WM_2000~"2000",
+     ID %in%WM_2002~"2002",
+     ID %in%WM_2003~"2003",
+     ID %in%WM_1997_WM_production_33~"1997_production_33",
+     ID %in%WM_2003_WM_nursery_1~"2003_nursery_1",
+     ID %in%WM_2003_WM_nursery_2~"2003_nursery_2",
+     ID %in%WM_2003_WM_nursery_3~"2003_nursery_3",
+     ID %in%WM_1996_WM_nursery_4~"1996_nursery_4",
+     ID %in%WM_2003_WM_nursery_5~"2003_nursery_5",
+     ID %in%WM_2004~"2004",
+     ID %in%WM_2005~"2005",
+     ID %in%WM_2006~"2006",
+     ID %in%WM_2004_WM_nursery_6~"2004_nursery_6",
+     ID %in%WM_2004_WM_nursery_7~"2004_nursery_7",
+     ID %in%WM_2004_WM_nursery_8~"2004_nursery_8",
+     ID %in%WM_2004_WM_nursery_9~"2004_nursery_9",
+     ID %in%WM_2004_WM_nursery_10~"2004_nursery_10",
+     ID %in%WM_2004_WM_nursery_11~"2004_nursery_11",
+     ID %in%WM_2004_WM_nursery_12~"2004_nursery_12",
+     ID %in%WM_2005_WM_nursery_13~"2005_nursery_13",
+     ID %in%WM_2005_WM_nursery_14~"2005_nursery_14",
+     ID %in%WM_2005_WM_nursery_15~"2005_nursery_15",
+     ID %in%WM_2005_WM_nursery_16~"2005_nursery_16",
+     ID %in%WM_2005_WM_nursery_17~"2005_nursery_17",
+     ID %in%WM_2005_WM_nursery_18~"2005_nursery_18",
+     ID %in%WM_2006_WM_nursery_19~"2006_nursery_19",
+     ID %in%WM_2007~"2007",
+     ID %in%WM_2007_WM_production_1~"2007_production_1",
+     ID %in%WM_2007_WM_production_2~"2007_production_2",
+     ID %in%WM_2007_WM_production_3~"2007_production_3",
+     ID %in%WM_2007_WM_production_4~"2007_production_4",
+     ID %in%WM_2007_WM_production_5~"2007_production_5",
+     ID %in%WM_2007_WM_production_6~"2007_production_6",
+     ID %in%WM_2007_WM_production_7~"2007_production_7",
+     ID %in%WM_2007_WM_production_8~"2007_production_8",
+     ID %in%WM_2007_WM_production_9~"2007_production_9",
+     ID %in%WM_2008~"2008",
+     ID %in%WM_2008_WM_production_10~"2008_production_10",
+     ID %in%WM_2008_WM_nursery_20~"2008_nursery_20",
+     ID %in%WM_2008_WM_production_11~"2008_production_11",
+     ID %in%WM_2008_WM_production_12~"2008_production_12",
+     ID %in%WM_2008_WM_production_13~"2008_production_13",
+     ID %in%WM_2009~"2009",
+     ID %in%WM_2008_WM_nursery_21~"2008_nursery_21",
+     ID %in%WM_2009_WM_nursery_22~"2009_nursery_22",
+     ID %in%WM_2009_WM_nursery_23~"2009_nursery_23",
+     ID %in%WM_2009_WM_production_14~"2009_production_14",
+     ID %in%WM_2009_WM_production_15~"2009_production_15",
+     ID %in%WM_2009_WM_production_16~"2009_production_16",
+     ID %in%WM_2009_WM_production_17~"2009_production_17",
+     ID %in%WM_2009_WM_production_18~"2009_production_18",
+     ID %in%WM_2009_WM_production_19~"2009_production_19",
+     ID %in%WM_2009_WM_production_20~"2009_production_20",
+     ID %in%WM_2010_WM_production_21~"2010_production_21",
+     ID %in%WM_2010_WM_production_22~"2010_production_22",
+     ID %in%WM_2010_WM_production_23~"2010_production_23",
+     ID %in%WM_2010_WM_production_24~"2010_production_24",
+     ID %in%WM_2010_WM_production_25~"2010_production_25",
+     ID %in%WM_2010_WM_production_26~"2010_production_26",
+     ID %in%WM_2010_WM_production_27~"2010_production_27",
+     ID %in%WM_2010_WM_production_28~"2010_production_28",
+     ID %in%WM_2010_WM_production_29~"2010_production_29",
+     ID %in%WM_2010_WM_production_30~"2010_production_30",
+     ID %in%WM_2011~"2011",
+     ID %in%WM_2013~"2013",
+     ID %in%WM_2014~"2014",
+     ID %in%WM_2016~"2016",
+     ID %in%WM_2016_po~"2016_po",
+     ID %in%WM_2016_flo~"2016_flo",
+     ID %in%WM_2016_lan~"2016_lan",
+     ID %in%WM_2017_ho~"2017_ho",
+     ID %in%WM_2017_an~"2017_an",
+     ID %in%WM_2017_dod~"2017_dod",
+     ID %in%WM_2017_va~"2017_va",
+     ID %in%WM_2017_na~"2017_na",
+     ID %in%WM_2017_sa~"2017_sa",
+     ID %in%WM_2017_ha~"2017_ha",
+     ID %in%WM_2017_cu~"2017_cu",
+     ID %in%WM_2017_mon~"2017_mon",
+     ID %in%WM_2017_ant~"2017_ant",
+     ID %in%WM_2017_holt~"2017_holt",
+     ID %in%WM_2017_arr~"2017_arr",
+     ID %in%WM_2017_ini~"2017_ini",
+     ID %in%WM_2017_ley~"2017_ley",
+     ID %in%WM_2017_pre~"2017_pre",
+     ID %in%WM_2017_ru~"2017_ru",
+     ID %in%WM_2017_ca~"2017_ca",
+     ID %in%WM_2017_st~"2017_st",
+     ID %in%WM_2015_6~"2015_6",
+     ID %in%WM_2015_8~"2015_8",
+     ID %in%WM_2015_9~"2015_9",
+     ID %in%WM_2015_10~"2015_10",
+     ID %in%WM_2015_11~"2015_11",
+     ID %in%WM_2015_18~"2015_18",
+     ID %in%WM_2015_19~"2015_19",
+     ID %in%WM_2015_20~"2015_20",
+     ID %in%WM_2015_21~"2015_21",
+     ID %in%WM_2015_22~"2015_22",
+     ID %in%WM_2015_23~"2015_23",
+     ID %in%WM_2015_24~"2015_24",
+     ID %in%WM_2015_25~"2015_25",
+     ID %in%WM_2015_34~"2015_34",
+     ID %in%WM_2015_35~"2015_35",
+     ID %in%WM_2015_45~"2015_45",
+     ID %in%WM_2015_46~"2015_46",
+     ID %in%WM_2015_47~"2015_47",
+     ID %in%WM_2015_48~"2015_48",
+     ID %in%WM_2015_60~"2015_60",
+     ID %in%WM_2015_62~"2015_62",
+     ID %in%WM_2015_66~"2015_66",
+     ID %in%WM_2015_67~"2015_67",
+     ID %in%WM_2015_68~"2015_68",
+     ID %in%WM_2015_69~"2015_69",
+     ID %in%WM_2015_75~"2015_75",
+     ID %in%WM_2015_78~"2015_78",
+     ID %in%WM_2015_97~"2015_97",
+     ID %in%WM_2015_98~"2015_98",
+     ID %in%WM_2015_99~"2015_99",
+     ID %in%WM_2015_100~"2015_100",
+     ID %in%WM_2015_101~"2015_101",
+     ID %in%WM_2015_102~"2015_102",
+     ID %in%WM_2015_103~"2015_103",
+     ID %in%WM_2015_104~"2015_104",
+     ID %in%WM_2015_Al~"2015_Al",
+     ID %in%WM_2015_Hi~"2015_Hi",
+     ID %in%WM_2015_In~"2015_In",
+     ID %in%WM_2015_mont~"2015_mont",
+     ID %in%WM_2015_Sand~"2015_Sand",
+     ID %in%WM_2015_Sani~"2015_Sani",
+     ID %in%WM_2015_St~"2015_St",
+     ID %in%WM_2015_wau~"2015_wau",
+     ID %in%WM_2015_la~"2015_la",
+     ID %in%WM_2015_co~"2015_co",
+     ID %in%WM_2015_cern~"2015_cern",
+     ID %in%WM_2015_cer~"2015_cer",
+     ID %in%WM_2010~"2010",
+     ID %in%WM_2017~"2017",
+     ID %in%WM_2010_Lambari~"2010_Lambari",
+     ID %in%WM_2010_Porto.Firme~"2010_Porto.Firme",
+     ID %in%WM_2010_Unai~"2010_Unai",
+     TRUE ~ "no specific field"
+   ),
+   State= case_when(
+     ID %in%WM_AB~"AB",
+     ID %in%WM_AZ~"AZ",
+     ID %in%WM_BA~"BA",
+     ID %in%WM_CA~"CA",
+     ID %in%WM_CO~"CO",
+     ID %in%WM_DE~"DE",
+     ID %in%WM_DF~"DF",
+     ID %in%WM_FL~"FL",
+     ID %in%WM_GA~"GA",
+     ID %in%WM_GO~"GO",
+     
+     ID %in%WM_IA~"IA",
+     ID %in%WM_ID~"ID",
+     ID %in%WM_KS~"KS",
+     ID %in%WM_KY~"KY",
+     ID %in%WM_LA~"LA",
+     ID %in%WM_MD~"MD",
+     ID %in%WM_MG~"MG",
+     ID %in%WM_MI~"MI",
+     ID %in%WM_MN~"MN",
+     ID %in%WM_MO~"MO",
+     
+     ID %in%WM_MS~"MS",
+     ID %in%WM_MT~"MT",
+     ID %in%WM_NC~"NC",
+     ID %in%WM_ND~"ND",
+     ID %in%WM_NE~"NE",
+     ID %in%WM_NY~"NY",
+     ID %in%WM_OH~"OH",
+     ID %in%WM_OK~"OK",
+     ID %in%WM_ON~"ON",
+     ID %in%WM_OR~"OR",
+     
+     ID %in%WM_PA~"PA",
+     ID %in%WM_PR~"PR",
+     ID %in%WM_QUE~"QUE",
+     ID %in%WM_RS~"RS",
+     ID %in%WM_SC~"SC",
+     ID %in%WM_SIN~"SIN",
+     ID %in%WM_SK~"SK",
+     ID %in%WM_WI~"WI",
+     ID %in%WM_WA~"WA"
+     
+   )
+   ) %>% select(-c(new)) %>% 
+   mutate(Country = as.factor(Country),
+          Year_Field = as.factor(Year_Field),
+          State= as.factor(State) ) %>% 
+   arrange(ID)
+ 
+ ###For comparisons between hosts I had to take out the ones coming from baseline otherwise would not be fair
+ 
+ tetraconazole.complete.MX.BZ.complete.hosts<-tetraconazole.complete.MX.BZ.complete %>% 
+   filter(!source=="Baseline")
+ 
+ ###For isolates from that have reduced sensitivity, assess sensitivity for isolates in the same field to account for heterogeneicity
+ 
+ tetraconazole.complete.MX.BZ.complete %>% 
+   mutate(Year_Field= as.character(Year_Field)) %>% 
+mutate(Year_Field =  ifelse(Field == "Baseline", "Baseline", Year_Field),
+      Year_Field = as.factor(Year_Field)) %>% 
+   count(Year_Field) %>% 
+   filter(n >= 9)
+ 
+ tetraconazole.complete.MX.BZ.complete.fields <- tetraconazole.complete.MX.BZ.complete%>% 
+   mutate(Year_Field= as.character(Year_Field)) %>% 
+mutate(Year_Field =  ifelse(Field == "Baseline", "Baseline", Year_Field),
+      Year_Field = as.factor(Year_Field))  %>% 
+     group_by(Year_Field) %>% filter(n()>=9) %>% 
+     ungroup() %>% 
+     filter(!Year_Field =="no specific field" ) %>% 
+     mutate(Year_Field = fct_reorder(Year_Field, EC50DC, mean))
+ 
+ ##WITH MEXICO & BRAZIL together
+ # tetraconazole.complete.fields.cristian <-tetraconazole.complete.cris%>%
+ #   filter(  Field== "Baseline"|
+ #              State== "CO"|
+ #              State== "NE"|
+ #              State== "ND"|
+ #              State== "WA"|
+ #              State== "MI"|
+ #              Country== "Mexico"|
+ #              Country== "Brazil"
+ #   ) %>%
+ #   arrange(source) %>%
+ #    #
+ #   mutate(State= as.character(State),
+ #          State =  ifelse(Field == "Baseline", "Baseline", State),
+ #          State = as.factor(State)) %>%
+ #   filter(Year_Field == "2007_production_1"|
+ #            Year_Field == "2007_production_2"|
+ #            Year_Field == "2007_production_3"|
+ #            Year_Field == "2007_production_4"|
+ #            Year_Field == "2007_production_5"|
+ #            Year_Field == "2007_production_6"|
+ #            Year_Field == "2007_production_7"|
+ #            Year_Field == "2007_production_8"|
+ #            Year_Field == "2007_production_9"|
+ #            Year_Field == "2008_production_10"|
+ #            Year_Field == "2008_production_11"|
+ #            Year_Field == "2008_production_12"|
+ #            Year_Field == "2008_production_13"|
+ #            Year_Field == "2009_production_17"|
+ #            Year_Field == "2009_production_19"|
+ #            Year_Field == "2009_production_20"|
+ #            Year_Field == "2010_production_21"|
+ #            Year_Field == "2007_production_22"|
+ #            Year_Field == "2007_production_23"|
+ #            Year_Field == "2007_production_24"|
+ #            Year_Field == "2007_production_25"|
+ #            Year_Field == "2007_production_26"|
+ #            Year_Field == "2007_production_27"|
+ #            Year_Field == "2007_production_28"|
+ #            Year_Field == "2007_production_29"|
+ #            Year_Field == "2007_production_30"|
+ #            State == "Baseline"|
+ #            Country== "Mexico"|
+ #            Country== "Brazil") %>%
+ #           mutate(State = fct_recode(State, "Mexico & Brazil"= "SIN" , "Mexico & Brazil"= "GO", "Mexico & Brazil" = "MG"))
+ # 
+
+ # tetraconazole.complete.fields.cristian <-tetraconazole.complete.cris%>% 
+ #   filter(  Field== "Baseline"|
+ #              State== "CO"|
+ #              State== "NE"|
+ #              State== "ND"| 
+ #              State== "WA"|
+ #              State== "MI"
+ #   ) %>% 
+ #   arrange(source) %>% 
+ #   filter( !source == "Fungicide Field Trials") %>% 
+ #   
+ #   mutate(State= as.character(State), 
+ #          State =  ifelse(Field == "Baseline", "Baseline", State),
+ #          State = as.factor(State)) %>% 
+ #   filter(Year_Field == "2007_production_1"|
+ #            Year_Field == "2007_production_2"|
+ #            Year_Field == "2007_production_3"|
+ #            Year_Field == "2007_production_4"|
+ #            Year_Field == "2007_production_5"|
+ #            Year_Field == "2007_production_6"|
+ #            Year_Field == "2007_production_7"|
+ #            Year_Field == "2007_production_8"|
+ #            Year_Field == "2007_production_9"|
+ #            Year_Field == "2008_production_10"|
+ #            Year_Field == "2008_production_11"|
+ #            Year_Field == "2008_production_12"|
+ #            Year_Field == "2008_production_13"|
+ #            Year_Field == "2009_production_17"|
+ #            Year_Field == "2009_production_19"|
+ #            Year_Field == "2009_production_20"|
+ #            Year_Field == "2010_production_21"|
+ #            Year_Field == "2007_production_22"|
+ #            Year_Field == "2007_production_23"|
+ #            Year_Field == "2007_production_24"|
+ #            Year_Field == "2007_production_25"|
+ #            Year_Field == "2007_production_26"|
+ #            Year_Field == "2007_production_27"|
+ #            Year_Field == "2007_production_28"|
+ #            Year_Field == "2007_production_29"|
+ #            Year_Field == "2007_production_30"|
+ #            State == "Baseline") %>% 
+ #   arrange(EC50DC)
+ # 
+ # # total 124 isolates
+ # 
+ # tetraconazole.complete.fields.cristian$State <-
+ #   factor(tetraconazole.complete.fields.cristian$State,
+ # c("WA", "MI", "Baseline", "ND", "CO", "NE"))
+
+```
+
+##  Statistical analysis  
+###  By Field (previous Source) but because the name actually is "State"  
+
+```{r Normality in Tetraconazole, include= FALSE}
+
+ #by field but because the name actually is "State"
+ 
+ ##NORMALITY TEST-Shapiro_test
+ 
+ shapiro.test.tet.MX.BZ.complete.fields <- tetraconazole.complete.MX.BZ.complete.fields %>%
+   do(tidy(shapiro.test(.$EC50DC)))
+ shapiro.test.tet.MX.BZ.complete.fields[[2]][[1]]
+ #p value is = 1.514994e-07
+ # No normals
+ 
+ 
+```
+##  No normality, p value = `r shapiro.test.tet.MX.BZ.complete.fields[[2]][[1]]`    
+
+##  Kruskal Wallis test 
+
+```{r kruskal wallis in Tetraconazole, echo = FALSE, include=FALSE, warning= FALSE}
+object.1.tet.MX.BZ.complete.fields <- kruskal.test(EC50DC ~ Year_Field, data = tetraconazole.complete.MX.BZ.complete.fields)
+ object.1.tet.MX.BZ.complete.fields[[3]][[1]]
+ 
+ #There is difference difference,  p-value = 9.474553e-11
+ 
+```
+##  There is difference,  p value =  `r object.1.tet.MX.BZ.complete.fields[[3]][[1]]`    
+##  Dunn test
+```{r Dunn test in Tetraconazole, echo= FALSE}
+object.2.tet.MX.BZ.complete.fields<-  DunnTest(EC50DC ~ Year_Field, data = tetraconazole.complete.MX.BZ.complete.fields, method = "bonferroni")
+ object.2.tet.MX.BZ.complete.fields
+#  
+#  Dunn's test of multiple comparisons using rank sums : bonferroni  
+# 
+#                                       mean.rank.diff    pval    
+# 2007_production_1-2010_production_21      37.8333333 1.00000    
+# 2017_pre-2010_production_21               33.5000000 1.00000    
+# 2017_ca-2010_production_21                41.3000000 1.00000    
+# Baseline-2010_production_21               78.4523810 0.05004 .  
+# 2017_ley-2010_production_21               77.5000000 0.24671    
+# 2010_Porto.Firme-2010_production_21       64.6000000 1.00000    
+# 2015_97-2010_production_21                78.7000000 0.26457    
+# 2007_production_9-2010_production_21      82.9687500 0.04294 *  
+# 2017_mon-2010_production_21               82.5909091 0.12068    
+# 2008_production_10-2010_production_21     96.5000000 0.01025 *  
+# 2017_na-2010_production_21               102.2500000 0.00372 ** 
+# 2016_lan-2010_production_21               95.8000000 0.02205 *  
+# 2015_101-2010_production_21              124.2777778 0.00025 ***
+# 2015_67-2010_production_21               134.8333333 3.1e-05 ***
+# 2010_production_25-2010_production_21    137.7222222 1.7e-05 ***
+# 2010_Unai-2010_production_21             147.2000000 9.3e-07 ***
+# 2017_pre-2007_production_1                -4.3333333 1.00000    
+# 2017_ca-2007_production_1                  3.4666667 1.00000    
+# Baseline-2007_production_1                40.6190476 1.00000    
+# 2017_ley-2007_production_1                39.6666667 1.00000    
+# 2010_Porto.Firme-2007_production_1        26.7666667 1.00000    
+# 2015_97-2007_production_1                 40.8666667 1.00000    
+# 2007_production_9-2007_production_1       45.1354167 1.00000    
+# 2017_mon-2007_production_1                44.7575758 1.00000    
+# 2008_production_10-2007_production_1      58.6666667 1.00000    
+# 2017_na-2007_production_1                 64.4166667 0.58660    
+# 2016_lan-2007_production_1                57.9666667 1.00000    
+# 2015_101-2007_production_1                86.4444444 0.05315 .  
+# 2015_67-2007_production_1                 97.0000000 0.00940 ** 
+# 2010_production_25-2007_production_1      99.8888889 0.00567 ** 
+# 2010_Unai-2007_production_1              109.3666667 0.00052 ***
+# 2017_ca-2017_pre                           7.8000000 1.00000    
+# Baseline-2017_pre                         44.9523810 1.00000    
+# 2017_ley-2017_pre                         44.0000000 1.00000    
+# 2010_Porto.Firme-2017_pre                 31.1000000 1.00000    
+# 2015_97-2017_pre                          45.2000000 1.00000    
+# 2007_production_9-2017_pre                49.4687500 1.00000    
+# 2017_mon-2017_pre                         49.0909091 1.00000    
+# 2008_production_10-2017_pre               63.0000000 1.00000    
+# 2017_na-2017_pre                          68.7500000 0.50020    
+# 2016_lan-2017_pre                         62.3000000 1.00000    
+# 2015_101-2017_pre                         90.7777778 0.04782 *  
+# 2015_67-2017_pre                         101.3333333 0.00900 ** 
+# 2010_production_25-2017_pre              104.2222222 0.00554 ** 
+# 2010_Unai-2017_pre                       113.7000000 0.00058 ***
+# Baseline-2017_ca                          37.1523810 1.00000    
+# 2017_ley-2017_ca                          36.2000000 1.00000    
+# 2010_Porto.Firme-2017_ca                  23.3000000 1.00000    
+# 2015_97-2017_ca                           37.4000000 1.00000    
+# 2007_production_9-2017_ca                 41.6687500 1.00000    
+# 2017_mon-2017_ca                          41.2909091 1.00000    
+# 2008_production_10-2017_ca                55.2000000 1.00000    
+# 2017_na-2017_ca                           60.9500000 1.00000    
+# 2016_lan-2017_ca                          54.5000000 1.00000    
+# 2015_101-2017_ca                          82.9777778 0.14789    
+# 2015_67-2017_ca                           93.5333333 0.03142 *  
+# 2010_production_25-2017_ca                96.4222222 0.01998 *  
+# 2010_Unai-2017_ca                        105.9000000 0.00250 ** 
+# 2017_ley-Baseline                         -0.9523810 1.00000    
+# 2010_Porto.Firme-Baseline                -13.8523810 1.00000    
+# 2015_97-Baseline                           0.2476190 1.00000    
+# 2007_production_9-Baseline                 4.5163690 1.00000    
+# 2017_mon-Baseline                          4.1385281 1.00000    
+# 2008_production_10-Baseline               18.0476190 1.00000    
+# 2017_na-Baseline                          23.7976190 1.00000    
+# 2016_lan-Baseline                         17.3476190 1.00000    
+# 2015_101-Baseline                         45.8253968 1.00000    
+# 2015_67-Baseline                          56.3809524 1.00000    
+# 2010_production_25-Baseline               59.2698413 0.96856    
+# 2010_Unai-Baseline                        68.7476190 0.16441    
+# 2010_Porto.Firme-2017_ley                -12.9000000 1.00000    
+# 2015_97-2017_ley                           1.2000000 1.00000    
+# 2007_production_9-2017_ley                 5.4687500 1.00000    
+# 2017_mon-2017_ley                          5.0909091 1.00000    
+# 2008_production_10-2017_ley               19.0000000 1.00000    
+# 2017_na-2017_ley                          24.7500000 1.00000    
+# 2016_lan-2017_ley                         18.3000000 1.00000    
+# 2015_101-2017_ley                         46.7777778 1.00000    
+# 2015_67-2017_ley                          57.3333333 1.00000    
+# 2010_production_25-2017_ley               60.2222222 1.00000    
+# 2010_Unai-2017_ley                        69.7000000 0.53121    
+# 2015_97-2010_Porto.Firme                  14.1000000 1.00000    
+# 2007_production_9-2010_Porto.Firme        18.3687500 1.00000    
+# 2017_mon-2010_Porto.Firme                 17.9909091 1.00000    
+# 2008_production_10-2010_Porto.Firme       31.9000000 1.00000    
+# 2017_na-2010_Porto.Firme                  37.6500000 1.00000    
+# 2016_lan-2010_Porto.Firme                 31.2000000 1.00000    
+# 2015_101-2010_Porto.Firme                 59.6777778 1.00000    
+# 2015_67-2010_Porto.Firme                  70.2333333 0.77388    
+# 2010_production_25-2010_Porto.Firme       73.1222222 0.54281    
+# 2010_Unai-2010_Porto.Firme                82.6000000 0.11349    
+# 2007_production_9-2015_97                  4.2687500 1.00000    
+# 2017_mon-2015_97                           3.8909091 1.00000    
+# 2008_production_10-2015_97                17.8000000 1.00000    
+# 2017_na-2015_97                           23.5500000 1.00000    
+# 2016_lan-2015_97                          17.1000000 1.00000    
+# 2015_101-2015_97                          45.5777778 1.00000    
+# 2015_67-2015_97                           56.1333333 1.00000    
+# 2010_production_25-2015_97                59.0222222 1.00000    
+# 2010_Unai-2015_97                         68.5000000 0.76056    
+# 2017_mon-2007_production_9                -0.3778409 1.00000    
+# 2008_production_10-2007_production_9      13.5312500 1.00000    
+# 2017_na-2007_production_9                 19.2812500 1.00000    
+# 2016_lan-2007_production_9                12.8312500 1.00000    
+# 2015_101-2007_production_9                41.3090278 1.00000    
+# 2015_67-2007_production_9                 51.8645833 1.00000    
+# 2010_production_25-2007_production_9      54.7534722 1.00000    
+# 2010_Unai-2007_production_9               64.2312500 0.53684    
+# 2008_production_10-2017_mon               13.9090909 1.00000    
+# 2017_na-2017_mon                          19.6590909 1.00000    
+# 2016_lan-2017_mon                         13.2090909 1.00000    
+# 2015_101-2017_mon                         41.6868687 1.00000    
+# 2015_67-2017_mon                          52.2424242 1.00000    
+# 2010_production_25-2017_mon               55.1313131 1.00000    
+# 2010_Unai-2017_mon                        64.6090909 1.00000    
+# 2017_na-2008_production_10                 5.7500000 1.00000    
+# 2016_lan-2008_production_10               -0.7000000 1.00000    
+# 2015_101-2008_production_10               27.7777778 1.00000    
+# 2015_67-2008_production_10                38.3333333 1.00000    
+# 2010_production_25-2008_production_10     41.2222222 1.00000    
+# 2010_Unai-2008_production_10              50.7000000 1.00000    
+# 2016_lan-2017_na                          -6.4500000 1.00000    
+# 2015_101-2017_na                          22.0277778 1.00000    
+# 2015_67-2017_na                           32.5833333 1.00000    
+# 2010_production_25-2017_na                35.4722222 1.00000    
+# 2010_Unai-2017_na                         44.9500000 1.00000    
+# 2015_101-2016_lan                         28.4777778 1.00000    
+# 2015_67-2016_lan                          39.0333333 1.00000    
+# 2010_production_25-2016_lan               41.9222222 1.00000    
+# 2010_Unai-2016_lan                        51.4000000 1.00000    
+# 2015_67-2015_101                          10.5555556 1.00000    
+# 2010_production_25-2015_101               13.4444444 1.00000    
+# 2010_Unai-2015_101                        22.9222222 1.00000    
+# 2010_production_25-2015_67                 2.8888889 1.00000    
+# 2010_Unai-2015_67                         12.3666667 1.00000    
+# 2010_Unai-2010_production_25               9.4777778 1.00000    
+# ---
+# Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+```
+There is difference  
+
+##  Plot
+```{r Plot in Tetraconazole, echo = FALSE, include=FALSE, warning= FALSE}
+tetraconazole.complete.MX.BZ.complete.fields %>%
+   ggplot(aes(x = Year_Field, y = EC50DC)) +
+   geom_jitter(aes(color= State, shape = Host),
+      width = .1,
+      height = 0,
+         alpha = 3 / 4
+   ) + stat_summary(
+      fun = mean,
+      geom = "point",
+      shape = 95,
+      size = 15,
+      color = "black"
+   ) +
+   labs(x = "Year_Field", y = expression(bold(EC[bold("50") ~ (bold("D"))]) ~
+                                            (bold(ppm ~ bold(
+                                               "a.i."
+                                            ))))) + theme(
+                                               panel.border = element_rect(
+                                                  colour = "black",
+                                                  fill = NA,
+                                                  size = 1
+                                               ),
+                                               axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+                                               axis.text = element_text(
+                                                  face = "bold",
+                                                  size = 10,
+                                                  family = "Arial",
+                                                  angle = 30
+                                                  
+                                               ),
+                                               panel.background = element_rect(fill = "white", colour = "grey50")
+                                            ) +  expand_limits(y = c(0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6, 1.8, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0))
+
+  
+
+ 
+ 
+ 
+ 
+```
+
+
 ```{r}
 isolates_Mexico.Brazil.experiment.using <-  sort ( unique( c (461, 
                                              1901, 
