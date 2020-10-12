@@ -8,7 +8,14 @@ This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute
 Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
 
 ```{r functions}
-#Reading the sclerotinia inventory
+#Getrange function
+get_range <- function(mynumber) {
+  bb <- boxplot.stats(mynumber)
+  cc <- bb$stats
+  dd <- max(cc)
+  ee <- min(cc)
+  return(data.frame(upper = dd, lower = ee))
+}
 
 ##Function.Reading data for serial.dilution
 reading_data_serial_dilution <- function(filename){
@@ -17,33 +24,307 @@ reading_data_serial_dilution <- function(filename){
  # data <- subset(dareading_data("data/Benomyl.Colletotrichum.csv")ta, select = -X)
   data$repeats <- rep_len(1:4, length.out = nrow(data))
   
+   # renaming ID for the current names
+ data$ID[ data$ID =="12B"]  <- "12" 
+ #Although 74SS1 belong to # 74, the one what I used was specifically this:74SS1
+ data$ID[ data$ID =="74SS1"]  <- "74" 
+ data$ID[ data$ID =="62-02"]  <- "2098" 
+ data$ID[ data$ID =="62-03"]  <- "2099" 
+ data$ID[ data$ID =="62-04"]  <- "2100" 
+ data$ID[ data$ID =="78-01"]  <- "2139" 
+ data$ID[ data$ID =="78-02"]  <- "2140" 
+ data$ID[ data$ID =="78-05"]  <- "2143" 
+ data$ID[ data$ID =="S-01"]  <- "2320" 
+ data$ID[ data$ID =="H-01"]  <- "2220" 
+ data$ID[ data$ID =="H-03"]  <- "2222" 
+ data$ID[ data$ID =="H-04"]  <- "2223"
+ data$ID[ data$ID =="I-20"]  <- "2362"
+ data$ID[ data$ID =="419"]  <- "2385"
+ data$ID[ data$ID =="413"]  <- "2386"
+ data$ID[ data$ID =="W212"]  <- "2388"
+ data$ID[ data$ID =="318"]  <- "2390"
+ data$ID[data$ID == "54C"]  <- "2453"
+ data$ID[data$ID == "65B"]  <- "2528"
+ data$ID[data$ID == "51C"]  <- "2449"
+ data$ID[data$ID == "71B"]  <- "2505"
+ data$ID[data$ID == "64D"]  <- "2518"
+ data$ID[data$ID == "53B"]  <- "2536"
+ data$ID[data$ID == "60A"]  <- "2559"
+ data$ID[data$ID == "H-01"]  <- "2220"
+ data$ID[data$ID == "H-03"]  <- "2222"
+ data$ID[data$ID == "419"]  <- "2385"
+ data$ID[data$ID == "78-02"]  <- "2140"
+
+ 
+ 
+ 
+ data$ID <- as.numeric(data$ID)
   data <- data %>%
          mutate(polar= replace(polar, polar == 0, 0.6)) %>%  #replacing 0 cm growth for the size of plug that is 0.6
     mutate(ecuatorial= replace(ecuatorial, ecuatorial == 0, 0.6)) %>% #replacing 0 cm growth for the size of plug that is 0.6
-    group_by(ID, experimental_replicate, dose, ecuatorial, polar, repeats) %>%
-    mutate(growth = ((ecuatorial + polar) / 2))
+    # group_by(ID, experimental_replicate, dose, ecuatorial, polar, repeats) %>%
+    mutate(growth = ((ecuatorial + polar) / 2)) %>% 
+  group_by(ID, dose) %>%
+  mutate(growth_range = list(get_range(growth))) %>%
+  unnest() %>% 
+  filter(growth <= upper & growth >= lower) %>%
+  rename(response = growth) %>%
+  ungroup() %>%
+  select(c(ID, experimental_replicate, repeats, dose, response))
+  
+  
+  
   }
+
 
 ##Function.Reading data for Discriminatory concentration
 reading_data_discriminatory_concentration <- function(filename){
-  data <-
-  read.csv(filename)
+  data <-filename
  # data <- subset(data, select = -X)
-  data$repeats <- rep_len(1:3, length.out = nrow(data))
-  
+  #data$repeats <- rep_len(1:3, length.out = nrow(data))
+  # renaming ID for the current names
+ data$ID[ data$ID =="12B"]  <- "12" 
+ #Although 74SS1 belong to # 74, the one what I used was specifically this:74SS1
+ data$ID[ data$ID =="74SS1"]  <- "74" 
+ data$ID[ data$ID =="62-02"]  <- "2098" 
+ data$ID[ data$ID =="62-03"]  <- "2099" 
+ data$ID[ data$ID =="62-04"]  <- "2100" 
+ data$ID[ data$ID =="78-01"]  <- "2139" 
+ data$ID[ data$ID =="78-02"]  <- "2140" 
+ data$ID[ data$ID =="78-05"]  <- "2143" 
+ data$ID[ data$ID =="S-01"]  <- "2320" 
+ data$ID[ data$ID =="H-01"]  <- "2220" 
+ data$ID[ data$ID =="H-03"]  <- "2222" 
+ data$ID[ data$ID =="H-04"]  <- "2223"
+ data$ID[ data$ID =="I-20"]  <- "2362"
+ data$ID[ data$ID =="419"]  <- "2385"
+ data$ID[ data$ID =="413"]  <- "2386"
+ data$ID[ data$ID =="W212"]  <- "2388"
+ data$ID[ data$ID =="318"]  <- "2390"
+ data$ID[data$ID == "54C"]  <- "2453"
+ data$ID[data$ID == "65B"]  <- "2528"
+ data$ID[data$ID == "51C"]  <- "2449"
+ data$ID[data$ID == "71B"]  <- "2505"
+ data$ID[data$ID == "64D"]  <- "2518"
+ data$ID[data$ID == "53B"]  <- "2536"
+ data$ID[data$ID == "60A"]  <- "2559"
+ data$ID[data$ID == "H-01"]  <- "2220"
+ data$ID[data$ID == "H-03"]  <- "2222"
+ data$ID[data$ID == "419"]  <- "2385"
+ data$ID[data$ID == "78-02"]  <- "2140"
+  data$ID <- as.numeric(data$ID)
   data <- data %>%
-         mutate(polar= replace(growth, growth == 0, 6)) %>%  #replacing 0 cm growth for the size of plug that is 0.6
-     group_by(ID, experimental_replicate, concentration, growth, repeats) %>%
-  rename(dose = concentration )
+         mutate(response= replace(response, response == 0, 0.6)) %>% 
+      #replacing 0 cm growth for the size of plug that is 0.6
+     # group_by(ID, experimental_replicate, concentration, growth, repeats) %>%
+ group_by(ID) %>%
+  mutate(response_range = list(get_range(response))) %>%
+  unnest() %>%
+  mutate(control_range = list(get_range(control))) %>%
+  unnest() %>%
+  filter(response <= upper &
+           response >= lower,
+         control <= upper1 & control >= lower1) %>%
+  ungroup() %>%
+  select(c(ID, experimental_replicate, repeats, response, control))
 }
 #getting EC50
 
 
+
 ```
 
-Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+```{r Reading data}
+#TM
+hey4 <-
+  reading_data_serial_dilution("data/TM_serialdi_BL-WMN_survey-WMNCSRP(validationdata).csv") %>%
+  filter(!experimental_replicate == 1 |
+           !dose == 1.5 | !repeats == 3)  #something weird happened with the repeats 3 so Iam revoming those
 
-When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
+## First try with postdoc Thomas
+survey.TM <- read.csv("data/DD_survey-WMNCSRP.csv") %>%
+  select(
+    ID,
+    repeats,
+    experimental_replicate,
+    TM.ecuatorial,
+    TM.polar,
+    control.ecuatorial,
+    control.polar
+  ) %>%
+  mutate(TM.growth = ((TM.ecuatorial + TM.polar) / 2),
+         control.growth = ((control.ecuatorial + control.polar) / 2)) %>% 
+rename(response = TM.growth, control = control.growth) %>% 
+  select(c(ID, experimental_replicate, repeats, response, control)) 
 
-The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+survey.TM.2 <- reading_data_discriminatory_concentration(survey.TM)
+## Second try with Edgar
+survey.TM.USA <- 
+      read.csv("data/DD_survey-WMNCSRP_TM.csv") %>% 
+mutate(TM.growth = ((TM.ecuatorial + TM.polar) / 2),
+         control.growth = ((control.ecuatorial + control.polar) / 2)) %>% 
+rename(response = TM.growth, control = control.growth) %>% 
+  select(c(ID, experimental_replicate, repeats, response, control)) 
+
+survey.TM.USA.2 <- reading_data_discriminatory_concentration(survey.TM.USA)
+## Third try with Cristian
+survey.TM.more.USA <- 
+ read.csv("data/TM.Cristian.csv") %>% 
+mutate(TM.growth = ((TM.ecuatorial + TM.polar) / 2),
+         control.growth = ((control.ecuatorial + control.polar) / 2)) %>% 
+rename(response = TM.growth, control = control.growth) %>% 
+  select(c(ID, experimental_replicate, repeats, response, control)) 
+
+survey.TM.more.USA.2 <- reading_data_discriminatory_concentration(survey.TM.more.USA)
+# Fourth try with Edgar # it does not exist yet
+survey.TM.MX.BZ <-
+ read.csv("data/DD_survey-WMNCSRP_TM.Brazilian.Mexican.csv") %>% mutate(TM.growth = ((TM.ecuatorial + TM.polar) / 2),
+         control.growth = ((control.ecuatorial + control.polar) / 2)) %>%
+rename(response = TM.growth, control = control.growth) %>%
+  select(c(ID, experimental_replicate, repeats, response, control))
+
+survey.TM.MX.BZ.2 <- reading_data_discriminatory_concentration(survey.TM.MX.BZ)
+
+
+#Tetraconazole
+hey3 <- reading_data_serial_dilution("data/tetraconazole_serialdi_BL-WMN_survey-WMNCSRP(validationdata).csv")
+## First try with postdoc Thomas
+survey.tetraconazole <- read.csv("data/DD_survey-WMNCSRP.csv") %>%
+  select(
+    ID,
+    repeats,
+    experimental_replicate,
+    tetraconazole.ecuatorial,
+    tetraconazole.polar,
+    control.ecuatorial,
+    control.polar
+  ) %>%
+  mutate(tetraconazole.growth = ((tetraconazole.ecuatorial + tetraconazole.polar) / 2),
+         control.growth = ((control.ecuatorial + control.polar) / 2)) %>% 
+rename(response = tetraconazole.growth, control = control.growth) %>% 
+  select(c(ID, experimental_replicate, repeats, response, control)) 
+
+survey.tetraconazole.2 <- reading_data_discriminatory_concentration(survey.tetraconazole)
+
+## Second try with Edgar
+survey.tetraconazole.USA <- 
+      read.csv("data/DD_survey-WMNCSRP_tetraconazole.csv") %>% 
+mutate(tetraconazole.growth = ((tetraconazole.ecuatorial + tetraconazole.polar) / 2),
+         control.growth = ((control.ecuatorial + control.polar) / 2)) %>% 
+rename(response = tetraconazole.growth, control = control.growth) %>% 
+  select(c(ID, experimental_replicate, repeats, response, control)) 
+
+survey.tetraconazole.USA.2 <- reading_data_discriminatory_concentration(survey.tetraconazole.USA)
+## Third try with Cristian
+survey.tetraconazole.more.USA <- 
+ read.csv("data/tetraconazole.Cristian.csv") %>% 
+mutate(tetraconazole.growth = ((tetraconazole.ecuatorial + tetraconazole.polar) / 2),
+         control.growth = ((control.ecuatorial + control.polar) / 2)) %>% 
+rename(response = tetraconazole.growth, control = control.growth) %>% 
+  select(c(ID, experimental_replicate, repeats, response, control)) 
+
+survey.tetraconazole.more.USA.2 <- reading_data_discriminatory_concentration(survey.tetraconazole.more.USA)
+## Fourth try with Edgar 
+survey.tetraconazole.MX.BZ <- 
+ read.csv("data/DD_survey-WMNCSRP_tetraconazole.Mexican.Brazilian.csv") %>% mutate(tetraconazole.growth = ((tetraconazole.ecuatorial + tetraconazole.polar) / 2),
+         control.growth = ((control.ecuatorial + control.polar) / 2)) %>% 
+rename(response = tetraconazole.growth, control = control.growth) %>% 
+  select(c(ID, experimental_replicate, repeats, response, control)) 
+
+survey.tetraconazole.MX.BZ.2 <- reading_data_discriminatory_concentration(survey.tetraconazole.MX.BZ)
+
+#Boscalid
+hey <- reading_data_serial_dilution("data/boscalid_serialdilution_baseline(validationdata).csv") %>% filter(!dose ==  0.4 & !ID == 800)
+## First try with postdoc Thomas
+survey.boscalid <- read.csv("data/DD_survey-WMNCSRP.csv") %>%
+  select(
+    ID,
+    repeats,
+    experimental_replicate,
+    boscalid.ecuatorial,
+    boscalid.polar,
+    control.ecuatorial,
+    control.polar
+  ) %>%
+  mutate(boscalid.growth = ((boscalid.ecuatorial + boscalid.polar) / 2),
+         control.growth = ((control.ecuatorial + control.polar) / 2)) %>% 
+rename(response = boscalid.growth, control = control.growth) %>% 
+  select(c(ID, experimental_replicate, repeats, response, control)) 
+
+survey.boscalid.2 <- reading_data_discriminatory_concentration(survey.boscalid)
+   ## Second try with Edgar
+survey.boscalid.USA <- 
+      read.csv("data/DD_survey-WMNCSRP_boscalid.csv") %>% 
+mutate(boscalid.growth = ((boscalid.ecuatorial + boscalid.polar) / 2),
+         control.growth = ((control.ecuatorial + control.polar) / 2)) %>% 
+rename(response = boscalid.growth, control = control.growth) %>% 
+  select(c(ID, experimental_replicate, repeats, response, control)) 
+
+survey.boscalid.USA.2 <- reading_data_discriminatory_concentration(survey.boscalid.USA)
+ ## Third try with Cristian
+survey.boscalid.more.USA <- 
+ read.csv("data/Boscalid.Cristian.csv") %>% 
+mutate(boscalid.growth = ((boscalid.ecuatorial + boscalid.polar) / 2),
+         control.growth = ((control.ecuatorial + control.polar) / 2)) %>% 
+rename(response = boscalid.growth, control = control.growth) %>% 
+  select(c(ID, experimental_replicate, repeats, response, control)) 
+
+survey.boscalid.more.USA.2 <- reading_data_discriminatory_concentration(survey.boscalid.more.USA)
+## Fourth try with Edgar 
+survey.boscalid.MX.BZ <- 
+ read.csv("data/DD_survey-WMNCSRP_boscalid.Brazilian.Mexican.csv") %>% mutate(boscalid.growth = ((boscalid.ecuatorial + boscalid.polar) / 2),
+         control.growth = ((control.ecuatorial + control.polar) / 2)) %>% 
+rename(response = boscalid.growth, control = control.growth) %>% 
+  select(c(ID, experimental_replicate, repeats, response, control)) 
+
+survey.boscalid.MX.BZ.2 <- reading_data_discriminatory_concentration(survey.boscalid.MX.BZ)
+# #Picoxystrobin
+hey2 <- reading_data_serial_dilution("data/picoxystrobin_serialdi_BL-WMN_survey-WMNCSRP(validationdata).csv")
+## First try with postdoc Thomas
+survey.picoxystrobin <- read.csv("data/DD_survey-WMNCSRP.csv") %>%
+  select(
+    ID,
+    repeats,
+    experimental_replicate,
+    picoxystrobin.ecuatorial,
+    picoxystrobin.polar,
+     sham.ecuatorial,
+    sham.polar
+  ) %>%
+  mutate(picoxystrobin.growth = ((picoxystrobin.ecuatorial + picoxystrobin.polar) / 2),
+         sham.growth = ((sham.ecuatorial + sham.polar) / 2)) %>% 
+rename(response = picoxystrobin.growth, control = sham.growth) %>% 
+  select(c(ID, experimental_replicate, repeats, response, control)) 
+
+survey.picoxystrobin.2 <- reading_data_discriminatory_concentration(survey.picoxystrobin)
+
+## Second try with Edgar
+survey.picoxystrobin.USA <- 
+      read.csv("data/DD_survey-WMNCSRP_picoxystrobin.csv") %>% 
+mutate(picoxystrobin.growth = ((picoxystrobin.ecuatorial + picoxystrobin.polar) / 2),
+         sham.growth = ((sham.ecuatorial + sham.polar) / 2)) %>% 
+rename(response = picoxystrobin.growth, control = sham.growth) %>% 
+  select(c(ID, experimental_replicate, repeats, response, control)) 
+
+survey.picoxystrobin.USA.2 <- reading_data_discriminatory_concentration(survey.picoxystrobin.USA)
+## Third try with Cristian
+survey.picoxystrobin.more.USA <- 
+ read.csv("data/picoxystrobin.Cristian.csv") %>% 
+mutate(picoxystrobin.growth = ((picoxystrobin.ecuatorial + picoxystrobin.polar) / 2),
+         sham.growth = ((sham.ecuatorial + sham.polar) / 2)) %>% 
+rename(response = picoxystrobin.growth, control = sham.growth) %>% 
+  select(c(ID, experimental_replicate, repeats, response, control)) 
+
+survey.picoxystrobin.more.USA.2 <- reading_data_discriminatory_concentration(survey.picoxystrobin.more.USA)
+## Fourth try with Edgar 
+survey.picoxystrobin.MX.BZ <- 
+ read.csv("data/DD_survey-WMNCSRP_picoxystrobin.Mexican.Brazilian.csv") %>% mutate(picoxystrobin.growth = ((picoxystrobin.ecuatorial + picoxystrobin.polar) / 2),
+         sham.growth = ((sham.ecuatorial + sham.polar) / 2)) %>% 
+rename(response = picoxystrobin.growth, control = sham.growth) %>% 
+  select(c(ID, experimental_replicate, repeats, response, control)) 
+
+survey.picoxystrobin.MX.BZ.2 <- reading_data_discriminatory_concentration(survey.picoxystrobin.MX.BZ)
+
+```
+
 
