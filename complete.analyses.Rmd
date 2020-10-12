@@ -6,6 +6,25 @@ output: html_notebook
 This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
 
 Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+```{r}
+baseline.isolates <- c(1, 8, 12, 20, 21, 74, 87, 118, 123, 129, 449, 461, 467, 475, 558, 564, 568, 581, 645, 667, 800)
+
+survey.isolates <-  c( 2385, 2386, 2098, 2099, 2100, 2139, 2140, 2143, 2220, 2222, 2223, 2320, 2362, 2388, 2390 )
+
+Farmer.fields <- c(136:442, 455, 456, 466, 468, 470, 471, 478:554, 602:610, 612:635, 671, 672, 682:690, 695:797, 810:823, 834, 835, 848:1024, 1255: 1326, 1491: 1500, 1661:1670, 1831: 2246, 2303: 2342,2362: 2381, 2393: 2573)
+
+baseline.isolates_2 <- c(1: 136, 444: 454, 457: 465, 467, 469, 472:477, 555:601, 611, 636:670, 673: 680, 691:694 , 798: 809,  824: 833, 836: 847)
+
+drybean <- c(1, 5, 12,13:118, 123:128, 133:135, 145, 146, 152, 155:160, 182: 185, 194:200, 205, 220, 223, 248, 253:255, 274, 279, 280, 290, 294, 304: 309, 323, 358, 393, 395, 396, 397, 400:402, 405, 408, 409, 434, 443:465, 467, 469: 493, 495:505, 555:613, 615: 760, 762: 819, 824:833, 835:855, 858:921, 966: 971, 980, 981, 985: 996, 998: 1009, 1220:1225 , 1857: 1940, 2242: 2569)
+
+soybean <- c(143, 147, 181, 187, 188, 189,202, 257: 259, 264:268, 276, 281, 289, 293, 295, 310 , 399, 412:417, 419, 425:427, 439, 440, 494, 506:554, 834, 972:979, 982, 997, 1010: 1022, 1025:1219, 1229: 1856, 1941: 2241 )
+
+SI.Production.Field <- c( 698:741, 743:744, 746:760, 762: 778, 
+786: 797, 810:819, 848: 855, 858: 914)
+
+SI.Screening.Nursery.Field <- c(444:454, 457:465, 467, 469, 472:477, 555: 582, 584: 601, 611, 636:670, 673:681,691:694, 798:809, 824: 833 , 836:847)# also taking into account WM Monitor 
+
+```
 
 ```{r functions}
 #Getrange function
@@ -129,8 +148,25 @@ reading_data_discriminatory_concentration <- function(filename){
   select(c(ID, experimental_replicate, repeats, response, control))
 }
 #getting EC50
-
-
+getting_EC50 <- function(filename){
+  
+  getting.EC50 <- EC_table(filename, form = response ~ dose)
+getting.EC50 <- getting.EC50 %>% 
+  rename(ID = sample ) %>% # renaming
+  mutate(ID = as.factor(ID)) %>% 
+  rename(EC50 = Estimate.50) %>%
+   group_by(ID, EC50) %>%
+  mutate(group = ifelse(
+    ID %in% baseline.isolates,# if they are in this group
+    "baseline",
+    ifelse(
+      ID %in% survey.isolates, # if they are in this group, that is named farmer fiels also ahead
+      "survey_isolates",
+      "treatmentyear2016_isolates" # if they are in this group, that is named fungicide field trials also ahead
+      ))) %>% ungroup() %>% 
+      mutate(group = recode(group, survey_isolates = "Farmer fields", treatmentyear2016_isolates = "Fungicide field trials", baseline = "Baseline")) %>% mutate(group = as.factor(group)) %>% 
+  ungroup()
+}
 
 ```
 
@@ -177,13 +213,13 @@ rename(response = TM.growth, control = control.growth) %>%
 
 survey.TM.more.USA.2 <- reading_data_discriminatory_concentration(survey.TM.more.USA)
 # Fourth try with Edgar # it does not exist yet
-survey.TM.MX.BZ <-
- read.csv("data/DD_survey-WMNCSRP_TM.Brazilian.Mexican.csv") %>% mutate(TM.growth = ((TM.ecuatorial + TM.polar) / 2),
-         control.growth = ((control.ecuatorial + control.polar) / 2)) %>%
-rename(response = TM.growth, control = control.growth) %>%
-  select(c(ID, experimental_replicate, repeats, response, control))
-
-survey.TM.MX.BZ.2 <- reading_data_discriminatory_concentration(survey.TM.MX.BZ)
+# survey.TM.MX.BZ <-
+#  read.csv("data/DD_survey-WMNCSRP_TM.Brazilian.Mexican.csv") %>% mutate(TM.growth = ((TM.ecuatorial + TM.polar) / 2),
+#          control.growth = ((control.ecuatorial + control.polar) / 2)) %>%
+# rename(response = TM.growth, control = control.growth) %>%
+#   select(c(ID, experimental_replicate, repeats, response, control))
+# 
+# survey.TM.MX.BZ.2 <- reading_data_discriminatory_concentration(survey.TM.MX.BZ)
 
 
 #Tetraconazole
@@ -324,6 +360,126 @@ rename(response = picoxystrobin.growth, control = sham.growth) %>%
   select(c(ID, experimental_replicate, repeats, response, control)) 
 
 survey.picoxystrobin.MX.BZ.2 <- reading_data_discriminatory_concentration(survey.picoxystrobin.MX.BZ)
+
+```
+```{r geeting EC50 serial dilution}
+# TM
+TM.EC50 <- getting_EC50(hey4)
+# Tetraconazole
+tetraconazole.EC50 <- getting_EC50(hey3)
+# Boscalid
+boscalid.EC50 <- getting_EC50(hey)
+#Picoxystrobin
+picoxystrobin.EC50 <- getting_EC50(hey2)
+```
+```{r Getting Discriminatory dose}
+
+
+
+getting_DC <- function(filename){
+   data <-filename
+  
+  data1<- data %>% group_by(ID, dose) %>% summarise(mean_response = mean(response, na.rm = TRUE)) %>%
+    ungroup() %>% 
+  spread(dose, mean_response) 
+    
+    
+  data2 <- as_data_frame( lapply(data1,function(x) {x[1] ; x}))
+  # data3 <- data.frame(data2)
+  # data4 <-  lapply(data3,name <- function(variables) {
+  # })
+  
+  colnames(data2)[3:7] <- paste("RG_", colnames(data2[,c(3:7)]), sep = "")
+  
+  
+  d[,-1] = apply(d[,-1],2,function(x){x/sum(x)})
+
+> d
+  sample         a         b   c
+1     a2 0.1666667 0.4444444 0.6
+2     a3 0.8333333 0.5555556 0.4
+
+dat2 <- dat
+dat2[, -1] <- lapply(dat2[, -1], function(x) x/sum(x))
+dat2
+#   sample         a         b   c
+# 1     a2 0.1666667 0.4444444 0.6
+# 2     a3 0.8333333 0.5555556 0.4
+
+dat2 <- dat
+dat2[] <- lapply(dat2[], function(x){
+  # Check if the column is numeric
+  if (is.numeric(x)){
+    return(x/sum(x))
+  } else{
+    return(x)
+  }
+})
+dat2
+#   sample         a         b   c
+# 1     a2 0.1666667 0.4444444 0.6
+# 2     a3 0.8333333 0.5555556 0.4
+
+mat <- matrix(1:6, ncol=3)
+apply(mat,2, function(x) x / sum(x))
+
+df <- data.frame( a=c('a', 'b'), b=c(3,4), d=c(1,6))
+apply(df,2, function(x) {
+  x <- as.numeric(x)
+  x / sum(x)
+})
+  
+  # colnames(m2) <- paste(colnames(m2), "sub", sep = "_")
+  # df %>% dplyr::rename_all(paste0, "a")
+  # iris %>% rename_with( ~ paste("Sub", .x, sep = "_"))
+  # colnames(df)[2:4] <- paste("d", colnames(df[,c(2:4)]), sep = "")
+  # CTDB %>% rename_with(~paste0(., "_Child"), BREATHE_SCARED:ENJOY_PRAISE)
+  # CTDB %>% rename_at(BREATHE_SCARED:ENJOY_PRAISE, ~paste0(., "_Child"))
+  # setnames(df,paste0(names(df),"_tag"))
+# print(df)
+#   
+#   names(data2) <- paste0("RG.", data2[,2:6])
+#   
+  #getting_DC <- getting_DC
+  
+  }
+    
+    
+    EC_table(filename, form = response ~ dose)
+getting.EC50 <- getting.EC50 %>% 
+  rename(ID = sample ) %>% # renaming
+  mutate(ID = as.factor(ID)) %>% 
+  rename(EC50 = Estimate.50) %>%
+   group_by(ID, EC50) %>%
+  mutate(group = ifelse(
+    ID %in% baseline.isolates,# if they are in this group
+    "baseline",
+    ifelse(
+      ID %in% survey.isolates, # if they are in this group, that is named farmer fiels also ahead
+      "survey_isolates",
+      "treatmentyear2016_isolates" # if they are in this group, that is named fungicide field trials also ahead
+      ))) %>% ungroup() %>% 
+      mutate(group = recode(group, survey_isolates = "Farmer fields", treatmentyear2016_isolates = "Fungicide field trials", baseline = "Baseline")) %>% mutate(group = as.factor(group)) %>% 
+  ungroup()
+}
+
+
+
+
+
+
+RG.boscalid <-
+  boscalid.filtered %>% group_by(ID, dose) %>% summarise(mean_response = mean(response, na.rm = TRUE)) %>%
+  spread(dose, mean_response) %>%
+  mutate(RG0.025 = ((`0.025` / `0`) * 100)) %>%    
+     mutate(RG0.05 = ((`0.05` / `0`) * 100)) %>%
+        mutate(RG0.05 = ((`0.05` / `0`) * 100)) %>%  
+          mutate(RG0.1 = ((`0.1` / `0`) * 100)) %>%
+            mutate(RG0.2 = ((`0.2` / `0`) * 100)) %>%
+              mutate(RG0.8 = ((`0.8` / `0`) * 100)) %>% 
+  ungroup()
+f
+
 
 ```
 

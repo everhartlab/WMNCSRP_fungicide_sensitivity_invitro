@@ -1,0 +1,2555 @@
+"","ID","Origin","State","Funcide","Host","Year","N_iso_perfield","bos","pico","tetra","TM"
+"1",1,"Baseline","NE",NA,"drybeans",1973,NA,0,0,0,0
+"2",5,"Baseline","NE",NA,"drybeans",1973,NA,NA,NA,NA,NA
+"3",7,"Baseline","NE",NA,"sunflower",1973,NA,NA,NA,NA,NA
+"4",8,"Baseline","NE",NA,"pigweed",1973,NA,0,0,1,0
+"5",13,"FFT","NE",NA,"drybeans",1974,NA,NA,NA,NA,NA
+"6",15,"Baseline","NE",NA,"drybeans",1974,NA,NA,NA,NA,NA
+"7",19,"Baseline","NE",NA,"drybeans",1974,NA,NA,NA,NA,NA
+"8",20,"Baseline","NE",NA,"drybeans",1974,NA,0,0,0,0
+"9",21,"Baseline","NE",NA,"drybeans",1974,NA,0,0,0,0
+"10",26,"Baseline","NE",NA,"drybeans",1974,NA,0,0,1,0
+"11",27,"Baseline","NE",NA,"drybeans",1974,NA,NA,NA,NA,NA
+"12",74,"Baseline","NE",NA,"drybeans",1974,NA,0,0,0,0
+"13",81,"Baseline","NE",NA,"drybeans",1974,NA,NA,NA,NA,NA
+"14",87,"Baseline","NE",NA,"drybeans",1974,NA,0,0,1,1
+"15",89,"Baseline","NE",NA,"drybeans",1974,NA,NA,NA,NA,NA
+"16",90,"Baseline","NE",NA,"drybeans",1974,NA,NA,NA,NA,NA
+"17",91,"Baseline","NE",NA,"drybeans",1974,NA,NA,NA,NA,NA
+"18",92,"Baseline","NE",NA,"drybeans",1974,NA,NA,NA,NA,NA
+"19",95,"Baseline","NE",NA,"drybeans",1974,NA,NA,NA,NA,NA
+"20",108,"Baseline","NE",NA,"drybeans",1974,NA,NA,NA,NA,NA
+"21",116,"Baseline","NE",NA,"drybeans",1974,NA,NA,NA,NA,NA
+"22",117,"Baseline","CO",NA,"drybeans",1974,NA,NA,NA,NA,NA
+"23",118,"Baseline","ID",NA,"drybeans",1974,NA,0,0,0,1
+"24",119,"Baseline","ID",NA,"peas",1974,NA,NA,NA,NA,NA
+"25",121,"Baseline","CA",NA,"lettuce",1974,NA,NA,NA,NA,NA
+"26",123,"Baseline","NE",NA,"drybeans",1963,NA,0,0,0,1
+"27",126,"Baseline","NY",NA,"drybeans",1975,NA,NA,NA,NA,NA
+"28",127,"Baseline","NY",NA,"drybeans",1975,NA,NA,NA,NA,NA
+"29",128,"Baseline","NY",NA,"drybeans",1975,NA,NA,NA,NA,NA
+"30",129,"Baseline","",NA,"soil",1974,NA,0,0,0,1
+"31",132,"Baseline","WA",NA,"tomato",1975,NA,NA,NA,NA,NA
+"32",133,"Baseline","NY",NA,"drybeans",1975,NA,NA,NA,NA,NA
+"33",134,"Baseline","NY",NA,"drybeans",1975,NA,NA,NA,NA,NA
+"34",135,"Baseline","NY",NA,"drybeans",1975,NA,NA,NA,NA,NA
+"35",136,"Baseline","NC",NA,"alfalfa",1975,NA,NA,NA,NA,NA
+"36",143,"FF","CO",NA,"soybeans",1977,NA,NA,NA,NA,NA
+"37",143,"FFT","CO",NA,"soybeans",1999,NA,NA,NA,NA,NA
+"38",144,"FF","AZ",NA,"lettuce",1976,NA,NA,NA,NA,NA
+"39",145,"FF","NE",NA,"drybeans",1978,NA,NA,NA,NA,NA
+"40",146,"FF","NE",NA,"drybeans",1979,NA,NA,NA,NA,NA
+"41",147,"FF","",NA,"soybeans",1980,NA,NA,NA,NA,NA
+"42",148,"FF","AZ",NA,"lettuce",1979,NA,NA,NA,NA,NA
+"43",149,"FF","AZ",NA,"lettuce",1979,NA,NA,NA,NA,NA
+"44",150,"FF","AZ",NA,"lettuce",1978,NA,NA,NA,NA,NA
+"45",151,"FF","NE",NA,"potato",1980,NA,NA,NA,NA,NA
+"46",152,"FF","NE",NA,"drybeans",1980,NA,NA,NA,NA,NA
+"47",152,"FFT","NE",NA,"drybeans",1999,NA,NA,NA,NA,NA
+"48",153,"FF","MT",NA,"thistle",1982,NA,NA,NA,NA,NA
+"49",155,"FF","NY",NA,"drybeans",1982,NA,NA,NA,NA,NA
+"50",156,"FF","WI",NA,"drybeans",1983,NA,NA,NA,NA,NA
+"51",160,"FF","CA",NA,"drybeans",1983,NA,NA,NA,NA,NA
+"52",161,"FF","CA",NA,"peas",1983,NA,NA,NA,NA,NA
+"53",166,"FF","MT",NA,"thistle",1984,NA,NA,NA,NA,NA
+"54",167,"FF","MT",NA,"spotted Knapweed",1984,NA,NA,NA,NA,NA
+"55",168,"FF","MT",NA,"spotted Knapweed",1984,NA,NA,NA,NA,NA
+"56",170,"FF","MT",NA,"thistle",1984,NA,NA,NA,NA,NA
+"57",171,"FF","MT",NA,"spotted Knapweed",1984,NA,NA,NA,NA,NA
+"58",172,"FF","MT",NA,"spotted Knapweed",1984,NA,NA,NA,NA,NA
+"59",173,"FF","MT",NA,"thistle",1984,NA,NA,NA,NA,NA
+"60",175,"FF","MT",NA,"spotted Knapweed",1984,NA,NA,NA,NA,NA
+"61",176,"FF","MT",NA,"thistle",1984,NA,NA,NA,NA,NA
+"62",177,"FF","MT",NA,"thistle",1984,NA,NA,NA,NA,NA
+"63",178,"FF","MT",NA,"spotted Knapweed",1984,NA,NA,NA,NA,NA
+"64",179,"FF","MT",NA,"thistle",1984,NA,NA,NA,NA,NA
+"65",180,"FF","MT",NA,"spotted Knapweed",1984,NA,NA,NA,NA,NA
+"66",181,"FF","MI",NA,"soybeans",1984,NA,NA,NA,NA,NA
+"67",182,"FF","ON",NA,"drybeans",1984,NA,NA,NA,NA,NA
+"68",183,"FF","NE",NA,"drybeans",1984,NA,NA,NA,NA,NA
+"69",184,"FF","AB",NA,"drybeans",1985,NA,NA,NA,NA,NA
+"70",185,"FF","NE",NA,"drybeans",1982,NA,NA,NA,NA,NA
+"71",186,"FF","KS",NA,"tomato",1985,NA,NA,NA,NA,NA
+"72",187,"FF","NE",NA,"soybeans",1985,NA,NA,NA,NA,NA
+"73",188,"FF","NE",NA,"drybeans",1985,NA,NA,NA,NA,NA
+"74",189,"FF","NE",NA,"drybeans",1985,NA,NA,NA,NA,NA
+"75",190,"FF","WA",NA,"drybeans",1985,NA,NA,NA,NA,NA
+"76",191,"FF","MT",NA,"thistle",1985,NA,NA,NA,NA,NA
+"77",192,"FF","MT",NA,"thistle",1985,NA,NA,NA,NA,NA
+"78",193,"FF","MT",NA,"spotted Knapweed",1985,NA,NA,NA,NA,NA
+"79",194,"FF","MI",NA,"drybeans",1985,NA,NA,NA,NA,NA
+"80",195,"FF","ON",NA,"drybeans",1985,NA,NA,NA,NA,NA
+"81",198,"FF","NE",NA,"drybeans",1987,NA,NA,NA,NA,NA
+"82",200,"FF","NE",NA,"drybeans",1990,NA,NA,NA,NA,NA
+"83",201,"FF","ND",NA,"sunflower",1990,NA,NA,NA,NA,NA
+"84",202,"FF","NE",NA,"soybeans",1990,NA,NA,NA,NA,NA
+"85",205,"FF","MD",NA,"drybeans",1965,NA,NA,NA,NA,NA
+"86",220,"FF","Arusha",NA,"drybeans",1989,NA,NA,NA,NA,NA
+"87",221,"FF","ND",NA,"sunflower",1991,NA,NA,NA,NA,NA
+"88",222,"FF","ND",NA,"sunflower",1991,NA,NA,NA,NA,NA
+"89",223,"FF","NE",NA,"drybeans",1991,NA,NA,NA,NA,NA
+"90",224,"FF","NE",NA,"sunflower",1991,NA,NA,NA,NA,NA
+"91",225,"FF","NE",NA,"sunflower",1991,NA,NA,NA,NA,NA
+"92",226,"FF","SK",NA,"lens",1991,NA,NA,NA,NA,NA
+"93",227,"FF","WI",NA,"alfalfa",1991,NA,NA,NA,NA,NA
+"94",228,"FF","WI",NA,"alfalfa",1991,NA,NA,NA,NA,NA
+"95",229,"FF","WI",NA,"alfalfa",1991,NA,NA,NA,NA,NA
+"96",230,"FF","WI",NA,"alfalfa",1991,NA,NA,NA,NA,NA
+"97",231,"FF","WI",NA,"alfalfa",1991,NA,NA,NA,NA,NA
+"98",233,"FF","SK",NA,"rapeseed",1991,NA,NA,NA,NA,NA
+"99",234,"FF","SK",NA,"rapeseed",1991,NA,NA,NA,NA,NA
+"100",235,"FF","SK",NA,"rapeseed",1991,NA,NA,NA,NA,NA
+"101",239,"FF","OK",NA,"peanut",1992,NA,NA,NA,NA,NA
+"102",240,"FF","NY",NA,"lettuce",1969,NA,NA,NA,NA,NA
+"103",242,"FF","DF",NA,"soil",1980,NA,NA,NA,NA,NA
+"104",243,"FF","",NA,"pyrethrum",1981,NA,NA,NA,NA,NA
+"105",244,"FF","ON",NA,"canola",1992,NA,NA,NA,NA,NA
+"106",245,"FF","",NA,"sunflower",1992,NA,NA,NA,NA,NA
+"107",246,"FF","OH",NA,"alfalfa",1992,NA,NA,NA,NA,NA
+"108",247,"FF","OH",NA,"alfalfa",1992,NA,NA,NA,NA,NA
+"109",248,"FF","SIN",NA,"drybeans",1992,NA,NA,NA,NA,NA
+"110",252,"FF","KS",NA,"sunflower",1992,NA,NA,NA,NA,NA
+"111",253,"FF","KS",NA,"drybeans",1992,NA,NA,NA,NA,NA
+"112",254,"FF","KS",NA,"drybeans",1992,NA,NA,NA,NA,NA
+"113",255,"FF","KS",NA,"drybeans",1992,NA,NA,NA,NA,NA
+"114",256,"FF","ON",NA,"lettuce",1993,NA,NA,NA,NA,NA
+"115",257,"FF","OH",NA,"soybeans",1993,NA,NA,NA,NA,NA
+"116",258,"FF","IA",NA,"soybeans",1993,NA,NA,NA,NA,NA
+"117",259,"FF","IA",NA,"soybeans",1993,NA,NA,NA,NA,NA
+"118",260,"FF","PA",NA,"alfalfa",1993,NA,NA,NA,NA,NA
+"119",261,"FF","PA",NA,"alfalfa",1993,NA,NA,NA,NA,NA
+"120",263,"FF","OH",NA,"alfalfa",1993,NA,NA,NA,NA,NA
+"121",264,"FF","NE",NA,"soybeans",1994,NA,NA,NA,NA,NA
+"122",265,"FF","NE",NA,"soybeans",1994,NA,NA,NA,NA,NA
+"123",266,"FF","NE",NA,"soybeans",1994,NA,NA,NA,NA,NA
+"124",267,"FF","NE",NA,"soybeans",1994,NA,NA,NA,NA,NA
+"125",268,"FF","NE",NA,"soybeans",1994,NA,NA,NA,NA,NA
+"126",271,"FF","",NA,"celery",1995,NA,NA,NA,NA,NA
+"127",272,"FF","NE",NA,"drybeans",1995,NA,NA,NA,NA,NA
+"128",273,"FF","NE",NA,"",1995,NA,NA,NA,NA,NA
+"129",274,"FF","NE",NA,"drybeans",1995,NA,0,1,0,0
+"130",275,"FF","NE",NA,"chicory",1995,NA,NA,NA,NA,NA
+"131",276,"FF","NE",NA,"soybeans",1996,NA,NA,NA,NA,NA
+"132",277,"FF","Herts",NA,"sunflower",1995,NA,NA,NA,NA,NA
+"133",278,"FF","Herts",NA,"rapeseed",1995,NA,NA,NA,NA,NA
+"134",279,"FF","NE",NA,"drybeans",1996,NA,NA,NA,NA,NA
+"135",280,"FF","CO",NA,"drybeans",1994,NA,NA,NA,NA,NA
+"136",281,"FF","NE",NA,"soybeans",1996,NA,NA,NA,NA,NA
+"137",282,"FF","NC",NA,"tobacco",1996,NA,NA,NA,NA,NA
+"138",283,"FF","NC",NA,"tobacco",1996,NA,NA,NA,NA,NA
+"139",284,"FF","NC",NA,"tobacco",1996,NA,NA,NA,NA,NA
+"140",285,"FF","NC",NA,"tobacco",1996,NA,NA,NA,NA,NA
+"141",286,"FF","",NA,"sunflower",1996,NA,NA,NA,NA,NA
+"142",287,"FF","",NA,"sunflower",1996,NA,NA,NA,NA,NA
+"143",288,"FF","Unknown",NA,"sunflower",1996,NA,NA,NA,NA,NA
+"144",289,"FF","NE",NA,"soybeans",1996,NA,NA,NA,NA,NA
+"145",290,"FF","",NA,"drybeans",1996,NA,NA,NA,NA,NA
+"146",291,"FF","FL",NA,"basil",1996,NA,NA,NA,NA,NA
+"147",292,"FF","FL",NA,"tomato",1996,NA,NA,NA,NA,NA
+"148",293,"FF","",NA,"soybeans",1996,NA,NA,NA,NA,NA
+"149",294,"FF","MI",NA,"drybeans",1997,NA,NA,NA,NA,NA
+"150",295,"FF","MI",NA,"soybeans",1995,NA,NA,NA,NA,NA
+"151",296,"FF","",NA,"white clover",1973,NA,NA,NA,NA,NA
+"152",297,"FF","",NA,"Rapeseed",1996,NA,NA,NA,NA,NA
+"153",298,"FF","",NA,"Rapeseed",1996,NA,NA,NA,NA,NA
+"154",299,"FF","",NA,"Rapeseed",1996,NA,NA,NA,NA,NA
+"155",300,"FF","",NA,"Rapeseed",1996,NA,NA,NA,NA,NA
+"156",301,"FF","",NA,"peas",1996,NA,NA,NA,NA,NA
+"157",302,"FF","",NA,"carrot",1996,NA,NA,NA,NA,NA
+"158",303,"FF","",NA,"peas",1996,NA,NA,NA,NA,NA
+"159",304,"FF","",NA,"drybeans",1997,NA,NA,NA,NA,NA
+"160",305,"FF","WA",NA,"drybeans",1996,NA,NA,NA,NA,NA
+"161",306,"FF","ID",NA,"drybeans",1996,NA,NA,NA,NA,NA
+"162",307,"FF","WA",NA,"drybeans",1996,NA,0,0,0,0
+"163",308,"FF","WA",NA,"drybeans",1996,NA,NA,NA,NA,NA
+"164",309,"FF","NE",NA,"drybeans",1993,NA,NA,NA,NA,NA
+"165",310,"FF","NE",NA,"soybeans",1997,NA,NA,NA,NA,NA
+"166",311,"FF","",NA,"rodgersia",1997,NA,NA,NA,NA,NA
+"167",312,"FF","",NA,"cabbage",1997,NA,NA,NA,NA,NA
+"168",313,"FF","GA",NA,"canola",1997,NA,NA,NA,NA,NA
+"169",314,"FF","GA",NA,"canola",1997,NA,NA,NA,NA,NA
+"170",315,"FF","GA",NA,"canola",1997,NA,NA,NA,NA,NA
+"171",316,"FF","GA",NA,"canola",1997,NA,NA,NA,NA,NA
+"172",317,"FF","GA",NA,"canola",1997,NA,NA,NA,NA,NA
+"173",318,"FF","GA",NA,"canola",1997,NA,NA,NA,NA,NA
+"174",319,"FF","GA",NA,"canola",1997,NA,NA,NA,NA,NA
+"175",320,"FF","GA",NA,"canola",1997,NA,NA,NA,NA,NA
+"176",321,"FF","GA",NA,"canola",1997,NA,NA,NA,NA,NA
+"177",322,"FF","GA",NA,"canola",1997,NA,NA,NA,NA,NA
+"178",323,"FF","NE",NA,"drybeans",1997,NA,NA,NA,NA,NA
+"179",324,"FF","NE",NA,"zinnia",1997,NA,NA,NA,NA,NA
+"180",325,"FF","CA",NA,"Blanket flowers",1997,4,NA,NA,NA,NA
+"181",326,"FF","CA",NA,"Blanket flowers",1997,4,NA,NA,NA,NA
+"182",327,"FF","CA",NA,"Blanket flowers",1997,4,NA,NA,NA,NA
+"183",328,"FF","CA",NA,"Blanket flowers",1997,4,NA,NA,NA,NA
+"184",329,"FF","CA",NA,"pepper",1997,3,NA,NA,NA,NA
+"185",330,"FF","CA",NA,"pepper",1997,3,NA,NA,NA,NA
+"186",331,"FF","CA",NA,"pepper",1997,3,NA,NA,NA,NA
+"187",332,"FF","OK",NA,"peanut",1997,NA,NA,NA,NA,NA
+"188",333,"FF","MS",NA,"alfalfa",1987,NA,NA,NA,NA,NA
+"189",334,"FF","WI",NA,"red clover",1992,NA,NA,NA,NA,NA
+"190",335,"FF","LA",NA,"hairy Vetch",1987,NA,NA,NA,NA,NA
+"191",336,"FF","MS",NA,"berseem clover",1987,NA,NA,NA,NA,NA
+"192",337,"FF","LA",NA,"peas",1987,NA,NA,NA,NA,NA
+"193",338,"FF","PA",NA,"red clover",1994,NA,NA,NA,NA,NA
+"194",339,"FF","MS",NA,"lesser trefoil",1988,NA,NA,NA,NA,NA
+"195",339,"FFT","MS",NA,"lesser trefoil",1999,NA,NA,NA,NA,NA
+"196",340,"FF","KY",NA,"alfalfa",1996,NA,NA,NA,NA,NA
+"197",341,"FF","KY",NA,"alfalfa",1996,NA,NA,NA,NA,NA
+"198",342,"FF","KY",NA,"alfalfa",1996,NA,NA,NA,NA,NA
+"199",343,"FF","KY",NA,"alfalfa",1996,NA,NA,NA,NA,NA
+"200",344,"FF","KY",NA,"alfalfa",1996,NA,NA,NA,NA,NA
+"201",345,"FF","KY",NA,"alfalfa",1996,NA,NA,NA,NA,NA
+"202",346,"FF","KY",NA,"alfalfa",1996,NA,NA,NA,NA,NA
+"203",347,"FF","KY",NA,"alfalfa",1996,NA,NA,NA,NA,NA
+"204",348,"FF","CA",NA,"broccoli",1997,4,NA,NA,NA,NA
+"205",349,"FF","CA",NA,"broccoli",1997,4,NA,NA,NA,NA
+"206",350,"FF","CA",NA,"broccoli",1997,4,NA,NA,NA,NA
+"207",351,"FF","CA",NA,"broccoli",1997,4,NA,NA,NA,NA
+"208",352,"FF","CA",NA,"lettuce",1992,NA,NA,NA,NA,NA
+"209",353,"FF","WI",NA,"",1992,NA,NA,NA,NA,NA
+"210",354,"FF","WI",NA,"red clover",1996,NA,NA,NA,NA,NA
+"211",355,"FF","WI",NA,"",NA,NA,NA,NA,NA,NA
+"212",357,"FF","WI",NA,"",NA,NA,NA,NA,NA,NA
+"213",358,"FF","NE",NA,"drybeans",1998,NA,NA,NA,NA,NA
+"214",378,"FF","ON",NA,"rapeseed",1998,NA,NA,NA,NA,NA
+"215",379,"FF","AB",NA,"rapeseed",1998,NA,NA,NA,NA,NA
+"216",380,"FF","AB",NA,"rapeseed",1998,NA,NA,NA,NA,NA
+"217",381,"FF","SK",NA,"rapeseed",1998,NA,NA,NA,NA,NA
+"218",382,"FF","SK",NA,"rapeseed",1998,NA,NA,NA,NA,NA
+"219",383,"FF","SK",NA,"rapeseed",1998,NA,NA,NA,NA,NA
+"220",384,"FF","AB",NA,"rapeseed",1998,NA,NA,NA,NA,NA
+"221",385,"FF","",NA,"canola",1998,NA,NA,NA,NA,NA
+"222",386,"FF","",NA,"lesser celandine",1998,NA,NA,NA,NA,NA
+"223",387,"FF","NC",NA,"alfalfa",1998,NA,NA,NA,NA,NA
+"224",388,"FF","NY",NA,"cabbage",1998,NA,NA,NA,NA,NA
+"225",389,"FF","NY",NA,"cabbage",1998,NA,NA,NA,NA,NA
+"226",390,"FF","MS",NA,"lesser trefoil",1988,NA,NA,NA,NA,NA
+"227",391,"FF","MS",NA,"lesser trefoil",1988,NA,NA,NA,NA,NA
+"228",392,"FF","MS",NA,"lesser trefoil",1988,NA,NA,NA,NA,NA
+"229",393,"FF","NE",NA,"drybeans",1999,NA,NA,NA,NA,NA
+"230",394,"FF","MI",NA,"drybeans",1999,NA,NA,NA,NA,NA
+"231",395,"FF","ID",NA,"drybeans",2000,NA,NA,NA,NA,NA
+"232",396,"FF","NC",NA,"soybeans",2000,NA,NA,NA,NA,NA
+"233",397,"FF","IA",NA,"soybeans",2000,NA,NA,NA,NA,NA
+"234",398,"FF","OR",NA,"pear",2000,NA,NA,NA,NA,NA
+"235",399,"FF","NE",NA,"soybeans",1999,NA,NA,NA,NA,NA
+"236",400,"FF","MG",NA,"drybeans",2000,NA,NA,NA,NA,NA
+"237",402,"FF","GO",NA,"drybeans",2000,NA,NA,NA,NA,NA
+"238",403,"FF","FL",NA,"petunia",2000,NA,NA,NA,NA,NA
+"239",404,"FF","Herverlee",NA,"chicory",2000,NA,NA,NA,NA,NA
+"240",405,"FF","OR",NA,"drybeans",2000,NA,NA,NA,NA,NA
+"241",406,"FF","Mooi Rive",NA,"drybeans",2002,NA,NA,NA,NA,NA
+"242",407,"FF","",NA,"sunflower",2002,NA,NA,NA,NA,NA
+"243",408,"FF","MI",NA,"drybeans",2002,NA,NA,NA,NA,NA
+"244",409,"FF","NE",NA,"drybeans",2002,NA,NA,NA,NA,NA
+"245",410,"FF","Marathon",NA,"lettuce",2002,NA,NA,NA,NA,NA
+"246",411,"FF","ND",NA,"canola",2002,NA,NA,NA,NA,NA
+"247",412,"FF","WI",NA,"soybeans",2002,NA,NA,NA,NA,NA
+"248",413,"FF","WI",NA,"soybeans",2000,NA,NA,NA,NA,NA
+"249",414,"FF","CO",NA,"soybeans",2000,NA,NA,NA,NA,NA
+"250",415,"FF","WI",NA,"soybeans",2000,NA,NA,NA,NA,NA
+"251",416,"FF","WI",NA,"soybeans",2000,NA,NA,NA,NA,NA
+"252",417,"FF","WI",NA,"soybeans",NA,NA,NA,NA,NA,NA
+"253",418,"FF","WI",NA,"red clover",NA,NA,NA,NA,NA,NA
+"254",419,"FF","WI",NA,"soybeans",NA,NA,NA,NA,NA,NA
+"255",420,"FF","WI",NA,"red clover",1992,NA,NA,NA,NA,NA
+"256",421,"FF","WI",NA,"soybeans",NA,NA,NA,NA,NA,NA
+"257",422,"FF","WI",NA,"red clover",1992,NA,NA,NA,NA,NA
+"258",423,"FF","WI",NA,"red clover",1992,NA,NA,NA,NA,NA
+"259",424,"FF","WI",NA,"Bird's-foot trefoil",1996,NA,NA,NA,NA,NA
+"260",425,"FF","WI",NA,"soybeans",2000,NA,NA,NA,NA,NA
+"261",426,"FF","WI",NA,"soybeans",2000,NA,NA,NA,NA,NA
+"262",427,"FF","WI",NA,"soybeans",2000,NA,NA,NA,NA,NA
+"263",428,"FF","ND",NA,"canola",2000,NA,NA,NA,NA,NA
+"264",429,"FF","",NA,"",NA,NA,NA,NA,NA,NA
+"265",430,"FF","WI",NA,"red clover",1992,NA,NA,NA,NA,NA
+"266",431,"FF","WI",NA,"",1992,NA,NA,NA,NA,NA
+"267",432,"FF","WI",NA,"red clover",1992,NA,NA,NA,NA,NA
+"268",433,"FF","",NA,"",NA,NA,NA,NA,NA,NA
+"269",434,"FF","NE",NA,"drybeans",2003,NA,NA,NA,NA,NA
+"270",435,"FF","ON",NA,"canola",1989,NA,NA,NA,NA,NA
+"271",436,"FF","",NA,"",NA,NA,NA,NA,NA,NA
+"272",437,"FF","",NA,"",NA,NA,NA,NA,NA,NA
+"273",438,"FF","SC",NA,"canola",1997,NA,NA,NA,NA,NA
+"274",439,"FF","ON",NA,"soybeans",2000,NA,NA,NA,NA,NA
+"275",440,"FF","ON",NA,"soybeans",2000,NA,NA,NA,NA,NA
+"276",441,"FF","AB",NA,"",1992,NA,NA,NA,NA,NA
+"277",442,"FF","",NA,"",NA,NA,NA,NA,NA,NA
+"278",443,"FFT","NY",NA,"drybeans",1989,NA,NA,NA,NA,NA
+"279",444,"Baseline","MN",NA,"drybeans",2003,2,NA,NA,NA,NA
+"280",445,"Baseline","MN",NA,"drybeans",2003,2,NA,NA,NA,NA
+"281",446,"Baseline","MI",NA,"drybeans",2003,9,NA,NA,NA,NA
+"282",447,"Baseline","MI",NA,"drybeans",2003,9,NA,NA,NA,NA
+"283",448,"Baseline","MI",NA,"drybeans",2003,9,NA,NA,NA,NA
+"284",449,"Baseline","MI",NA,"drybeans",2003,9,1,0,0,1
+"285",450,"Baseline","MI",NA,"drybeans",2003,9,NA,NA,NA,NA
+"286",451,"Baseline","MI",NA,"drybeans",2003,9,NA,NA,NA,NA
+"287",452,"Baseline","MI",NA,"drybeans",2003,9,NA,NA,NA,NA
+"288",453,"Baseline","MI",NA,"drybeans",2003,9,NA,NA,NA,NA
+"289",454,"Baseline","MI",NA,"drybeans",2003,9,NA,NA,NA,NA
+"290",455,"FF","OR",NA,"drybeans",1998,NA,NA,NA,NA,NA
+"291",456,"FF","WA",NA,"drybeans",1996,NA,1,1,0,0
+"292",457,"Baseline","WA",NA,"drybeans",2003,9,NA,NA,NA,NA
+"293",458,"Baseline","WA",NA,"drybeans",2003,9,NA,NA,NA,NA
+"294",459,"Baseline","WA",NA,"drybeans",2003,9,NA,NA,NA,NA
+"295",460,"Baseline","WA",NA,"drybeans",2003,9,NA,NA,NA,NA
+"296",461,"Baseline","WA",NA,"drybeans",2003,9,1,0,1,0
+"297",462,"Baseline","WA",NA,"drybeans",2003,9,NA,NA,NA,NA
+"298",463,"Baseline","WA",NA,"drybeans",2003,9,NA,NA,NA,NA
+"299",464,"Baseline","WA",NA,"drybeans",2003,9,NA,NA,NA,NA
+"300",465,"Baseline","WA",NA,"drybeans",2003,9,NA,NA,NA,NA
+"301",466,"FF","MI",NA,"cranberry",2003,NA,NA,NA,NA,NA
+"302",467,"Baseline","CO",NA,"drybeans",1996,1,1,0,0,0
+"303",468,"FF","OR",NA,"broccoli",2003,NA,NA,NA,NA,NA
+"304",469,"Baseline","OR",NA,"drybeans",2003,7,NA,NA,NA,NA
+"305",470,"FF","OR",NA,"drybeans",2003,NA,NA,NA,NA,NA
+"306",471,"FF","OR",NA,"drybeans",2003,NA,NA,NA,NA,NA
+"307",472,"Baseline","OR",NA,"drybeans",2003,7,NA,NA,NA,NA
+"308",473,"Baseline","OR",NA,"drybeans",2003,7,NA,NA,NA,NA
+"309",474,"Baseline","OR",NA,"drybeans",2003,7,NA,NA,NA,NA
+"310",475,"Baseline","OR",NA,"drybeans",2003,7,1,0,0,0
+"311",476,"Baseline","OR",NA,"drybeans",2003,7,NA,NA,NA,NA
+"312",477,"Baseline","OR",NA,"drybeans",2003,7,NA,NA,NA,NA
+"313",478,"FF","WI",NA,"drybeans",2002,NA,1,0,1,0
+"314",479,"FF","WI",NA,"drybeans",2003,NA,1,0,0,0
+"315",480,"FF","WI",NA,"drybeans",1998,NA,NA,NA,NA,NA
+"316",481,"FF","WI",NA,"drybeans",1999,NA,NA,NA,NA,NA
+"317",482,"FF","MI",NA,"drybeans",2003,NA,0,1,1,0
+"318",483,"FF","ID",NA,"drybeans",2003,NA,NA,NA,NA,NA
+"319",484,"FF","ID",NA,"drybeans",2003,NA,NA,NA,NA,NA
+"320",485,"FF","ID",NA,"drybeans",2003,NA,NA,NA,NA,NA
+"321",486,"FF","ID",NA,"drybeans",2003,NA,NA,NA,NA,NA
+"322",487,"FF","ID",NA,"drybeans",2003,NA,NA,NA,NA,NA
+"323",488,"FF","ID",NA,"drybeans",2003,NA,NA,NA,NA,NA
+"324",489,"FF","Blenheim",NA,"drybeans",2004,NA,NA,NA,NA,NA
+"325",490,"FF","Barranquita",NA,"drybeans",2004,NA,NA,NA,NA,NA
+"326",491,"FF","Blenheim",NA,"drybeans",2004,NA,NA,NA,NA,NA
+"327",492,"FF","Blenheim",NA,"drybeans",2005,NA,NA,NA,NA,NA
+"328",493,"FF","Blenheim",NA,"drybeans",2006,NA,NA,NA,NA,NA
+"329",494,"FF","NE",NA,"drybeans",2004,NA,NA,NA,NA,NA
+"330",495,"FF","Victoria",NA,"drybeans",2004,NA,NA,NA,NA,NA
+"331",496,"FF","Tasmania",NA,"drybeans",2004,NA,NA,NA,NA,NA
+"332",497,"FF","Victoria",NA,"drybeans",2004,NA,NA,NA,NA,NA
+"333",498,"FF","Tasmania",NA,"drybeans",2004,NA,NA,NA,NA,NA
+"334",499,"FF","Tasmania",NA,"drybeans",2004,NA,NA,NA,NA,NA
+"335",500,"FF","Tasmania",NA,"drybeans",2004,NA,NA,NA,NA,NA
+"336",501,"FF","Tasmania",NA,"drybeans",2004,NA,NA,NA,NA,NA
+"337",502,"FF","Victoria",NA,"drybeans",2004,NA,NA,NA,NA,NA
+"338",503,"FF","Victoria",NA,"drybeans",2004,NA,NA,NA,NA,NA
+"339",504,"FF","WA",NA,"drybeans",2004,NA,0,0,0,0
+"340",505,"FF","WA",NA,"drybeans",2004,NA,0,0,1,0
+"341",506,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"342",507,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"343",508,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"344",509,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"345",510,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"346",511,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"347",512,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"348",513,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"349",514,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"350",515,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"351",516,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"352",517,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"353",518,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"354",519,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"355",520,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"356",521,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"357",522,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"358",523,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"359",524,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"360",525,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"361",526,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"362",527,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"363",528,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"364",529,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"365",530,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"366",531,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"367",532,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"368",533,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"369",534,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"370",535,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"371",536,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"372",537,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"373",538,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"374",539,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"375",540,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"376",541,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"377",542,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"378",543,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"379",544,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"380",545,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"381",546,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"382",547,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"383",548,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"384",549,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"385",550,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"386",551,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"387",552,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"388",553,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"389",554,"FF","NE",NA,"soybeans",2004,NA,NA,NA,NA,NA
+"390",555,"Baseline","MN",NA,"drybeans",2004,9,NA,NA,NA,NA
+"391",556,"Baseline","MN",NA,"drybeans",2004,9,NA,NA,NA,NA
+"392",557,"Baseline","MN",NA,"drybeans",2004,9,NA,NA,NA,NA
+"393",558,"Baseline","MN",NA,"drybeans",2004,9,0,1,0,0
+"394",559,"Baseline","MN",NA,"drybeans",2004,9,NA,NA,NA,NA
+"395",560,"Baseline","MN",NA,"drybeans",2004,9,NA,NA,NA,NA
+"396",561,"Baseline","MN",NA,"drybeans",2004,9,NA,NA,NA,NA
+"397",562,"Baseline","MN",NA,"drybeans",2004,9,NA,NA,NA,NA
+"398",563,"Baseline","MN",NA,"drybeans",2004,9,NA,NA,NA,NA
+"399",564,"Baseline","WA",NA,"drybeans",2004,6,1,1,0,1
+"400",565,"Baseline","WA",NA,"drybeans",2004,6,NA,NA,NA,NA
+"401",566,"Baseline","WA",NA,"drybeans",2004,6,NA,NA,NA,NA
+"402",567,"Baseline","WA",NA,"drybeans",2004,6,NA,NA,NA,NA
+"403",568,"Baseline","WA",NA,"drybeans",2004,6,0,0,1,1
+"404",569,"Baseline","WA",NA,"drybeans",2004,6,NA,NA,NA,NA
+"405",570,"Baseline","NE",NA,"drybeans",2004,9,NA,NA,NA,NA
+"406",571,"Baseline","NE",NA,"drybeans",2004,9,NA,NA,NA,NA
+"407",572,"Baseline","NE",NA,"drybeans",2004,9,NA,NA,NA,NA
+"408",573,"Baseline","NE",NA,"drybeans",2004,9,NA,NA,NA,NA
+"409",574,"Baseline","NE",NA,"drybeans",2004,9,NA,NA,NA,NA
+"410",575,"Baseline","NE",NA,"drybeans",2004,9,NA,NA,NA,NA
+"411",576,"Baseline","NE",NA,"drybeans",2004,9,NA,NA,NA,NA
+"412",577,"Baseline","NE",NA,"drybeans",2004,9,NA,NA,NA,NA
+"413",578,"Baseline","NE",NA,"drybeans",2004,9,NA,NA,NA,NA
+"414",579,"Baseline","DE",NA,"drybeans",2004,4,NA,NA,NA,NA
+"415",580,"Baseline","DE",NA,"drybeans",2004,4,NA,NA,NA,NA
+"416",581,"Baseline","DE",NA,"drybeans",2004,4,1,1,0,0
+"417",582,"Baseline","DE",NA,"drybeans",2004,4,NA,NA,NA,NA
+"418",583,"Baseline","Blenheim",NA,"drybeans",2004,10,NA,NA,NA,NA
+"419",584,"Baseline","OR",NA,"drybeans",2004,10,NA,NA,NA,NA
+"420",585,"Baseline","OR",NA,"drybeans",2004,10,NA,NA,NA,NA
+"421",586,"Baseline","OR",NA,"drybeans",2004,10,NA,NA,NA,NA
+"422",587,"Baseline","OR",NA,"drybeans",2004,10,NA,NA,NA,NA
+"423",588,"Baseline","OR",NA,"drybeans",2004,10,NA,NA,NA,NA
+"424",589,"Baseline","OR",NA,"drybeans",2004,10,NA,NA,NA,NA
+"425",590,"Baseline","OR",NA,"drybeans",2004,10,NA,NA,NA,NA
+"426",591,"Baseline","OR",NA,"drybeans",2004,10,NA,NA,NA,NA
+"427",592,"Baseline","OR",NA,"drybeans",2004,10,NA,NA,NA,NA
+"428",593,"Baseline","CA",NA,"drybeans",2004,9,NA,NA,NA,NA
+"429",594,"Baseline","CA",NA,"drybeans",2004,9,NA,NA,NA,NA
+"430",595,"Baseline","CA",NA,"drybeans",2004,9,NA,NA,NA,NA
+"431",596,"Baseline","CA",NA,"drybeans",2004,9,NA,NA,NA,NA
+"432",597,"Baseline","CA",NA,"drybeans",2004,9,NA,NA,NA,NA
+"433",598,"Baseline","CA",NA,"drybeans",2004,9,NA,NA,NA,NA
+"434",599,"Baseline","CA",NA,"drybeans",2004,9,NA,NA,NA,NA
+"435",600,"Baseline","CA",NA,"drybeans",2004,9,NA,NA,NA,NA
+"436",601,"Baseline","CA",NA,"drybeans",2004,9,NA,NA,NA,NA
+"437",602,"FF","Guerbigny",NA,"drybeans",2004,NA,NA,NA,NA,NA
+"438",603,"FF","Guerbigny",NA,"drybeans",2004,NA,NA,NA,NA,NA
+"439",604,"FF","Guerbigny",NA,"drybeans",2004,NA,NA,NA,NA,NA
+"440",605,"FF","Guerbigny",NA,"drybeans",2004,NA,NA,NA,NA,NA
+"441",606,"FF","Guerbigny",NA,"drybeans",2004,NA,NA,NA,NA,NA
+"442",607,"FF","Guerbigny",NA,"drybeans",2004,NA,NA,NA,NA,NA
+"443",608,"FF","Guerbigny",NA,"drybeans",2004,NA,NA,NA,NA,NA
+"444",609,"FF","Guerbigny",NA,"drybeans",2004,NA,NA,NA,NA,NA
+"445",610,"FF","Guerbigny",NA,"drybeans",2004,NA,NA,NA,NA,NA
+"446",611,"Baseline","MI",NA,"drybeans",2004,1,NA,NA,NA,NA
+"447",612,"FF","QUE",NA,"drybeans",2004,NA,NA,NA,NA,NA
+"448",613,"FF","NE",NA,"drybeans",2004,NA,NA,NA,NA,NA
+"449",614,"FF","CA",NA,"lettuce",2005,NA,NA,NA,NA,NA
+"450",615,"FF","",NA,"drybeans",2004,NA,NA,NA,NA,NA
+"451",616,"FF","",NA,"drybeans",2004,NA,NA,NA,NA,NA
+"452",617,"FF","",NA,"drybeans",2004,NA,NA,NA,NA,NA
+"453",618,"FF","",NA,"drybeans",2004,NA,NA,NA,NA,NA
+"454",619,"FF","",NA,"drybeans",2004,NA,NA,NA,NA,NA
+"455",620,"FF","",NA,"drybeans",2004,NA,NA,NA,NA,NA
+"456",621,"FF","",NA,"drybeans",2004,NA,NA,NA,NA,NA
+"457",622,"FF","",NA,"drybeans",2004,NA,NA,NA,NA,NA
+"458",623,"FF","",NA,"drybeans",2004,NA,NA,NA,NA,NA
+"459",624,"FF","",NA,"drybeans",2004,NA,NA,NA,NA,NA
+"460",625,"FF","",NA,"drybeans",2004,NA,NA,NA,NA,NA
+"461",626,"FF","",NA,"drybeans",2004,NA,NA,NA,NA,NA
+"462",627,"FF","",NA,"drybeans",2004,NA,NA,NA,NA,NA
+"463",628,"FF","",NA,"drybeans",2004,NA,NA,NA,NA,NA
+"464",629,"FF","",NA,"drybeans",2004,NA,NA,NA,NA,NA
+"465",630,"FF","",NA,"drybeans",2004,NA,NA,NA,NA,NA
+"466",631,"FF","",NA,"drybeans",2004,NA,NA,NA,NA,NA
+"467",632,"FF","",NA,"drybeans",2004,NA,NA,NA,NA,NA
+"468",633,"FF","NE",NA,"drybeans",2005,NA,NA,NA,NA,NA
+"469",634,"FF","NE",NA,"drybeans",2005,NA,NA,NA,NA,NA
+"470",635,"FF","NE",NA,"drybeans",2005,NA,NA,NA,NA,NA
+"471",636,"Baseline","NE",NA,"drybeans",2005,9,NA,NA,NA,NA
+"472",637,"Baseline","NE",NA,"drybeans",2005,9,NA,NA,NA,NA
+"473",638,"Baseline","NE",NA,"drybeans",2005,9,NA,NA,NA,NA
+"474",639,"Baseline","NE",NA,"drybeans",2005,9,NA,NA,NA,NA
+"475",640,"Baseline","NE",NA,"drybeans",2005,9,NA,NA,NA,NA
+"476",641,"Baseline","NE",NA,"drybeans",2005,9,NA,NA,NA,NA
+"477",642,"Baseline","NE",NA,"drybeans",2005,9,NA,NA,NA,NA
+"478",643,"Baseline","NE",NA,"drybeans",2005,9,NA,NA,NA,NA
+"479",644,"Baseline","NE",NA,"drybeans",2005,9,NA,NA,NA,NA
+"480",645,"Baseline","WA",NA,"drybeans",2005,9,1,1,0,1
+"481",646,"Baseline","WA",NA,"drybeans",2005,9,NA,NA,NA,NA
+"482",647,"Baseline","WA",NA,"drybeans",2005,9,NA,NA,NA,NA
+"483",648,"Baseline","WA",NA,"drybeans",2005,9,NA,NA,NA,NA
+"484",649,"Baseline","WA",NA,"drybeans",2005,9,NA,NA,NA,NA
+"485",650,"Baseline","WA",NA,"drybeans",2005,9,NA,NA,NA,NA
+"486",651,"Baseline","WA",NA,"drybeans",2005,9,NA,NA,NA,NA
+"487",652,"Baseline","WA",NA,"drybeans",2005,9,NA,NA,NA,NA
+"488",653,"Baseline","WA",NA,"drybeans",2005,9,NA,NA,NA,NA
+"489",654,"Baseline","ND",NA,"drybeans",2005,7,NA,NA,NA,NA
+"490",655,"Baseline","ND",NA,"drybeans",2005,7,NA,NA,NA,NA
+"491",656,"Baseline","ND",NA,"drybeans",2005,7,NA,NA,NA,NA
+"492",657,"Baseline","ND",NA,"drybeans",2005,7,NA,NA,NA,NA
+"493",658,"Baseline","ND",NA,"drybeans",2005,7,NA,NA,NA,NA
+"494",659,"Baseline","ND",NA,"drybeans",2005,7,NA,NA,NA,NA
+"495",660,"Baseline","ND",NA,"drybeans",2005,7,NA,NA,NA,NA
+"496",661,"Baseline","MI",NA,"drybeans",2005,9,NA,NA,NA,NA
+"497",662,"Baseline","MI",NA,"drybeans",2005,9,NA,NA,NA,NA
+"498",663,"Baseline","MI",NA,"drybeans",2005,9,NA,NA,NA,NA
+"499",664,"Baseline","MI",NA,"drybeans",2005,9,NA,NA,NA,NA
+"500",665,"Baseline","MI",NA,"drybeans",2005,9,NA,NA,NA,NA
+"501",666,"Baseline","MI",NA,"drybeans",2005,9,NA,NA,NA,NA
+"502",667,"Baseline","MI",NA,"drybeans",2005,9,1,0,0,0
+"503",668,"Baseline","MI",NA,"drybeans",2005,9,NA,NA,NA,NA
+"504",669,"Baseline","MI",NA,"drybeans",2005,9,NA,NA,NA,NA
+"505",670,"Baseline","MN",NA,"drybeans",2005,1,NA,NA,NA,NA
+"506",671,"FF","SK",NA,"drybeans",2005,NA,NA,NA,NA,NA
+"507",672,"FF","MI",NA,"drybeans",2005,NA,NA,NA,NA,NA
+"508",673,"Baseline","CA",NA,"drybeans",2005,9,NA,NA,NA,NA
+"509",674,"Baseline","CA",NA,"drybeans",2005,9,NA,NA,NA,NA
+"510",675,"Baseline","CA",NA,"drybeans",2005,9,NA,NA,NA,NA
+"511",676,"Baseline","CA",NA,"drybeans",2005,9,NA,NA,NA,NA
+"512",677,"Baseline","CA",NA,"drybeans",2005,9,NA,NA,NA,NA
+"513",678,"Baseline","CA",NA,"drybeans",2005,9,NA,NA,NA,NA
+"514",679,"Baseline","CA",NA,"drybeans",2005,9,NA,NA,NA,NA
+"515",680,"Baseline","CA",NA,"drybeans",2005,9,NA,NA,NA,NA
+"516",681,"FFT","CA",NA,"drybeans",2005,9,NA,NA,NA,NA
+"517",682,"FF","Guerbigny ",NA,"drybeans",2005,NA,NA,NA,NA,NA
+"518",683,"FF","Guerbigny ",NA,"drybeans",2005,NA,NA,NA,NA,NA
+"519",684,"FF","Guerbigny ",NA,"drybeans",2005,NA,NA,NA,NA,NA
+"520",685,"FF","Guerbigny ",NA,"drybeans",2005,NA,NA,NA,NA,NA
+"521",686,"FF","Guerbigny ",NA,"drybeans",2005,NA,NA,NA,NA,NA
+"522",687,"FF","Guerbigny ",NA,"drybeans",2005,NA,NA,NA,NA,NA
+"523",688,"FF","Guerbigny ",NA,"drybeans",2005,NA,NA,NA,NA,NA
+"524",689,"FF","Guerbigny ",NA,"drybeans",2005,NA,NA,NA,NA,NA
+"525",690,"FF","Guerbigny ",NA,"drybeans",2005,NA,NA,NA,NA,NA
+"526",691,"Baseline","NE",NA,"drybeans",2006,4,NA,NA,NA,NA
+"527",692,"Baseline","NE",NA,"drybeans",2006,4,NA,NA,NA,NA
+"528",693,"Baseline","NE",NA,"drybeans",2006,4,NA,NA,NA,NA
+"529",694,"Baseline","NE",NA,"drybeans",2006,4,NA,NA,NA,NA
+"530",695,"FF","NE",NA,"drybeans",2006,NA,NA,NA,NA,NA
+"531",696,"FF","ID",NA,"drybeans",2007,NA,NA,NA,NA,NA
+"532",697,"FF","WA",NA,"drybeans",2007,NA,NA,NA,NA,NA
+"533",698,"FF","ND",NA,"drybeans",2007,12,0,1,0,0
+"534",699,"FF","ND",NA,"drybeans",2007,12,0,0,0,0
+"535",700,"FF","ND",NA,"drybeans",2007,12,NA,NA,NA,NA
+"536",701,"FF","ND",NA,"drybeans",2007,12,NA,NA,NA,NA
+"537",702,"FF","ND",NA,"drybeans",2007,12,NA,NA,NA,NA
+"538",703,"FF","ND",NA,"drybeans",2007,12,NA,NA,NA,NA
+"539",704,"FF","ND",NA,"drybeans",2007,12,NA,NA,NA,NA
+"540",705,"FF","ND",NA,"drybeans",2007,12,NA,NA,NA,NA
+"541",706,"FF","ND",NA,"drybeans",2007,12,NA,NA,NA,NA
+"542",707,"FF","ND",NA,"drybeans",2007,12,NA,NA,NA,NA
+"543",708,"FF","ND",NA,"drybeans",2007,12,NA,NA,NA,NA
+"544",709,"FF","ND",NA,"drybeans",2007,12,NA,NA,NA,NA
+"545",710,"FF","ND",NA,"drybeans",2007,7,0,0,0,0
+"546",711,"FF","ND",NA,"drybeans",2007,7,0,0,0,0
+"547",712,"FF","ND",NA,"drybeans",2007,7,NA,NA,NA,NA
+"548",713,"FF","ND",NA,"drybeans",2007,7,NA,NA,NA,NA
+"549",714,"FF","ND",NA,"drybeans",2007,7,NA,NA,NA,NA
+"550",715,"FF","ND",NA,"drybeans",2007,7,NA,NA,NA,NA
+"551",716,"FF","ND",NA,"drybeans",2007,7,NA,NA,NA,NA
+"552",717,"FF","ND",NA,"drybeans",2007,7,NA,NA,NA,NA
+"553",718,"FF","ND",NA,"drybeans",2007,7,NA,NA,NA,NA
+"554",719,"FF","ND",NA,"drybeans",2007,7,NA,NA,NA,NA
+"555",720,"FF","ND",NA,"drybeans",2007,7,NA,NA,NA,NA
+"556",721,"FF","ND",NA,"drybeans",2007,7,NA,NA,NA,NA
+"557",722,"FF","ND",NA,"drybeans",2007,7,NA,NA,NA,NA
+"558",723,"FF","ND",NA,"drybeans",2007,7,NA,NA,NA,NA
+"559",724,"FF","CO",NA,"drybeans",2007,7,0,0,0,0
+"560",725,"FF","CO",NA,"drybeans",2007,7,0,0,0,1
+"561",726,"FF","CO",NA,"drybeans",2007,7,NA,NA,NA,NA
+"562",727,"FF","CO",NA,"drybeans",2007,7,NA,NA,NA,NA
+"563",728,"FF","CO",NA,"drybeans",2007,7,NA,NA,NA,NA
+"564",729,"FF","CO",NA,"drybeans",2007,7,NA,NA,NA,NA
+"565",730,"FF","CO",NA,"drybeans",2007,7,NA,NA,NA,NA
+"566",731,"FF","CO",NA,"drybeans",2007,7,0,0,0,0
+"567",732,"FF","CO",NA,"drybeans",2007,7,0,0,1,1
+"568",733,"FF","CO",NA,"drybeans",2007,7,NA,NA,NA,NA
+"569",734,"FF","CO",NA,"drybeans",2007,7,NA,NA,NA,NA
+"570",735,"FF","CO",NA,"drybeans",2007,7,NA,NA,NA,NA
+"571",736,"FF","CO",NA,"drybeans",2007,7,NA,NA,NA,NA
+"572",737,"FF","CO",NA,"drybeans",2007,7,NA,NA,NA,NA
+"573",738,"FF","CO",NA,"drybeans",2007,6,0,0,0,0
+"574",739,"FF","CO",NA,"drybeans",2007,6,0,0,0,1
+"575",740,"FF","CO",NA,"drybeans",2007,6,NA,NA,NA,NA
+"576",741,"FF","CO",NA,"drybeans",2007,6,NA,NA,NA,NA
+"577",743,"FF","CO",NA,"drybeans",2007,6,NA,NA,NA,NA
+"578",744,"FF","CO",NA,"drybeans",2007,6,NA,NA,NA,NA
+"579",745,"FF","MI",NA,"drybeans",2007,NA,0,0,0,0
+"580",746,"FF","NE",NA,"drybeans",2007,5,0,0,0,1
+"581",747,"FF","NE",NA,"drybeans",2007,5,NA,NA,NA,NA
+"582",748,"FF","NE",NA,"drybeans",2007,5,NA,NA,NA,NA
+"583",749,"FF","NE",NA,"drybeans",2007,5,NA,NA,NA,NA
+"584",750,"FF","NE",NA,"drybeans",2007,5,NA,NA,NA,NA
+"585",751,"FF","NE",NA,"drybeans",2007,5,0,0,0,0
+"586",752,"FF","NE",NA,"drybeans",2007,5,0,0,0,0
+"587",753,"FF","NE",NA,"drybeans",2007,5,0,0,0,0
+"588",754,"FF","NE",NA,"drybeans",2007,5,NA,NA,NA,NA
+"589",755,"FF","NE",NA,"drybeans",2007,5,0,0,0,0
+"590",756,"FF","WA",NA,"drybeans",2007,22,1,1,0,0
+"591",757,"FF","WA",NA,"drybeans",2007,22,0,1,0,0
+"592",758,"FF","WA",NA,"drybeans",2007,22,NA,NA,NA,NA
+"593",759,"FF","WA",NA,"drybeans",2007,22,NA,NA,NA,NA
+"594",760,"FF","WA",NA,"drybeans",2007,22,NA,NA,NA,NA
+"595",762,"FF","WA",NA,"drybeans",2007,22,NA,NA,NA,NA
+"596",763,"FF","WA",NA,"drybeans",2007,22,NA,NA,NA,NA
+"597",764,"FF","WA",NA,"drybeans",2007,22,1,0,0,0
+"598",765,"FF","WA",NA,"drybeans",2007,22,0,0,0,0
+"599",766,"FF","WA",NA,"drybeans",2007,22,NA,NA,NA,NA
+"600",767,"FF","WA",NA,"drybeans",2007,22,NA,NA,NA,NA
+"601",768,"FF","WA",NA,"drybeans",2007,22,NA,NA,NA,NA
+"602",769,"FF","WA",NA,"drybeans",2007,22,NA,NA,NA,NA
+"603",770,"FF","WA",NA,"drybeans",2007,22,NA,NA,NA,NA
+"604",771,"FF","WA",NA,"drybeans",2007,22,0,1,0,0
+"605",772,"FF","WA",NA,"drybeans",2007,22,0,0,0,0
+"606",773,"FF","WA",NA,"drybeans",2007,22,NA,NA,NA,NA
+"607",774,"FF","WA",NA,"drybeans",2007,22,NA,NA,NA,NA
+"608",775,"FF","WA",NA,"drybeans",2007,22,NA,NA,NA,NA
+"609",776,"FF","WA",NA,"drybeans",2007,22,NA,NA,NA,NA
+"610",777,"FF","WA",NA,"drybeans",2007,22,NA,NA,NA,NA
+"611",778,"FF","WA",NA,"drybeans",2007,22,NA,NA,NA,NA
+"612",779,"FF","SIN",NA,"drybeans",2008,NA,NA,NA,NA,NA
+"613",780,"FF","NE",NA,"drybeans",2008,NA,NA,NA,NA,NA
+"614",781,"FF","NE",NA,"drybeans",2008,NA,NA,NA,NA,NA
+"615",782,"FF","NE",NA,"drybeans",2008,NA,NA,NA,NA,NA
+"616",783,"FF","NE",NA,"drybeans",2008,NA,NA,NA,NA,NA
+"617",784,"FF","NE",NA,"drybeans",2008,NA,NA,NA,NA,NA
+"618",785,"FF","NE",NA,"drybeans",2008,NA,NA,NA,NA,NA
+"619",786,"FF","WA",NA,"drybeans",2008,12,0,0,1,0
+"620",787,"FF","WA",NA,"drybeans",2008,12,1,1,0,0
+"621",788,"FF","WA",NA,"drybeans",2008,12,NA,NA,NA,NA
+"622",789,"FF","WA",NA,"drybeans",2008,12,NA,NA,NA,NA
+"623",790,"FF","WA",NA,"drybeans",2008,12,NA,NA,NA,NA
+"624",791,"FF","WA",NA,"drybeans",2008,12,NA,NA,NA,NA
+"625",792,"FF","WA",NA,"drybeans",2008,12,NA,NA,NA,NA
+"626",793,"FF","WA",NA,"drybeans",2008,12,NA,NA,NA,NA
+"627",794,"FF","WA",NA,"drybeans",2008,12,NA,NA,NA,NA
+"628",795,"FF","WA",NA,"drybeans",2008,12,NA,NA,NA,NA
+"629",796,"FF","WA",NA,"drybeans",2008,12,NA,NA,NA,NA
+"630",797,"FF","WA",NA,"drybeans",2008,12,NA,NA,NA,NA
+"631",798,"Baseline","MI",NA,"drybeans",2008,12,NA,NA,NA,NA
+"632",799,"Baseline","MI",NA,"drybeans",2008,12,NA,NA,NA,NA
+"633",800,"Baseline","MI",NA,"drybeans",2008,12,NA,1,NA,1
+"634",801,"Baseline","MI",NA,"drybeans",2008,12,NA,NA,NA,NA
+"635",802,"Baseline","MI",NA,"drybeans",2008,12,NA,NA,NA,NA
+"636",803,"Baseline","MI",NA,"drybeans",2008,12,NA,NA,NA,NA
+"637",804,"Baseline","MI",NA,"drybeans",2008,12,NA,NA,NA,NA
+"638",805,"Baseline","MI",NA,"drybeans",2008,12,NA,NA,NA,NA
+"639",806,"Baseline","MI",NA,"drybeans",2008,12,NA,NA,NA,NA
+"640",807,"Baseline","MI",NA,"drybeans",2008,12,NA,NA,NA,NA
+"641",808,"Baseline","MI",NA,"drybeans",2008,12,NA,NA,NA,NA
+"642",809,"Baseline","MI",NA,"drybeans",2008,12,NA,NA,NA,NA
+"643",810,"FF","MI",NA,"drybeans",2008,4,NA,NA,NA,NA
+"644",811,"FF","MI",NA,"drybeans",2008,4,0,1,1,0
+"645",812,"FF","MI",NA,"drybeans",2008,4,0,1,1,0
+"646",813,"FF","MI",NA,"drybeans",2008,4,1,1,1,0
+"647",814,"FF","MI",NA,"drybeans",2008,3,0,0,1,0
+"648",815,"FF","MI",NA,"drybeans",2008,3,NA,NA,NA,NA
+"649",816,"FF","MI",NA,"drybeans",2008,3,NA,NA,NA,NA
+"650",817,"FF","MI",NA,"drybeans",2008,3,0,0,1,0
+"651",818,"FF","MI",NA,"drybeans",2008,3,0,1,0,0
+"652",819,"FF","MI",NA,"drybeans",2008,3,NA,NA,NA,NA
+"653",820,"FF","ND",NA,"sunflower",2009,NA,NA,NA,NA,NA
+"654",821,"FF","MN",NA,"sunflower",2009,NA,NA,NA,NA,NA
+"655",822,"FF","ND",NA,"sunflower",2009,NA,NA,NA,NA,NA
+"656",823,"FF","MN",NA,"sunflower",2009,NA,NA,NA,NA,NA
+"657",824,"Baseline","NE",NA,"drybeans",2008,10,0,1,0,0
+"658",825,"Baseline","NE",NA,"drybeans",2008,10,NA,NA,NA,NA
+"659",826,"Baseline","NE",NA,"drybeans",2008,10,NA,NA,NA,NA
+"660",827,"Baseline","NE",NA,"drybeans",2008,10,NA,NA,NA,NA
+"661",828,"Baseline","NE",NA,"drybeans",2008,10,NA,NA,NA,NA
+"662",829,"Baseline","NE",NA,"drybeans",2008,10,NA,NA,NA,NA
+"663",830,"Baseline","NE",NA,"drybeans",2008,10,NA,NA,NA,NA
+"664",831,"Baseline","NE",NA,"drybeans",2008,10,NA,NA,NA,NA
+"665",832,"Baseline","NE",NA,"drybeans",2008,10,NA,NA,NA,NA
+"666",833,"Baseline","NE",NA,"drybeans",2008,10,NA,NA,NA,NA
+"667",834,"FF","NE",NA,"soybeans",2008,NA,NA,NA,NA,NA
+"668",835,"FF","NE",NA,"drybeans",2009,NA,NA,NA,NA,NA
+"669",836,"Baseline","MI",NA,"drybeans",2009,3,NA,NA,NA,NA
+"670",837,"Baseline","MI",NA,"drybeans",2009,3,NA,NA,NA,NA
+"671",838,"Baseline","MI",NA,"drybeans",2009,3,0,1,1,0
+"672",839,"Baseline","MI",NA,"drybeans",2009,9,NA,NA,NA,NA
+"673",840,"Baseline","MI",NA,"drybeans",2009,9,NA,NA,NA,NA
+"674",841,"Baseline","MI",NA,"drybeans",2009,9,NA,NA,NA,NA
+"675",842,"Baseline","MI",NA,"drybeans",2009,9,NA,NA,NA,NA
+"676",843,"Baseline","MI",NA,"drybeans",2009,9,NA,NA,NA,NA
+"677",844,"Baseline","MI",NA,"drybeans",2009,9,NA,NA,NA,NA
+"678",845,"Baseline","MI",NA,"drybeans",2009,9,NA,NA,NA,NA
+"679",846,"Baseline","MI",NA,"drybeans",2009,9,NA,NA,NA,NA
+"680",847,"Baseline","MI",NA,"drybeans",2009,9,NA,NA,NA,NA
+"681",848,"FF","MI",NA,"drybeans",2009,1,NA,NA,NA,NA
+"682",849,"FF","MI",NA,"drybeans",2009,1,NA,NA,NA,NA
+"683",850,"FF","MI",NA,"drybeans",2009,1,NA,NA,NA,NA
+"684",851,"FF","MI",NA,"drybeans",2009,1,0,0,1,0
+"685",852,"FF","MI",NA,"drybeans",2009,2,1,1,0,0
+"686",853,"FF","MI",NA,"drybeans",2009,2,0,1,0,0
+"687",854,"FF","MI",NA,"drybeans",2009,1,0,0,0,0
+"688",855,"FF","MI",NA,"drybeans",2009,1,1,0,0,0
+"689",856,"FF","ND",NA,"sunflower",2008,NA,NA,NA,NA,NA
+"690",857,"FF","ND",NA,"sunflower",2009,NA,NA,NA,NA,NA
+"691",858,"FF","NE",NA,"drybeans",2010,9,0,0,0,1
+"692",859,"FF","NE",NA,"drybeans",2010,9,0,0,0,0
+"693",860,"FF","NE",NA,"drybeans",2010,9,0,0,0,0
+"694",861,"FF","NE",NA,"drybeans",2010,9,0,0,0,0
+"695",862,"FF","NE",NA,"drybeans",2010,9,0,0,0,0
+"696",863,"FF","NE",NA,"drybeans",2010,9,NA,NA,NA,NA
+"697",864,"FF","NE",NA,"drybeans",2010,9,NA,NA,NA,NA
+"698",865,"FF","NE",NA,"drybeans",2010,9,NA,NA,NA,NA
+"699",866,"FF","NE",NA,"drybeans",2010,9,NA,NA,NA,NA
+"700",867,"FF","CO",NA,"drybeans",2010,7,0,0,0,0
+"701",868,"FF","CO",NA,"drybeans",2010,7,NA,NA,NA,NA
+"702",869,"FF","CO",NA,"drybeans",2010,7,NA,NA,NA,NA
+"703",870,"FF","CO",NA,"drybeans",2010,7,0,0,0,0
+"704",871,"FF","CO",NA,"drybeans",2010,7,0,0,0,0
+"705",872,"FF","CO",NA,"drybeans",2010,7,NA,NA,NA,NA
+"706",873,"FF","CO",NA,"drybeans",2010,7,NA,NA,NA,NA
+"707",874,"FF","CO",NA,"drybeans",2010,7,NA,NA,NA,NA
+"708",875,"FF","CO",NA,"drybeans",2010,7,NA,NA,NA,NA
+"709",876,"FF","CO",NA,"drybeans",2010,7,NA,NA,NA,NA
+"710",877,"FF","CO",NA,"drybeans",2010,7,0,0,0,0
+"711",878,"FF","CO",NA,"drybeans",2010,7,0,0,0,0
+"712",879,"FF","CO",NA,"drybeans",2010,7,NA,NA,NA,NA
+"713",880,"FF","CO",NA,"drybeans",2010,7,NA,NA,NA,NA
+"714",881,"FF","CO",NA,"drybeans",2010,7,NA,NA,NA,NA
+"715",882,"FF","CO",NA,"drybeans",2010,7,NA,NA,NA,NA
+"716",883,"FF","CO",NA,"drybeans",2010,7,NA,NA,NA,NA
+"717",884,"FF","CO",NA,"drybeans",2010,7,0,0,0,0
+"718",885,"FF","CO",NA,"drybeans",2010,7,0,0,1,0
+"719",886,"FF","CO",NA,"drybeans",2010,7,NA,NA,NA,NA
+"720",887,"FF","CO",NA,"drybeans",2010,7,NA,NA,NA,NA
+"721",888,"FF","ND",NA,"drybeans",2010,9,NA,NA,NA,NA
+"722",889,"FF","ND",NA,"drybeans",2010,9,NA,NA,NA,NA
+"723",890,"FF","ND",NA,"drybeans",2010,9,NA,NA,NA,NA
+"724",891,"FF","ND",NA,"drybeans",2010,9,1,0,1,0
+"725",892,"FF","ND",NA,"drybeans",2010,9,0,0,1,1
+"726",893,"FF","ND",NA,"drybeans",2010,4,NA,NA,NA,NA
+"727",894,"FF","ND",NA,"drybeans",2010,7,NA,NA,NA,NA
+"728",895,"FF","ND",NA,"drybeans",2010,7,NA,NA,NA,NA
+"729",896,"FF","ND",NA,"drybeans",2010,7,1,0,1,0
+"730",897,"FF","ND",NA,"drybeans",2010,7,0,0,0,0
+"731",898,"FF","ND",NA,"drybeans",2010,4,0,0,0,0
+"732",899,"FF","ND",NA,"drybeans",2010,4,NA,NA,NA,NA
+"733",900,"FF","ND",NA,"drybeans",2010,4,NA,NA,NA,NA
+"734",901,"FF","ND",NA,"drybeans",2010,4,0,0,1,0
+"735",902,"FF","ND",NA,"drybeans",2010,7,0,0,0,0
+"736",903,"FF","ND",NA,"drybeans",2010,7,NA,NA,NA,NA
+"737",904,"FF","ND",NA,"drybeans",2010,7,NA,NA,NA,NA
+"738",905,"FF","ND",NA,"drybeans",2010,9,1,0,0,1
+"739",906,"FF","ND",NA,"drybeans",2010,9,0,0,0,0
+"740",907,"FF","ND",NA,"drybeans",2010,9,NA,NA,NA,NA
+"741",908,"FF","ND",NA,"drybeans",2010,4,1,0,0,0
+"742",909,"FF","ND",NA,"drybeans",2010,4,1,0,1,1
+"743",910,"FF","ND",NA,"drybeans",2010,4,NA,NA,NA,NA
+"744",911,"FF","ND",NA,"drybeans",2010,9,0,1,1,1
+"745",912,"FF","ND",NA,"drybeans",2010,2,0,0,0,1
+"746",913,"FF","ND",NA,"drybeans",2010,2,NA,NA,NA,NA
+"747",914,"FF","ND",NA,"drybeans",2010,1,0,0,0,1
+"748",921,"FF","Kigali",NA,"drybeans",2011,NA,NA,NA,NA,NA
+"749",922,"FF","birdseed",NA,"sunflower",2012,NA,NA,NA,NA,NA
+"750",923,"FF","birdseed",NA,"sunflower",2012,NA,NA,NA,NA,NA
+"751",924,"FF","birdseed",NA,"sunflower",2012,NA,NA,NA,NA,NA
+"752",925,"FF","birdseed",NA,"sunflower",2012,NA,NA,NA,NA,NA
+"753",926,"FF","birdseed",NA,"sunflower",2012,NA,NA,NA,NA,NA
+"754",927,"FF","birdseed",NA,"sunflower",2012,NA,NA,NA,NA,NA
+"755",928,"FF","birdseed",NA,"sunflower",2012,NA,NA,NA,NA,NA
+"756",929,"FF","birdseed",NA,"sunflower",2012,NA,NA,NA,NA,NA
+"757",930,"FF","birdseed",NA,"sunflower",2012,NA,NA,NA,NA,NA
+"758",931,"FF","birdseed",NA,"sunflower",2012,NA,NA,NA,NA,NA
+"759",932,"FF","birdseed",NA,"sunflower",2012,NA,NA,NA,NA,NA
+"760",933,"FF","birdseed",NA,"sunflower",2012,NA,NA,NA,NA,NA
+"761",934,"FF","birdseed",NA,"sunflower",2012,NA,NA,NA,NA,NA
+"762",935,"FF","birdseed",NA,"sunflower",2012,NA,NA,NA,NA,NA
+"763",936,"FF","birdseed",NA,"sunflower",2012,NA,NA,NA,NA,NA
+"764",937,"FF","birdseed",NA,"sunflower",2012,NA,NA,NA,NA,NA
+"765",938,"FF","birdseed",NA,"sunflower",2012,NA,NA,NA,NA,NA
+"766",939,"FF","birdseed",NA,"sunflower",2012,NA,NA,NA,NA,NA
+"767",940,"FF","birdseed",NA,"sunflower",2012,NA,NA,NA,NA,NA
+"768",941,"FF","birdseed",NA,"sunflower",2012,NA,NA,NA,NA,NA
+"769",942,"FF","birdseed",NA,"sunflower",2012,NA,NA,NA,NA,NA
+"770",943,"FF","birdseed",NA,"sunflower",2012,NA,NA,NA,NA,NA
+"771",944,"FF","birdseed",NA,"sunflower",2012,NA,NA,NA,NA,NA
+"772",945,"FF","birdseed",NA,"sunflower",2012,NA,NA,NA,NA,NA
+"773",946,"FF","birdseed",NA,"sunflower",2012,NA,NA,NA,NA,NA
+"774",947,"FF","birdseed",NA,"sunflower",2012,NA,NA,NA,NA,NA
+"775",948,"FF","birdseed",NA,"sunflower",2012,NA,NA,NA,NA,NA
+"776",949,"FF","birdseed",NA,"sunflower",2012,NA,NA,NA,NA,NA
+"777",950,"FF","birdseed",NA,"sunflower",2012,NA,NA,NA,NA,NA
+"778",951,"FF","birdseed",NA,"sunflower",2012,NA,NA,NA,NA,NA
+"779",952,"FF","birdseed",NA,"sunflower",2012,NA,NA,NA,NA,NA
+"780",953,"FF","birdseed",NA,"sunflower",2012,NA,NA,NA,NA,NA
+"781",954,"FF","birdseed",NA,"sunflower",2012,NA,NA,NA,NA,NA
+"782",955,"FF","birdseed",NA,"sunflower",2012,NA,NA,NA,NA,NA
+"783",956,"FF","birdseed",NA,"sunflower",2012,NA,NA,NA,NA,NA
+"784",957,"FF","birdseed",NA,"sunflower",2012,NA,NA,NA,NA,NA
+"785",958,"FF","birdseed",NA,"sunflower",2012,NA,NA,NA,NA,NA
+"786",959,"FF","birdseed",NA,"sunflower",2012,NA,NA,NA,NA,NA
+"787",960,"FF","birdseed",NA,"sunflower",2012,NA,NA,NA,NA,NA
+"788",961,"FF","birdseed",NA,"sunflower",2012,NA,NA,NA,NA,NA
+"789",962,"FF","birdseed",NA,"sunflower",2012,NA,NA,NA,NA,NA
+"790",963,"FF","birdseed",NA,"sunflower",2012,NA,NA,NA,NA,NA
+"791",964,"FF","birdseed",NA,"sunflower",2012,NA,NA,NA,NA,NA
+"792",965,"FF","birdseed",NA,"sunflower",2012,NA,NA,NA,NA,NA
+"793",966,"FF","Kessenich ",NA,"drybeans",2011,NA,NA,NA,NA,NA
+"794",967,"FF","Elen",NA,"drybeans",2007,NA,NA,NA,NA,NA
+"795",968,"FF","Moshi",NA,"drybeans",2008,NA,NA,NA,NA,NA
+"796",969,"FF","Peronne",NA,"drybeans",2011,NA,NA,NA,NA,NA
+"797",970,"FF","Loudéac",NA,"drybeans",2011,NA,NA,NA,NA,NA
+"798",971,"FF","Bordeaux-Hourtin",NA,"drybeans",2011,NA,NA,NA,NA,NA
+"799",972,"FF","",NA,"soybeans",2012,NA,NA,NA,NA,NA
+"800",973,"FF","BA",NA,"soybeans",2012,NA,NA,NA,NA,NA
+"801",973,"FFT","BA",NA,"soybeans",2012,NA,NA,NA,NA,NA
+"802",974,"FF","RS",NA,"soybeans",2012,NA,NA,NA,NA,NA
+"803",974,"FFT","RS",NA,"soybeans",2012,NA,NA,NA,NA,NA
+"804",975,"FF","RS",NA,"soybeans",2012,NA,NA,NA,NA,NA
+"805",975,"FFT","RS",NA,"soybeans",2012,NA,NA,NA,NA,NA
+"806",976,"FF","RS",NA,"soybeans",2012,NA,NA,NA,NA,NA
+"807",976,"FFT","RS",NA,"soybeans",2012,NA,NA,NA,NA,NA
+"808",977,"FF","MS",NA,"soybeans",2012,NA,NA,NA,NA,NA
+"809",977,"FFT","MS",NA,"soybeans",2012,NA,NA,NA,NA,NA
+"810",978,"FF","GO",NA,"soybeans",2012,NA,NA,NA,NA,NA
+"811",978,"FFT","GO",NA,"soybeans",2012,NA,NA,NA,NA,NA
+"812",979,"FF","RS",NA,"soybeans",2012,NA,NA,NA,NA,NA
+"813",979,"FFT","RS",NA,"soybeans",2012,NA,NA,NA,NA,NA
+"814",980,"FF","NE",NA,"drybeans",2012,NA,NA,NA,NA,NA
+"815",981,"FF","NE",NA,"drybeans",2013,NA,NA,NA,NA,NA
+"816",982,"FF","NE",NA,"soybeans",2013,NA,NA,NA,NA,NA
+"817",983,"FF","MI",NA,"",2013,NA,NA,NA,NA,NA
+"818",984,"FF","MI",NA,"",2013,NA,NA,NA,NA,NA
+"819",985,"FF","WI",NA,"drybeans",2012,NA,NA,NA,NA,NA
+"820",986,"FF","WI",NA,"drybeans",2012,NA,NA,NA,NA,NA
+"821",987,"FF","WI",NA,"drybeans",2012,NA,NA,NA,NA,NA
+"822",988,"FF","CO",NA,"drybeans",2014,NA,NA,NA,NA,NA
+"823",989,"FF","CO",NA,"drybeans",2014,NA,NA,NA,NA,NA
+"824",990,"FF","CO",NA,"drybeans",2014,NA,NA,NA,NA,NA
+"825",991,"FF","CO",NA,"drybeans",2014,NA,NA,NA,NA,NA
+"826",992,"FF","CO",NA,"drybeans",2014,NA,NA,NA,NA,NA
+"827",993,"FF","CO",NA,"drybeans",2014,NA,NA,NA,NA,NA
+"828",994,"FF","NE",NA,"drybeans",2014,NA,NA,NA,NA,NA
+"829",995,"FF","NE",NA,"drybeans",2014,NA,NA,NA,NA,NA
+"830",996,"FF","NE",NA,"drybeans",2014,NA,NA,NA,NA,NA
+"831",997,"FF","MO",NA,"drybeans",2014,NA,NA,NA,NA,NA
+"832",998,"FF","MI",NA,"drybeans",2014,NA,NA,NA,NA,NA
+"833",999,"FF","MI",NA,"drybeans",2014,NA,NA,NA,NA,NA
+"834",1000,"FF","MI",NA,"drybeans",2014,NA,NA,NA,NA,NA
+"835",1001,"FF","MI",NA,"drybeans",2014,NA,NA,NA,NA,NA
+"836",1002,"FF","MI",NA,"drybeans",2014,NA,NA,NA,NA,NA
+"837",1003,"FF","MI",NA,"drybeans",2014,NA,NA,NA,NA,NA
+"838",1004,"FF","MI",NA,"drybeans",2014,NA,NA,NA,NA,NA
+"839",1005,"FF","MI",NA,"drybeans",2014,NA,NA,NA,NA,NA
+"840",1006,"FF","MI",NA,"drybeans",2014,NA,NA,NA,NA,NA
+"841",1007,"FF","MI",NA,"drybeans",2014,NA,NA,NA,NA,NA
+"842",1008,"FF","MI",NA,"drybeans",2014,NA,NA,NA,NA,NA
+"843",1009,"FF","MI",NA,"drybeans",2014,NA,NA,NA,NA,NA
+"844",1010,"FF","PR",NA,"soybeans",2014,NA,NA,NA,NA,NA
+"845",1011,"FF","PR",NA,"soybeans",2014,NA,NA,NA,NA,NA
+"846",1012,"FF","PR",NA,"soybeans",2014,NA,NA,NA,NA,NA
+"847",1013,"FF","PR",NA,"soybeans",2014,NA,NA,NA,NA,NA
+"848",1014,"FF","PR",NA,"soybeans",2014,NA,NA,NA,NA,NA
+"849",1015,"FF","GO",NA,"soybeans",2012,NA,NA,NA,NA,NA
+"850",1016,"FF","PR",NA,"soybeans",2012,NA,NA,NA,NA,NA
+"851",1017,"FF","GO",NA,"soybeans",2012,NA,NA,NA,NA,NA
+"852",1018,"FF","PR",NA,"soybeans",2012,NA,NA,NA,NA,NA
+"853",1019,"FF","BA",NA,"soybeans",2012,NA,NA,NA,NA,NA
+"854",1020,"FF","PR",NA,"soybeans",2012,NA,NA,NA,NA,NA
+"855",1021,"FF","RS",NA,"soybeans",2012,NA,NA,NA,NA,NA
+"856",1022,"FF","BA",NA,"soybeans",2012,NA,NA,NA,NA,NA
+"857",1023,"FF","MT",NA,"peas",2012,NA,NA,NA,NA,NA
+"858",1024,"FF","MT",NA,"lens",2016,NA,NA,NA,NA,NA
+"859",1025,"FFT","IA","prothioconazole + trifloxystrobin","soybeans",2016,11,1,0,0,1
+"860",1026,"FFT","IA","fluxapyroxad + pyraclostrobin","soybeans",2016,11,0,0,0,1
+"861",1027,"FFT","IA","flutriafol","soybeans",2016,11,1,0,0,1
+"862",1028,"FFT","IA","fluxapyroxad + pyraclostrobin","soybeans",2016,11,NA,NA,NA,NA
+"863",1029,"FFT","IA","pyraclostrobin","soybeans",2016,11,1,0,0,1
+"864",1030,"FFT","IA","azoxystrobin + difenoconazole","soybeans",2016,11,NA,NA,NA,NA
+"865",1031,"FFT","IA","pyraclostrobin","soybeans",2016,11,NA,NA,NA,NA
+"866",1032,"FFT","IA","fluxapyroxad + pyraclostrobin","soybeans",2016,11,0,0,0,1
+"867",1033,"FFT","IA","pyraclostrobin","soybeans",2016,11,1,0,0,1
+"868",1034,"FFT","IA","flutriafol","soybeans",2016,11,NA,NA,NA,NA
+"869",1035,"FFT","IA","flutriafol","soybeans",2016,11,NA,NA,NA,NA
+"870",1036,"FFT","IA",NA,"soybeans",2016,22,NA,NA,NA,NA
+"871",1037,"FFT","IA",NA,"soybeans",2016,22,NA,NA,NA,NA
+"872",1038,"FFT","IA",NA,"soybeans",2016,22,NA,NA,NA,NA
+"873",1039,"FFT","IA",NA,"soybeans",2016,22,NA,NA,NA,NA
+"874",1040,"FFT","IA",NA,"soybeans",2016,22,NA,NA,NA,NA
+"875",1041,"FFT","IA",NA,"soybeans",2016,22,NA,NA,NA,NA
+"876",1042,"FFT","IA",NA,"soybeans",2016,22,NA,NA,NA,NA
+"877",1043,"FFT","IA",NA,"soybeans",2016,22,NA,NA,NA,NA
+"878",1044,"FFT","IA",NA,"soybeans",2016,22,NA,NA,NA,NA
+"879",1045,"FFT","IA",NA,"soybeans",2016,22,NA,NA,NA,NA
+"880",1046,"FFT","IA",NA,"soybeans",2016,22,NA,NA,NA,NA
+"881",1047,"FFT","IA",NA,"soybeans",2016,22,NA,NA,NA,NA
+"882",1048,"FFT","IA",NA,"soybeans",2016,22,NA,NA,NA,NA
+"883",1049,"FFT","IA",NA,"soybeans",2016,22,NA,NA,NA,NA
+"884",1050,"FFT","IA",NA,"soybeans",2016,22,NA,NA,NA,NA
+"885",1051,"FFT","IA",NA,"soybeans",2016,22,NA,NA,NA,NA
+"886",1052,"FFT","IA",NA,"soybeans",2016,22,NA,NA,NA,NA
+"887",1053,"FFT","IA",NA,"soybeans",2016,22,NA,NA,NA,NA
+"888",1054,"FFT","IA",NA,"soybeans",2016,22,NA,NA,NA,NA
+"889",1055,"FFT","IA",NA,"soybeans",2016,22,NA,NA,NA,NA
+"890",1056,"FFT","IA",NA,"soybeans",2016,22,NA,NA,NA,NA
+"891",1057,"FFT","IA",NA,"soybeans",2016,22,NA,NA,NA,NA
+"892",1058,"FFT","MI","thiophanate_methyl","soybeans",2016,162,0,1,0,0
+"893",1059,"FFT","MI","thiophanate_methyl","soybeans",2016,162,NA,NA,NA,NA
+"894",1060,"FFT","MI","thiophanate_methyl","soybeans",2016,162,NA,NA,NA,NA
+"895",1061,"FFT","MI","thiophanate_methyl","soybeans",2016,162,NA,NA,NA,NA
+"896",1062,"FFT","MI","thiophanate_methyl","soybeans",2016,162,NA,NA,NA,NA
+"897",1063,"FFT","MI","thiophanate_methyl","soybeans",2016,162,NA,NA,NA,NA
+"898",1064,"FFT","MI","thiophanate_methyl","soybeans",2016,162,NA,NA,NA,NA
+"899",1065,"FFT","MI","thiophanate_methyl","soybeans",2016,162,NA,NA,NA,NA
+"900",1066,"FFT","MI","thiophanate_methyl","soybeans",2016,162,NA,NA,NA,NA
+"901",1067,"FFT","MI","thiophanate_methyl","soybeans",2016,162,NA,NA,NA,NA
+"902",1068,"FFT","MI","thiophanate_methyl","soybeans",2016,162,NA,NA,NA,NA
+"903",1069,"FFT","MI","thiophanate_methyl","soybeans",2016,162,NA,NA,NA,NA
+"904",1070,"FFT","MI","thiophanate_methyl","soybeans",2016,162,NA,NA,NA,NA
+"905",1071,"FFT","MI","thiophanate_methyl","soybeans",2016,162,NA,NA,NA,NA
+"906",1072,"FFT","MI","thiophanate_methyl","soybeans",2016,162,NA,NA,NA,NA
+"907",1073,"FFT","MI","thiophanate_methyl","soybeans",2016,162,NA,NA,NA,NA
+"908",1074,"FFT","MI","thiophanate_methyl","soybeans",2016,162,NA,NA,NA,NA
+"909",1075,"FFT","MI","thiophanate_methyl","soybeans",2016,162,NA,NA,NA,NA
+"910",1076,"FFT","MI","thiophanate_methyl","soybeans",2016,162,NA,NA,NA,NA
+"911",1077,"FFT","MI","thiophanate_methyl","soybeans",2016,162,NA,NA,NA,NA
+"912",1078,"FFT","MI","boscalid","soybeans",2016,162,NA,NA,NA,NA
+"913",1079,"FFT","MI","boscalid","soybeans",2016,162,NA,NA,NA,NA
+"914",1080,"FFT","MI","boscalid","soybeans",2016,162,NA,NA,NA,NA
+"915",1081,"FFT","MI","boscalid","soybeans",2016,162,0,0,0,0
+"916",1082,"FFT","MI","boscalid","soybeans",2016,162,NA,NA,NA,NA
+"917",1083,"FFT","MI","boscalid","soybeans",2016,162,NA,NA,NA,NA
+"918",1084,"FFT","MI","boscalid","soybeans",2016,162,NA,NA,NA,NA
+"919",1085,"FFT","MI","boscalid","soybeans",2016,162,NA,NA,NA,NA
+"920",1086,"FFT","MI","boscalid","soybeans",2016,162,NA,NA,NA,NA
+"921",1087,"FFT","MI","boscalid","soybeans",2016,162,0,1,0,0
+"922",1088,"FFT","MI","boscalid","soybeans",2016,162,NA,NA,NA,NA
+"923",1089,"FFT","MI","boscalid","soybeans",2016,162,NA,NA,NA,NA
+"924",1090,"FFT","MI","boscalid","soybeans",2016,162,NA,NA,NA,NA
+"925",1091,"FFT","MI","boscalid","soybeans",2016,162,NA,NA,NA,NA
+"926",1092,"FFT","MI","boscalid","soybeans",2016,162,NA,NA,NA,NA
+"927",1093,"FFT","MI","boscalid","soybeans",2016,162,NA,NA,NA,NA
+"928",1094,"FFT","MI","boscalid","soybeans",2016,162,NA,NA,NA,NA
+"929",1095,"FFT","MI","boscalid","soybeans",2016,162,NA,NA,NA,NA
+"930",1096,"FFT","MI","boscalid","soybeans",2016,162,NA,NA,NA,NA
+"931",1097,"FFT","MI","boscalid","soybeans",2016,162,NA,NA,NA,NA
+"932",1098,"FFT","MI","boscalid","soybeans",2016,162,NA,NA,NA,NA
+"933",1099,"FFT","MI","boscalid","soybeans",2016,162,NA,NA,NA,NA
+"934",1100,"FFT","MI","boscalid","soybeans",2016,162,NA,NA,NA,NA
+"935",1101,"FFT","MI","boscalid","soybeans",2016,162,NA,NA,NA,NA
+"936",1102,"FFT","MI","boscalid","soybeans",2016,162,NA,NA,NA,NA
+"937",1103,"FFT","MI","boscalid","soybeans",2016,162,NA,NA,NA,NA
+"938",1104,"FFT","MI","boscalid","soybeans",2016,162,NA,NA,NA,NA
+"939",1105,"FFT","MI","boscalid","soybeans",2016,162,NA,NA,NA,NA
+"940",1106,"FFT","MI","boscalid","soybeans",2016,162,NA,NA,NA,NA
+"941",1107,"FFT","MI","boscalid","soybeans",2016,162,NA,NA,NA,NA
+"942",1108,"FFT","MI","boscalid","soybeans",2016,162,NA,NA,NA,NA
+"943",1109,"FFT","MI","boscalid","soybeans",2016,162,0,1,1,0
+"944",1110,"FFT","MI","boscalid","soybeans",2016,162,NA,NA,NA,NA
+"945",1111,"FFT","MI","thiophanate_methyl","soybeans",2016,162,NA,NA,NA,NA
+"946",1112,"FFT","MI","thiophanate_methyl","soybeans",2016,162,NA,NA,NA,NA
+"947",1113,"FFT","MI","thiophanate_methyl","soybeans",2016,162,NA,NA,NA,NA
+"948",1114,"FFT","MI","thiophanate_methyl","soybeans",2016,162,NA,NA,NA,NA
+"949",1115,"FFT","MI","thiophanate_methyl","soybeans",2016,162,NA,NA,NA,NA
+"950",1116,"FFT","MI","thiophanate_methyl","soybeans",2016,162,NA,NA,NA,NA
+"951",1117,"FFT","MI","thiophanate_methyl","soybeans",2016,162,NA,NA,NA,NA
+"952",1118,"FFT","MI","thiophanate_methyl","soybeans",2016,162,NA,NA,NA,NA
+"953",1119,"FFT","MI","thiophanate_methyl","soybeans",2016,162,NA,NA,NA,NA
+"954",1120,"FFT","MI","thiophanate_methyl","soybeans",2016,162,NA,NA,NA,NA
+"955",1121,"FFT","MI","thiophanate_methyl","soybeans",2016,162,NA,NA,NA,NA
+"956",1122,"FFT","MI","thiophanate_methyl","soybeans",2016,162,NA,NA,NA,NA
+"957",1123,"FFT","MI","thiophanate_methyl","soybeans",2016,162,NA,NA,NA,NA
+"958",1124,"FFT","MI","thiophanate_methyl","soybeans",2016,162,NA,NA,NA,NA
+"959",1125,"FFT","MI","thiophanate_methyl","soybeans",2016,162,NA,NA,NA,NA
+"960",1126,"FFT","MI","thiophanate_methyl","soybeans",2016,162,NA,NA,NA,NA
+"961",1127,"FFT","MI","thiophanate_methyl","soybeans",2016,162,0,0,0,0
+"962",1128,"FFT","MI","thiophanate_methyl","soybeans",2016,162,0,0,1,0
+"963",1129,"FFT","MI","picoxystrobin","soybeans",2016,162,NA,NA,NA,NA
+"964",1130,"FFT","MI","picoxystrobin","soybeans",2016,162,NA,NA,NA,NA
+"965",1131,"FFT","MI","picoxystrobin","soybeans",2016,162,NA,NA,NA,NA
+"966",1132,"FFT","MI","picoxystrobin","soybeans",2016,162,NA,NA,NA,NA
+"967",1133,"FFT","MI","picoxystrobin","soybeans",2016,162,NA,NA,NA,NA
+"968",1134,"FFT","MI","picoxystrobin","soybeans",2016,162,0,0,0,0
+"969",1135,"FFT","MI","picoxystrobin","soybeans",2016,162,0,0,1,1
+"970",1136,"FFT","MI","picoxystrobin","soybeans",2016,162,NA,NA,NA,NA
+"971",1137,"FFT","MI","picoxystrobin","soybeans",2016,162,NA,NA,NA,NA
+"972",1138,"FFT","MI","picoxystrobin","soybeans",2016,162,NA,NA,NA,NA
+"973",1139,"FFT","MI","picoxystrobin","soybeans",2016,162,0,0,0,0
+"974",1140,"FFT","MI","picoxystrobin","soybeans",2016,162,NA,NA,NA,NA
+"975",1141,"FFT","MI","picoxystrobin","soybeans",2016,162,NA,NA,NA,NA
+"976",1142,"FFT","MI","picoxystrobin","soybeans",2016,162,NA,NA,NA,NA
+"977",1143,"FFT","MI","picoxystrobin","soybeans",2016,162,NA,NA,NA,NA
+"978",1144,"FFT","MI","picoxystrobin","soybeans",2016,162,NA,NA,NA,NA
+"979",1145,"FFT","MI","picoxystrobin","soybeans",2016,162,NA,NA,NA,NA
+"980",1146,"FFT","MI","picoxystrobin","soybeans",2016,162,NA,NA,NA,NA
+"981",1147,"FFT","MI","picoxystrobin","soybeans",2016,162,NA,NA,NA,NA
+"982",1148,"FFT","MI","picoxystrobin","soybeans",2016,162,NA,NA,NA,NA
+"983",1149,"FFT","MI","picoxystrobin","soybeans",2016,162,NA,NA,NA,NA
+"984",1150,"FFT","MI","picoxystrobin","soybeans",2016,162,NA,NA,NA,NA
+"985",1151,"FFT","MI","picoxystrobin","soybeans",2016,162,NA,NA,NA,NA
+"986",1152,"FFT","MI","picoxystrobin","soybeans",2016,162,NA,NA,NA,NA
+"987",1153,"FFT","MI","picoxystrobin","soybeans",2016,162,NA,NA,NA,NA
+"988",1154,"FFT","MI","picoxystrobin","soybeans",2016,162,NA,NA,NA,NA
+"989",1155,"FFT","MI","picoxystrobin","soybeans",2016,162,NA,NA,NA,NA
+"990",1156,"FFT","MI","picoxystrobin","soybeans",2016,162,NA,NA,NA,NA
+"991",1157,"FFT","MI","picoxystrobin","soybeans",2016,162,NA,NA,NA,NA
+"992",1158,"FFT","MI","picoxystrobin","soybeans",2016,162,NA,NA,NA,NA
+"993",1159,"FFT","MI","picoxystrobin","soybeans",2016,162,NA,NA,NA,NA
+"994",1160,"FFT","MI","picoxystrobin","soybeans",2016,162,NA,NA,NA,NA
+"995",1161,"FFT","MI","picoxystrobin","soybeans",2016,162,NA,NA,NA,NA
+"996",1162,"FFT","MI","picoxystrobin","soybeans",2016,162,NA,NA,NA,NA
+"997",1163,"FFT","MI","picoxystrobin","soybeans",2016,162,NA,NA,NA,NA
+"998",1164,"FFT","MI","picoxystrobin","soybeans",2016,162,NA,NA,NA,NA
+"999",1165,"FFT","MI","picoxystrobin","soybeans",2016,162,NA,NA,NA,NA
+"1000",1166,"FFT","MI","picoxystrobin","soybeans",2016,162,NA,NA,NA,NA
+"1001",1167,"FFT","MI","picoxystrobin","soybeans",2016,162,NA,NA,NA,NA
+"1002",1168,"FFT","MI","picoxystrobin","soybeans",2016,162,NA,NA,NA,NA
+"1003",1169,"FFT","MI","picoxystrobin","soybeans",2016,162,NA,NA,NA,NA
+"1004",1170,"FFT","MI","picoxystrobin","soybeans",2016,162,NA,NA,NA,NA
+"1005",1171,"FFT","MI","picoxystrobin","soybeans",2016,162,NA,NA,NA,NA
+"1006",1172,"FFT","MI","picoxystrobin","soybeans",2016,162,NA,NA,NA,NA
+"1007",1173,"FFT","MI","picoxystrobin","soybeans",2016,162,NA,NA,NA,NA
+"1008",1174,"FFT","MI","picoxystrobin","soybeans",2016,162,NA,NA,NA,NA
+"1009",1175,"FFT","MI","control","soybeans",2016,162,0,0,0,0
+"1010",1176,"FFT","MI","control","soybeans",2016,162,NA,NA,NA,NA
+"1011",1177,"FFT","MI","control","soybeans",2016,162,NA,NA,NA,NA
+"1012",1178,"FFT","MI","control","soybeans",2016,162,NA,NA,NA,NA
+"1013",1179,"FFT","MI","control","soybeans",2016,162,NA,NA,NA,NA
+"1014",1180,"FFT","MI","control","soybeans",2016,162,NA,NA,NA,NA
+"1015",1181,"FFT","MI","control","soybeans",2016,162,NA,NA,NA,NA
+"1016",1182,"FFT","MI","control","soybeans",2016,162,NA,NA,NA,NA
+"1017",1183,"FFT","MI","control","soybeans",2016,162,NA,NA,NA,NA
+"1018",1184,"FFT","MI","control","soybeans",2016,162,NA,NA,NA,NA
+"1019",1185,"FFT","MI","control","soybeans",2016,162,NA,NA,NA,NA
+"1020",1186,"FFT","MI","control","soybeans",2016,162,NA,NA,NA,NA
+"1021",1187,"FFT","MI","control","soybeans",2016,162,NA,NA,NA,NA
+"1022",1188,"FFT","MI","control","soybeans",2016,162,NA,NA,NA,NA
+"1023",1189,"FFT","MI","control","soybeans",2016,162,NA,NA,NA,NA
+"1024",1190,"FFT","MI","control","soybeans",2016,162,NA,NA,NA,NA
+"1025",1191,"FFT","MI","control","soybeans",2016,162,NA,NA,NA,NA
+"1026",1192,"FFT","MI","control","soybeans",2016,162,NA,NA,NA,NA
+"1027",1193,"FFT","MI","control","soybeans",2016,162,NA,NA,NA,NA
+"1028",1194,"FFT","MI","control","soybeans",2016,162,NA,NA,NA,NA
+"1029",1195,"FFT","MI","control","soybeans",2016,162,NA,NA,NA,NA
+"1030",1196,"FFT","MI","control","soybeans",2016,162,NA,NA,NA,NA
+"1031",1197,"FFT","MI","control","soybeans",2016,162,NA,NA,NA,NA
+"1032",1198,"FFT","MI","control","soybeans",2016,162,NA,NA,NA,NA
+"1033",1199,"FFT","MI","control","soybeans",2016,162,NA,NA,NA,NA
+"1034",1200,"FFT","MI","control","soybeans",2016,162,NA,NA,NA,NA
+"1035",1201,"FFT","MI","control","soybeans",2016,162,NA,NA,NA,NA
+"1036",1202,"FFT","MI","control","soybeans",2016,162,NA,NA,NA,NA
+"1037",1203,"FFT","MI","control","soybeans",2016,162,NA,NA,NA,NA
+"1038",1204,"FFT","MI","control","soybeans",2016,162,NA,NA,NA,NA
+"1039",1205,"FFT","MI","control","soybeans",2016,162,NA,NA,NA,NA
+"1040",1206,"FFT","MI","control","soybeans",2016,162,NA,NA,NA,NA
+"1041",1207,"FFT","MI","control","soybeans",2016,162,NA,NA,NA,NA
+"1042",1208,"FFT","MI","control","soybeans",2016,162,NA,NA,NA,NA
+"1043",1209,"FFT","MI","control","soybeans",2016,162,NA,NA,NA,NA
+"1044",1210,"FFT","MI","control","soybeans",2016,162,NA,NA,NA,NA
+"1045",1211,"FFT","MI","control","soybeans",2016,162,NA,NA,NA,NA
+"1046",1212,"FFT","MI","control","soybeans",2016,162,NA,NA,NA,NA
+"1047",1213,"FFT","MI","control","soybeans",2016,162,NA,NA,NA,NA
+"1048",1214,"FFT","MI","control","soybeans",2016,162,NA,NA,NA,NA
+"1049",1215,"FFT","MI","control","soybeans",2016,162,NA,NA,NA,NA
+"1050",1216,"FFT","MI","control","soybeans",2016,162,NA,NA,NA,NA
+"1051",1217,"FFT","MI","control","soybeans",2016,162,NA,NA,NA,NA
+"1052",1218,"FFT","MI","control","soybeans",2016,162,NA,NA,NA,NA
+"1053",1219,"FFT","MI","control","soybeans",2016,162,NA,NA,NA,NA
+"1054",1255,"FF","NE",NA,"soybeans",2017,30,NA,NA,NA,NA
+"1055",1256,"FF","NE",NA,"soybeans",2017,30,NA,NA,NA,NA
+"1056",1257,"FF","NE",NA,"soybeans",2017,30,NA,NA,NA,NA
+"1057",1258,"FF","NE",NA,"soybeans",2017,30,NA,NA,NA,NA
+"1058",1259,"FF","NE",NA,"soybeans",2017,30,NA,NA,NA,NA
+"1059",1260,"FF","NE",NA,"soybeans",2017,30,NA,NA,NA,NA
+"1060",1261,"FF","NE",NA,"soybeans",2017,30,NA,NA,NA,NA
+"1061",1262,"FF","NE",NA,"soybeans",2017,30,NA,NA,NA,NA
+"1062",1263,"FF","NE",NA,"soybeans",2017,30,NA,NA,NA,NA
+"1063",1264,"FF","NE",NA,"soybeans",2017,30,NA,NA,NA,NA
+"1064",1265,"FF","NE",NA,"soybeans",2017,30,NA,NA,NA,NA
+"1065",1266,"FF","NE",NA,"soybeans",2017,30,NA,NA,NA,NA
+"1066",1267,"FF","NE",NA,"soybeans",2017,30,NA,NA,NA,NA
+"1067",1268,"FF","NE",NA,"soybeans",2017,30,NA,NA,NA,NA
+"1068",1269,"FF","NE",NA,"soybeans",2017,30,NA,NA,NA,NA
+"1069",1270,"FF","NE",NA,"soybeans",2017,30,NA,NA,NA,NA
+"1070",1271,"FF","NE",NA,"soybeans",2017,30,NA,NA,NA,NA
+"1071",1272,"FF","NE",NA,"soybeans",2017,30,NA,NA,NA,NA
+"1072",1273,"FF","NE",NA,"soybeans",2017,30,NA,NA,NA,NA
+"1073",1274,"FF","NE",NA,"soybeans",2017,30,NA,NA,NA,NA
+"1074",1275,"FF","NE",NA,"soybeans",2017,30,NA,NA,NA,NA
+"1075",1276,"FF","NE",NA,"soybeans",2017,30,NA,NA,NA,NA
+"1076",1277,"FF","NE",NA,"soybeans",2017,30,NA,NA,NA,NA
+"1077",1278,"FF","NE",NA,"soybeans",2017,30,NA,NA,NA,NA
+"1078",1279,"FF","NE",NA,"soybeans",2017,30,NA,NA,NA,NA
+"1079",1280,"FF","NE",NA,"soybeans",2017,30,NA,NA,NA,NA
+"1080",1281,"FF","NE",NA,"soybeans",2017,30,NA,NA,NA,NA
+"1081",1282,"FF","NE",NA,"soybeans",2017,30,NA,NA,NA,NA
+"1082",1283,"FF","NE",NA,"soybeans",2017,30,NA,NA,NA,NA
+"1083",1284,"FF","NE",NA,"soybeans",2017,30,NA,NA,NA,NA
+"1084",1285,"FF","NE",NA,"soybeans",2017,12,NA,NA,NA,NA
+"1085",1286,"FF","NE",NA,"soybeans",2017,12,NA,NA,NA,NA
+"1086",1287,"FF","NE",NA,"soybeans",2017,12,NA,NA,NA,NA
+"1087",1288,"FF","NE",NA,"soybeans",2017,12,NA,NA,NA,NA
+"1088",1289,"FF","NE",NA,"soybeans",2017,12,NA,NA,NA,NA
+"1089",1290,"FF","NE",NA,"soybeans",2017,12,NA,NA,NA,NA
+"1090",1291,"FF","NE",NA,"soybeans",2017,12,NA,NA,NA,NA
+"1091",1292,"FF","NE",NA,"soybeans",2017,12,NA,NA,NA,NA
+"1092",1293,"FF","NE",NA,"soybeans",2017,12,NA,NA,NA,NA
+"1093",1294,"FF","NE",NA,"soybeans",2017,12,NA,NA,NA,NA
+"1094",1295,"FF","NE",NA,"soybeans",2017,12,NA,NA,NA,NA
+"1095",1296,"FF","NE",NA,"soybeans",2017,12,NA,NA,NA,NA
+"1096",1297,"FF","NE","tetraconazole + flutriafol + fluxastrobin","soybeans",2017,20,NA,NA,NA,NA
+"1097",1298,"FF","NE","tetraconazole + flutriafol + fluxastrobin","soybeans",2017,20,NA,NA,NA,NA
+"1098",1299,"FF","NE","tetraconazole + flutriafol + fluxastrobin","soybeans",2017,20,NA,NA,NA,NA
+"1099",1300,"FF","NE","tetraconazole + flutriafol + fluxastrobin","soybeans",2017,20,NA,NA,NA,NA
+"1100",1301,"FF","NE","tetraconazole + flutriafol + fluxastrobin","soybeans",2017,20,NA,NA,NA,NA
+"1101",1302,"FF","NE","tetraconazole + flutriafol + fluxastrobin","soybeans",2017,20,NA,NA,NA,NA
+"1102",1303,"FF","NE","tetraconazole + flutriafol + fluxastrobin","soybeans",2017,20,NA,NA,NA,NA
+"1103",1304,"FF","NE","tetraconazole + flutriafol + fluxastrobin","soybeans",2017,20,NA,NA,NA,NA
+"1104",1305,"FF","NE","tetraconazole + flutriafol + fluxastrobin","soybeans",2017,20,NA,NA,NA,NA
+"1105",1306,"FF","NE","tetraconazole + flutriafol + fluxastrobin","soybeans",2017,20,NA,NA,NA,NA
+"1106",1307,"FF","NE","tetraconazole + flutriafol + fluxastrobin","soybeans",2017,20,NA,NA,NA,NA
+"1107",1308,"FF","NE","tetraconazole + flutriafol + fluxastrobin","soybeans",2017,20,NA,NA,NA,NA
+"1108",1309,"FF","NE","tetraconazole + flutriafol + fluxastrobin","soybeans",2017,20,NA,NA,NA,NA
+"1109",1310,"FF","NE","tetraconazole + flutriafol + fluxastrobin","soybeans",2017,20,NA,NA,NA,NA
+"1110",1311,"FF","NE","tetraconazole + flutriafol + fluxastrobin","soybeans",2017,20,NA,NA,NA,NA
+"1111",1312,"FF","NE","tetraconazole + flutriafol + fluxastrobin","soybeans",2017,20,NA,NA,NA,NA
+"1112",1313,"FF","NE","tetraconazole + flutriafol + fluxastrobin","soybeans",2017,20,NA,NA,NA,NA
+"1113",1314,"FF","NE","tetraconazole + flutriafol + fluxastrobin","soybeans",2017,20,NA,NA,NA,NA
+"1114",1315,"FF","NE","tetraconazole + flutriafol + fluxastrobin","soybeans",2017,20,NA,NA,NA,NA
+"1115",1316,"FF","NE","tetraconazole + flutriafol + fluxastrobin","soybeans",2017,20,NA,NA,NA,NA
+"1116",1317,"FF","NE",NA,"soybeans",2017,10,NA,NA,NA,NA
+"1117",1318,"FF","NE",NA,"soybeans",2017,10,NA,NA,NA,NA
+"1118",1319,"FF","NE",NA,"soybeans",2017,10,NA,NA,NA,NA
+"1119",1320,"FF","NE",NA,"soybeans",2017,10,NA,NA,NA,NA
+"1120",1321,"FF","NE",NA,"soybeans",2017,10,NA,NA,NA,NA
+"1121",1322,"FF","NE",NA,"soybeans",2017,10,NA,NA,NA,NA
+"1122",1323,"FF","NE",NA,"soybeans",2017,10,NA,NA,NA,NA
+"1123",1324,"FF","NE",NA,"soybeans",2017,10,NA,NA,NA,NA
+"1124",1325,"FF","NE",NA,"soybeans",2017,10,NA,NA,NA,NA
+"1125",1326,"FF","NE",NA,"soybeans",2017,10,NA,NA,NA,NA
+"1126",1327,"FFT","IA","control","soybeans",2017,164,0,0,0,0
+"1127",1328,"FFT","IA","boscalid","soybeans",2017,164,0,0,1,0
+"1128",1329,"FFT","IA","picoxystrobin","soybeans",2017,164,0,0,1,1
+"1129",1330,"FFT","IA","picoxystrobin","soybeans",2017,164,0,1,1,0
+"1130",1331,"FFT","IA","thiophanate_methyl","soybeans",2017,164,0,0,0,0
+"1131",1332,"FFT","IA","thiophanate_methyl","soybeans",2017,164,0,0,0,0
+"1132",1333,"FFT","IA","thiophanate_methyl","soybeans",2017,164,NA,NA,NA,NA
+"1133",1334,"FFT","IA","thiophanate_methyl","soybeans",2017,164,NA,NA,NA,NA
+"1134",1335,"FFT","IA","thiophanate_methyl","soybeans",2017,164,NA,NA,NA,NA
+"1135",1336,"FFT","IA","thiophanate_methyl","soybeans",2017,164,NA,NA,NA,NA
+"1136",1337,"FFT","IA","thiophanate_methyl","soybeans",2017,164,NA,NA,NA,NA
+"1137",1338,"FFT","IA","thiophanate_methyl","soybeans",2017,164,NA,NA,NA,NA
+"1138",1339,"FFT","IA","thiophanate_methyl","soybeans",2017,164,NA,NA,NA,NA
+"1139",1340,"FFT","IA","thiophanate_methyl","soybeans",2017,164,0,0,0,0
+"1140",1341,"FFT","IA","control","soybeans",2017,164,NA,NA,NA,NA
+"1141",1342,"FFT","IA","control","soybeans",2017,164,NA,NA,NA,NA
+"1142",1343,"FFT","IA","control","soybeans",2017,164,NA,NA,NA,NA
+"1143",1344,"FFT","IA","control","soybeans",2017,164,NA,NA,NA,NA
+"1144",1345,"FFT","IA","picoxystrobin","soybeans",2017,164,1,1,0,0
+"1145",1346,"FFT","IA","picoxystrobin","soybeans",2017,164,NA,NA,NA,NA
+"1146",1347,"FFT","IA","picoxystrobin","soybeans",2017,164,NA,NA,NA,NA
+"1147",1348,"FFT","IA","picoxystrobin","soybeans",2017,164,NA,NA,NA,NA
+"1148",1349,"FFT","IA","picoxystrobin","soybeans",2017,164,NA,NA,NA,NA
+"1149",1350,"FFT","IA","picoxystrobin","soybeans",2017,164,NA,NA,NA,NA
+"1150",1351,"FFT","IA","picoxystrobin","soybeans",2017,164,NA,NA,NA,NA
+"1151",1352,"FFT","IA","picoxystrobin","soybeans",2017,164,NA,NA,NA,NA
+"1152",1353,"FFT","IA","picoxystrobin","soybeans",2017,164,NA,NA,NA,NA
+"1153",1354,"FFT","IA","picoxystrobin","soybeans",2017,164,NA,NA,NA,NA
+"1154",1355,"FFT","IA","control","soybeans",2017,164,NA,NA,NA,NA
+"1155",1356,"FFT","IA","control","soybeans",2017,164,NA,NA,NA,NA
+"1156",1357,"FFT","IA","control","soybeans",2017,164,NA,NA,NA,NA
+"1157",1358,"FFT","IA","control","soybeans",2017,164,NA,NA,NA,NA
+"1158",1359,"FFT","IA","control","soybeans",2017,164,NA,NA,NA,NA
+"1159",1360,"FFT","IA","control","soybeans",2017,164,NA,NA,NA,NA
+"1160",1361,"FFT","IA","control","soybeans",2017,164,NA,NA,NA,NA
+"1161",1362,"FFT","IA","control","soybeans",2017,164,NA,NA,NA,NA
+"1162",1363,"FFT","IA","control","soybeans",2017,164,NA,NA,NA,NA
+"1163",1364,"FFT","IA","control","soybeans",2017,164,NA,NA,NA,NA
+"1164",1365,"FFT","IA","boscalid","soybeans",2017,164,0,0,0,0
+"1165",1366,"FFT","IA","boscalid","soybeans",2017,164,0,0,0,1
+"1166",1367,"FFT","IA","boscalid","soybeans",2017,164,NA,NA,NA,NA
+"1167",1368,"FFT","IA","boscalid","soybeans",2017,164,NA,NA,NA,NA
+"1168",1369,"FFT","IA","boscalid","soybeans",2017,164,NA,NA,NA,NA
+"1169",1370,"FFT","IA","boscalid","soybeans",2017,164,NA,NA,NA,NA
+"1170",1371,"FFT","IA","boscalid","soybeans",2017,164,NA,NA,NA,NA
+"1171",1372,"FFT","IA","boscalid","soybeans",2017,164,NA,NA,NA,NA
+"1172",1373,"FFT","IA","boscalid","soybeans",2017,164,NA,NA,NA,NA
+"1173",1374,"FFT","IA","boscalid","soybeans",2017,164,NA,NA,NA,NA
+"1174",1375,"FFT","IA","picoxystrobin","soybeans",2017,164,NA,NA,NA,NA
+"1175",1376,"FFT","IA","picoxystrobin","soybeans",2017,164,NA,NA,NA,NA
+"1176",1377,"FFT","IA","picoxystrobin","soybeans",2017,164,NA,NA,NA,NA
+"1177",1378,"FFT","IA","picoxystrobin","soybeans",2017,164,NA,NA,NA,NA
+"1178",1379,"FFT","IA","picoxystrobin","soybeans",2017,164,NA,NA,NA,NA
+"1179",1380,"FFT","IA","picoxystrobin","soybeans",2017,164,NA,NA,NA,NA
+"1180",1381,"FFT","IA","control","soybeans",2017,164,NA,NA,NA,NA
+"1181",1382,"FFT","IA","thiophanate_methyl","soybeans",2017,164,NA,NA,NA,NA
+"1182",1383,"FFT","IA","thiophanate_methyl","soybeans",2017,164,NA,NA,NA,NA
+"1183",1384,"FFT","IA","thiophanate_methyl","soybeans",2017,164,NA,NA,NA,NA
+"1184",1385,"FFT","IA","thiophanate_methyl","soybeans",2017,164,NA,NA,NA,NA
+"1185",1386,"FFT","IA","thiophanate_methyl","soybeans",2017,164,NA,NA,NA,NA
+"1186",1387,"FFT","IA","thiophanate_methyl","soybeans",2017,164,NA,NA,NA,NA
+"1187",1388,"FFT","IA","thiophanate_methyl","soybeans",2017,164,NA,NA,NA,NA
+"1188",1389,"FFT","IA","thiophanate_methyl","soybeans",2017,164,NA,NA,NA,NA
+"1189",1390,"FFT","IA","thiophanate_methyl","soybeans",2017,164,NA,NA,NA,NA
+"1190",1391,"FFT","IA","thiophanate_methyl","soybeans",2017,164,NA,NA,NA,NA
+"1191",1392,"FFT","IA","boscalid","soybeans",2017,164,0,1,0,0
+"1192",1393,"FFT","IA","boscalid","soybeans",2017,164,0,1,1,0
+"1193",1394,"FFT","IA","boscalid","soybeans",2017,164,NA,NA,NA,NA
+"1194",1395,"FFT","IA","boscalid","soybeans",2017,164,NA,NA,NA,NA
+"1195",1396,"FFT","IA","boscalid","soybeans",2017,164,NA,NA,NA,NA
+"1196",1397,"FFT","IA","boscalid","soybeans",2017,164,NA,NA,NA,NA
+"1197",1398,"FFT","IA","boscalid","soybeans",2017,164,NA,NA,NA,NA
+"1198",1399,"FFT","IA","boscalid","soybeans",2017,164,NA,NA,NA,NA
+"1199",1400,"FFT","IA","boscalid","soybeans",2017,164,NA,NA,NA,NA
+"1200",1401,"FFT","IA","boscalid","soybeans",2017,164,NA,NA,NA,NA
+"1201",1402,"FFT","IA","boscalid","soybeans",2017,164,NA,NA,NA,NA
+"1202",1403,"FFT","IA","boscalid","soybeans",2017,164,NA,NA,NA,NA
+"1203",1404,"FFT","IA","boscalid","soybeans",2017,164,NA,NA,NA,NA
+"1204",1405,"FFT","IA","boscalid","soybeans",2017,164,NA,NA,NA,NA
+"1205",1406,"FFT","IA","boscalid","soybeans",2017,164,NA,NA,NA,NA
+"1206",1407,"FFT","IA","control","soybeans",2017,164,NA,NA,NA,NA
+"1207",1408,"FFT","IA","control","soybeans",2017,164,NA,NA,NA,NA
+"1208",1409,"FFT","IA","control","soybeans",2017,164,NA,NA,NA,NA
+"1209",1410,"FFT","IA","control","soybeans",2017,164,NA,NA,NA,NA
+"1210",1411,"FFT","IA","control","soybeans",2017,164,NA,NA,NA,NA
+"1211",1412,"FFT","IA","control","soybeans",2017,164,NA,NA,NA,NA
+"1212",1413,"FFT","IA","control","soybeans",2017,164,NA,NA,NA,NA
+"1213",1414,"FFT","IA","control","soybeans",2017,164,NA,NA,NA,NA
+"1214",1415,"FFT","IA","control","soybeans",2017,164,NA,NA,NA,NA
+"1215",1416,"FFT","IA","control","soybeans",2017,164,NA,NA,NA,NA
+"1216",1417,"FFT","IA","picoxystrobin","soybeans",2017,164,NA,NA,NA,NA
+"1217",1418,"FFT","IA","picoxystrobin","soybeans",2017,164,NA,NA,NA,NA
+"1218",1419,"FFT","IA","picoxystrobin","soybeans",2017,164,NA,NA,NA,NA
+"1219",1420,"FFT","IA","picoxystrobin","soybeans",2017,164,NA,NA,NA,NA
+"1220",1421,"FFT","IA","picoxystrobin","soybeans",2017,164,NA,NA,NA,NA
+"1221",1422,"FFT","IA","picoxystrobin","soybeans",2017,164,NA,NA,NA,NA
+"1222",1423,"FFT","IA","picoxystrobin","soybeans",2017,164,NA,NA,NA,NA
+"1223",1424,"FFT","IA","picoxystrobin","soybeans",2017,164,NA,NA,NA,NA
+"1224",1425,"FFT","IA","picoxystrobin","soybeans",2017,164,NA,NA,NA,NA
+"1225",1426,"FFT","IA","picoxystrobin","soybeans",2017,164,NA,NA,NA,NA
+"1226",1427,"FFT","IA","boscalid","soybeans",2017,164,NA,NA,NA,NA
+"1227",1428,"FFT","IA","boscalid","soybeans",2017,164,NA,NA,NA,NA
+"1228",1429,"FFT","IA","boscalid","soybeans",2017,164,NA,NA,NA,NA
+"1229",1430,"FFT","IA","boscalid","soybeans",2017,164,NA,NA,NA,NA
+"1230",1431,"FFT","IA","boscalid","soybeans",2017,164,NA,NA,NA,NA
+"1231",1432,"FFT","IA","boscalid","soybeans",2017,164,NA,NA,NA,NA
+"1232",1433,"FFT","IA","boscalid","soybeans",2017,164,NA,NA,NA,NA
+"1233",1434,"FFT","IA","boscalid","soybeans",2017,164,NA,NA,NA,NA
+"1234",1435,"FFT","IA","boscalid","soybeans",2017,164,NA,NA,NA,NA
+"1235",1436,"FFT","IA","boscalid","soybeans",2017,164,NA,NA,NA,NA
+"1236",1437,"FFT","IA","control","soybeans",2017,164,NA,NA,NA,NA
+"1237",1438,"FFT","IA","control","soybeans",2017,164,NA,NA,NA,NA
+"1238",1439,"FFT","IA","control","soybeans",2017,164,NA,NA,NA,NA
+"1239",1440,"FFT","IA","control","soybeans",2017,164,NA,NA,NA,NA
+"1240",1441,"FFT","IA","control","soybeans",2017,164,NA,NA,NA,NA
+"1241",1442,"FFT","IA","control","soybeans",2017,164,NA,NA,NA,NA
+"1242",1443,"FFT","IA","control","soybeans",2017,164,NA,NA,NA,NA
+"1243",1444,"FFT","IA","control","soybeans",2017,164,NA,NA,NA,NA
+"1244",1445,"FFT","IA","control","soybeans",2017,164,NA,NA,NA,NA
+"1245",1446,"FFT","IA","control","soybeans",2017,164,NA,NA,NA,NA
+"1246",1447,"FFT","IA","thiophanate_methyl","soybeans",2017,164,NA,NA,NA,NA
+"1247",1448,"FFT","IA","picoxystrobin","soybeans",2017,164,NA,NA,NA,NA
+"1248",1449,"FFT","IA","picoxystrobin","soybeans",2017,164,NA,NA,NA,NA
+"1249",1450,"FFT","IA","picoxystrobin","soybeans",2017,164,NA,NA,NA,NA
+"1250",1451,"FFT","IA","picoxystrobin","soybeans",2017,164,NA,NA,NA,NA
+"1251",1452,"FFT","IA","picoxystrobin","soybeans",2017,164,NA,NA,NA,NA
+"1252",1453,"FFT","IA","picoxystrobin","soybeans",2017,164,NA,NA,NA,NA
+"1253",1454,"FFT","IA","picoxystrobin","soybeans",2017,164,NA,NA,NA,NA
+"1254",1455,"FFT","IA","picoxystrobin","soybeans",2017,164,NA,NA,NA,NA
+"1255",1456,"FFT","IA","picoxystrobin","soybeans",2017,164,NA,NA,NA,NA
+"1256",1457,"FFT","IA","picoxystrobin","soybeans",2017,164,NA,NA,NA,NA
+"1257",1458,"FFT","IA","control","soybeans",2017,164,NA,NA,NA,NA
+"1258",1459,"FFT","IA","control","soybeans",2017,164,NA,NA,NA,NA
+"1259",1460,"FFT","IA","control","soybeans",2017,164,NA,NA,NA,NA
+"1260",1461,"FFT","IA","control","soybeans",2017,164,NA,NA,NA,NA
+"1261",1462,"FFT","IA","control","soybeans",2017,164,NA,NA,NA,NA
+"1262",1463,"FFT","IA","control","soybeans",2017,164,NA,NA,NA,NA
+"1263",1464,"FFT","IA","control","soybeans",2017,164,NA,NA,NA,NA
+"1264",1465,"FFT","IA","control","soybeans",2017,164,NA,NA,NA,NA
+"1265",1466,"FFT","IA","control","soybeans",2017,164,NA,NA,NA,NA
+"1266",1467,"FFT","IA","control","soybeans",2017,164,NA,NA,NA,NA
+"1267",1468,"FFT","IA","control","soybeans",2017,164,NA,NA,NA,NA
+"1268",1469,"FFT","IA","control","soybeans",2017,164,NA,NA,NA,NA
+"1269",1470,"FFT","IA","control","soybeans",2017,164,NA,NA,NA,NA
+"1270",1471,"FFT","IA","boscalid","soybeans",2017,164,NA,NA,NA,NA
+"1271",1472,"FFT","IA","boscalid","soybeans",2017,164,NA,NA,NA,NA
+"1272",1473,"FFT","IA","boscalid","soybeans",2017,164,NA,NA,NA,NA
+"1273",1474,"FFT","IA","boscalid","soybeans",2017,164,NA,NA,NA,NA
+"1274",1475,"FFT","IA","boscalid","soybeans",2017,164,NA,NA,NA,NA
+"1275",1476,"FFT","IA","boscalid","soybeans",2017,164,NA,NA,NA,NA
+"1276",1477,"FFT","IA","boscalid","soybeans",2017,164,NA,NA,NA,NA
+"1277",1478,"FFT","IA","boscalid","soybeans",2017,164,NA,NA,NA,NA
+"1278",1479,"FFT","IA","boscalid","soybeans",2017,164,NA,NA,NA,NA
+"1279",1480,"FFT","IA","boscalid","soybeans",2017,164,NA,NA,NA,NA
+"1280",1481,"FFT","IA","picoxystrobin","soybeans",2017,164,NA,NA,NA,NA
+"1281",1482,"FFT","IA","picoxystrobin","soybeans",2017,164,NA,NA,NA,NA
+"1282",1483,"FFT","IA","picoxystrobin","soybeans",2017,164,NA,NA,NA,NA
+"1283",1484,"FFT","IA","picoxystrobin","soybeans",2017,164,NA,NA,NA,NA
+"1284",1485,"FFT","IA","picoxystrobin","soybeans",2017,164,NA,NA,NA,NA
+"1285",1486,"FFT","IA","picoxystrobin","soybeans",2017,164,NA,NA,NA,NA
+"1286",1487,"FFT","IA","picoxystrobin","soybeans",2017,164,NA,NA,NA,NA
+"1287",1488,"FFT","IA","picoxystrobin","soybeans",2017,164,NA,NA,NA,NA
+"1288",1489,"FFT","IA","picoxystrobin","soybeans",2017,164,NA,NA,NA,NA
+"1289",1490,"FFT","IA","picoxystrobin","soybeans",2017,164,NA,NA,NA,NA
+"1290",1491,"FF","WI",NA,"soybeans",2017,10,NA,NA,NA,NA
+"1291",1492,"FF","WI",NA,"soybeans",2017,10,NA,NA,NA,NA
+"1292",1493,"FF","WI",NA,"soybeans",2017,10,NA,NA,NA,NA
+"1293",1494,"FF","WI",NA,"soybeans",2017,10,NA,NA,NA,NA
+"1294",1495,"FF","WI",NA,"soybeans",2017,10,NA,NA,NA,NA
+"1295",1496,"FF","WI",NA,"soybeans",2017,10,NA,NA,NA,NA
+"1296",1497,"FF","WI",NA,"soybeans",2017,10,NA,NA,NA,NA
+"1297",1498,"FF","WI",NA,"soybeans",2017,10,NA,NA,NA,NA
+"1298",1499,"FF","WI",NA,"soybeans",2017,10,NA,NA,NA,NA
+"1299",1500,"FF","WI",NA,"soybeans",2017,10,NA,NA,NA,NA
+"1300",1501,"FFT","WI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1301",1502,"FFT","WI","thiophanate_methyl","soybeans",2017,160,0,0,0,0
+"1302",1503,"FFT","WI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1303",1504,"FFT","WI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1304",1505,"FFT","WI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1305",1506,"FFT","WI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1306",1507,"FFT","WI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1307",1508,"FFT","WI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1308",1509,"FFT","WI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1309",1510,"FFT","WI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1310",1511,"FFT","WI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1311",1512,"FFT","WI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1312",1513,"FFT","WI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1313",1514,"FFT","WI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1314",1515,"FFT","WI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1315",1516,"FFT","WI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1316",1517,"FFT","WI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1317",1518,"FFT","WI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1318",1519,"FFT","WI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1319",1520,"FFT","WI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1320",1521,"FFT","WI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1321",1522,"FFT","WI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1322",1523,"FFT","WI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1323",1524,"FFT","WI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1324",1525,"FFT","WI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1325",1526,"FFT","WI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1326",1527,"FFT","WI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1327",1528,"FFT","WI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1328",1529,"FFT","WI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1329",1530,"FFT","WI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1330",1531,"FFT","WI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1331",1532,"FFT","WI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1332",1533,"FFT","WI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1333",1534,"FFT","WI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1334",1535,"FFT","WI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1335",1536,"FFT","WI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1336",1537,"FFT","WI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1337",1538,"FFT","WI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1338",1539,"FFT","WI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1339",1540,"FFT","WI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1340",1541,"FFT","WI","control","soybeans",2017,160,1,1,0,0
+"1341",1542,"FFT","WI","control","soybeans",2017,160,NA,NA,NA,NA
+"1342",1543,"FFT","WI","control","soybeans",2017,160,NA,NA,NA,NA
+"1343",1544,"FFT","WI","control","soybeans",2017,160,NA,NA,NA,NA
+"1344",1545,"FFT","WI","control","soybeans",2017,160,NA,NA,NA,NA
+"1345",1546,"FFT","WI","control","soybeans",2017,160,NA,NA,NA,NA
+"1346",1547,"FFT","WI","control","soybeans",2017,160,NA,NA,NA,NA
+"1347",1548,"FFT","WI","control","soybeans",2017,160,NA,NA,NA,NA
+"1348",1549,"FFT","WI","control","soybeans",2017,160,NA,NA,NA,NA
+"1349",1550,"FFT","WI","control","soybeans",2017,160,NA,NA,NA,NA
+"1350",1551,"FFT","WI","control","soybeans",2017,160,NA,NA,NA,NA
+"1351",1552,"FFT","WI","control","soybeans",2017,160,NA,NA,NA,NA
+"1352",1553,"FFT","WI","control","soybeans",2017,160,NA,NA,NA,NA
+"1353",1554,"FFT","WI","control","soybeans",2017,160,NA,NA,NA,NA
+"1354",1555,"FFT","WI","control","soybeans",2017,160,NA,NA,NA,NA
+"1355",1556,"FFT","WI","control","soybeans",2017,160,NA,NA,NA,NA
+"1356",1557,"FFT","WI","control","soybeans",2017,160,NA,NA,NA,NA
+"1357",1558,"FFT","WI","control","soybeans",2017,160,NA,NA,NA,NA
+"1358",1559,"FFT","WI","control","soybeans",2017,160,NA,NA,NA,NA
+"1359",1560,"FFT","WI","control","soybeans",2017,160,NA,NA,NA,NA
+"1360",1561,"FFT","WI","control","soybeans",2017,160,NA,NA,NA,NA
+"1361",1562,"FFT","WI","control","soybeans",2017,160,NA,NA,NA,NA
+"1362",1563,"FFT","WI","control","soybeans",2017,160,NA,NA,NA,NA
+"1363",1564,"FFT","WI","control","soybeans",2017,160,NA,NA,NA,NA
+"1364",1565,"FFT","WI","control","soybeans",2017,160,NA,NA,NA,NA
+"1365",1566,"FFT","WI","control","soybeans",2017,160,NA,NA,NA,NA
+"1366",1567,"FFT","WI","control","soybeans",2017,160,NA,NA,NA,NA
+"1367",1568,"FFT","WI","control","soybeans",2017,160,NA,NA,NA,NA
+"1368",1569,"FFT","WI","control","soybeans",2017,160,NA,NA,NA,NA
+"1369",1570,"FFT","WI","control","soybeans",2017,160,NA,NA,NA,NA
+"1370",1571,"FFT","WI","control","soybeans",2017,160,NA,NA,NA,NA
+"1371",1572,"FFT","WI","control","soybeans",2017,160,NA,NA,NA,NA
+"1372",1573,"FFT","WI","control","soybeans",2017,160,NA,NA,NA,NA
+"1373",1574,"FFT","WI","control","soybeans",2017,160,NA,NA,NA,NA
+"1374",1575,"FFT","WI","control","soybeans",2017,160,NA,NA,NA,NA
+"1375",1576,"FFT","WI","control","soybeans",2017,160,NA,NA,NA,NA
+"1376",1577,"FFT","WI","control","soybeans",2017,160,NA,NA,NA,NA
+"1377",1578,"FFT","WI","control","soybeans",2017,160,NA,NA,NA,NA
+"1378",1579,"FFT","WI","control","soybeans",2017,160,NA,NA,NA,NA
+"1379",1580,"FFT","WI","control","soybeans",2017,160,NA,NA,NA,NA
+"1380",1581,"FFT","WI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1381",1582,"FFT","WI","boscalid","soybeans",2017,160,0,1,0,0
+"1382",1583,"FFT","WI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1383",1584,"FFT","WI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1384",1585,"FFT","WI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1385",1586,"FFT","WI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1386",1587,"FFT","WI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1387",1588,"FFT","WI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1388",1589,"FFT","WI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1389",1590,"FFT","WI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1390",1591,"FFT","WI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1391",1592,"FFT","WI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1392",1593,"FFT","WI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1393",1594,"FFT","WI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1394",1595,"FFT","WI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1395",1596,"FFT","WI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1396",1597,"FFT","WI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1397",1598,"FFT","WI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1398",1599,"FFT","WI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1399",1600,"FFT","WI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1400",1601,"FFT","WI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1401",1602,"FFT","WI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1402",1603,"FFT","WI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1403",1604,"FFT","WI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1404",1605,"FFT","WI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1405",1606,"FFT","WI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1406",1607,"FFT","WI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1407",1608,"FFT","WI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1408",1609,"FFT","WI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1409",1610,"FFT","WI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1410",1611,"FFT","WI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1411",1612,"FFT","WI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1412",1613,"FFT","WI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1413",1614,"FFT","WI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1414",1615,"FFT","WI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1415",1616,"FFT","WI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1416",1617,"FFT","WI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1417",1618,"FFT","WI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1418",1619,"FFT","WI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1419",1620,"FFT","WI","boscalid","soybeans",2017,160,0,0,1,0
+"1420",1621,"FFT","WI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1421",1622,"FFT","WI","picoxystrobin","soybeans",2017,160,0,0,0,0
+"1422",1623,"FFT","WI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1423",1624,"FFT","WI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1424",1625,"FFT","WI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1425",1626,"FFT","WI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1426",1627,"FFT","WI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1427",1628,"FFT","WI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1428",1629,"FFT","WI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1429",1630,"FFT","WI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1430",1631,"FFT","WI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1431",1632,"FFT","WI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1432",1633,"FFT","WI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1433",1634,"FFT","WI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1434",1635,"FFT","WI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1435",1636,"FFT","WI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1436",1637,"FFT","WI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1437",1638,"FFT","WI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1438",1639,"FFT","WI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1439",1640,"FFT","WI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1440",1641,"FFT","WI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1441",1642,"FFT","WI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1442",1643,"FFT","WI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1443",1644,"FFT","WI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1444",1645,"FFT","WI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1445",1646,"FFT","WI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1446",1647,"FFT","WI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1447",1648,"FFT","WI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1448",1649,"FFT","WI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1449",1650,"FFT","WI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1450",1651,"FFT","WI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1451",1652,"FFT","WI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1452",1653,"FFT","WI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1453",1654,"FFT","WI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1454",1655,"FFT","WI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1455",1656,"FFT","WI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1456",1657,"FFT","WI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1457",1658,"FFT","WI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1458",1659,"FFT","WI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1459",1660,"FFT","WI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1460",1661,"FF","WI","flutriafol + fluxastrobin","soybeans",2017,10,NA,NA,NA,NA
+"1461",1662,"FF","WI","flutriafol + fluxastrobin","soybeans",2017,10,NA,NA,NA,NA
+"1462",1663,"FF","WI","flutriafol + fluxastrobin","soybeans",2017,10,NA,NA,NA,NA
+"1463",1664,"FF","WI","flutriafol + fluxastrobin","soybeans",2017,10,NA,NA,NA,NA
+"1464",1665,"FF","WI","flutriafol + fluxastrobin","soybeans",2017,10,NA,NA,NA,NA
+"1465",1666,"FF","WI","flutriafol + fluxastrobin","soybeans",2017,10,NA,NA,NA,NA
+"1466",1667,"FF","WI","flutriafol + fluxastrobin","soybeans",2017,10,NA,NA,NA,NA
+"1467",1668,"FF","WI","flutriafol + fluxastrobin","soybeans",2017,10,NA,NA,NA,NA
+"1468",1669,"FF","WI","flutriafol + fluxastrobin","soybeans",2017,10,NA,NA,NA,NA
+"1469",1670,"FF","WI","flutriafol + fluxastrobin","soybeans",2017,10,NA,NA,NA,NA
+"1470",1671,"FFT","MI","thiophanate_methyl","soybeans",2017,160,1,0,1,0
+"1471",1672,"FFT","MI","thiophanate_methyl","soybeans",2017,160,0,1,0,0
+"1472",1673,"FFT","MI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1473",1674,"FFT","MI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1474",1675,"FFT","MI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1475",1676,"FFT","MI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1476",1677,"FFT","MI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1477",1678,"FFT","MI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1478",1679,"FFT","MI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1479",1680,"FFT","MI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1480",1681,"FFT","MI","control","soybeans",2017,160,NA,NA,NA,NA
+"1481",1682,"FFT","MI","control","soybeans",2017,160,NA,NA,NA,NA
+"1482",1683,"FFT","MI","control","soybeans",2017,160,NA,NA,NA,NA
+"1483",1684,"FFT","MI","control","soybeans",2017,160,NA,NA,NA,NA
+"1484",1685,"FFT","MI","control","soybeans",2017,160,NA,NA,NA,NA
+"1485",1686,"FFT","MI","control","soybeans",2017,160,NA,NA,NA,NA
+"1486",1687,"FFT","MI","control","soybeans",2017,160,NA,NA,NA,NA
+"1487",1688,"FFT","MI","control","soybeans",2017,160,NA,NA,NA,NA
+"1488",1689,"FFT","MI","control","soybeans",2017,160,NA,NA,NA,NA
+"1489",1690,"FFT","MI","control","soybeans",2017,160,NA,NA,NA,NA
+"1490",1691,"FFT","MI","thiophanate_methyl","soybeans",2017,160,0,0,1,0
+"1491",1692,"FFT","MI","thiophanate_methyl","soybeans",2017,160,1,0,0,0
+"1492",1693,"FFT","MI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1493",1694,"FFT","MI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1494",1695,"FFT","MI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1495",1696,"FFT","MI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1496",1697,"FFT","MI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1497",1698,"FFT","MI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1498",1699,"FFT","MI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1499",1700,"FFT","MI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1500",1701,"FFT","MI","control","soybeans",2017,160,NA,NA,NA,NA
+"1501",1702,"FFT","MI","control","soybeans",2017,160,NA,NA,NA,NA
+"1502",1703,"FFT","MI","control","soybeans",2017,160,NA,NA,NA,NA
+"1503",1704,"FFT","MI","control","soybeans",2017,160,NA,NA,NA,NA
+"1504",1705,"FFT","MI","control","soybeans",2017,160,NA,NA,NA,NA
+"1505",1706,"FFT","MI","control","soybeans",2017,160,NA,NA,NA,NA
+"1506",1707,"FFT","MI","control","soybeans",2017,160,NA,NA,NA,NA
+"1507",1708,"FFT","MI","control","soybeans",2017,160,NA,NA,NA,NA
+"1508",1709,"FFT","MI","control","soybeans",2017,160,NA,NA,NA,NA
+"1509",1710,"FFT","MI","control","soybeans",2017,160,NA,NA,NA,NA
+"1510",1711,"FFT","MI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1511",1712,"FFT","MI","picoxystrobin","soybeans",2017,160,1,0,0,0
+"1512",1713,"FFT","MI","picoxystrobin","soybeans",2017,160,1,1,0,0
+"1513",1714,"FFT","MI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1514",1715,"FFT","MI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1515",1716,"FFT","MI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1516",1717,"FFT","MI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1517",1718,"FFT","MI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1518",1719,"FFT","MI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1519",1720,"FFT","MI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1520",1721,"FFT","MI","boscalid","soybeans",2017,160,0,1,0,0
+"1521",1722,"FFT","MI","boscalid","soybeans",2017,160,1,0,0,0
+"1522",1723,"FFT","MI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1523",1724,"FFT","MI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1524",1725,"FFT","MI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1525",1726,"FFT","MI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1526",1727,"FFT","MI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1527",1728,"FFT","MI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1528",1729,"FFT","MI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1529",1730,"FFT","MI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1530",1731,"FFT","MI","picoxystrobin","soybeans",2017,160,0,0,0,0
+"1531",1732,"FFT","MI","picoxystrobin","soybeans",2017,160,0,1,1,0
+"1532",1733,"FFT","MI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1533",1734,"FFT","MI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1534",1735,"FFT","MI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1535",1736,"FFT","MI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1536",1737,"FFT","MI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1537",1738,"FFT","MI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1538",1739,"FFT","MI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1539",1740,"FFT","MI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1540",1741,"FFT","MI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1541",1742,"FFT","MI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1542",1743,"FFT","MI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1543",1744,"FFT","MI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1544",1745,"FFT","MI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1545",1746,"FFT","MI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1546",1747,"FFT","MI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1547",1748,"FFT","MI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1548",1749,"FFT","MI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1549",1750,"FFT","MI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1550",1751,"FFT","MI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1551",1752,"FFT","MI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1552",1753,"FFT","MI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1553",1754,"FFT","MI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1554",1755,"FFT","MI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1555",1756,"FFT","MI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1556",1757,"FFT","MI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1557",1758,"FFT","MI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1558",1759,"FFT","MI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1559",1760,"FFT","MI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1560",1761,"FFT","MI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1561",1762,"FFT","MI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1562",1763,"FFT","MI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1563",1764,"FFT","MI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1564",1765,"FFT","MI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1565",1766,"FFT","MI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1566",1767,"FFT","MI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1567",1768,"FFT","MI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1568",1769,"FFT","MI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1569",1770,"FFT","MI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1570",1771,"FFT","MI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1571",1772,"FFT","MI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1572",1773,"FFT","MI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1573",1774,"FFT","MI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1574",1775,"FFT","MI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1575",1776,"FFT","MI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1576",1777,"FFT","MI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1577",1778,"FFT","MI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1578",1779,"FFT","MI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1579",1780,"FFT","MI","thiophanate_methyl","soybeans",2017,160,NA,NA,NA,NA
+"1580",1781,"FFT","MI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1581",1782,"FFT","MI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1582",1783,"FFT","MI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1583",1784,"FFT","MI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1584",1785,"FFT","MI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1585",1786,"FFT","MI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1586",1787,"FFT","MI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1587",1788,"FFT","MI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1588",1789,"FFT","MI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1589",1790,"FFT","MI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1590",1791,"FFT","MI","boscalid","soybeans",2017,160,0,0,1,0
+"1591",1792,"FFT","MI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1592",1793,"FFT","MI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1593",1794,"FFT","MI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1594",1795,"FFT","MI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1595",1796,"FFT","MI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1596",1797,"FFT","MI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1597",1798,"FFT","MI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1598",1799,"FFT","MI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1599",1800,"FFT","MI","boscalid","soybeans",2017,160,NA,NA,NA,NA
+"1600",1801,"FFT","MI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1601",1802,"FFT","MI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1602",1803,"FFT","MI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1603",1804,"FFT","MI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1604",1805,"FFT","MI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1605",1806,"FFT","MI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1606",1807,"FFT","MI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1607",1808,"FFT","MI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1608",1809,"FFT","MI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1609",1810,"FFT","MI","picoxystrobin","soybeans",2017,160,NA,NA,NA,NA
+"1610",1811,"FFT","MI","control","soybeans",2017,160,NA,NA,NA,NA
+"1611",1812,"FFT","MI","control","soybeans",2017,160,NA,NA,NA,NA
+"1612",1813,"FFT","MI","control","soybeans",2017,160,NA,NA,NA,NA
+"1613",1814,"FFT","MI","control","soybeans",2017,160,NA,NA,NA,NA
+"1614",1815,"FFT","MI","control","soybeans",2017,160,NA,NA,NA,NA
+"1615",1816,"FFT","MI","control","soybeans",2017,160,NA,NA,NA,NA
+"1616",1817,"FFT","MI","control","soybeans",2017,160,NA,NA,NA,NA
+"1617",1818,"FFT","MI","control","soybeans",2017,160,NA,NA,NA,NA
+"1618",1819,"FFT","MI","control","soybeans",2017,160,NA,NA,NA,NA
+"1619",1820,"FFT","MI","control","soybeans",2017,160,NA,NA,NA,NA
+"1620",1821,"FFT","MI","control","soybeans",2017,160,NA,NA,NA,NA
+"1621",1822,"FFT","MI","control","soybeans",2017,160,NA,NA,NA,NA
+"1622",1823,"FFT","MI","control","soybeans",2017,160,NA,NA,NA,NA
+"1623",1824,"FFT","MI","control","soybeans",2017,160,NA,NA,NA,NA
+"1624",1825,"FFT","MI","control","soybeans",2017,160,NA,NA,NA,NA
+"1625",1826,"FFT","MI","control","soybeans",2017,160,NA,NA,NA,NA
+"1626",1827,"FFT","MI","control","soybeans",2017,160,NA,NA,NA,NA
+"1627",1828,"FFT","MI","control","soybeans",2017,160,NA,NA,NA,NA
+"1628",1829,"FFT","MI","control","soybeans",2017,160,NA,NA,NA,NA
+"1629",1830,"FFT","MI","control","soybeans",2017,160,NA,NA,NA,NA
+"1630",1831,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2017,10,NA,NA,NA,NA
+"1631",1832,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2017,10,0,0,0,0
+"1632",1833,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2017,10,NA,NA,NA,NA
+"1633",1834,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2017,10,NA,NA,NA,NA
+"1634",1835,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2017,10,NA,NA,NA,NA
+"1635",1836,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2017,10,NA,NA,NA,NA
+"1636",1837,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2017,10,NA,NA,NA,NA
+"1637",1838,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2017,10,NA,NA,NA,NA
+"1638",1839,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2017,10,NA,NA,NA,NA
+"1639",1840,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2017,10,NA,NA,NA,NA
+"1640",1841,"FF","NE","tetraconazole","soybeans",2017,16,NA,NA,NA,NA
+"1641",1842,"FF","NE","tetraconazole","soybeans",2017,16,NA,NA,NA,NA
+"1642",1843,"FF","NE","tetraconazole","soybeans",2017,16,NA,NA,NA,NA
+"1643",1844,"FF","NE","tetraconazole","soybeans",2017,16,0,1,0,0
+"1644",1845,"FF","NE","tetraconazole","soybeans",2017,16,NA,NA,NA,NA
+"1645",1846,"FF","NE","tetraconazole","soybeans",2017,16,NA,NA,NA,NA
+"1646",1847,"FF","NE","tetraconazole","soybeans",2017,16,NA,NA,NA,NA
+"1647",1848,"FF","NE","tetraconazole","soybeans",2017,16,NA,NA,NA,NA
+"1648",1849,"FF","NE","tetraconazole","soybeans",2017,16,0,1,0,0
+"1649",1850,"FF","NE","tetraconazole","soybeans",2017,16,NA,NA,NA,NA
+"1650",1851,"FF","NE","tetraconazole","soybeans",2017,16,NA,NA,NA,NA
+"1651",1852,"FF","NE","tetraconazole","soybeans",2017,16,NA,NA,NA,NA
+"1652",1853,"FF","NE",NA,"soybeans",2017,16,NA,NA,NA,NA
+"1653",1854,"FF","NE","thiophanate_methyl","soybeans",2017,16,NA,NA,NA,NA
+"1654",1855,"FF","NE","thiophanate_methyl","soybeans",2017,16,NA,NA,NA,NA
+"1655",1856,"FF","NE","thiophanate_methyl","soybeans",2017,16,NA,NA,NA,NA
+"1656",1857,"FF","SIN",NA,"drybeans",2016,11,NA,NA,NA,NA
+"1657",1858,"FF","SIN",NA,"drybeans",2016,11,NA,NA,NA,NA
+"1658",1859,"FF","SIN",NA,"drybeans",2016,11,NA,NA,NA,NA
+"1659",1860,"FF","SIN",NA,"drybeans",2016,11,NA,NA,NA,NA
+"1660",1861,"FF","SIN",NA,"drybeans",2016,11,NA,NA,NA,NA
+"1661",1862,"FF","SIN",NA,"drybeans",2016,11,NA,NA,NA,NA
+"1662",1863,"FF","SIN",NA,"drybeans",2016,11,NA,NA,NA,NA
+"1663",1864,"FF","SIN",NA,"drybeans",2016,11,NA,NA,NA,NA
+"1664",1865,"FF","SIN",NA,"drybeans",2016,11,NA,NA,NA,NA
+"1665",1866,"FF","SIN",NA,"drybeans",2016,11,NA,NA,NA,NA
+"1666",1867,"FF","SIN",NA,"drybeans",2016,11,NA,NA,NA,NA
+"1667",1868,"FF","SIN",NA,"drybeans",2016,16,NA,NA,NA,NA
+"1668",1869,"FF","SIN",NA,"drybeans",2016,16,NA,NA,NA,NA
+"1669",1870,"FF","SIN",NA,"drybeans",2016,16,0,0,0,0
+"1670",1871,"FF","SIN",NA,"drybeans",2016,16,NA,NA,NA,NA
+"1671",1872,"FF","SIN",NA,"drybeans",2016,16,1,1,0,0
+"1672",1873,"FF","SIN",NA,"drybeans",2016,16,NA,NA,NA,NA
+"1673",1874,"FF","SIN",NA,"drybeans",2016,16,NA,NA,NA,NA
+"1674",1875,"FF","SIN",NA,"drybeans",2016,16,NA,NA,NA,NA
+"1675",1876,"FF","SIN",NA,"drybeans",2016,16,NA,NA,NA,NA
+"1676",1877,"FF","SIN",NA,"drybeans",2016,16,NA,NA,NA,NA
+"1677",1878,"FF","SIN",NA,"drybeans",2016,16,NA,NA,NA,NA
+"1678",1879,"FF","SIN",NA,"drybeans",2016,16,NA,NA,NA,NA
+"1679",1880,"FF","SIN",NA,"drybeans",2016,16,NA,NA,NA,NA
+"1680",1881,"FF","SIN",NA,"drybeans",2016,16,NA,NA,NA,NA
+"1681",1882,"FF","SIN",NA,"drybeans",2016,16,NA,NA,NA,NA
+"1682",1883,"FF","SIN",NA,"drybeans",2016,16,NA,NA,NA,NA
+"1683",1884,"FF","SIN",NA,"drybeans",2016,12,1,1,1,1
+"1684",1885,"FF","SIN",NA,"drybeans",2016,12,1,1,0,0
+"1685",1886,"FF","SIN",NA,"drybeans",2016,12,NA,NA,NA,NA
+"1686",1887,"FF","SIN",NA,"drybeans",2016,12,NA,NA,NA,NA
+"1687",1888,"FF","SIN",NA,"drybeans",2016,12,NA,NA,NA,NA
+"1688",1889,"FF","SIN",NA,"drybeans",2016,12,NA,NA,NA,NA
+"1689",1890,"FF","SIN",NA,"drybeans",2016,12,NA,NA,NA,NA
+"1690",1891,"FF","SIN",NA,"drybeans",2016,12,NA,NA,NA,NA
+"1691",1892,"FF","SIN",NA,"drybeans",2016,12,NA,NA,NA,NA
+"1692",1893,"FF","SIN",NA,"drybeans",2016,12,NA,NA,NA,NA
+"1693",1894,"FF","SIN",NA,"drybeans",2016,12,NA,NA,NA,NA
+"1694",1895,"FF","SIN",NA,"drybeans",2016,12,NA,NA,NA,NA
+"1695",1896,"FF","SIN",NA,"drybeans",2016,12,NA,NA,NA,NA
+"1696",1897,"FF","SIN",NA,"drybeans",2016,12,NA,NA,NA,NA
+"1697",1898,"FF","SIN",NA,"drybeans",2016,12,NA,NA,NA,NA
+"1698",1899,"FF","SIN",NA,"drybeans",2016,12,NA,NA,NA,NA
+"1699",1900,"FF","SIN",NA,"drybeans",2016,12,NA,NA,NA,NA
+"1700",1901,"FF","SIN",NA,"drybeans",2016,12,NA,NA,NA,NA
+"1701",1902,"FF","SIN",NA,"drybeans",2016,12,NA,NA,NA,NA
+"1702",1903,"FF","SIN",NA,"drybeans",2016,12,NA,NA,NA,NA
+"1703",1904,"FF","SIN",NA,"drybeans",2016,12,NA,NA,NA,NA
+"1704",1905,"FF","SIN",NA,"drybeans",2016,12,NA,NA,NA,NA
+"1705",1906,"FF","SIN",NA,"drybeans",2016,12,NA,NA,NA,NA
+"1706",1907,"FF","SIN",NA,"drybeans",2016,12,NA,NA,NA,NA
+"1707",1908,"FF","SIN",NA,"drybeans",2016,12,NA,NA,NA,NA
+"1708",1909,"FF","SIN",NA,"drybeans",2016,12,NA,NA,NA,NA
+"1709",1910,"FF","SIN",NA,"drybeans",2016,12,NA,NA,NA,NA
+"1710",1911,"FF","SIN",NA,"drybeans",2016,12,NA,NA,NA,NA
+"1711",1912,"FF","SIN",NA,"drybeans",2016,12,NA,NA,NA,NA
+"1712",1913,"FF","SIN",NA,"drybeans",2016,12,NA,NA,NA,NA
+"1713",1914,"FF","SIN",NA,"drybeans",2016,12,NA,NA,NA,NA
+"1714",1915,"FF","SIN",NA,"drybeans",2016,12,NA,NA,NA,NA
+"1715",1916,"FF","SIN",NA,"drybeans",2016,12,NA,NA,NA,NA
+"1716",1917,"FF","SIN",NA,"drybeans",2016,12,NA,NA,NA,NA
+"1717",1918,"FF","SIN",NA,"drybeans",2016,12,NA,NA,NA,NA
+"1718",1919,"FF","SIN",NA,"drybeans",2016,12,NA,NA,NA,NA
+"1719",1920,"FF","SIN",NA,"drybeans",2016,12,NA,NA,NA,NA
+"1720",1921,"FF","SIN",NA,"drybeans",2016,12,NA,NA,NA,NA
+"1721",1922,"FF","SIN",NA,"drybeans",2016,12,NA,NA,NA,NA
+"1722",1923,"FF","SIN",NA,"drybeans",2016,12,NA,NA,NA,NA
+"1723",1924,"FF","SIN",NA,"drybeans",2016,12,NA,NA,NA,NA
+"1724",1925,"FF","SIN",NA,"drybeans",2016,12,NA,NA,NA,NA
+"1725",1926,"FF","SIN",NA,"drybeans",2016,12,NA,NA,NA,NA
+"1726",1927,"FF","SIN",NA,"drybeans",2016,12,NA,NA,NA,NA
+"1727",1928,"FF","SIN",NA,"drybeans",2016,12,NA,NA,NA,NA
+"1728",1929,"FF","SIN",NA,"drybeans",2016,12,NA,NA,NA,NA
+"1729",1930,"FF","SIN",NA,"drybeans",2016,12,NA,NA,NA,NA
+"1730",1931,"FF","SIN",NA,"drybeans",2016,12,NA,NA,NA,NA
+"1731",1932,"FF","SIN",NA,"drybeans",2016,9,NA,NA,NA,NA
+"1732",1933,"FF","SIN",NA,"drybeans",2016,9,NA,NA,NA,NA
+"1733",1934,"FF","SIN",NA,"drybeans",2016,9,NA,NA,NA,NA
+"1734",1935,"FF","SIN",NA,"drybeans",2016,9,NA,NA,NA,NA
+"1735",1936,"FF","SIN",NA,"drybeans",2016,9,NA,NA,NA,NA
+"1736",1937,"FF","SIN",NA,"drybeans",2016,9,NA,NA,NA,NA
+"1737",1938,"FF","SIN",NA,"drybeans",2016,9,NA,NA,NA,NA
+"1738",1939,"FF","SIN",NA,"drybeans",2016,9,NA,NA,NA,NA
+"1739",1940,"FF","SIN",NA,"drybeans",2016,9,NA,NA,NA,NA
+"1740",1941,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,1,0,0,1
+"1741",1942,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,0,1,0,0
+"1742",1943,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,NA,NA,NA,NA
+"1743",1944,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,NA,NA,NA,NA
+"1744",1945,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,NA,NA,NA,NA
+"1745",1946,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,NA,NA,NA,NA
+"1746",1947,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,NA,NA,NA,NA
+"1747",1948,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,NA,NA,NA,NA
+"1748",1949,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,NA,NA,NA,NA
+"1749",1950,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,NA,NA,NA,NA
+"1750",1951,"FF","NE","prothioconazole + trifloxystrobin","soybeans",2015,5,NA,NA,NA,NA
+"1751",1952,"FF","NE","prothioconazole + trifloxystrobin","soybeans",2015,5,NA,NA,NA,NA
+"1752",1953,"FF","NE","prothioconazole + trifloxystrobin","soybeans",2015,5,NA,NA,NA,NA
+"1753",1954,"FF","NE","prothioconazole + trifloxystrobin","soybeans",2015,5,NA,NA,NA,NA
+"1754",1955,"FF","NE","prothioconazole + trifloxystrobin","soybeans",2015,5,NA,NA,NA,NA
+"1755",1956,"FF","NE",NA,"soybeans",2015,5,NA,NA,NA,NA
+"1756",1957,"FF","NE",NA,"soybeans",2015,5,NA,NA,NA,NA
+"1757",1958,"FF","NE",NA,"soybeans",2015,5,NA,NA,NA,NA
+"1758",1959,"FF","NE",NA,"soybeans",2015,5,NA,NA,NA,NA
+"1759",1960,"FF","NE",NA,"soybeans",2015,5,NA,NA,NA,NA
+"1760",1961,"FF","NE","thiophanate_methyl","soybeans",2015,13,NA,NA,NA,NA
+"1761",1962,"FF","NE","thiophanate_methyl","soybeans",2015,13,0,0,1,0
+"1762",1963,"FF","NE","thiophanate_methyl","soybeans",2015,13,0,0,0,0
+"1763",1964,"FF","NE","thiophanate_methyl","soybeans",2015,13,NA,NA,NA,NA
+"1764",1965,"FF","NE","thiophanate_methyl","soybeans",2015,13,1,0,0,0
+"1765",1966,"FF","NE","thiophanate_methyl","soybeans",2015,5,NA,NA,NA,NA
+"1766",1967,"FF","NE","thiophanate_methyl","soybeans",2015,5,NA,NA,NA,NA
+"1767",1968,"FF","NE","thiophanate_methyl","soybeans",2015,5,NA,NA,NA,NA
+"1768",1969,"FF","NE","thiophanate_methyl","soybeans",2015,5,NA,NA,NA,NA
+"1769",1970,"FF","NE","thiophanate_methyl","soybeans",2015,5,NA,NA,NA,NA
+"1770",1971,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,NA,NA,NA,NA
+"1771",1972,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,1,1,0,0
+"1772",1973,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,NA,NA,NA,NA
+"1773",1974,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,NA,NA,NA,NA
+"1774",1975,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,NA,NA,NA,NA
+"1775",1976,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,NA,NA,NA,NA
+"1776",1977,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,NA,NA,NA,NA
+"1777",1978,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,NA,NA,NA,NA
+"1778",1979,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,NA,NA,NA,NA
+"1779",1980,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,NA,NA,NA,NA
+"1780",1981,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1781",1982,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1782",1983,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1783",1984,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1784",1985,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1785",1986,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1786",1987,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1787",1988,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1788",1989,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1789",1990,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1790",1991,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1791",1992,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1792",1993,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1793",1994,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1794",1995,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1795",1996,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1796",1997,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1797",1998,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1798",1999,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1799",2000,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1800",2001,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,5,1,0,1,0
+"1801",2002,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,5,1,0,1,0
+"1802",2003,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,5,NA,NA,NA,NA
+"1803",2004,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,5,NA,NA,NA,NA
+"1804",2005,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,5,NA,NA,NA,NA
+"1805",2006,"FF","NE",NA,"soybeans",2015,5,NA,NA,NA,NA
+"1806",2007,"FF","NE",NA,"soybeans",2015,5,NA,NA,NA,NA
+"1807",2008,"FF","NE",NA,"soybeans",2015,5,NA,NA,NA,NA
+"1808",2009,"FF","NE",NA,"soybeans",2015,5,NA,NA,NA,NA
+"1809",2010,"FF","NE",NA,"soybeans",2015,5,NA,NA,NA,NA
+"1810",2011,"FF","NE",NA,"soybeans",2015,6,NA,NA,NA,NA
+"1811",2012,"FF","NE",NA,"soybeans",2015,6,0,0,0,0
+"1812",2013,"FF","NE",NA,"soybeans",2015,6,0,0,0,0
+"1813",2014,"FF","NE",NA,"soybeans",2015,6,0,1,0,0
+"1814",2015,"FF","NE",NA,"soybeans",2015,6,0,0,0,0
+"1815",2016,"FF","NE",NA,"soybeans",2015,6,NA,NA,NA,NA
+"1816",2017,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,5,NA,NA,NA,NA
+"1817",2018,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,5,NA,NA,NA,NA
+"1818",2019,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,5,NA,NA,NA,NA
+"1819",2020,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,5,NA,NA,NA,NA
+"1820",2021,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,5,NA,NA,NA,NA
+"1821",2022,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,5,NA,NA,NA,NA
+"1822",2023,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,5,NA,NA,NA,NA
+"1823",2024,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,5,NA,NA,NA,NA
+"1824",2025,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,5,NA,NA,NA,NA
+"1825",2026,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,5,NA,NA,NA,NA
+"1826",2027,"FF","NE","tetraconazole","soybeans",2015,10,0,0,0,0
+"1827",2028,"FF","NE","tetraconazole","soybeans",2015,10,NA,NA,NA,NA
+"1828",2029,"FF","NE","tetraconazole","soybeans",2015,10,1,0,1,1
+"1829",2030,"FF","NE","tetraconazole","soybeans",2015,10,1,1,1,0
+"1830",2031,"FF","NE","tetraconazole","soybeans",2015,10,0,0,0,0
+"1831",2032,"FF","NE","tetraconazole","soybeans",2015,10,NA,NA,NA,NA
+"1832",2033,"FF","NE","tetraconazole","soybeans",2015,10,1,0,0,0
+"1833",2034,"FF","NE","tetraconazole","soybeans",2015,10,NA,NA,NA,NA
+"1834",2035,"FF","NE","tetraconazole","soybeans",2015,10,NA,NA,NA,NA
+"1835",2036,"FF","NE","tetraconazole","soybeans",2015,10,NA,NA,NA,NA
+"1836",2037,"FF","NE",NA,"soybeans",2015,10,NA,NA,NA,NA
+"1837",2038,"FF","NE",NA,"soybeans",2015,10,NA,NA,NA,NA
+"1838",2039,"FF","NE",NA,"soybeans",2015,10,NA,NA,NA,NA
+"1839",2040,"FF","NE",NA,"soybeans",2015,10,NA,NA,NA,NA
+"1840",2041,"FF","NE",NA,"soybeans",2015,10,NA,NA,NA,NA
+"1841",2042,"FF","NE",NA,"soybeans",2015,10,NA,NA,NA,NA
+"1842",2043,"FF","NE",NA,"soybeans",2015,10,NA,NA,NA,NA
+"1843",2044,"FF","NE",NA,"soybeans",2015,10,NA,NA,NA,NA
+"1844",2045,"FF","NE",NA,"soybeans",2015,10,NA,NA,NA,NA
+"1845",2046,"FF","NE",NA,"soybeans",2015,10,NA,NA,NA,NA
+"1846",2047,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1847",2048,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1848",2049,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1849",2050,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1850",2051,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1851",2052,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1852",2053,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1853",2054,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1854",2055,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1855",2056,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1856",2057,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1857",2058,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1858",2059,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1859",2060,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1860",2061,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1861",2062,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1862",2063,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1863",2064,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1864",2065,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1865",2066,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1866",2067,"FF","NE",NA,"soybeans",2015,10,NA,NA,NA,NA
+"1867",2068,"FF","NE",NA,"soybeans",2015,10,NA,NA,NA,NA
+"1868",2069,"FF","NE",NA,"soybeans",2015,10,NA,NA,NA,NA
+"1869",2070,"FF","NE",NA,"soybeans",2015,10,NA,NA,NA,NA
+"1870",2071,"FF","NE",NA,"soybeans",2015,10,NA,NA,NA,NA
+"1871",2072,"FF","NE",NA,"soybeans",2015,10,NA,NA,NA,NA
+"1872",2073,"FF","NE",NA,"soybeans",2015,10,NA,NA,NA,NA
+"1873",2074,"FF","NE",NA,"soybeans",2015,10,NA,NA,NA,NA
+"1874",2075,"FF","NE",NA,"soybeans",2015,10,NA,NA,NA,NA
+"1875",2076,"FF","NE",NA,"soybeans",2015,10,NA,NA,NA,NA
+"1876",2077,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1877",2078,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1878",2079,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1879",2080,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1880",2081,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1881",2082,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1882",2083,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1883",2084,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1884",2085,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1885",2086,"FF","NE","tebuconazole + potassium phosphite","soybeans",2015,10,NA,NA,NA,NA
+"1886",2087,"FF","NE",NA,"soybeans",2015,10,NA,NA,NA,NA
+"1887",2088,"FF","NE",NA,"soybeans",2015,10,NA,NA,NA,NA
+"1888",2089,"FF","NE",NA,"soybeans",2015,10,NA,NA,NA,NA
+"1889",2090,"FF","NE",NA,"soybeans",2015,10,NA,NA,NA,NA
+"1890",2091,"FF","NE",NA,"soybeans",2015,10,NA,NA,NA,NA
+"1891",2092,"FF","NE",NA,"soybeans",2015,10,NA,NA,NA,NA
+"1892",2093,"FF","NE",NA,"soybeans",2015,10,NA,NA,NA,NA
+"1893",2094,"FF","NE",NA,"soybeans",2015,10,NA,NA,NA,NA
+"1894",2095,"FF","NE",NA,"soybeans",2015,10,NA,NA,NA,NA
+"1895",2096,"FF","NE",NA,"soybeans",2015,10,NA,NA,NA,NA
+"1896",2097,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,0,1,0,0
+"1897",2098,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,1,1,0,1
+"1898",2099,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,0,0,0,1
+"1899",2100,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,0,0,0,1
+"1900",2101,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,NA,NA,NA,NA
+"1901",2102,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,NA,NA,NA,NA
+"1902",2103,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,NA,NA,NA,NA
+"1903",2104,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,NA,NA,NA,NA
+"1904",2105,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,NA,NA,NA,NA
+"1905",2106,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,NA,NA,NA,NA
+"1906",2107,"FF","NE","propiconazole + azoxystrobin","soybeans",2015,1,NA,NA,NA,NA
+"1907",2108,"FF","NE","tetraconazole","soybeans",2015,10,0,0,1,1
+"1908",2109,"FF","NE","tetraconazole","soybeans",2015,10,NA,NA,NA,NA
+"1909",2110,"FF","NE","tetraconazole","soybeans",2015,10,0,0,0,0
+"1910",2111,"FF","NE","tetraconazole","soybeans",2015,10,1,0,1,1
+"1911",2112,"FF","NE","tetraconazole","soybeans",2015,10,NA,NA,NA,NA
+"1912",2113,"FF","NE","tetraconazole","soybeans",2015,10,NA,NA,NA,NA
+"1913",2114,"FF","NE","tetraconazole","soybeans",2015,10,NA,NA,NA,NA
+"1914",2115,"FF","NE","tetraconazole","soybeans",2015,10,NA,NA,NA,NA
+"1915",2116,"FF","NE","tetraconazole","soybeans",2015,10,NA,NA,NA,NA
+"1916",2117,"FF","NE","tetraconazole","soybeans",2015,10,NA,NA,NA,NA
+"1917",2118,"FF","NE",NA,"soybeans",2015,1,NA,NA,NA,NA
+"1918",2119,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,0,0,0,0
+"1919",2120,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,0,1,0,0
+"1920",2121,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,1,1,1,1
+"1921",2122,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,0,1,0,0
+"1922",2123,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,NA,NA,NA,NA
+"1923",2124,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,NA,NA,NA,NA
+"1924",2125,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,NA,NA,NA,NA
+"1925",2126,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,NA,NA,NA,NA
+"1926",2127,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,NA,NA,NA,NA
+"1927",2128,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,NA,NA,NA,NA
+"1928",2129,"FF","NE","tetraconazole","soybeans",2015,10,0,0,0,0
+"1929",2130,"FF","NE","tetraconazole","soybeans",2015,10,0,1,0,0
+"1930",2131,"FF","NE","tetraconazole","soybeans",2015,10,0,0,1,0
+"1931",2132,"FF","NE","tetraconazole","soybeans",2015,10,1,0,0,1
+"1932",2133,"FF","NE","tetraconazole","soybeans",2015,10,NA,NA,NA,NA
+"1933",2134,"FF","NE","tetraconazole","soybeans",2015,10,NA,NA,NA,NA
+"1934",2135,"FF","NE","tetraconazole","soybeans",2015,10,NA,NA,NA,NA
+"1935",2136,"FF","NE","tetraconazole","soybeans",2015,10,NA,NA,NA,NA
+"1936",2137,"FF","NE","tetraconazole","soybeans",2015,10,NA,NA,NA,NA
+"1937",2138,"FF","NE","tetraconazole","soybeans",2015,10,NA,NA,NA,NA
+"1938",2139,"FF","NE","prothioconazole + trifloxystrobin","soybeans",2015,10,0,0,0,1
+"1939",2140,"FF","NE","prothioconazole + trifloxystrobin","soybeans",2015,10,1,0,0,1
+"1940",2141,"FF","NE","prothioconazole + trifloxystrobin","soybeans",2015,10,NA,NA,NA,NA
+"1941",2142,"FF","NE","prothioconazole + trifloxystrobin","soybeans",2015,10,NA,NA,NA,NA
+"1942",2143,"FF","NE","prothioconazole + trifloxystrobin","soybeans",2015,10,1,0,1,1
+"1943",2144,"FF","NE","prothioconazole + trifloxystrobin","soybeans",2015,10,NA,NA,NA,NA
+"1944",2145,"FF","NE","prothioconazole + trifloxystrobin","soybeans",2015,10,NA,NA,NA,NA
+"1945",2146,"FF","NE","prothioconazole + trifloxystrobin","soybeans",2015,10,NA,NA,NA,NA
+"1946",2147,"FF","NE","prothioconazole + trifloxystrobin","soybeans",2015,10,NA,NA,NA,NA
+"1947",2148,"FF","NE","prothioconazole + trifloxystrobin","soybeans",2015,10,NA,NA,NA,NA
+"1948",2149,"FF","NE","tetraconazole","soybeans",2015,10,0,0,0,0
+"1949",2150,"FF","NE","tetraconazole","soybeans",2015,10,0,0,0,1
+"1950",2151,"FF","NE","tetraconazole","soybeans",2015,10,NA,NA,NA,NA
+"1951",2152,"FF","NE","tetraconazole","soybeans",2015,10,NA,NA,NA,NA
+"1952",2153,"FF","NE","tetraconazole","soybeans",2015,10,NA,NA,NA,NA
+"1953",2154,"FF","NE","tetraconazole","soybeans",2015,10,NA,NA,NA,NA
+"1954",2155,"FF","NE","tetraconazole","soybeans",2015,10,NA,NA,NA,NA
+"1955",2156,"FF","NE","tetraconazole","soybeans",2015,10,NA,NA,NA,NA
+"1956",2157,"FF","NE","tetraconazole","soybeans",2015,10,NA,NA,NA,NA
+"1957",2158,"FF","NE","tetraconazole","soybeans",2015,10,NA,NA,NA,NA
+"1958",2159,"FF","NE","tetraconazole","soybeans",2015,10,NA,NA,NA,NA
+"1959",2160,"FF","NE","tetraconazole","soybeans",2015,10,0,0,1,0
+"1960",2161,"FF","NE","tetraconazole","soybeans",2015,10,NA,NA,NA,NA
+"1961",2162,"FF","NE","tetraconazole","soybeans",2015,10,NA,NA,NA,NA
+"1962",2163,"FF","NE","tetraconazole","soybeans",2015,10,NA,NA,NA,NA
+"1963",2164,"FF","NE","tetraconazole","soybeans",2015,10,NA,NA,NA,NA
+"1964",2165,"FF","NE","tetraconazole","soybeans",2015,10,NA,NA,NA,NA
+"1965",2166,"FF","NE","tetraconazole","soybeans",2015,10,NA,NA,NA,NA
+"1966",2167,"FF","NE","tetraconazole","soybeans",2015,10,NA,NA,NA,NA
+"1967",2168,"FF","NE","tetraconazole","soybeans",2015,10,NA,NA,NA,NA
+"1968",2169,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,0,0,0,0
+"1969",2170,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,0,0,0,0
+"1970",2171,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,NA,NA,NA,NA
+"1971",2172,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,NA,NA,NA,NA
+"1972",2173,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,NA,NA,NA,NA
+"1973",2174,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,NA,NA,NA,NA
+"1974",2175,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,NA,NA,NA,NA
+"1975",2176,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,NA,NA,NA,NA
+"1976",2177,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,NA,NA,NA,NA
+"1977",2178,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,NA,NA,NA,NA
+"1978",2179,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,NA,NA,NA,NA
+"1979",2180,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,NA,NA,NA,NA
+"1980",2181,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,NA,NA,NA,NA
+"1981",2182,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,NA,NA,NA,NA
+"1982",2183,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,NA,NA,NA,NA
+"1983",2184,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,NA,NA,NA,NA
+"1984",2185,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,NA,NA,NA,NA
+"1985",2186,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,NA,NA,NA,NA
+"1986",2187,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,NA,NA,NA,NA
+"1987",2188,"FF","NE","fluxapyroxad + pyraclostrobin","soybeans",2015,10,NA,NA,NA,NA
+"1988",2189,"FF","NE","tetraconazole","soybeans",2015,10,0,0,0,0
+"1989",2190,"FF","NE","tetraconazole","soybeans",2015,10,0,0,1,1
+"1990",2191,"FF","NE","tetraconazole","soybeans",2015,10,NA,NA,NA,NA
+"1991",2192,"FF","NE","tetraconazole","soybeans",2015,10,NA,NA,NA,NA
+"1992",2193,"FF","NE","tetraconazole","soybeans",2015,10,NA,NA,NA,NA
+"1993",2194,"FF","NE","tetraconazole","soybeans",2015,10,NA,NA,NA,NA
+"1994",2195,"FF","NE","tetraconazole","soybeans",2015,10,NA,NA,NA,NA
+"1995",2196,"FF","NE","tetraconazole","soybeans",2015,10,NA,NA,NA,NA
+"1996",2197,"FF","NE","tetraconazole","soybeans",2015,10,NA,NA,NA,NA
+"1997",2198,"FF","NE","tetraconazole","soybeans",2015,10,NA,NA,NA,NA
+"1998",2199,"FF","NE","thiophanate_methyl","soybeans",2015,1,0,0,0,0
+"1999",2200,"FF","NE","thiophanate_methyl","soybeans",2015,1,NA,NA,NA,NA
+"2000",2201,"FF","NE",NA,"soybeans",2015,2,NA,NA,NA,NA
+"2001",2202,"FF","NE",NA,"soybeans",2015,2,NA,NA,NA,NA
+"2002",2203,"FF","NE",NA,"soybeans",2015,13,NA,NA,NA,NA
+"2003",2204,"FF","NE",NA,"soybeans",2015,13,NA,NA,NA,NA
+"2004",2205,"FF","NE",NA,"soybeans",2015,13,NA,NA,NA,NA
+"2005",2206,"FF","NE",NA,"soybeans",2015,13,NA,NA,NA,NA
+"2006",2207,"FF","NE",NA,"soybeans",2015,13,NA,NA,NA,NA
+"2007",2208,"FF","NE",NA,"soybeans",2015,13,NA,NA,NA,NA
+"2008",2209,"FF","NE",NA,"soybeans",2015,13,NA,NA,NA,NA
+"2009",2210,"FF","NE",NA,"soybeans",2015,13,NA,NA,NA,NA
+"2010",2211,"FF","MI",NA,"soybeans",2015,9,NA,NA,NA,NA
+"2011",2212,"FF","MI",NA,"soybeans",2015,9,NA,NA,NA,NA
+"2012",2213,"FF","MI",NA,"soybeans",2015,9,NA,NA,NA,NA
+"2013",2214,"FF","MI",NA,"soybeans",2015,9,NA,NA,NA,NA
+"2014",2215,"FF","MI",NA,"soybeans",2015,9,NA,NA,NA,NA
+"2015",2216,"FF","MI",NA,"soybeans",2015,9,NA,NA,NA,NA
+"2016",2217,"FF","MI",NA,"soybeans",2015,9,NA,NA,NA,NA
+"2017",2218,"FF","MI",NA,"soybeans",2015,9,NA,NA,NA,NA
+"2018",2219,"FF","MI",NA,"soybeans",2015,9,NA,NA,NA,NA
+"2019",2220,"FF","MI",NA,"soybeans",2015,12,1,0,0,1
+"2020",2221,"FF","MI",NA,"soybeans",2015,12,NA,NA,NA,NA
+"2021",2222,"FF","MI",NA,"soybeans",2015,12,0,0,0,1
+"2022",2223,"FF","MI",NA,"soybeans",2015,12,NA,NA,NA,1
+"2023",2224,"FF","MI",NA,"soybeans",2015,12,NA,NA,NA,NA
+"2024",2225,"FF","MI",NA,"soybeans",2015,12,NA,NA,NA,NA
+"2025",2226,"FF","MI",NA,"soybeans",2015,12,NA,NA,NA,NA
+"2026",2227,"FF","MI",NA,"soybeans",2015,12,NA,NA,NA,NA
+"2027",2228,"FF","MI",NA,"soybeans",2015,12,NA,NA,NA,NA
+"2028",2229,"FF","MI",NA,"soybeans",2015,12,NA,NA,NA,NA
+"2029",2230,"FF","MI",NA,"soybeans",2015,12,NA,NA,NA,NA
+"2030",2231,"FF","MI",NA,"soybeans",2015,12,NA,NA,NA,NA
+"2031",2232,"FF","MI",NA,"soybeans",2015,15,NA,NA,NA,NA
+"2032",2233,"FF","MI",NA,"soybeans",2015,15,NA,NA,NA,NA
+"2033",2234,"FF","MI",NA,"soybeans",2015,15,NA,NA,NA,NA
+"2034",2235,"FF","MI",NA,"soybeans",2015,15,NA,NA,NA,NA
+"2035",2236,"FF","MI",NA,"soybeans",2015,15,NA,NA,NA,NA
+"2036",2237,"FF","MI",NA,"soybeans",2015,15,NA,NA,NA,NA
+"2037",2238,"FF","MI",NA,"soybeans",2015,15,NA,NA,NA,NA
+"2038",2239,"FF","MI",NA,"soybeans",2015,15,NA,NA,NA,NA
+"2039",2240,"FF","MI",NA,"soybeans",2015,15,NA,NA,NA,NA
+"2040",2241,"FF","MI",NA,"soybeans",2015,15,NA,NA,NA,NA
+"2041",2242,"FF","MI",NA,"soybeans",2015,15,NA,NA,NA,NA
+"2042",2243,"FF","MI",NA,"soybeans",2015,15,NA,NA,NA,NA
+"2043",2244,"FF","MI",NA,"soybeans",2015,15,NA,NA,NA,NA
+"2044",2245,"FF","MI",NA,"soybeans",2015,15,NA,NA,NA,NA
+"2045",2246,"FF","MI",NA,"soybeans",2015,15,NA,NA,NA,NA
+"2046",2247,"FFT","MI","picoxystrobin","soybeans",2015,56,NA,NA,NA,NA
+"2047",2248,"FFT","MI","picoxystrobin","soybeans",2015,56,NA,NA,NA,NA
+"2048",2249,"FFT","MI","picoxystrobin","soybeans",2015,56,NA,NA,NA,NA
+"2049",2250,"FFT","MI","picoxystrobin","soybeans",2015,56,NA,NA,NA,NA
+"2050",2251,"FFT","MI","picoxystrobin","soybeans",2015,56,NA,NA,NA,NA
+"2051",2252,"FFT","MI","picoxystrobin","soybeans",2015,56,NA,NA,NA,NA
+"2052",2253,"FFT","MI","picoxystrobin","soybeans",2015,56,NA,NA,NA,NA
+"2053",2254,"FFT","MI","picoxystrobin","soybeans",2015,56,NA,NA,NA,NA
+"2054",2255,"FFT","MI","picoxystrobin","soybeans",2015,56,NA,NA,NA,NA
+"2055",2256,"FFT","MI","picoxystrobin","soybeans",2015,56,NA,NA,NA,NA
+"2056",2257,"FFT","MI","picoxystrobin","soybeans",2015,56,NA,NA,NA,NA
+"2057",2258,"FFT","MI","picoxystrobin","soybeans",2015,56,NA,NA,NA,NA
+"2058",2259,"FFT","MI","picoxystrobin","soybeans",2015,56,NA,NA,NA,NA
+"2059",2260,"FFT","MI","picoxystrobin","soybeans",2015,56,NA,NA,NA,NA
+"2060",2261,"FFT","MI","picoxystrobin","soybeans",2015,56,NA,NA,NA,NA
+"2061",2262,"FFT","MI","picoxystrobin","soybeans",2015,56,NA,NA,NA,NA
+"2062",2263,"FFT","MI","picoxystrobin","soybeans",2015,56,NA,NA,NA,NA
+"2063",2264,"FFT","MI","picoxystrobin","soybeans",2015,56,NA,NA,NA,NA
+"2064",2265,"FFT","MI","picoxystrobin","soybeans",2015,56,NA,NA,NA,NA
+"2065",2266,"FFT","MI","picoxystrobin","soybeans",2015,56,NA,NA,NA,NA
+"2066",2267,"FFT","MI","picoxystrobin","soybeans",2015,56,NA,NA,NA,NA
+"2067",2268,"FFT","MI","picoxystrobin","soybeans",2015,56,NA,NA,NA,NA
+"2068",2269,"FFT","MI","picoxystrobin","soybeans",2015,56,NA,NA,NA,NA
+"2069",2270,"FFT","MI","picoxystrobin","soybeans",2015,56,NA,NA,NA,NA
+"2070",2271,"FFT","MI","picoxystrobin","soybeans",2015,56,NA,NA,NA,NA
+"2071",2272,"FFT","MI","picoxystrobin","soybeans",2015,56,NA,NA,NA,NA
+"2072",2273,"FFT","MI","picoxystrobin","soybeans",2015,56,NA,NA,NA,NA
+"2073",2274,"FFT","MI","picoxystrobin","soybeans",2015,56,NA,NA,NA,NA
+"2074",2275,"FFT","MI","picoxystrobin","soybeans",2015,56,NA,NA,NA,NA
+"2075",2276,"FFT","MI","picoxystrobin","soybeans",2015,56,NA,NA,NA,NA
+"2076",2277,"FFT","MI","picoxystrobin","soybeans",2015,56,NA,NA,NA,NA
+"2077",2278,"FFT","MI","picoxystrobin","soybeans",2015,56,NA,NA,NA,NA
+"2078",2279,"FFT","MI","picoxystrobin","soybeans",2015,56,NA,NA,NA,NA
+"2079",2280,"FFT","MI","picoxystrobin","soybeans",2015,56,NA,NA,NA,NA
+"2080",2281,"FFT","MI","picoxystrobin","soybeans",2015,56,NA,NA,NA,NA
+"2081",2282,"FFT","MI","picoxystrobin","soybeans",2015,56,NA,NA,NA,NA
+"2082",2283,"FFT","MI","picoxystrobin","soybeans",2015,56,NA,NA,NA,NA
+"2083",2284,"FFT","MI","picoxystrobin","soybeans",2015,56,NA,NA,NA,NA
+"2084",2285,"FFT","MI","picoxystrobin","soybeans",2015,56,NA,NA,NA,NA
+"2085",2286,"FFT","MI","picoxystrobin","soybeans",2015,56,NA,NA,NA,NA
+"2086",2287,"FFT","MI","picoxystrobin","soybeans",2015,56,NA,NA,NA,NA
+"2087",2288,"FFT","MI","picoxystrobin","soybeans",2015,56,NA,NA,NA,NA
+"2088",2289,"FFT","MI","picoxystrobin","soybeans",2015,56,NA,NA,NA,NA
+"2089",2290,"FFT","MI","picoxystrobin","soybeans",2015,56,NA,NA,NA,NA
+"2090",2291,"FFT","MI","picoxystrobin","soybeans",2015,56,NA,NA,NA,NA
+"2091",2292,"FFT","MI","picoxystrobin","soybeans",2015,56,NA,NA,NA,NA
+"2092",2293,"FFT","MI","boscalid","soybeans",2015,56,NA,NA,NA,NA
+"2093",2294,"FFT","MI","boscalid","soybeans",2015,56,NA,NA,NA,NA
+"2094",2295,"FFT","MI","boscalid","soybeans",2015,56,NA,NA,NA,NA
+"2095",2296,"FFT","MI","boscalid","soybeans",2015,56,NA,NA,NA,NA
+"2096",2297,"FFT","MI","boscalid","soybeans",2015,56,NA,NA,NA,NA
+"2097",2298,"FFT","MI","boscalid","soybeans",2015,56,NA,NA,NA,NA
+"2098",2299,"FFT","MI","boscalid","soybeans",2015,56,NA,NA,NA,NA
+"2099",2300,"FFT","MI","boscalid","soybeans",2015,56,NA,NA,NA,NA
+"2100",2301,"FFT","MI","boscalid","soybeans",2015,56,NA,NA,NA,NA
+"2101",2302,"FFT","MI","boscalid","soybeans",2015,56,NA,NA,NA,NA
+"2102",2303,"FF","MI",NA,"soybeans",2015,17,NA,NA,NA,NA
+"2103",2304,"FF","MI",NA,"soybeans",2015,17,NA,NA,NA,NA
+"2104",2305,"FF","MI",NA,"soybeans",2015,17,NA,NA,NA,NA
+"2105",2306,"FF","MI",NA,"soybeans",2015,17,NA,NA,NA,NA
+"2106",2307,"FF","MI",NA,"soybeans",2015,17,NA,NA,NA,NA
+"2107",2308,"FF","MI",NA,"soybeans",2015,17,NA,NA,NA,NA
+"2108",2309,"FF","MI",NA,"soybeans",2015,17,NA,NA,NA,NA
+"2109",2310,"FF","MI",NA,"soybeans",2015,17,NA,NA,NA,NA
+"2110",2311,"FF","MI",NA,"soybeans",2015,17,NA,NA,NA,NA
+"2111",2312,"FF","MI",NA,"soybeans",2015,17,NA,NA,NA,NA
+"2112",2313,"FF","MI",NA,"soybeans",2015,17,NA,NA,NA,NA
+"2113",2314,"FF","MI",NA,"soybeans",2015,17,NA,NA,NA,NA
+"2114",2315,"FF","MI",NA,"soybeans",2015,17,NA,NA,NA,NA
+"2115",2316,"FF","MI",NA,"soybeans",2015,17,NA,NA,NA,NA
+"2116",2317,"FF","MI",NA,"soybeans",2015,17,NA,NA,NA,NA
+"2117",2318,"FF","MI",NA,"soybeans",2015,17,NA,NA,NA,NA
+"2118",2319,"FF","MI",NA,"soybeans",2015,17,NA,NA,NA,NA
+"2119",2320,"FF","MI",NA,"soybeans",2015,11,0,0,1,1
+"2120",2321,"FF","MI",NA,"soybeans",2015,11,NA,NA,NA,NA
+"2121",2322,"FF","MI",NA,"soybeans",2015,11,NA,NA,NA,NA
+"2122",2323,"FF","MI",NA,"soybeans",2015,11,NA,NA,NA,NA
+"2123",2324,"FF","MI",NA,"soybeans",2015,11,NA,NA,NA,NA
+"2124",2325,"FF","MI",NA,"soybeans",2015,11,NA,NA,NA,NA
+"2125",2326,"FF","MI",NA,"soybeans",2015,11,NA,NA,NA,NA
+"2126",2327,"FF","MI",NA,"soybeans",2015,11,NA,NA,NA,NA
+"2127",2328,"FF","MI",NA,"soybeans",2015,11,NA,NA,NA,NA
+"2128",2329,"FF","MI",NA,"soybeans",2015,11,NA,NA,NA,NA
+"2129",2330,"FF","MI",NA,"soybeans",2015,11,NA,NA,NA,NA
+"2130",2331,"FF","MI",NA,"soybeans",2015,12,NA,NA,NA,NA
+"2131",2332,"FF","MI",NA,"soybeans",2015,12,NA,NA,NA,NA
+"2132",2333,"FF","MI",NA,"soybeans",2015,12,NA,NA,NA,NA
+"2133",2334,"FF","MI",NA,"soybeans",2015,12,NA,NA,NA,NA
+"2134",2335,"FF","MI",NA,"soybeans",2015,12,NA,NA,NA,NA
+"2135",2336,"FF","MI",NA,"soybeans",2015,12,NA,NA,NA,NA
+"2136",2337,"FF","MI",NA,"soybeans",2015,12,NA,NA,NA,NA
+"2137",2338,"FF","MI",NA,"soybeans",2015,12,NA,NA,NA,NA
+"2138",2339,"FF","MI",NA,"soybeans",2015,12,NA,NA,NA,NA
+"2139",2340,"FF","MI",NA,"soybeans",2015,12,NA,NA,NA,NA
+"2140",2341,"FF","MI",NA,"soybeans",2015,12,NA,NA,NA,NA
+"2141",2342,"FF","MI",NA,"soybeans",2015,12,NA,NA,NA,NA
+"2142",2343,"FFT","IA","No_info","soybeans",2015,1,NA,NA,NA,NA
+"2143",2344,"FFT","IA","No_info","soybeans",2015,1,NA,NA,NA,NA
+"2144",2345,"FFT","IA","No_info","soybeans",2015,2,NA,NA,NA,NA
+"2145",2346,"FFT","IA","No_info","soybeans",2015,2,NA,NA,NA,NA
+"2146",2347,"FFT","IA","No_info","soybeans",2015,5,NA,NA,NA,NA
+"2147",2348,"FFT","IA","No_info","soybeans",2015,5,NA,NA,NA,NA
+"2148",2349,"FFT","IA","No_info","soybeans",2015,5,NA,NA,NA,NA
+"2149",2350,"FFT","IA","No_info","soybeans",2015,5,NA,NA,NA,NA
+"2150",2351,"FFT","IA","No_info","soybeans",2015,5,NA,NA,NA,NA
+"2151",2352,"FFT","IA","No_info","soybeans",2015,10,NA,NA,NA,NA
+"2152",2353,"FFT","IA","No_info","soybeans",2015,10,NA,NA,NA,NA
+"2153",2354,"FFT","IA","No_info","soybeans",2015,10,NA,NA,NA,NA
+"2154",2355,"FFT","IA","No_info","soybeans",2015,10,NA,NA,NA,NA
+"2155",2356,"FFT","IA","No_info","soybeans",2015,10,NA,NA,NA,NA
+"2156",2357,"FFT","IA","No_info","soybeans",2015,10,NA,NA,NA,NA
+"2157",2358,"FFT","IA","No_info","soybeans",2015,10,NA,NA,NA,NA
+"2158",2359,"FFT","IA","No_info","soybeans",2015,10,NA,NA,NA,NA
+"2159",2360,"FFT","IA","No_info","soybeans",2015,10,NA,NA,NA,NA
+"2160",2361,"FFT","IA","No_info","soybeans",2015,10,NA,NA,NA,NA
+"2161",2362,"FF","IA","propiconazole + azoxystrobin","soybeans",2015,10,0,0,1,1
+"2162",2363,"FF","IA","propiconazole + azoxystrobin","soybeans",2015,10,NA,NA,NA,NA
+"2163",2364,"FF","IA","propiconazole + azoxystrobin","soybeans",2015,10,NA,NA,NA,NA
+"2164",2365,"FF","IA","propiconazole + azoxystrobin","soybeans",2015,10,NA,NA,NA,NA
+"2165",2366,"FF","IA","propiconazole + azoxystrobin","soybeans",2015,10,NA,NA,NA,NA
+"2166",2367,"FF","IA","propiconazole + azoxystrobin","soybeans",2015,10,NA,NA,NA,NA
+"2167",2368,"FF","IA","propiconazole + azoxystrobin","soybeans",2015,10,NA,NA,NA,NA
+"2168",2369,"FF","IA","propiconazole + azoxystrobin","soybeans",2015,10,NA,NA,NA,NA
+"2169",2370,"FF","IA","propiconazole + azoxystrobin","soybeans",2015,10,NA,NA,NA,NA
+"2170",2371,"FF","IA","propiconazole + azoxystrobin","soybeans",2015,10,NA,NA,NA,NA
+"2171",2372,"FF","IA","picoxystrobin","soybeans",2015,10,NA,NA,NA,NA
+"2172",2373,"FF","IA","picoxystrobin","soybeans",2015,10,NA,NA,NA,NA
+"2173",2374,"FF","IA","picoxystrobin","soybeans",2015,10,NA,NA,NA,NA
+"2174",2375,"FF","IA","picoxystrobin","soybeans",2015,10,NA,NA,NA,NA
+"2175",2376,"FF","IA","picoxystrobin","soybeans",2015,10,NA,NA,NA,NA
+"2176",2377,"FF","IA","picoxystrobin","soybeans",2015,10,NA,NA,NA,NA
+"2177",2378,"FF","IA","picoxystrobin","soybeans",2015,10,NA,NA,NA,NA
+"2178",2379,"FF","IA","picoxystrobin","soybeans",2015,10,NA,NA,NA,NA
+"2179",2380,"FF","IA","picoxystrobin","soybeans",2015,10,NA,NA,NA,NA
+"2180",2381,"FF","IA","picoxystrobin","soybeans",2015,10,NA,NA,NA,NA
+"2181",2382,"FFT","WI","thiophanate_methyl","soybeans",2015,11,NA,NA,NA,NA
+"2182",2383,"FFT","WI",NA,"soybeans",2015,11,1,1,0,0
+"2183",2384,"FFT","WI","picoxystrobin","soybeans",2015,11,0,1,0,0
+"2184",2385,"FFT","WI","boscalid","soybeans",2015,11,0,0,1,1
+"2185",2386,"FFT","WI","thiophanate_methyl","soybeans",2015,11,1,0,0,1
+"2186",2387,"FFT","WI",NA,"soybeans",2015,11,NA,NA,NA,NA
+"2187",2388,"FFT","WI","thiophanate_methyl","soybeans",2015,11,0,0,0,1
+"2188",2389,"FFT","WI","picoxystrobin","soybeans",2015,11,NA,NA,NA,NA
+"2189",2390,"FFT","WI","thiophanate_methyl","soybeans",2015,11,0,0,0,1
+"2190",2391,"FFT","WI","boscalid","soybeans",2015,11,NA,NA,NA,NA
+"2191",2392,"FFT","WI","boscalid","soybeans",2015,11,NA,NA,NA,NA
+"2192",2393,"FF","WI","unknown","soybeans",2015,10,NA,NA,NA,NA
+"2193",2394,"FF","WI","unknown","soybeans",2015,10,NA,NA,NA,NA
+"2194",2395,"FF","WI","unknown","soybeans",2015,10,NA,NA,NA,NA
+"2195",2396,"FF","WI","unknown","soybeans",2015,10,NA,NA,NA,NA
+"2196",2397,"FF","WI","unknown","soybeans",2015,10,NA,NA,NA,NA
+"2197",2398,"FF","WI","unknown","soybeans",2015,10,NA,NA,NA,NA
+"2198",2399,"FF","WI","unknown","soybeans",2015,10,NA,NA,NA,NA
+"2199",2400,"FF","WI","unknown","soybeans",2015,10,NA,NA,NA,NA
+"2200",2401,"FF","WI","unknown","soybeans",2015,10,NA,NA,NA,NA
+"2201",2402,"FF","WI","unknown","soybeans",2015,10,NA,NA,NA,NA
+"2202",2403,"FF","WI","unknown","soybeans",2015,2,NA,NA,NA,NA
+"2203",2404,"FF","WI","unknown","soybeans",2015,2,NA,NA,NA,NA
+"2204",2405,"FF","WI","picoxystrobin","soybeans",2015,2,NA,NA,NA,NA
+"2205",2406,"FF","WI","picoxystrobin","soybeans",2015,2,NA,NA,NA,NA
+"2206",2407,"FF","WI","picoxystrobin","soybeans",2015,10,0,1,0,0
+"2207",2408,"FF","WI","picoxystrobin","soybeans",2015,10,0,0,0,0
+"2208",2409,"FF","WI","picoxystrobin","soybeans",2015,10,NA,NA,NA,NA
+"2209",2410,"FF","WI","picoxystrobin","soybeans",2015,10,NA,NA,NA,NA
+"2210",2411,"FF","WI","picoxystrobin","soybeans",2015,10,NA,NA,NA,NA
+"2211",2412,"FF","WI","picoxystrobin","soybeans",2015,10,NA,NA,NA,NA
+"2212",2413,"FF","WI","picoxystrobin","soybeans",2015,10,NA,NA,NA,NA
+"2213",2414,"FF","WI","picoxystrobin","soybeans",2015,10,NA,NA,NA,NA
+"2214",2415,"FF","WI","picoxystrobin","soybeans",2015,10,NA,NA,NA,NA
+"2215",2416,"FF","WI","picoxystrobin","soybeans",2015,10,NA,NA,NA,NA
+"2216",2417,"FF","GO",NA,"soybeans",2010,NA,NA,NA,NA,NA
+"2217",2418,"FF","GO",NA,"soybeans",2010,NA,NA,NA,NA,NA
+"2218",2419,"FF","GO",NA,"soybeans",2010,NA,NA,NA,NA,NA
+"2219",2420,"FF","GO",NA,"soybeans",2010,NA,NA,NA,NA,NA
+"2220",2421,"FF","GO",NA,"soybeans",2010,NA,NA,NA,NA,NA
+"2221",2422,"FF","GO",NA,"soybeans",2010,NA,NA,NA,NA,NA
+"2222",2423,"FF","GO",NA,"soybeans",2010,NA,NA,NA,NA,NA
+"2223",2424,"FF","GO",NA,"soybeans",2010,NA,NA,NA,NA,NA
+"2224",2425,"FF","GO",NA,"soybeans",2010,NA,NA,NA,NA,NA
+"2225",2426,"FF","GO",NA,"soybeans",2010,NA,NA,NA,NA,NA
+"2226",2427,"FF","MG",NA,"soybeans",2009,NA,NA,NA,NA,NA
+"2227",2428,"FF","MG",NA,"soybeans",2009,NA,NA,NA,NA,NA
+"2228",2429,"FF","MG",NA,"soybeans",2009,NA,NA,NA,NA,NA
+"2229",2430,"FF","MG",NA,"soybeans",2009,NA,NA,NA,NA,NA
+"2230",2431,"FF","MG",NA,"soybeans",2009,NA,NA,NA,NA,NA
+"2231",2432,"FF","MG",NA,"soybeans",2009,NA,NA,NA,NA,NA
+"2232",2433,"FF","BA",NA,"soybeans",2010,NA,NA,NA,NA,NA
+"2233",2434,"FF","BA",NA,"soybeans",2010,NA,NA,NA,NA,NA
+"2234",2435,"FF","BA",NA,"soybeans",2010,NA,NA,NA,NA,NA
+"2235",2436,"FF","BA",NA,"soybeans",2010,NA,NA,NA,NA,NA
+"2236",2437,"FF","BA",NA,"soybeans",2010,NA,NA,NA,NA,NA
+"2237",2438,"FF","BA",NA,"soybeans",2010,NA,NA,NA,NA,NA
+"2238",2439,"FF","BA",NA,"soybeans",2010,NA,NA,NA,NA,NA
+"2239",2440,"FF","BA",NA,"soybeans",2010,NA,NA,NA,NA,NA
+"2240",2441,"FF","SC",NA,"soybeans",2014,NA,NA,NA,NA,NA
+"2241",2442,"FF","BA",NA,"drybeans",2011,NA,NA,NA,NA,NA
+"2242",2443,"FF","GO",NA,"drybeans",2011,NA,NA,NA,NA,NA
+"2243",2444,"FF","GO",NA,"drybeans",2011,NA,NA,NA,NA,NA
+"2244",2445,"FF","GO",NA,"drybeans",2011,NA,NA,NA,NA,NA
+"2245",2446,"FF","GO",NA,"drybeans",2011,NA,NA,NA,NA,NA
+"2246",2447,"FF","GO",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2247",2448,"FF","GO",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2248",2449,"FF","GO",NA,"drybeans",2010,NA,0,1,0,1
+"2249",2450,"FF","GO",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2250",2451,"FF","GO",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2251",2452,"FF","GO",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2252",2453,"FF","GO",NA,"drybeans",2010,NA,0,1,1,1
+"2253",2454,"FF","GO",NA,"drybeans",2011,NA,NA,NA,NA,NA
+"2254",2455,"FF","GO",NA,"drybeans",2011,NA,NA,NA,NA,NA
+"2255",2456,"FF","GO",NA,"drybeans",2011,NA,NA,NA,NA,NA
+"2256",2457,"FF","GO",NA,"drybeans",2011,NA,NA,NA,NA,NA
+"2257",2458,"FF","GO",NA,"drybeans",2011,NA,NA,NA,NA,NA
+"2258",2459,"FF","GO",NA,"drybeans",2011,NA,NA,NA,NA,NA
+"2259",2460,"FF","MT",NA,"drybeans",2011,NA,NA,NA,NA,NA
+"2260",2461,"FF","MT",NA,"drybeans",2011,NA,NA,NA,NA,NA
+"2261",2462,"FF","MG",NA,"drybeans",2011,NA,NA,NA,NA,NA
+"2262",2463,"FF","MG",NA,"drybeans",NA,NA,NA,NA,NA,NA
+"2263",2464,"FF","MG",NA,"drybeans",NA,NA,NA,NA,NA,NA
+"2264",2465,"FF","MG",NA,"drybeans",NA,NA,NA,NA,NA,NA
+"2265",2466,"FF","MG",NA,"drybeans",NA,NA,NA,NA,NA,NA
+"2266",2467,"FF","MG",NA,"drybeans",NA,NA,NA,NA,NA,NA
+"2267",2468,"FF","MG",NA,"drybeans",NA,NA,NA,NA,NA,NA
+"2268",2469,"FF","MG",NA,"drybeans",NA,NA,NA,NA,NA,NA
+"2269",2470,"FF","MG",NA,"drybeans",2009,NA,NA,NA,NA,NA
+"2270",2471,"FF","MG",NA,"drybeans",2009,NA,NA,NA,NA,NA
+"2271",2472,"FF","MG",NA,"drybeans",2009,NA,NA,NA,NA,NA
+"2272",2473,"FF","MG",NA,"drybeans",2011,NA,NA,NA,NA,NA
+"2273",2474,"FF","MG",NA,"drybeans",2011,NA,NA,NA,NA,NA
+"2274",2475,"FF","MG",NA,"drybeans",2011,NA,NA,NA,NA,NA
+"2275",2476,"FF","MG",NA,"drybeans",2011,NA,NA,NA,NA,NA
+"2276",2477,"FF","MG",NA,"drybeans",2011,NA,NA,NA,NA,NA
+"2277",2478,"FF","MG",NA,"drybeans",2011,NA,NA,NA,NA,NA
+"2278",2479,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2279",2480,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2280",2481,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2281",2482,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2282",2483,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2283",2484,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2284",2485,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2285",2486,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2286",2487,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2287",2488,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2288",2489,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2289",2490,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2290",2491,"FF","MG",NA,"drybeans",2011,NA,NA,NA,NA,NA
+"2291",2492,"FF","MG",NA,"drybeans",2011,NA,NA,NA,NA,NA
+"2292",2493,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2293",2494,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2294",2495,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2295",2496,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2296",2497,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2297",2498,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2298",2499,"FF","GO",NA,"drybeans",2011,NA,NA,NA,NA,NA
+"2299",2500,"FF","GO",NA,"drybeans",2011,NA,NA,NA,NA,NA
+"2300",2501,"FF","GO",NA,"drybeans",2011,NA,NA,NA,NA,NA
+"2301",2502,"FF","GO",NA,"drybeans",2011,NA,NA,NA,NA,NA
+"2302",2503,"FF","GO",NA,"drybeans",2011,NA,NA,NA,NA,NA
+"2303",2504,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2304",2505,"FF","MG",NA,"drybeans",2010,NA,0,1,0,0
+"2305",2506,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2306",2507,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2307",2508,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2308",2509,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2309",2510,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2310",2511,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2311",2512,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2312",2513,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2313",2514,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2314",2515,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2315",2516,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2316",2517,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2317",2518,"FF","MG",NA,"drybeans",2010,NA,0,0,0,0
+"2318",2519,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2319",2520,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2320",2521,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2321",2522,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2322",2523,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2323",2524,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2324",2525,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2325",2526,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2326",2527,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2327",2528,"FF","MG",NA,"drybeans",2010,NA,1,0,1,0
+"2328",2529,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2329",2530,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2330",2531,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2331",2532,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2332",2533,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2333",2534,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2334",2535,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2335",2536,"FF","MG",NA,"drybeans",2010,NA,0,1,0,1
+"2336",2537,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2337",2538,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2338",2539,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2339",2540,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2340",2541,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2341",2542,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2342",2543,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2343",2544,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2344",2545,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2345",2546,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2346",2547,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2347",2548,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2348",2549,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2349",2550,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2350",2551,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2351",2552,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2352",2553,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2353",2554,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2354",2555,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2355",2556,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2356",2557,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2357",2558,"FF","MG",NA,"drybeans",2010,NA,NA,NA,NA,NA
+"2358",2559,"FF","MG",NA,"drybeans",2011,NA,0,0,0,0
+"2359",2560,"FF","MG",NA,"drybeans",2011,NA,NA,NA,NA,NA
+"2360",2561,"FF","MG",NA,"drybeans",2011,NA,NA,NA,NA,NA
+"2361",2562,"FF","MG",NA,"drybeans",2011,NA,NA,NA,NA,NA
+"2362",2563,"FF","MG",NA,"drybeans",2011,NA,NA,NA,NA,NA
+"2363",2564,"FF","PR",NA,"drybeans",2012,NA,NA,NA,NA,NA
+"2364",2565,"FF","PR",NA,"drybeans",2012,NA,NA,NA,NA,NA
+"2365",2566,"FF","PR",NA,"drybeans",2012,NA,NA,NA,NA,NA
+"2366",2567,"FF","PR",NA,"drybeans",2012,NA,NA,NA,NA,NA
+"2367",2568,"FF","PR",NA,"drybeans",2012,NA,NA,NA,NA,NA
+"2368",2569,"FF","PR",NA,"drybeans",2012,NA,NA,NA,NA,NA
+"2369",2570,"FF","MI",NA,"potato",2017,NA,NA,NA,NA,NA
+"2370",2571,"FF","MI",NA,"potato",2017,NA,NA,NA,NA,NA
+"2371",2572,"FF","MI",NA,"potato",2017,NA,NA,NA,NA,NA
+"2372",2573,"FF","MI",NA,"potato",2017,NA,NA,NA,NA,NA
+"2373",NA,"FFT","NE",NA,"drybeans",1975,NA,0,0,0,0
+"2374",NA,"FFT","NE",NA,"drybeans",1974,NA,0,0,0,0
+"2375",NA,"FFT","NE",NA,"drybeans",1974,NA,0,0,0,0
+"2376",NA,"FFT","NE",NA,"drybeans",1974,NA,0,0,0,0
+"2377",NA,"FFT","NC",NA,"alfalfa",1999,NA,0,0,0,0
+"2378",NA,"FFT","NC",NA,"alfalfa",1999,NA,0,0,0,0
+"2379",NA,"FFT","NC",NA,"alfalfa",1999,NA,0,0,0,0
+"2380",NA,"FFT","NE",NA,"drybeans",1974,NA,0,0,0,0
+"2381",NA,"FFT","NE",NA,"drybeans",1974,NA,0,0,0,0
+"2382",NA,"FFT","NE",NA,"drybeans",1974,NA,0,0,0,0
+"2383",NA,"FFT","NE",NA,"drybeans",1974,NA,0,0,0,0
+"2384",NA,"FFT","NE",NA,"drybeans",1974,NA,0,0,0,0
+"2385",NA,"FFT","NE",NA,"drybeans",1974,NA,0,0,0,0
+"2386",NA,"FFT","NE",NA,"drybeans",1974,NA,0,0,0,0
+"2387",NA,"FFT","CO",NA,"soybeans",1999,NA,0,0,0,0
+"2388",NA,"FFT","CO",NA,"soybeans",1999,NA,0,0,0,0
+"2389",NA,"FFT","CO",NA,"soybeans",1999,NA,0,0,0,0
+"2390",NA,"FFT","CO",NA,"soybeans",1999,NA,0,0,0,0
+"2391",NA,"FFT","CO",NA,"soybeans",1999,NA,0,0,0,0
+"2392",NA,"FFT","",NA,"soybeans",1980,NA,0,0,0,0
+"2393",NA,"FFT","",NA,"soybeans",1980,NA,0,0,0,0
+"2394",NA,"FFT","NE",NA,"drybeans",1999,NA,0,0,0,0
+"2395",NA,"FFT","NE",NA,"drybeans",1999,NA,0,0,0,0
+"2396",NA,"FFT","NE",NA,"drybeans",1999,NA,0,0,0,0
+"2397",NA,"FFT","NE",NA,"drybeans",1999,NA,0,0,0,0
+"2398",NA,"FFT","NE",NA,"drybeans",1999,NA,0,0,0,0
+"2399",NA,"FFT","NE",NA,"drybeans",1999,NA,0,0,0,0
+"2400",NA,"FFT","NE",NA,"drybeans",1999,NA,0,0,0,0
+"2401",NA,"FFT","NE",NA,"drybeans",1999,NA,0,0,0,0
+"2402",NA,"FFT","NE",NA,"drybeans",1999,NA,0,0,0,0
+"2403",NA,"FFT","NE",NA,"drybeans",1999,NA,0,0,0,0
+"2404",NA,"FFT","NE",NA,"drybeans",1974,NA,0,0,0,0
+"2405",NA,"FFT","NE",NA,"drybeans",1974,NA,0,0,0,0
+"2406",NA,"FFT","NE",NA,"drybeans",1974,NA,0,0,0,0
+"2407",NA,"FFT","CA",NA,"drybeans",1983,NA,0,0,0,0
+"2408",NA,"FFT","CA",NA,"drybeans",1983,NA,0,0,0,0
+"2409",NA,"FFT","CA",NA,"drybeans",1983,NA,0,0,0,0
+"2410",NA,"FFT","CA",NA,"peas",1983,NA,0,0,0,0
+"2411",NA,"FFT","CA",NA,"peas",1983,NA,0,0,0,0
+"2412",NA,"FFT","CA",NA,"peas",1983,NA,0,0,0,0
+"2413",NA,"FFT","MT",NA,"spotted Knapweed",1984,NA,0,0,0,0
+"2414",NA,"FFT","MT",NA,"spotted Knapweed",1984,NA,0,0,0,0
+"2415",NA,"FFT","MT",NA,"spotted Knapweed",1984,NA,0,0,0,0
+"2416",NA,"FFT","AB",NA,"drybeans",1985,NA,0,0,0,0
+"2417",NA,"FFT","AB",NA,"drybeans",1985,NA,0,0,0,0
+"2418",NA,"FFT","AB",NA,"drybeans",1985,NA,0,0,0,0
+"2419",NA,"FFT","NE",NA,"drybeans",1974,NA,0,0,0,0
+"2420",NA,"FFT","NE",NA,"drybeans",1974,NA,0,0,0,0
+"2421",NA,"FFT","NE",NA,"drybeans",1974,NA,0,0,0,0
+"2422",NA,"FFT","NE",NA,"soybeans",1999,NA,0,0,0,0
+"2423",NA,"FFT","NE",NA,"soybeans",1999,NA,0,0,0,0
+"2424",NA,"FFT","NE",NA,"soybeans",1999,NA,0,0,0,0
+"2425",NA,"FFT","WA",NA,"alfalfa",1991,NA,0,0,0,0
+"2426",NA,"FFT","WA",NA,"alfalfa",1991,NA,0,0,0,0
+"2427",NA,"FFT","",NA,"sunflower",1992,NA,0,0,0,0
+"2428",NA,"FFT","",NA,"sunflower",1992,NA,0,0,0,0
+"2429",NA,"FFT","",NA,"sunflower",1992,NA,0,0,0,0
+"2430",NA,"FFT","OH",NA,"alfalfa",1999,NA,0,0,0,0
+"2431",NA,"FFT","OH",NA,"alfalfa",1999,NA,0,0,0,0
+"2432",NA,"FFT","OH",NA,"alfalfa",1999,NA,0,0,0,0
+"2433",NA,"FFT","SIN",NA,"drybeans",1999,NA,0,0,0,0
+"2434",NA,"FFT","SIN",NA,"drybeans",1999,NA,0,0,0,0
+"2435",NA,"FFT","NE",NA,"soybeans",1999,NA,0,0,0,0
+"2436",NA,"FFT","NE",NA,"soybeans",1999,NA,0,0,0,0
+"2437",NA,"FFT","NE",NA,"soybeans",1999,NA,0,0,0,0
+"2438",NA,"FFT","NE",NA,"drybeans",1999,NA,0,0,0,0
+"2439",NA,"FFT","NE",NA,"drybeans",1999,NA,0,0,0,0
+"2440",NA,"FFT","WI",NA,"red clover",1999,NA,0,0,0,0
+"2441",NA,"FFT","WI",NA,"red clover",1999,NA,0,0,0,0
+"2442",NA,"FFT","WI",NA,"red clover",1999,NA,0,0,0,0
+"2443",NA,"FFT","MS",NA,"berseem clover",1999,NA,0,0,0,0
+"2444",NA,"FFT","MS",NA,"berseem clover",1999,NA,0,0,0,0
+"2445",NA,"FFT","MS",NA,"berseem clover",1999,NA,0,0,0,0
+"2446",NA,"FFT","MS",NA,"lesser trefoil",1999,NA,0,0,0,0
+"2447",NA,"FFT","MS",NA,"lesser trefoil",1999,NA,0,0,0,0
+"2448",NA,"FFT","MS",NA,"lesser trefoil",1999,NA,0,0,0,0
+"2449",NA,"FFT","MS",NA,"lesser trefoil",1999,NA,0,0,0,0
+"2450",NA,"FFT","MS",NA,"lesser trefoil",1999,NA,0,0,0,0
+"2451",NA,"FFT","KY",NA,"alfalfa",1999,NA,0,0,0,0
+"2452",NA,"FFT","KY",NA,"alfalfa",1999,NA,0,0,0,0
+"2453",NA,"FFT","KY",NA,"alfalfa",1999,NA,0,0,0,0
+"2454",NA,"FFT","KY",NA,"alfalfa",1999,NA,0,0,0,0
+"2455",NA,"FFT","KY",NA,"alfalfa",1999,NA,0,0,0,0
+"2456",NA,"FFT","KY",NA,"alfalfa",1999,NA,0,0,0,0
+"2457",NA,"FFT","KY",NA,"alfalfa",1999,NA,0,0,0,0
+"2458",NA,"FFT","KY",NA,"alfalfa",1999,NA,0,0,0,0
+"2459",NA,"FFT","KY",NA,"alfalfa",1999,NA,0,0,0,0
+"2460",NA,"FFT","WI",NA,"",1995,NA,0,0,0,0
+"2461",NA,"FFT","WI",NA,"red clover",1999,NA,0,0,0,0
+"2462",NA,"FFT","WI",NA,"red clover",1999,NA,0,0,0,0
+"2463",NA,"FFT","WI",NA,"red clover",1999,NA,0,0,0,0
+"2464",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2465",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2466",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2467",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2468",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2469",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2470",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2471",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2472",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2473",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2474",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2475",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2476",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2477",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2478",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2479",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2480",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2481",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2482",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2483",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2484",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2485",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2486",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2487",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2488",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2489",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2490",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2491",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2492",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2493",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2494",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2495",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2496",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2497",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2498",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2499",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2500",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2501",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2502",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2503",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2504",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2505",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2506",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2507",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2508",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2509",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2510",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2511",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2512",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2513",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2514",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2515",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2516",NA,"FFT","MS",NA,"crimson clover",1999,NA,0,0,0,0
+"2517",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2518",NA,"FFT","MS",NA,"crimson clover",1998,NA,0,0,0,0
+"2519",NA,"FFT","MG",NA,"drybeans",2000,NA,0,0,0,0
+"2520",NA,"FFT","MG",NA,"drybeans",2000,NA,0,0,0,0
+"2521",NA,"FFT","NE",NA,"drybeans",1973,NA,0,0,0,0
+"2522",NA,"FFT","NE",NA,"drybeans",1974,NA,0,0,0,0
+"2523",NA,"FFT","NE",NA,"drybeans",1974,NA,0,0,0,0
+"2524",NA,"FFT","NE",NA,"drybeans",1974,NA,0,0,0,0
+"2525",NA,"FFT","NE",NA,"drybeans",1974,NA,0,0,0,0
+"2526",NA,"FFT","NE",NA,"drybeans",1974,NA,0,0,0,0
+"2527",NA,"FFT","BA",NA,"soybeans",2012,NA,0,0,0,0
+"2528",NA,"FFT","BA",NA,"soybeans",2012,NA,0,0,0,0
+"2529",NA,"FFT","BA",NA,"soybeans",2012,NA,0,0,0,0
+"2530",NA,"FFT","BA",NA,"soybeans",2012,NA,0,0,0,0
+"2531",NA,"FFT","RS",NA,"soybeans",2012,NA,0,0,0,0
+"2532",NA,"FFT","RS",NA,"soybeans",2012,NA,0,0,0,0
+"2533",NA,"FFT","RS",NA,"soybeans",2012,NA,0,0,0,0
+"2534",NA,"FFT","RS",NA,"soybeans",2012,NA,0,0,0,0
+"2535",NA,"FFT","RS",NA,"soybeans",2012,NA,0,0,0,0
+"2536",NA,"FFT","RS",NA,"soybeans",2012,NA,0,0,0,0
+"2537",NA,"FFT","RS",NA,"soybeans",2012,NA,0,0,0,0
+"2538",NA,"FFT","RS",NA,"soybeans",2012,NA,0,0,0,0
+"2539",NA,"FFT","RS",NA,"soybeans",2012,NA,0,0,0,0
+"2540",NA,"FFT","RS",NA,"soybeans",2012,NA,0,0,0,0
+"2541",NA,"FFT","RS",NA,"soybeans",2012,NA,0,0,0,0
+"2542",NA,"FFT","RS",NA,"soybeans",2012,NA,0,0,0,0
+"2543",NA,"FFT","MS",NA,"soybeans",2012,NA,0,0,0,0
+"2544",NA,"FFT","MS",NA,"soybeans",2012,NA,0,0,0,0
+"2545",NA,"FFT","MS",NA,"soybeans",2012,NA,0,0,0,0
+"2546",NA,"FFT","MS",NA,"soybeans",2012,NA,0,0,0,0
+"2547",NA,"FFT","GO",NA,"soybeans",2012,NA,0,0,0,0
+"2548",NA,"FFT","GO",NA,"soybeans",2012,NA,0,0,0,0
+"2549",NA,"FFT","GO",NA,"soybeans",2012,NA,0,0,0,0
+"2550",NA,"FFT","GO",NA,"soybeans",2012,NA,0,0,0,0
+"2551",NA,"FFT","RS",NA,"soybeans",2012,NA,0,0,0,0
+"2552",NA,"FFT","RS",NA,"soybeans",2012,NA,0,0,0,0
+"2553",NA,"FFT","RS",NA,"soybeans",2012,NA,0,0,0,0
+"2554",NA,"FFT","RS",NA,"soybeans",2012,NA,0,0,0,0
