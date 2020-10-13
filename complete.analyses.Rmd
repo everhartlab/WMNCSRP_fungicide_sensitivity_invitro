@@ -167,6 +167,39 @@ getting.EC50 <- getting.EC50 %>%
       mutate(group = recode(group, survey_isolates = "Farmer fields", treatmentyear2016_isolates = "Fungicide field trials", baseline = "Baseline")) %>% mutate(group = as.factor(group)) %>% 
   ungroup()
 }
+##
+getting_DC <- function(filename){
+   data <-filename
+  
+  data1<- data %>% group_by(ID, dose) %>% summarise(mean_response = mean(response, na.rm = TRUE)) %>%
+    ungroup() %>% 
+  spread(dose, mean_response) %>% 
+    rename(control = `0`)
+    
+    
+  data2 <- as_data_frame( lapply(data1,function(x) {x[1] ; x}))
+  # data3 <- data.frame(data2)
+  # data4 <-  lapply(data3,name <- function(variables) {
+  # })
+  
+  colnames(data2)[-c(1:2)] <- paste("RG_", colnames(data2[,-c(1:2)]), sep = "")
+  data3 <- data2 %>% mutate_each(funs((./control)*100), starts_with("RG_")) %>% 
+    select(-c(control)) 
+} 
+##
+  getting_DC_2 <- function(filename){
+   data <-filename
+  
+data1 <-data %>% #joining
+  # normalizing data
+  mutate(logEC50 = (log(EC50))) %>% 
+rename(Estimate.50 = EC50)# #Since here EC50 is known as Estimate EC50 from EC50 table 
+  
+  
+  }
+
+##
+  
 
 ```
 
@@ -361,8 +394,10 @@ rename(response = picoxystrobin.growth, control = sham.growth) %>%
 
 survey.picoxystrobin.MX.BZ.2 <- reading_data_discriminatory_concentration(survey.picoxystrobin.MX.BZ)
 
+
+
 ```
-```{r geeting EC50 serial dilution}
+```{r getting EC50 serial dilution}
 # TM
 TM.EC50 <- getting_EC50(hey4)
 # Tetraconazole
@@ -372,62 +407,62 @@ boscalid.EC50 <- getting_EC50(hey)
 #Picoxystrobin
 picoxystrobin.EC50 <- getting_EC50(hey2)
 ```
+
 ```{r Getting Discriminatory dose}
-
-
-
-getting_DC <- function(filename){
-   data <-filename
-  
-  data1<- data %>% group_by(ID, dose) %>% summarise(mean_response = mean(response, na.rm = TRUE)) %>%
-    ungroup() %>% 
-  spread(dose, mean_response) 
-    
-    
-  data2 <- as_data_frame( lapply(data1,function(x) {x[1] ; x}))
-  # data3 <- data.frame(data2)
-  # data4 <-  lapply(data3,name <- function(variables) {
-  # })
-  
-  colnames(data2)[3:7] <- paste("RG_", colnames(data2[,c(3:7)]), sep = "")
+#getting_EC50 releases ID with factor
+TM <- hola.tm %>% left_join(hey4)
+#joining
+  getting_DC_2(TM) 
   
   
-  d[,-1] = apply(d[,-1],2,function(x){x/sum(x)})
+  
+#   
+#   data2[, -1] <- lapply(data2[, -1], function(x) x/sum(x))
+#   
+#     data2[, -1] <- lapply(data2[, -1], function(x){
+#       data2[1, 2] <- x/[1,1](100)
+#       
+#     } 
+#   
+#  data2[, -1] <- lapply(data2[, -1], function(x) x/'0'(100))
+#    
+# }
+#   d[,-1] = apply(d[,-1],2,function(x){x/sum(x)})
 
-> d
-  sample         a         b   c
-1     a2 0.1666667 0.4444444 0.6
-2     a3 0.8333333 0.5555556 0.4
-
-dat2 <- dat
-dat2[, -1] <- lapply(dat2[, -1], function(x) x/sum(x))
-dat2
+# > d
 #   sample         a         b   c
 # 1     a2 0.1666667 0.4444444 0.6
 # 2     a3 0.8333333 0.5555556 0.4
 
-dat2 <- dat
-dat2[] <- lapply(dat2[], function(x){
-  # Check if the column is numeric
-  if (is.numeric(x)){
-    return(x/sum(x))
-  } else{
-    return(x)
-  }
-})
-dat2
+# dat2 <- dat
+# dat2[, -1] <- lapply(dat2[, -1], function(x) x/sum(x))
+# dat2
 #   sample         a         b   c
 # 1     a2 0.1666667 0.4444444 0.6
 # 2     a3 0.8333333 0.5555556 0.4
 
-mat <- matrix(1:6, ncol=3)
-apply(mat,2, function(x) x / sum(x))
+# dat2 <- dat
+# dat2[] <- lapply(dat2[], function(x){
+#   # Check if the column is numeric
+#   if (is.numeric(x)){
+#     return(x/sum(x))
+#   } else{
+#     return(x)
+#   }
+# })
+# dat2
+#   sample         a         b   c
+# 1     a2 0.1666667 0.4444444 0.6
+# 2     a3 0.8333333 0.5555556 0.4
 
-df <- data.frame( a=c('a', 'b'), b=c(3,4), d=c(1,6))
-apply(df,2, function(x) {
-  x <- as.numeric(x)
-  x / sum(x)
-})
+# mat <- matrix(1:6, ncol=3)
+# apply(mat,2, function(x) x / sum(x))
+# 
+# df <- data.frame( a=c('a', 'b'), b=c(3,4), d=c(1,6))
+# apply(df,2, function(x) {
+#   x <- as.numeric(x)
+#   x / sum(x)
+# })
   
   # colnames(m2) <- paste(colnames(m2), "sub", sep = "_")
   # df %>% dplyr::rename_all(paste0, "a")
@@ -442,45 +477,7 @@ apply(df,2, function(x) {
 #   
   #getting_DC <- getting_DC
   
-  }
-    
-    
-    EC_table(filename, form = response ~ dose)
-getting.EC50 <- getting.EC50 %>% 
-  rename(ID = sample ) %>% # renaming
-  mutate(ID = as.factor(ID)) %>% 
-  rename(EC50 = Estimate.50) %>%
-   group_by(ID, EC50) %>%
-  mutate(group = ifelse(
-    ID %in% baseline.isolates,# if they are in this group
-    "baseline",
-    ifelse(
-      ID %in% survey.isolates, # if they are in this group, that is named farmer fiels also ahead
-      "survey_isolates",
-      "treatmentyear2016_isolates" # if they are in this group, that is named fungicide field trials also ahead
-      ))) %>% ungroup() %>% 
-      mutate(group = recode(group, survey_isolates = "Farmer fields", treatmentyear2016_isolates = "Fungicide field trials", baseline = "Baseline")) %>% mutate(group = as.factor(group)) %>% 
-  ungroup()
-}
-
-
-
-
-
-
-RG.boscalid <-
-  boscalid.filtered %>% group_by(ID, dose) %>% summarise(mean_response = mean(response, na.rm = TRUE)) %>%
-  spread(dose, mean_response) %>%
-  mutate(RG0.025 = ((`0.025` / `0`) * 100)) %>%    
-     mutate(RG0.05 = ((`0.05` / `0`) * 100)) %>%
-        mutate(RG0.05 = ((`0.05` / `0`) * 100)) %>%  
-          mutate(RG0.1 = ((`0.1` / `0`) * 100)) %>%
-            mutate(RG0.2 = ((`0.2` / `0`) * 100)) %>%
-              mutate(RG0.8 = ((`0.8` / `0`) * 100)) %>% 
-  ungroup()
-f
-
-
+  
 ```
 
 
