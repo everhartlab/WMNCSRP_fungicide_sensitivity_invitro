@@ -13,7 +13,7 @@ survey.isolates <-  c( 2385, 2386, 2098, 2099, 2100, 2139, 2140, 2143, 2220, 222
 
 Farmer.fields <- c(136:442, 455, 456, 466, 468, 470, 471, 478:554, 602:610, 612:635, 671, 672, 682:690, 695:797, 810:823, 834, 835, 848:1024, 1255: 1326, 1491: 1500, 1661:1670, 1831: 2246, 2303: 2342,2362: 2381, 2393: 2573)
 
-baseline.isolates_2 <- c(1: 136, 444: 454, 457: 465, 467, 469, 472:477, 555:601, 611, 636:670, 673: 680, 691:694 , 798: 809,  824: 833, 836: 847)
+baseline.isolates.2 <- c(1: 136, 444: 454, 457: 465, 467, 469, 472:477, 555:601, 611, 636:670, 673: 680, 691:694 , 798: 809,  824: 833, 836: 847)
 
 drybean <- c(1, 5, 12,13:118, 123:128, 133:135, 145, 146, 152, 155:160, 182: 185, 194:200, 205, 220, 223, 248, 253:255, 274, 279, 280, 290, 294, 304: 309, 323, 358, 393, 395, 396, 397, 400:402, 405, 408, 409, 434, 443:465, 467, 469: 493, 495:505, 555:613, 615: 760, 762: 819, 824:833, 835:855, 858:921, 966: 971, 980, 981, 985: 996, 998: 1009, 1220:1225 , 1857: 1940, 2242: 2569)
 
@@ -153,7 +153,7 @@ getting_EC50 <- function(filename){
   getting.EC50 <- EC_table(filename, form = response ~ dose)
 getting.EC50 <- getting.EC50 %>% 
   rename(ID = sample ) %>% # renaming
-  mutate(ID = as.factor(ID)) %>% 
+ # mutate(ID = as.factor(ID)) %>% 
   rename(EC50 = Estimate.50) %>%
    group_by(ID, EC50) %>%
   mutate(group = ifelse(
@@ -192,20 +192,74 @@ getting_DC <- function(filename){
   
 data1 <-data %>% #joining
   # normalizing data
-  mutate(logEC50 = (log(EC50))) %>% 
-rename(Estimate.50 = EC50)# #Since here EC50 is known as Estimate EC50 from EC50 table 
+  mutate(logEC50 = (log(EC50))) #%>% 
+#rename(Estimate.50 = EC50)# #Since here EC50 is known as Estimate EC50 from EC50 table maybe I dont ahve to change it
   
   
   }
+#   
+#   make.power <- function(n) {
+#  pow <- function(x) {
+#  x^n
+#  }
+#  pow
+# }
+  lineal_model <- function (vardep, varindep, data) {
+    lm(paste(vardep, "~", varindep), data = data)
+  }
 
+
+  # getting__<- function(filename){
+  # lineal_model <- function (vardep, varindep, data) {
+  #   lm(paste(vardep, "~", varindep), data = data)
+  # }
+  # a <- lineal_model(vardep,varindep, data=filename)
+  # data <-filename
+  # data1<- data %>% mutate(Estimate.50DC =
+  #                                     #using the model the intercept and the coefficient of the model
+  #                                     exp(a[[1]][[1]] + a[[1]][[2]] * varindep)) %>%
+  #   # here I need to do this dynamic
+  #   select(ID, Estimate.50DC, Estimate.50)
+  # }
+  # 
+  # getting__ <- function(filename){
+  #  data <-filename
+  # data1<- data %>% mutate 
+  # data1<- data %>% final.boscalid.clean %>% mutate(Estimate.50DC =
+  #                                     #using the model the intercept and the coefficient of the model
+  #                                     exp(finalRG0.2[[1]][[1]] + finalRG0.2[[1]][[2]] * RG0.2))
+  #   
+  #  
+  wrangling_DC<- function(filename){
+   data <-filename
+  
+data1 <-data %>% 
+ mutate(source = ifelse(
+    ID %in% baseline.isolates.2,
+    "Baseline",
+    ifelse(
+      ID %in% Farmer.fields,
+      "Producer Fields","Fungicide Field Trials"
+    )), Host = ifelse(
+    ID %in% drybean,
+    "Drybean", ifelse(
+      ID %in% soybean,
+      "Soybean","different_host")))  %>%
+  mutate(
+  source = as.factor(source),
+  Host = as.factor(Host)) %>% 
+#taking out "different host" becuse does not belong to drybean nor soybean
+  filter(!ID == 8, !ID == 129)
+}
 ##
+  
   
 
 ```
 
 ```{r Reading data}
 #TM
-hey4 <-
+hey <-
   reading_data_serial_dilution("data/TM_serialdi_BL-WMN_survey-WMNCSRP(validationdata).csv") %>%
   filter(!experimental_replicate == 1 |
            !dose == 1.5 | !repeats == 3)  #something weird happened with the repeats 3 so Iam revoming those
@@ -256,7 +310,7 @@ survey.TM.more.USA.2 <- reading_data_discriminatory_concentration(survey.TM.more
 
 
 #Tetraconazole
-hey3 <- reading_data_serial_dilution("data/tetraconazole_serialdi_BL-WMN_survey-WMNCSRP(validationdata).csv")
+hey2 <- reading_data_serial_dilution("data/tetraconazole_serialdi_BL-WMN_survey-WMNCSRP(validationdata).csv")
 ## First try with postdoc Thomas
 survey.tetraconazole <- read.csv("data/DD_survey-WMNCSRP.csv") %>%
   select(
@@ -303,7 +357,7 @@ rename(response = tetraconazole.growth, control = control.growth) %>%
 survey.tetraconazole.MX.BZ.2 <- reading_data_discriminatory_concentration(survey.tetraconazole.MX.BZ)
 
 #Boscalid
-hey <- reading_data_serial_dilution("data/boscalid_serialdilution_baseline(validationdata).csv") %>% filter(!dose ==  0.4 & !ID == 800)
+hey3 <- reading_data_serial_dilution("data/boscalid_serialdilution_baseline(validationdata).csv") %>% filter(!dose ==  0.4 & !ID == 800)
 ## First try with postdoc Thomas
 survey.boscalid <- read.csv("data/DD_survey-WMNCSRP.csv") %>%
   select(
@@ -348,7 +402,7 @@ rename(response = boscalid.growth, control = control.growth) %>%
 
 survey.boscalid.MX.BZ.2 <- reading_data_discriminatory_concentration(survey.boscalid.MX.BZ)
 # #Picoxystrobin
-hey2 <- reading_data_serial_dilution("data/picoxystrobin_serialdi_BL-WMN_survey-WMNCSRP(validationdata).csv")
+hey4 <- reading_data_serial_dilution("data/picoxystrobin_serialdi_BL-WMN_survey-WMNCSRP(validationdata).csv")
 ## First try with postdoc Thomas
 survey.picoxystrobin <- read.csv("data/DD_survey-WMNCSRP.csv") %>%
   select(
@@ -399,84 +453,96 @@ survey.picoxystrobin.MX.BZ.2 <- reading_data_discriminatory_concentration(survey
 ```
 ```{r getting EC50 serial dilution}
 # TM
-TM.EC50 <- getting_EC50(hey4)
+TM.EC50 <-  getting_EC50(hey)
 # Tetraconazole
-tetraconazole.EC50 <- getting_EC50(hey3)
+tetraconazole.EC50 <- getting_EC50(hey2)
 # Boscalid
-boscalid.EC50 <- getting_EC50(hey)
+boscalid.EC50 <- getting_EC50(hey3)
 #Picoxystrobin
-picoxystrobin.EC50 <- getting_EC50(hey2)
+picoxystrobin.EC50 <- getting_EC50(hey4)
 ```
 
 ```{r Getting Discriminatory dose}
 #getting_EC50 releases ID with factor
-TM <- hola.tm %>% left_join(hey4)
-#joining
-  getting_DC_2(TM) 
+TM <- getting_DC(hey) 
+  TM.joined <-  TM %>% left_join(TM.EC50)
   
+TM.joined.2 <-  getting_DC_2(TM.joined) 
   
+  #Boscalid
+boscalid <- getting_DC(hey3) 
+  boscalid.joined <-  boscalid%>% left_join(boscalid.EC50)
   
-#   
-#   data2[, -1] <- lapply(data2[, -1], function(x) x/sum(x))
-#   
-#     data2[, -1] <- lapply(data2[, -1], function(x){
-#       data2[1, 2] <- x/[1,1](100)
-#       
-#     } 
-#   
-#  data2[, -1] <- lapply(data2[, -1], function(x) x/'0'(100))
-#    
-# }
-#   d[,-1] = apply(d[,-1],2,function(x){x/sum(x)})
+ boscalid.joined.2 <-  getting_DC_2(boscalid.joined) 
+ ###Dose chosen as DC. Although there is one dose with higher r2, there is no difference between and this was selected
+# Linear model of log EC50 and relative growth at 0.2 ppm, check normality and homogeneity of variances
+finalRG_0.2 <- lm(logEC50 ~ RG_0.2,  boscalid.joined.2)
+summary(finalRG_0.2)
+#plot(finalRG0.2)
 
-# > d
-#   sample         a         b   c
-# 1     a2 0.1666667 0.4444444 0.6
-# 2     a3 0.8333333 0.5555556 0.4
+##taking out outliers from Q-Q PLOT $ LEVERAGE TEST, ISOLATES # 1032 from treatment, 2222 & 2223 from Farmer fields##
+boscalid.joined.2.clean <-
+  boscalid.joined.2 %>% filter(!ID == "1032", !ID == "2222",!ID == "2223") #%>% 
+  # select(logEC50, RG_0.2) %>% 
+  # rename(RG = RG_0.2)
 
-# dat2 <- dat
-# dat2[, -1] <- lapply(dat2[, -1], function(x) x/sum(x))
-# dat2
-#   sample         a         b   c
-# 1     a2 0.1666667 0.4444444 0.6
-# 2     a3 0.8333333 0.5555556 0.4
+summary(boscalid.lm <- lineal_model("logEC50","RG_0.2",data =  boscalid.joined.2.clean))
+   # Getting the EC50DC according to the model
+boscalid.EC50DC <- boscalid.joined.2.clean %>% mutate(Estimate.50DC =
+                                     #using the model the intercept and the coefficient of the model
+                                    exp(boscalid.lm[[1]][[1]] + boscalid.lm[[1]][[2]] * RG_0.2)) %>%# here I need to do this dynamic
+  select(ID, Estimate.50DC, EC50)
 
-# dat2 <- dat
-# dat2[] <- lapply(dat2[], function(x){
-#   # Check if the column is numeric
-#   if (is.numeric(x)){
-#     return(x/sum(x))
-#   } else{
-#     return(x)
-#   }
-# })
-# dat2
-#   sample         a         b   c
-# 1     a2 0.1666667 0.4444444 0.6
-# 2     a3 0.8333333 0.5555556 0.4
 
-# mat <- matrix(1:6, ncol=3)
-# apply(mat,2, function(x) x / sum(x))
-# 
-# df <- data.frame( a=c('a', 'b'), b=c(3,4), d=c(1,6))
-# apply(df,2, function(x) {
-#   x <- as.numeric(x)
-#   x / sum(x)
-# })
   
-  # colnames(m2) <- paste(colnames(m2), "sub", sep = "_")
-  # df %>% dplyr::rename_all(paste0, "a")
-  # iris %>% rename_with( ~ paste("Sub", .x, sep = "_"))
-  # colnames(df)[2:4] <- paste("d", colnames(df[,c(2:4)]), sep = "")
-  # CTDB %>% rename_with(~paste0(., "_Child"), BREATHE_SCARED:ENJOY_PRAISE)
-  # CTDB %>% rename_at(BREATHE_SCARED:ENJOY_PRAISE, ~paste0(., "_Child"))
-  # setnames(df,paste0(names(df),"_tag"))
-# print(df)
-#   
-#   names(data2) <- paste0("RG.", data2[,2:6])
-#   
-  #getting_DC <- getting_DC
   
+  
+  # Linear Regression graph of log EC50 and relative growth at 0.2 ppm
+
+ fig.1 <-    ggplot(boscalid.lm, aes(x = RG_0.2, y = logEC50)) +  geom_point() + geom_smooth(method = "lm") +  theme(
+    plot.title = element_text(
+    size = 8,
+    face = "bold",
+    hjust = 0.5,
+    family = "Arial"
+    ),
+    axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
+    axis.text = element_text(
+    face = "bold",
+    size = 14,
+    family = "Arial"
+    ),
+    panel.background = element_rect(fill = "white", colour = "grey50")
+    ) + labs(title = "Linear regression between EC50 values & relative growth of Boscalid at 0.2 ppm", x =
+    "Relative growth (%)", y = "Log EC50")
+    
+
+
+    # Linear model of EC50  and EC50DC just to corroborate is a GOOD RELATIONSHIP, check normality and homogeneity of variances
+summary(boscalid.lm.both.EC50s <- lineal_model("Estimate.50DC","EC50",data =  boscalid.EC50DC))
+
+#pdf("Linear regression of boscalid 0.2 ppm.pdf")  
+fig.2<- ggplot(boscalid.lm.both.EC50s, aes(x = EC50, y = Estimate.50DC)) +  theme(
+  plot.title = element_text(
+  size = 8,
+  face = "bold",
+  hjust = 1,
+  family = "Arial"
+  ),
+  axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
+  axis.text = element_text(
+  face = "bold",
+  size = 14,
+  family = "Arial"
+  ),
+  panel.background = element_rect(fill = "white", colour = "grey50")
+  ) + labs(title = "Linear regression between EC50 and EC50(D) values of Boscalid ", x =
+  "EC50 (ppm)", y = "EC50(D) (ppm)") + geom_point(shape = 24) + geom_smooth(method = "lm")
+
+  
+  ###
+
+boscalid.EC50DC.2 <- wrangling_DC(boscalid.EC50DC)
   
 ```
 
