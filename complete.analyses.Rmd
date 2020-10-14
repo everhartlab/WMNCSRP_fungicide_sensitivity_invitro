@@ -97,56 +97,57 @@ reading_data_serial_dilution <- function(filename){
 
 
 ##Function.Reading data for Discriminatory concentration
-reading_data_discriminatory_concentration <- function(filename){
-  data <-filename
- # data <- subset(data, select = -X)
+reading_data_discriminatory_concentration <- function(filename) {
+  data <- filename
+  # data <- subset(data, select = -X)
   #data$repeats <- rep_len(1:3, length.out = nrow(data))
   # renaming ID for the current names
- data$ID[ data$ID =="12B"]  <- "12" 
- #Although 74SS1 belong to # 74, the one what I used was specifically this:74SS1
- data$ID[ data$ID =="74SS1"]  <- "74" 
- data$ID[ data$ID =="62-02"]  <- "2098" 
- data$ID[ data$ID =="62-03"]  <- "2099" 
- data$ID[ data$ID =="62-04"]  <- "2100" 
- data$ID[ data$ID =="78-01"]  <- "2139" 
- data$ID[ data$ID =="78-02"]  <- "2140" 
- data$ID[ data$ID =="78-05"]  <- "2143" 
- data$ID[ data$ID =="S-01"]  <- "2320" 
- data$ID[ data$ID =="H-01"]  <- "2220" 
- data$ID[ data$ID =="H-03"]  <- "2222" 
- data$ID[ data$ID =="H-04"]  <- "2223"
- data$ID[ data$ID =="I-20"]  <- "2362"
- data$ID[ data$ID =="419"]  <- "2385"
- data$ID[ data$ID =="413"]  <- "2386"
- data$ID[ data$ID =="W212"]  <- "2388"
- data$ID[ data$ID =="318"]  <- "2390"
- data$ID[data$ID == "54C"]  <- "2453"
- data$ID[data$ID == "65B"]  <- "2528"
- data$ID[data$ID == "51C"]  <- "2449"
- data$ID[data$ID == "71B"]  <- "2505"
- data$ID[data$ID == "64D"]  <- "2518"
- data$ID[data$ID == "53B"]  <- "2536"
- data$ID[data$ID == "60A"]  <- "2559"
- data$ID[data$ID == "H-01"]  <- "2220"
- data$ID[data$ID == "H-03"]  <- "2222"
- data$ID[data$ID == "419"]  <- "2385"
- data$ID[data$ID == "78-02"]  <- "2140"
+  data$ID[data$ID == "12B"]  <- "12"
+  #Although 74SS1 belong to # 74, the one what I used was specifically this:74SS1
+  data$ID[data$ID == "74SS1"]  <- "74"
+  data$ID[data$ID == "62-02"]  <- "2098"
+  data$ID[data$ID == "62-03"]  <- "2099"
+  data$ID[data$ID == "62-04"]  <- "2100"
+  data$ID[data$ID == "78-01"]  <- "2139"
+  data$ID[data$ID == "78-02"]  <- "2140"
+  data$ID[data$ID == "78-05"]  <- "2143"
+  data$ID[data$ID == "S-01"]  <- "2320"
+  data$ID[data$ID == "H-01"]  <- "2220"
+  data$ID[data$ID == "H-03"]  <- "2222"
+  data$ID[data$ID == "H-04"]  <- "2223"
+  data$ID[data$ID == "I-20"]  <- "2362"
+  data$ID[data$ID == "419"]  <- "2385"
+  data$ID[data$ID == "413"]  <- "2386"
+  data$ID[data$ID == "W212"]  <- "2388"
+  data$ID[data$ID == "318"]  <- "2390"
+  data$ID[data$ID == "54C"]  <- "2453"
+  data$ID[data$ID == "65B"]  <- "2528"
+  data$ID[data$ID == "51C"]  <- "2449"
+  data$ID[data$ID == "71B"]  <- "2505"
+  data$ID[data$ID == "64D"]  <- "2518"
+  data$ID[data$ID == "53B"]  <- "2536"
+  data$ID[data$ID == "60A"]  <- "2559"
+  data$ID[data$ID == "H-01"]  <- "2220"
+  data$ID[data$ID == "H-03"]  <- "2222"
+  data$ID[data$ID == "419"]  <- "2385"
+  data$ID[data$ID == "78-02"]  <- "2140"
   data$ID <- as.numeric(data$ID)
   data <- data %>%
-         mutate(response= replace(response, response == 0, 0.6)) %>% 
-      #replacing 0 cm growth for the size of plug that is 0.6
-     # group_by(ID, experimental_replicate, concentration, growth, repeats) %>%
- group_by(ID) %>%
-  mutate(response_range = list(get_range(response))) %>%
-  unnest() %>%
-  mutate(control_range = list(get_range(control))) %>%
-  unnest() %>%
-  filter(response <= upper &
-           response >= lower,
-         control <= upper1 & control >= lower1) %>%
-  ungroup() %>%
-  select(c(ID, experimental_replicate, repeats, response, control))
-}
+    mutate(response = replace(response, response == 0, 0.6)) %>%
+    #replacing 0 cm growth for the size of plug that is 0.6
+    # group_by(ID, experimental_replicate, concentration, growth, repeats) %>%
+    group_by(ID) %>%
+    mutate(response_range = list(get_range(response))) %>%
+    unnest() %>%
+    mutate(control_range = list(get_range(control))) %>%
+    unnest() %>%
+    filter(response <= upper &
+             response >= lower,
+           control <= upper1 & control >= lower1) %>%
+    ungroup() %>%
+    select(c(ID, experimental_replicate, repeats, response, control)) %>%
+    group_by(ID) %>% mutate(count = n()) %>% ungroup() %>%  mutate(experiment = ifelse(count <= 6, 1, 2))
+  }
 #getting EC50
 getting_EC50 <- function(filename){
   
@@ -251,8 +252,19 @@ data1 <-data %>%
 #taking out "different host" becuse does not belong to drybean nor soybean
   filter(!ID == 8, !ID == 129)
 }
-##
-  
+##wrangling survey to get the EC50DC
+  wrangling_survey <- function(filename) {
+    data <- filename
+    data1 <- data %>%
+      group_by(ID, experiment) %>% # It was added here experiment because there are more repetatiosn ID in prurpose as cpositive controsl and non in purpose
+      summarise(
+        mean_response = mean(response, na.rm = TRUE),
+        mean_control = mean(control, na.rm = TRUE)
+      ) %>% ungroup() %>%
+      mutate(RG = (mean_response / mean_control) * 100)
+  }
+
+    
   
 
 ```
@@ -263,9 +275,9 @@ hey <-
   reading_data_serial_dilution("data/TM_serialdi_BL-WMN_survey-WMNCSRP(validationdata).csv") %>%
   filter(!experimental_replicate == 1 |
            !dose == 1.5 | !repeats == 3)  #something weird happened with the repeats 3 so Iam revoming those
-
+#Check here because there are more repeats for control, in that case create a new variable or column
 ## First try with postdoc Thomas
-survey.TM <- read.csv("data/DD_survey-WMNCSRP.csv") %>%
+survey.TM.thomas <- read.csv("data/DD_survey-WMNCSRP.csv") %>%
   select(
     ID,
     repeats,
@@ -278,41 +290,43 @@ survey.TM <- read.csv("data/DD_survey-WMNCSRP.csv") %>%
   mutate(TM.growth = ((TM.ecuatorial + TM.polar) / 2),
          control.growth = ((control.ecuatorial + control.polar) / 2)) %>% 
 rename(response = TM.growth, control = control.growth) %>% 
-  select(c(ID, experimental_replicate, repeats, response, control)) 
+  select(c(ID, experimental_replicate, repeats, response, control)) %>% 
+  reading_data_discriminatory_concentration()
 
-survey.TM.2 <- reading_data_discriminatory_concentration(survey.TM)
+
 ## Second try with Edgar
 survey.TM.USA <- 
       read.csv("data/DD_survey-WMNCSRP_TM.csv") %>% 
 mutate(TM.growth = ((TM.ecuatorial + TM.polar) / 2),
          control.growth = ((control.ecuatorial + control.polar) / 2)) %>% 
 rename(response = TM.growth, control = control.growth) %>% 
-  select(c(ID, experimental_replicate, repeats, response, control)) 
+  select(c(ID, experimental_replicate, repeats, response, control)) %>% 
+  reading_data_discriminatory_concentration()
 
-survey.TM.USA.2 <- reading_data_discriminatory_concentration(survey.TM.USA)
 ## Third try with Cristian
 survey.TM.more.USA <- 
  read.csv("data/TM.Cristian.csv") %>% 
 mutate(TM.growth = ((TM.ecuatorial + TM.polar) / 2),
          control.growth = ((control.ecuatorial + control.polar) / 2)) %>% 
 rename(response = TM.growth, control = control.growth) %>% 
-  select(c(ID, experimental_replicate, repeats, response, control)) 
+  select(c(ID, experimental_replicate, repeats, response, control)) %>% 
+  reading_data_discriminatory_concentration()
 
-survey.TM.more.USA.2 <- reading_data_discriminatory_concentration(survey.TM.more.USA)
+
 # Fourth try with Edgar # it does not exist yet
 # survey.TM.MX.BZ <-
 #  read.csv("data/DD_survey-WMNCSRP_TM.Brazilian.Mexican.csv") %>% mutate(TM.growth = ((TM.ecuatorial + TM.polar) / 2),
 #          control.growth = ((control.ecuatorial + control.polar) / 2)) %>%
 # rename(response = TM.growth, control = control.growth) %>%
-#   select(c(ID, experimental_replicate, repeats, response, control))
-# 
-# survey.TM.MX.BZ.2 <- reading_data_discriminatory_concentration(survey.TM.MX.BZ)
+#   select(c(ID, experimental_replicate, repeats, response, control)) %>% 
+# reading_data_discriminatory_concentration()
+
 
 
 #Tetraconazole
 hey2 <- reading_data_serial_dilution("data/tetraconazole_serialdi_BL-WMN_survey-WMNCSRP(validationdata).csv")
 ## First try with postdoc Thomas
-survey.tetraconazole <- read.csv("data/DD_survey-WMNCSRP.csv") %>%
+survey.tetraconazole.thomas <- read.csv("data/DD_survey-WMNCSRP.csv") %>%
   select(
     ID,
     repeats,
@@ -325,9 +339,8 @@ survey.tetraconazole <- read.csv("data/DD_survey-WMNCSRP.csv") %>%
   mutate(tetraconazole.growth = ((tetraconazole.ecuatorial + tetraconazole.polar) / 2),
          control.growth = ((control.ecuatorial + control.polar) / 2)) %>% 
 rename(response = tetraconazole.growth, control = control.growth) %>% 
-  select(c(ID, experimental_replicate, repeats, response, control)) 
-
-survey.tetraconazole.2 <- reading_data_discriminatory_concentration(survey.tetraconazole)
+  select(c(ID, experimental_replicate, repeats, response, control)) %>% 
+  reading_data_discriminatory_concentration()
 
 ## Second try with Edgar
 survey.tetraconazole.USA <- 
@@ -335,31 +348,32 @@ survey.tetraconazole.USA <-
 mutate(tetraconazole.growth = ((tetraconazole.ecuatorial + tetraconazole.polar) / 2),
          control.growth = ((control.ecuatorial + control.polar) / 2)) %>% 
 rename(response = tetraconazole.growth, control = control.growth) %>% 
-  select(c(ID, experimental_replicate, repeats, response, control)) 
+  select(c(ID, experimental_replicate, repeats, response, control)) %>% 
+  reading_data_discriminatory_concentration()
 
-survey.tetraconazole.USA.2 <- reading_data_discriminatory_concentration(survey.tetraconazole.USA)
+
 ## Third try with Cristian
 survey.tetraconazole.more.USA <- 
  read.csv("data/tetraconazole.Cristian.csv") %>% 
 mutate(tetraconazole.growth = ((tetraconazole.ecuatorial + tetraconazole.polar) / 2),
          control.growth = ((control.ecuatorial + control.polar) / 2)) %>% 
 rename(response = tetraconazole.growth, control = control.growth) %>% 
-  select(c(ID, experimental_replicate, repeats, response, control)) 
+  select(c(ID, experimental_replicate, repeats, response, control)) %>%  
+reading_data_discriminatory_concentration()
 
-survey.tetraconazole.more.USA.2 <- reading_data_discriminatory_concentration(survey.tetraconazole.more.USA)
 ## Fourth try with Edgar 
 survey.tetraconazole.MX.BZ <- 
  read.csv("data/DD_survey-WMNCSRP_tetraconazole.Mexican.Brazilian.csv") %>% mutate(tetraconazole.growth = ((tetraconazole.ecuatorial + tetraconazole.polar) / 2),
          control.growth = ((control.ecuatorial + control.polar) / 2)) %>% 
 rename(response = tetraconazole.growth, control = control.growth) %>% 
-  select(c(ID, experimental_replicate, repeats, response, control)) 
+  select(c(ID, experimental_replicate, repeats, response, control)) %>% 
+  reading_data_discriminatory_concentration()
 
-survey.tetraconazole.MX.BZ.2 <- reading_data_discriminatory_concentration(survey.tetraconazole.MX.BZ)
 
 #Boscalid
 hey3 <- reading_data_serial_dilution("data/boscalid_serialdilution_baseline(validationdata).csv") %>% filter(!dose ==  0.4 & !ID == 800)
 ## First try with postdoc Thomas
-survey.boscalid <- read.csv("data/DD_survey-WMNCSRP.csv") %>%
+survey.boscalid.thomas <- read.csv("data/DD_survey-WMNCSRP.csv") %>%
   select(
     ID,
     repeats,
@@ -372,39 +386,43 @@ survey.boscalid <- read.csv("data/DD_survey-WMNCSRP.csv") %>%
   mutate(boscalid.growth = ((boscalid.ecuatorial + boscalid.polar) / 2),
          control.growth = ((control.ecuatorial + control.polar) / 2)) %>% 
 rename(response = boscalid.growth, control = control.growth) %>% 
-  select(c(ID, experimental_replicate, repeats, response, control)) 
+  select(c(ID, experimental_replicate, repeats, response, control)) %>% 
+  reading_data_discriminatory_concentration()
 
-survey.boscalid.2 <- reading_data_discriminatory_concentration(survey.boscalid)
+
    ## Second try with Edgar
 survey.boscalid.USA <- 
       read.csv("data/DD_survey-WMNCSRP_boscalid.csv") %>% 
 mutate(boscalid.growth = ((boscalid.ecuatorial + boscalid.polar) / 2),
          control.growth = ((control.ecuatorial + control.polar) / 2)) %>% 
 rename(response = boscalid.growth, control = control.growth) %>% 
-  select(c(ID, experimental_replicate, repeats, response, control)) 
+  select(c(ID, experimental_replicate, repeats, response, control)) %>% 
+  reading_data_discriminatory_concentration()
 
-survey.boscalid.USA.2 <- reading_data_discriminatory_concentration(survey.boscalid.USA)
+
  ## Third try with Cristian
 survey.boscalid.more.USA <- 
  read.csv("data/Boscalid.Cristian.csv") %>% 
 mutate(boscalid.growth = ((boscalid.ecuatorial + boscalid.polar) / 2),
          control.growth = ((control.ecuatorial + control.polar) / 2)) %>% 
 rename(response = boscalid.growth, control = control.growth) %>% 
-  select(c(ID, experimental_replicate, repeats, response, control)) 
+  select(c(ID, experimental_replicate, repeats, response, control)) %>% 
+  reading_data_discriminatory_concentration()
 
-survey.boscalid.more.USA.2 <- reading_data_discriminatory_concentration(survey.boscalid.more.USA)
+
 ## Fourth try with Edgar 
 survey.boscalid.MX.BZ <- 
  read.csv("data/DD_survey-WMNCSRP_boscalid.Brazilian.Mexican.csv") %>% mutate(boscalid.growth = ((boscalid.ecuatorial + boscalid.polar) / 2),
          control.growth = ((control.ecuatorial + control.polar) / 2)) %>% 
 rename(response = boscalid.growth, control = control.growth) %>% 
-  select(c(ID, experimental_replicate, repeats, response, control)) 
+  select(c(ID, experimental_replicate, repeats, response, control)) %>% 
+  reading_data_discriminatory_concentration()
 
-survey.boscalid.MX.BZ.2 <- reading_data_discriminatory_concentration(survey.boscalid.MX.BZ)
+
 # #Picoxystrobin
 hey4 <- reading_data_serial_dilution("data/picoxystrobin_serialdi_BL-WMN_survey-WMNCSRP(validationdata).csv")
 ## First try with postdoc Thomas
-survey.picoxystrobin <- read.csv("data/DD_survey-WMNCSRP.csv") %>%
+survey.picoxystrobin.thomas <- read.csv("data/DD_survey-WMNCSRP.csv") %>%
   select(
     ID,
     repeats,
@@ -417,19 +435,19 @@ survey.picoxystrobin <- read.csv("data/DD_survey-WMNCSRP.csv") %>%
   mutate(picoxystrobin.growth = ((picoxystrobin.ecuatorial + picoxystrobin.polar) / 2),
          sham.growth = ((sham.ecuatorial + sham.polar) / 2)) %>% 
 rename(response = picoxystrobin.growth, control = sham.growth) %>% 
-  select(c(ID, experimental_replicate, repeats, response, control)) 
-
-survey.picoxystrobin.2 <- reading_data_discriminatory_concentration(survey.picoxystrobin)
-
+  select(c(ID, experimental_replicate, repeats, response, control)) %>% 
+reading_data_discriminatory_concentration()
+ 
 ## Second try with Edgar
 survey.picoxystrobin.USA <- 
       read.csv("data/DD_survey-WMNCSRP_picoxystrobin.csv") %>% 
 mutate(picoxystrobin.growth = ((picoxystrobin.ecuatorial + picoxystrobin.polar) / 2),
          sham.growth = ((sham.ecuatorial + sham.polar) / 2)) %>% 
 rename(response = picoxystrobin.growth, control = sham.growth) %>% 
-  select(c(ID, experimental_replicate, repeats, response, control)) 
+  select(c(ID, experimental_replicate, repeats, response, control)) %>% 
+  reading_data_discriminatory_concentration()
 
-survey.picoxystrobin.USA.2 <- reading_data_discriminatory_concentration(survey.picoxystrobin.USA)
+
 ## Third try with Cristian
 survey.picoxystrobin.more.USA <- 
  read.csv("data/picoxystrobin.Cristian.csv") %>% 
@@ -444,9 +462,9 @@ survey.picoxystrobin.MX.BZ <-
  read.csv("data/DD_survey-WMNCSRP_picoxystrobin.Mexican.Brazilian.csv") %>% mutate(picoxystrobin.growth = ((picoxystrobin.ecuatorial + picoxystrobin.polar) / 2),
          sham.growth = ((sham.ecuatorial + sham.polar) / 2)) %>% 
 rename(response = picoxystrobin.growth, control = sham.growth) %>% 
-  select(c(ID, experimental_replicate, repeats, response, control)) 
+  select(c(ID, experimental_replicate, repeats, response, control)) %>% 
+ reading_data_discriminatory_concentration()
 
-survey.picoxystrobin.MX.BZ.2 <- reading_data_discriminatory_concentration(survey.picoxystrobin.MX.BZ)
 
 
 
@@ -491,7 +509,7 @@ summary(boscalid.lm <- lineal_model("logEC50","RG_0.2",data =  boscalid.joined.2
 boscalid.EC50DC <- boscalid.joined.2.clean %>% mutate(Estimate.50DC =
                                      #using the model the intercept and the coefficient of the model
                                     exp(boscalid.lm[[1]][[1]] + boscalid.lm[[1]][[2]] * RG_0.2)) %>%# here I need to do this dynamic
-  select(ID, Estimate.50DC, EC50)
+  select(ID, Estimate.50DC, EC50) %>%  wrangling_DC()
 
 
   
@@ -540,10 +558,169 @@ fig.2<- ggplot(boscalid.lm.both.EC50s, aes(x = EC50, y = Estimate.50DC)) +  them
   "EC50 (ppm)", y = "EC50(D) (ppm)") + geom_point(shape = 24) + geom_smooth(method = "lm")
 
   
-  ###
+  ### Wrangling EC50DC
 
-boscalid.EC50DC.2 <- wrangling_DC(boscalid.EC50DC)
+# boscalid.EC50DC.2 <- wrangling_DC(boscalid.EC50DC)
   
 ```
 
+```{r Using the DC and the model, echo = FALSE}
+#Boscalid
+#survey.boscalid <- bind_rows(survey.boscalid.thomas, survey.boscalid.USA,survey.boscalid.more.USA,survey.boscalid.MX.BZ) 
+
+#any particular case check so far by this way
+survey.boscalid.thomas.2 <- survey.boscalid.thomas %>% mutate(
+    experiment = case_when(
+      response == 1.775 |
+        response == 1.905 |
+        response == 1.980 |
+        response == 1.910 |
+        response == 1.660 | 
+        response == 1.885~ 2,
+      TRUE ~ 1))
+
+
+survey.boscalid.thomas.3 <- wrangling_survey(survey.boscalid.thomas.2) %>%
+  mutate(EC50DC = exp (boscalid.lm [[1]][[1]] + boscalid.lm[[1]][[2]] * RG))# exponential is the opposite of log
+        #using the model the intercept and the coefficient of the model
+##
+survey.boscalid.USA.2 <- survey.boscalid.USA %>% mutate(
+    experiment = case_when(
+      response == 2.0635 |
+        control == 5.4735 |
+        response == 2.2900 |
+        response == 2.1965 |
+        response == 2.4830 | 
+        control == 5.5380 ~ 2,
+      TRUE ~ 1))
+
+survey.boscalid.USA.3 <- wrangling_survey(survey.boscalid.USA.2) %>%
+  mutate(EC50DC = exp (boscalid.lm [[1]][[1]] + boscalid.lm[[1]][[2]] * RG))#
+
+##
+survey.boscalid.more.USA <- survey.boscalid.more.USA %>% mutate(response = (response/10), control = (control/10))
+
+
+
+# survey.boscalid.more.USA.2 <- survey.boscalid.more.USA %>% mutate(
+#   experiment = ifelse(
+#     response == 1.6570 |
+#       response == 1.6735  |
+#       response == 1.6910 |
+#       response == 1.8705 |
+#       response == 2.1945 |
+#       response == 2.0860,
+#     1,
+#     2
+#   )
+# )
+
+survey.boscalid.more.USA.2 <-
+  survey.boscalid.more.USA %>% mutate(
+    experiment = ifelse(
+      response == 1.6570 |
+        response == 1.6735  |
+        response == 1.6910 |
+        response == 1.8705 |
+        response == 2.1945 |
+        response == 2.0860,
+      1,
+      ifelse(
+        response == 1.9390 |
+          response ==  1.9865 |
+          response ==  1.7995 |
+          response ==  1.9625 |
+          response ==  1.9140 |
+          response ==  1.7965,
+        3,
+        ifelse(
+          response ==  1.9400 |
+            response ==  2.1380 |
+            response ==  2.1775 |
+            response ==  2.2110 |
+            response ==  2.5435,
+          4,
+          ifelse(
+            response ==  1.9800 |
+              response ==  2.1390 |
+              response ==  2.1840 |
+              response ==  2.0815 |
+              response ==  1.9240 |
+              response ==  1.8405,
+            5,
+            experiment
+          )
+        )
+        
+      )
+    )
+  )
+
+ survey.boscalid.more.USA.3 <-
+  survey.boscalid.more.USA %>% mutate(           
+  experiment = case_when(
+      response == 1.6570 |
+        response ==1.6735  |
+        response == 1.6910 |
+        response == 1.8705 |
+        response == 2.1945 |
+        response == 2.0860  ~ 2,
+      response == 1.9390 |
+        response ==  1.9865|
+        response ==  1.7995|
+        response ==  1.9625|
+        response ==  1.9140| 
+         response ==  1.7965 ~ 3,
+         response ==  1.9400|
+        response ==  2.1380|
+        response ==  2.1840|
+        response ==  2.0815|
+        response ==  1.9240| 
+         response ==  1.8405 ~ 4,
+      response ==  1.9800 |
+              response ==  2.1390 |
+              response ==  2.1840 |
+              response ==  2.0815 |
+              response ==  1.9240 |
+              response ==  1.8405~5,
+        TRUE ~ 1))
+      
+
+survey.boscalid.more.USA.4 <- wrangling_survey(survey.boscalid.more.USA.2) %>%
+  mutate(EC50DC = exp (boscalid.lm [[1]][[1]] + boscalid.lm[[1]][[2]] * RG))#
+##
+
+survey.boscalid.MX.BZ.2 <- wrangling_survey(survey.boscalid.MX.BZ) %>%
+  mutate(EC50DC = exp (boscalid.lm [[1]][[1]] + boscalid.lm[[1]][[2]] * RG))#
+       
+#Gathering 
+survey.boscalid <- bind_rows(survey.boscalid.thomas.3,
+                             survey.boscalid.USA.3,
+                             survey.boscalid.more.USA.4,
+                             survey.boscalid.MX.BZ.2)
+                             
+                             
+           
+# Tetraconazole
+
+
+
+```
+
+```{r}
+survey.boscalid.thomas %>% group_by(ID) %>% tally()
+View(
+  survey.boscalid.thomas %>% group_by(ID) %>% mutate(count = n()) %>% ungroup() %>%  mutate(experiment = ifelse(count <= 6, 1, 2)) %>% mutate(
+    experiment = case_when(
+      response == 1.775 |
+        response == 1.905 |
+        response == 1.980 |
+        response == 1.910 |
+        response == 1.660 | 
+        response == 1.885 | 
+        response == 1.775 ~ 1,
+      TRUE ~ 2)))
+  
+
+```
 
