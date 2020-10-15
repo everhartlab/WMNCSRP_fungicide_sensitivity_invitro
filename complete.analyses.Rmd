@@ -7,6 +7,14 @@ This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute
 
 Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
 ```{r}
+library(tidyverse)
+library(broom)
+library(ezec)
+library(DescTools)
+
+```
+
+```{r}
 baseline.isolates <- c(1, 8, 12, 20, 21, 74, 87, 118, 123, 129, 449, 461, 467, 475, 558, 564, 568, 581, 645, 667, 800)
 
 survey.isolates <-  c( 2385, 2386, 2098, 2099, 2100, 2139, 2140, 2143, 2220, 2222, 2223, 2320, 2362, 2388, 2390 )
@@ -23,7 +31,19 @@ SI.Production.Field <- c( 698:741, 743:744, 746:760, 762: 778,
 786: 797, 810:819, 848: 855, 858: 914)
 
 SI.Screening.Nursery.Field <- c(444:454, 457:465, 467, 469, 472:477, 555: 582, 584: 601, 611, 636:670, 673:681,691:694, 798:809, 824: 833 , 836:847)# also taking into account WM Monitor 
+mexican.isolates <- c(242, 248, 615:632, 779, 1857: 1940)
+brazilian.isolates <-  c(400:402, 972:979, 1010:1022, 1227:1254, 2417:2569)
 
+
+whitemold.inventory <- read_csv("whitemold.inventory.csv")
+
+for (variable in unique(whitemold.inventory$State)) {
+    assign(variable, whitemold.inventory %>% filter (State == variable) %>% pull(ID), envir = .GlobalEnv)
+}
+
+for (variable in unique(whitemold.inventory$Field_Names)) {
+    assign(variable, whitemold.inventory %>% filter (Field_Names == variable)%>% pull(ID), envir = .GlobalEnv)
+}
 ```
 
 ```{r functions}
@@ -157,15 +177,24 @@ getting.EC50 <- getting.EC50 %>%
  # mutate(ID = as.factor(ID)) %>% 
   rename(EC50 = Estimate.50) %>%
    group_by(ID, EC50) %>%
-  mutate(group = ifelse(
-    ID %in% baseline.isolates,# if they are in this group
+  mutate(source = ifelse(
+    ID %in% baseline.isolates.2,# if they are in this group
     "baseline",
     ifelse(
       ID %in% survey.isolates, # if they are in this group, that is named farmer fiels also ahead
       "survey_isolates",
       "treatmentyear2016_isolates" # if they are in this group, that is named fungicide field trials also ahead
-      ))) %>% ungroup() %>% 
-      mutate(group = recode(group, survey_isolates = "Farmer fields", treatmentyear2016_isolates = "Fungicide field trials", baseline = "Baseline")) %>% mutate(group = as.factor(group)) %>% 
+      )), Host = ifelse(
+    ID %in% drybean,
+    "Drybean", ifelse(
+      ID %in% soybean,
+      "Soybean","different_host"))) %>% ungroup() %>% 
+  mutate(
+  source = as.factor(source),
+  Host = as.factor(Host)) %>%
+#taking out "different host" becuse does not belong to drybean nor soybean
+  filter(!ID == 8, !ID == 129) %>% 
+      mutate(source = recode(source, survey_isolates = "Farmer fields", treatmentyear2016_isolates = "Fungicide field trials", baseline = "Baseline")) %>% mutate(source = as.factor(source)) %>% 
   ungroup()
 }
 ##
@@ -230,11 +259,11 @@ data1 <-data %>% #joining
   #                                     #using the model the intercept and the coefficient of the model
   #                                     exp(finalRG0.2[[1]][[1]] + finalRG0.2[[1]][[2]] * RG0.2))
   #   
-  #  
+
   wrangling_DC<- function(filename){
    data <-filename
-  
-data1 <-data %>% 
+
+data1 <-data %>%
  mutate(source = ifelse(
     ID %in% baseline.isolates.2,
     "Baseline",
@@ -248,10 +277,19 @@ data1 <-data %>%
       "Soybean","different_host")))  %>%
   mutate(
   source = as.factor(source),
-  Host = as.factor(Host)) %>% 
+  Host = as.factor(Host)) %>%
 #taking out "different host" becuse does not belong to drybean nor soybean
-  filter(!ID == 8, !ID == 129)
-}
+  filter(!ID == 8, !ID == 129) %>%
+  mutate(
+    country = ifelse(
+      ID %in% mexican.isolates,
+      "Mexico",
+      ifelse(ID %in% brazilian.isolates,
+             "Brazil", "USA"
+      ))) 
+  }
+  
+
 ##wrangling survey to get the EC50DC
   wrangling_survey <- function(filename) {
     data <- filename
@@ -264,9 +302,46 @@ data1 <-data %>%
       mutate(RG = (mean_response / mean_control) * 100)
   }
 
-    
+  ##
+  # lineal_model <- function (vardep, varindep, data) {
+  #   lm(paste(vardep, "~", varindep), data = data)
+  # }
   
+  #test source
+  test_source <- function(filename, vardep, varindep) {
+    data <- filename
+    vardep <- data$EC50DC
+    varindep <- data$source
+    data1 <-  data %>%
+      do(tidy(shapiro.test(vardep)))
+    if (data1$p.value > 0.05)  {
+      print ("normal")# I have to add the ANOVA
+    } else {
+      kruskal.test(as.numeric(vardep) ~ as.factor(varindep), data = data1)
+     if (data1$p.value > 0.05) {
+        print ("No stats difference")
+      } else{
+        DunnTest(as.numeric(vardep) ~ as.factor(varindep), data = data1, method="bonferroni")}}}
+  
+   #test host
 
+  test_host <- function(filename, vardep, varindep) {
+    data <- filename
+    vardep <- data$EC50DC
+    varindep <- data$Host
+    data1 <-  data %>%
+      do(tidy(shapiro.test(vardep)))
+    if (data1$p.value > 0.05)  {
+      print ("normal")# I have to add the ANOVA
+    } else {
+      kruskal.test(as.numeric(vardep) ~ as.factor(varindep), data = data1)
+     if (data1$p.value > 0.05) {
+        print ("No stats difference")
+      } else{
+        DunnTest(as.numeric(vardep) ~ as.factor(varindep), data = data1, method="bonferroni")}}}
+
+   
+     
 ```
 
 ```{r Reading data}
@@ -469,6 +544,7 @@ rename(response = picoxystrobin.growth, control = sham.growth) %>%
 
 
 ```
+
 ```{r getting EC50 serial dilution}
 # TM
 TM.EC50 <-  getting_EC50(hey)
@@ -509,7 +585,7 @@ summary(boscalid.lm <- lineal_model("logEC50","RG_0.2",data =  boscalid.joined.2
 boscalid.EC50DC <- boscalid.joined.2.clean %>% mutate(Estimate.50DC =
                                      #using the model the intercept and the coefficient of the model
                                     exp(boscalid.lm[[1]][[1]] + boscalid.lm[[1]][[2]] * RG_0.2)) %>%# here I need to do this dynamic
-  select(ID, Estimate.50DC, EC50) %>%  wrangling_DC()
+  select(ID, Estimate.50DC, EC50)  %>%  wrangling_DC()
 
 
   
@@ -558,9 +634,95 @@ fig.2<- ggplot(boscalid.lm.both.EC50s, aes(x = EC50, y = Estimate.50DC)) +  them
   "EC50 (ppm)", y = "EC50(D) (ppm)") + geom_point(shape = 24) + geom_smooth(method = "lm")
 
   
-  ### Wrangling EC50DC
+########
+ggplot(boscalid.EC50DC, aes(x = EC50, y = Estimate.50DC)) +  geom_point(aes(
+   shape = Host,
+   colour = source,
+   fill = Host
+ ),
+ size = 2,
+ alpha = 3 / 4) +
+   scale_color_grey(start = 0, end = 1) + scale_shape_manual(values = c(15, 16, 17)) +
+   geom_smooth(method = "lm",
+               se = FALSE,
+               colour = "black",
+               size = 0.3) +
+   theme(
+     plot.title = element_text(
+       size = 10,
+       face = "bold",
+       hjust = 0.5,
+       family = "Arial"
+     ),
+     axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
+     axis.text = element_text(
+       face = "bold",
+       size = 10,
+       family = "Arial"
+     ),
+     panel.background = element_rect(fill = "white", colour = "grey50")
+   ) +
+   labs(x =
+          expression(bold(EC[bold("50")]) ~ (bold(ppm ~ bold(
+            "a.i."
+          )))), y = expression(bold(EC[bold("50") ~ (bold("D"))]) ~ (bold(ppm ~ bold(
+            "a.i."
+          ))))) + geom_abline(
+            intercept = 0,
+            slope = 1,
+            color = "black",
+            lty = "dashed",
+            size = 0.3
+          
+          ) +
+   expand_limits(x = c(0.04, 0.25), y = c(0.04, 0.25))  + scale_x_continuous(name = waiver(),
+                                                                             breaks = c(0.05, 0.1, 0.15, 0.20, 0.25)) + scale_y_continuous(breaks = c(0.05, 0.1, 0.15, 0.20, 0.25))
+ 
+###
+ggplot(boscalid.joined.2.clean, aes(x = RG_0.2, y = logEC50)) +  geom_point(aes(
+   shape = Host,
+   colour = source,
+   fill = Host
+ ),
+ size = 2,
+ alpha = 3 / 4) +
+   scale_color_grey(start = 0, end = 1) + scale_shape_manual(values = c(15, 16, 17)) +
+   geom_smooth(method = "lm",
+               se = FALSE,
+               colour = "black",
+               size = 0.3) +
+   theme(
+     plot.title = element_text(
+       size = 10,
+       face = "bold",
+       hjust = 0.5,
+       family = "Arial"
+     ),
+     axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
+     axis.text = element_text(
+       face = "bold",
+       size = 10,
+       family = "Arial"
+     ),
+     panel.background = element_rect(fill = "white", colour = "grey50")
+   ) +
+   labs(x =
+          expression(bold(EC[bold("50")]) ~ (bold(ppm ~ bold(
+            "a.i."
+          )))), y = expression(bold(EC[bold("50") ~ (bold("D"))]) ~ (bold(ppm ~ bold(
+            "a.i."
+          ))))) + geom_abline(
+            intercept = 0,
+            slope = 1,
+            color = "black",
+            lty = "dashed",
+            size = 0.3
+          
+          ) +
+   expand_limits(x = c(0.04, 0.25), y = c(0.04, 0.25))  + scale_x_continuous(name = waiver(),
+                                                                             breaks = c(0.05, 0.1, 0.15, 0.20, 0.25)) + scale_y_continuous(breaks = c(0.05, 0.1, 0.15, 0.20, 0.25))
+ 
 
-# boscalid.EC50DC.2 <- wrangling_DC(boscalid.EC50DC)
   
 ```
 
@@ -694,33 +856,45 @@ survey.boscalid.MX.BZ.2 <- wrangling_survey(survey.boscalid.MX.BZ) %>%
   mutate(EC50DC = exp (boscalid.lm [[1]][[1]] + boscalid.lm[[1]][[2]] * RG))#
        
 #Gathering 
+boscalid.EC50.2 <- boscalid.EC50 %>% select(ID, EC50) %>% 
+  rename(EC50DC = EC50)#just rebaming in purpose to join the following dataframe
+
 survey.boscalid <- bind_rows(survey.boscalid.thomas.3,
                              survey.boscalid.USA.3,
                              survey.boscalid.more.USA.4,
-                             survey.boscalid.MX.BZ.2)
-                             
-                             
-           
+                             survey.boscalid.MX.BZ.2, 
+                             boscalid.EC50.2) %>% select(ID, experiment, EC50DC)
+#Have to analyze the controls
+
+#wranglind_DC_2
+survey.boscalid.2 <- survey.boscalid%>% select(ID, EC50DC) %>% 
+group_by(ID) %>%
+  top_n(1, EC50DC) %>% #keeping the highest value of each ID value
+  ungroup() %>% 
+  wrangling_DC()         
+
+ 
+
+###For comparisons between hosts I had to take out the ones coming from baseline otherwise would not be fair
+
+survey.boscalid.2.host <- survey.boscalid.2 %>% 
+  filter(!source=="Baseline")
+
 # Tetraconazole
 
 
 
 ```
-
+Ana Stats, by source
 ```{r}
-survey.boscalid.thomas %>% group_by(ID) %>% tally()
-View(
-  survey.boscalid.thomas %>% group_by(ID) %>% mutate(count = n()) %>% ungroup() %>%  mutate(experiment = ifelse(count <= 6, 1, 2)) %>% mutate(
-    experiment = case_when(
-      response == 1.775 |
-        response == 1.905 |
-        response == 1.980 |
-        response == 1.910 |
-        response == 1.660 | 
-        response == 1.885 | 
-        response == 1.775 ~ 1,
-      TRUE ~ 2)))
-  
+test_source(survey.boscalid.2)
 
 ```
+Ana Stats, by host
+```{r}
+test_host(survey.boscalid.2.host
+            )
+
+```
+
 
