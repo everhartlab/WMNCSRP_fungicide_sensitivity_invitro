@@ -789,8 +789,8 @@ mutate(Field_Names= paste( Year,Field, sep = "_"))
     ungroup() %>%
     add_row(State = "Total", N_isolates = sum(.$N_isolates))
  
-  WM_publication %>% kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
-  write2pdf("table_publication.pdf")
+  # WM_publication %>% kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
+  # write2pdf("table_publication.pdf")
 
 WM_AB  <- WM3_ %>%
   filter(WM3_$State== "AB") %>% 
