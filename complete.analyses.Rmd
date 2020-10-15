@@ -446,7 +446,45 @@ data1 <-data %>%
 #     theme_classic()   +
 #     theme(plot.title=element_text(size=24))  
 # }
-#      
+#  
+   myplot_model_comparison <- function(filename, Year_Field, EC50DC) {
+     data <- filename
+    Year_Field<- data$Year_Field
+    EC50DC <- data$EC50DC
+    Host <- data$Host
+    State <- data$State
+    ggplot(data =filename,  aes(x = Year_Field, y = EC50DCC))  +
+   geom_jitter(aes(color= State, shape = Host),
+      width = .1,
+      height = 0,
+         alpha = 3 / 4
+   ) + stat_summary(
+      fun.y = mean,
+      geom = "point",
+      shape = 95,
+      size = 15,
+      color = "black"
+   ) +
+   labs(x = "Year_Field", y = expression(bold(EC[bold("50") ~ (bold("D"))]) ~
+                                            (bold(ppm ~ bold(
+                                               "a.i."
+                                            ))))) + theme(
+                                               panel.border = element_rect(
+                                                  colour = "black",
+                                                  fill = NA,
+                                                  size = 1
+                                               ),
+                                               axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+                                               axis.text = element_text(
+                                                  face = "bold",
+                                                  size = 8,
+                                                  family = "Arial",
+                                                  angle = 30
+                                                  
+                                               ),
+                                               panel.background = element_rect(fill = "white", colour = "grey50")
+                                            )}
+   
 ```
 
 ```{r Reading data}
@@ -634,9 +672,9 @@ survey.picoxystrobin.more.USA <-
 mutate(picoxystrobin.growth = ((picoxystrobin.ecuatorial + picoxystrobin.polar) / 2),
          sham.growth = ((sham.ecuatorial + sham.polar) / 2)) %>% 
 rename(response = picoxystrobin.growth, control = sham.growth) %>% 
-  select(c(ID, experimental_replicate, repeats, response, control)) 
+  select(c(ID, experimental_replicate, repeats, response, control)) %>% 
+ reading_data_discriminatory_concentration()
 
-survey.picoxystrobin.more.USA.2 <- reading_data_discriminatory_concentration(survey.picoxystrobin.more.USA)
 ## Fourth try with Edgar 
 survey.picoxystrobin.MX.BZ <- 
  read.csv("data/DD_survey-WMNCSRP_picoxystrobin.Mexican.Brazilian.csv") %>% mutate(picoxystrobin.growth = ((picoxystrobin.ecuatorial + picoxystrobin.polar) / 2),
@@ -662,13 +700,14 @@ picoxystrobin.EC50 <- getting_EC50(hey4)
 ```
 
 ```{r Getting Discriminatory dose}
-#getting_EC50 releases ID with factor
+#TM
+  #getting_EC50 releases ID with factor
 TM <- getting_DC(hey) 
   TM.joined <-  TM %>% left_join(TM.EC50)
   
 TM.joined.2 <-  getting_DC_2(TM.joined) 
   
-  #Boscalid
+#Boscalid
 boscalid <- getting_DC(hey3) 
   boscalid.joined <-  boscalid%>% left_join(boscalid.EC50)
   
@@ -702,13 +741,88 @@ myplot_model_1(boscalid.joined.2.clean)
 myplot_model_2(boscalid.EC50DC)+ expand_limits(x = c(0.04, 0.25), y = c(0.04, 0.25))  + scale_x_continuous(name = waiver(),
                                                                              breaks = c(0.05, 0.1, 0.15, 0.20, 0.25)) + scale_y_continuous(breaks = c(0.05, 0.1, 0.15, 0.20, 0.25))
  
-
+#Tetraconazole
   
+tetraconazole <- getting_DC(hey2) 
+  tetraconazole.joined <-  tetraconazole%>% left_join(tetraconazole.EC50)
+  
+tetraconazole.joined.2 <-  getting_DC_2(tetraconazole.joined) 
+ ###Dose chosen as DC. Although there is one dose with higher r2, there is no difference between and this was selected
+# Linear model of log EC50 and relative growth at 0.2 ppm, check normality and homogeneity of variances
+
+finalRG_2 <- lm(logEC50 ~ RG_2, tetraconazole.joined.2)
+summary(finalRG_2)
+#plot(finalRG0.2)
+
+##taking out outliers from Q-Q PLOT $ LEVERAGE TEST, ISOLATES # 1032 from treatment, 2222 & 2223 from Farmer fields##
+tetraconazole.joined.2.clean <-
+  tetraconazole.joined.2 %>% filter(!ID == "21", !ID == "558",!ID == "667") #%>% 
+  # select(logEC50, RG_0.2) %>% 
+  # rename(RG = RG_0.2)
+
+summary(tetraconazole.lm <- lineal_model("logEC50","RG_2",data =  tetraconazole.joined.2.clean))
+   # Getting the EC50DC according to the model
+tetraconazole.EC50DC <- tetraconazole.joined.2.clean %>% mutate(Estimate.50DC =
+                                     #using the model the intercept and the coefficient of the model
+                                    exp(tetraconazole.lm[[1]][[1]] + tetraconazole.lm[[1]][[2]] * RG_2)) %>%# here I need to do this dynamic
+  select(ID, Estimate.50DC, EC50)  %>%  wrangling_DC()
+
+# Linear Regression graph of log EC50 and relative growth at 0.2 ppm
+###
+
+myplot_model_1(tetraconazole.joined.2.clean) 
+ 
+
+######### Linear model of EC50  and EC50DC just to corroborate is a GOOD RELATIONSHIP, check normality and homogeneity of variances
+myplot_model_2(tetraconazole.EC50DC)+ expand_limits(x = c(0.04, 0.25), y = c(0.04, 0.25))  + scale_x_continuous(name = waiver(),
+                                                                             breaks = c(0.05, 0.1, 0.15, 0.20, 0.25)) + scale_y_continuous(breaks = c(0.05, 0.1, 0.15, 0.20, 0.25))
+ 
+## Picoxystrobin
+
+picoxystrobin<- getting_DC(hey4) 
+  picoxystrobin.joined <-  picoxystrobin%>% left_join(picoxystrobin.EC50)
+  
+ picoxystrobin.joined.2 <-  getting_DC_2(picoxystrobin.joined) 
+ ###Dose chosen as DC. Although there is one dose with higher r2, there is no difference between and this was selected
+# Linear model of log EC50 and relative growth at 0.2 ppm, check normality and homogeneity of variances
+finalRG_0.01 <- lm(logEC50 ~ RG_0.01,  picoxystrobin.joined.2)
+summary(finalRG_0.01)
+#plot(finalRG0.2)
+
+
+
+
+##taking out outliers from Q-Q PLOT $ LEVERAGE TEST, ISOLATES # 1032 from treatment, 2222 & 2223 from Farmer fields##
+picoxystrobin.joined.2.clean <-
+  picoxystrobin.joined.2 %>% filter(!ID == "1032", !ID == "558",!ID == "581") #%>% 
+  # select(logEC50, RG_0.2) %>% 
+  # rename(RG = RG_0.2)
+
+
+
+summary(picoxystrobin.lm <- lineal_model("logEC50","RG_0.01",data =  picoxystrobin.joined.2.clean))
+   # Getting the EC50DC according to the model
+picoxystrobin.EC50DC <- picoxystrobin.joined.2.clean %>% mutate(Estimate.50DC =
+                                     #using the model the intercept and the coefficient of the model
+                                    exp(picoxystrobin.lm[[1]][[1]] + picoxystrobin.lm[[1]][[2]] * RG_0.01)) %>%# here I need to do this dynamic
+  select(ID, Estimate.50DC, EC50)  %>%  wrangling_DC()
+
+# Linear Regression graph of log EC50 and relative growth at 0.2 ppm
+###
+
+myplot_model_1(picoxystrobin.joined.2.clean) 
+ 
+
+######### Linear model of EC50  and EC50DC just to corroborate is a GOOD RELATIONSHIP, check normality and homogeneity of variances
+myplot_model_2(picoxystrobin.EC50DC)+ expand_limits(x = c(0.04, 0.25), y = c(0.04, 0.25))  + scale_x_continuous(name = waiver(),
+                                                                             breaks = c(0.05, 0.1, 0.15, 0.20, 0.25)) + scale_y_continuous(breaks = c(0.05, 0.1, 0.15, 0.20, 0.25))
 
   
 ```
 
 ```{r Using the DC and the model, echo = FALSE}
+
+
 #Boscalid
 #survey.boscalid <- bind_rows(survey.boscalid.thomas, survey.boscalid.USA,survey.boscalid.more.USA,survey.boscalid.MX.BZ) 
 
@@ -864,19 +978,224 @@ survey.boscalid.2.host <- survey.boscalid.2 %>%
 
 # Tetraconazole
 
+#any particular case check so far by this way
+
+
+
+survey.tetraconazole.thomas.2 <- wrangling_survey(survey.tetraconazole.thomas) %>%
+  mutate(EC50DC = exp (tetraconazole.lm [[1]][[1]] + tetraconazole.lm[[1]][[2]] * RG))# exponential is the opposite of log
+        #using the model the intercept and the coefficient of the model
+##
+survey.tetraconazole.USA.2 <- survey.tetraconazole.USA %>% mutate(
+    experiment = case_when(
+      control == 5.2245 |
+        response == 2.1955 |
+        response == 2.2385 |
+        response ==  2.3260|
+        response == 2.5710 | 
+        response == 2.4230 ~ 2,
+      TRUE ~ 1))
+
+survey.tetraconazole.USA.3 <- wrangling_survey(survey.tetraconazole.USA.2) %>%
+  mutate(EC50DC = exp (tetraconazole.lm [[1]][[1]] + tetraconazole.lm[[1]][[2]] * RG))#
+
+##
+survey.tetraconazole.more.USA <- survey.tetraconazole.more.USA %>% mutate(response = (response/10), control = (control/10))
+
+
+survey.tetraconazole.more.USA.2 <-
+  survey.tetraconazole.more.USA %>% mutate(
+    experiment = case_when(
+      response == 2.2885 |
+        response == 2.4825|
+        response == 2.4805 |
+        response == 2.1630 |
+        response == 2.0860 |
+        response == 2.0560 ~2,
+        response == 1.9675 |
+          response ==  1.9775 |
+          response ==  1.9220 |
+          response ==  2.595 |
+          response ==  2.4075 |
+          response ==  2.5915~3,
+         response ==  1.9400 |
+            response ==  2.1380 |
+            response ==  2.1775 |
+            response ==  2.2110 |
+            response ==  2.5435~4,
+          response ==  2.1640 |
+              response ==  2.3290 |
+              response ==  2.2745~5,
+            TRUE ~ 1))
+      
+
+      
+
+survey.tetraconazole.more.USA.3 <- wrangling_survey(survey.tetraconazole.more.USA.2) %>%
+  mutate(EC50DC = exp (tetraconazole.lm [[1]][[1]] + tetraconazole.lm[[1]][[2]] * RG))#
+##
+
+survey.tetraconazole.MX.BZ.2 <- wrangling_survey(survey.tetraconazole.MX.BZ) %>%
+  mutate(EC50DC = exp (tetraconazole.lm [[1]][[1]] + tetraconazole.lm[[1]][[2]] * RG))#
+       
+#Gathering 
+tetraconazole.EC50.2 <- tetraconazole.EC50 %>% select(ID, EC50) %>% 
+  rename(EC50DC = EC50)#just rebaming in purpose to join the following dataframe
+
+survey.tetraconazole <- bind_rows(survey.tetraconazole.thomas.2,
+                             survey.tetraconazole.USA.3,
+                             survey.tetraconazole.more.USA.3,
+                             survey.tetraconazole.MX.BZ.2, 
+                             tetraconazole.EC50.2) %>% select(ID, experiment, EC50DC)
+#Have to analyze the controls
+
+#wranglind_DC_2
+survey.tetraconazole.2 <- survey.tetraconazole%>% select(ID, EC50DC) %>% 
+group_by(ID) %>%
+  top_n(1, EC50DC) %>% #keeping the highest value of each ID value
+  ungroup() %>% 
+  wrangling_DC()         
+
+ 
+
+###For comparisons between hosts I had to take out the ones coming from baseline otherwise would not be fair
+
+survey.tetraconazole.2.host <- survey.tetraconazole.2 %>% 
+  filter(!source=="Baseline")
+
+# picoxystrobin
+
+#any particular case check so far by this way
+
+
+survey.picoxystrobin.thomas.2 <- wrangling_survey(survey.picoxystrobin.thomas) %>%
+  mutate(EC50DC = exp (picoxystrobin.lm [[1]][[1]] + picoxystrobin.lm[[1]][[2]] * RG))# exponential is the opposite of log
+        #using the model the intercept and the coefficient of the model
+##
+survey.picoxystrobin.USA.2 <- survey.picoxystrobin.USA %>% mutate(
+    experiment = case_when(
+      control == 7.3565 |
+        response == 4.8610 |
+        control == 7.6690 |
+        response == 4.8415 |
+        response == 5.0570 | 
+        response == 3.1245 ~ 2,
+      TRUE ~ 1))
+
+survey.picoxystrobin.USA.3 <- wrangling_survey(survey.picoxystrobin.USA.2) %>%
+  mutate(EC50DC = exp (picoxystrobin.lm [[1]][[1]] + picoxystrobin.lm[[1]][[2]] * RG))#
+
+##
+survey.picoxystrobin.more.USA <- survey.picoxystrobin.more.USA %>% mutate(response = (response/10), control = (control/10))
+
+
+
+
+ survey.picoxystrobin.more.USA.2 <-
+  survey.picoxystrobin.more.USA %>% mutate(           
+  experiment = case_when(
+      response == 2.8865 |
+        response == 2.7210|
+        response == 3.2805 |
+        response == 3.1685 |
+        response == 3.2510 ~ 2,
+      response == 3.4420 |
+        response ==  3.3235|
+        response ==  3.3500|
+        response ==  3.1155|
+        response ==  2.7910| 
+         response ==  3.005 ~ 3,
+         response ==  3.0510|
+        response ==  2.9070|
+        response ==  3.0100|
+        response ==  2.5925|
+        response ==  2.2020| 
+         response ==  2.2700 ~ 4,
+      response ==  2.2530 |
+              response ==  2.3955 |
+              response ==  2.4980 |
+              response ==  2.9685 |
+              response ==  2.8245 |
+              response ==  2.8660~5,
+        TRUE ~ 1))
+      
+
+survey.picoxystrobin.more.USA.3 <- wrangling_survey(survey.picoxystrobin.more.USA.2) %>%
+  mutate(EC50DC = exp (picoxystrobin.lm [[1]][[1]] + picoxystrobin.lm[[1]][[2]] * RG))#
+##
+
+survey.picoxystrobin.MX.BZ.2 <- wrangling_survey(survey.picoxystrobin.MX.BZ) %>%
+  mutate(EC50DC = exp (picoxystrobin.lm [[1]][[1]] + picoxystrobin.lm[[1]][[2]] * RG))#
+       
+#Gathering 
+picoxystrobin.EC50.2 <- picoxystrobin.EC50 %>% select(ID, EC50) %>% 
+  rename(EC50DC = EC50)#just rebaming in purpose to join the following dataframe
+
+survey.picoxystrobin <- bind_rows(survey.picoxystrobin.thomas.2,
+                             survey.picoxystrobin.USA.3,
+                             survey.picoxystrobin.more.USA.3,
+                             survey.picoxystrobin.MX.BZ.2, 
+                             picoxystrobin.EC50.2) %>% select(ID, experiment, EC50DC)
+#Have to analyze the controls
+
+#wranglind_DC_2
+survey.picoxystrobin.2 <- survey.picoxystrobin%>% select(ID, EC50DC) %>% 
+group_by(ID) %>%
+  top_n(1, EC50DC) %>% #keeping the highest value of each ID value
+  ungroup() %>% 
+  wrangling_DC()         
+
+ 
+
+###For comparisons between hosts I had to take out the ones coming from baseline otherwise would not be fair
+
+survey.picoxystrobin.2.host <- survey.picoxystrobin.2 %>% 
+  filter(!source=="Baseline")
+
 
 
 ```
-Ana Stats, by source
+Boscalid Ana Stats, by source
 ```{r}
 test_source(survey.boscalid.2)
 
 ```
-Ana Stats, by host
+ Ana Stats, by host
 ```{r}
 test_host(survey.boscalid.2.host
             )
 
 ```
+the graph
+```{r}
++  expand_limits(y = c(0.06, 0.18)) + scale_y_continuous(breaks = c(0.06, 0.08, 0.1, 0.12, 0.14, 0.16, 0.18))
+```
+Tetraconazole Ana Stats, by source
+```{r}
+test_source(survey.tetraconazole.2)
+```
+ Ana Stats, by host
+```{r}
+test_host(survey.tetraconazole.2.host
+            )
+```
+the graph
+```{r}
++  expand_limits(y = c(0.06, 0.18)) + scale_y_continuous(breaks = c(0.06, 0.08, 0.1, 0.12, 0.14, 0.16, 0.18))
+```
+Picoxystrobin Ana Stats, by source
+```{r}
+test_source(survey.picoxystrobin.2)
+```
+ Ana Stats, by host
+```{r}
+test_host(survey.picoxystrobin.2.host
+            )
 
+```
+the graph
+
+```{r}
++  expand_limits(y = c(0.06, 0.18)) + scale_y_continuous(breaks = c(0.06, 0.08, 0.1, 0.12, 0.14, 0.16, 0.18))
+```
 
