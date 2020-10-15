@@ -204,7 +204,8 @@ getting_DC <- function(filename){
   data1<- data %>% group_by(ID, dose) %>% summarise(mean_response = mean(response, na.rm = TRUE)) %>%
     ungroup() %>% 
   spread(dose, mean_response) %>% 
-    rename(control = `0`)
+    rename(control = `0`) %>% #taking out "different host" becuse does not belong to drybean nor soybean
+  filter(!ID == 8, !ID == 129) 
     
     
   data2 <- as_data_frame( lapply(data1,function(x) {x[1] ; x}))
@@ -340,8 +341,112 @@ data1 <-data %>%
       } else{
         DunnTest(as.numeric(vardep) ~ as.factor(varindep), data = data1, method="bonferroni")}}}
 
-   
-     
+  ###Probbaly I wil have to change the specific RG0.02 for RG in the previous functions
+  myplot_model_1 <- function(filename, RG, logEC50) {
+    data <- filename
+    RG <- data$RG_0.2
+    logEC50 <- data$logEC50
+    Host <- data$Host
+    source <- data$source
+    ggplot(data = filename,  aes(x = RG, y = logEC50))  +
+      geom_point(aes(
+        shape = Host,
+        colour = source,
+        fill = Host
+      ),
+      size = 2,
+      alpha = 3 / 4) +
+      scale_color_grey(start = 0, end = 1) + scale_shape_manual(values = c(15, 16, 17)) +
+      geom_smooth(
+        method = "lm",
+        se = FALSE,
+        colour = "black",
+        size = 0.3
+      ) +
+      theme(
+        plot.title = element_text(
+          size = 10,
+          face = "bold",
+          hjust = 0.5,
+          family = "Arial"
+        ),
+        axis.title = element_text(
+          size = 14,
+          face = "bold",
+          hjust = 0.5
+        ),
+        axis.text = element_text(
+          face = "bold",
+          size = 10,
+          family = "Arial"
+        ),
+        panel.background = element_rect(fill = "white", colour = "grey50")
+      ) + labs(x =
+                 "Relative growth (%)", y = expression(bold(Log  (EC[bold("50")])))) + expand_limits(x = c(15, 65)) + scale_x_continuous(name = waiver(), breaks = c(15, 25, 35, 45, 55, 65)) + scale_y_continuous(breaks = c(-3,-2.75,-2.5,-2.25,-2.0,-1.75,-1.5)) + geom_abline(
+                   intercept = 0,
+                   slope = 1,
+                   color = "black",
+                   lty = "dashed",
+                   size = 0.3
+                 )
+    }
+  ####
+   myplot_model_2 <- function(filename, EC50, Estimate.50DC, Host, source) {
+     data <- filename
+    EC50 <- data$EC50
+    Estimate.50DC <- data$Estimate.50DC
+    Host <- data$Host
+    source <- data$source
+    ggplot(data =filename,  aes(x = EC50, y = Estimate.50DC)) +  geom_point(aes(
+   shape = Host,
+   colour = source,
+   fill = Host
+ ),
+ size = 2,
+ alpha = 3 / 4) +
+   scale_color_grey(start = 0, end = 1) + scale_shape_manual(values = c(15, 16, 17)) +
+   geom_smooth(method = "lm",
+               se = FALSE,
+               colour = "black",
+               size = 0.3) +
+   theme(
+     plot.title = element_text(
+       size = 10,
+       face = "bold",
+       hjust = 0.5,
+       family = "Arial"
+     ),
+     axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
+     axis.text = element_text(
+       face = "bold",
+       size = 10,
+       family = "Arial"
+     ),
+     panel.background = element_rect(fill = "white", colour = "grey50")
+   ) +
+   labs(x =
+          expression(bold(EC[bold("50")]) ~ (bold(ppm ~ bold(
+            "a.i."
+          )))), y = expression(bold(EC[bold("50") ~ (bold("D"))]) ~ (bold(ppm ~ bold(
+            "a.i."
+          ))))) + geom_abline(
+            intercept = 0,
+            slope = 1,
+            color = "black",
+            lty = "dashed",
+            size = 0.3)
+
+   }
+#  ggplot(data = mydf, aes(x=reorder(myxcol, myycol), y=myycol)) +
+#     geom_col(color = "black", fill="#0072B2") +
+#     xlab("") +
+#     ylab("") +
+#     coord_flip() +
+#     ggtitle(mytitle) +
+#     theme_classic()   +
+#     theme(plot.title=element_text(size=24))  
+# }
+#      
 ```
 
 ```{r Reading data}
@@ -587,141 +692,18 @@ boscalid.EC50DC <- boscalid.joined.2.clean %>% mutate(Estimate.50DC =
                                     exp(boscalid.lm[[1]][[1]] + boscalid.lm[[1]][[2]] * RG_0.2)) %>%# here I need to do this dynamic
   select(ID, Estimate.50DC, EC50)  %>%  wrangling_DC()
 
-
-  
-  
-  
-  # Linear Regression graph of log EC50 and relative growth at 0.2 ppm
-
- fig.1 <-    ggplot(boscalid.lm, aes(x = RG_0.2, y = logEC50)) +  geom_point() + geom_smooth(method = "lm") +  theme(
-    plot.title = element_text(
-    size = 8,
-    face = "bold",
-    hjust = 0.5,
-    family = "Arial"
-    ),
-    axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
-    axis.text = element_text(
-    face = "bold",
-    size = 14,
-    family = "Arial"
-    ),
-    panel.background = element_rect(fill = "white", colour = "grey50")
-    ) + labs(title = "Linear regression between EC50 values & relative growth of Boscalid at 0.2 ppm", x =
-    "Relative growth (%)", y = "Log EC50")
-    
-
-
-    # Linear model of EC50  and EC50DC just to corroborate is a GOOD RELATIONSHIP, check normality and homogeneity of variances
-summary(boscalid.lm.both.EC50s <- lineal_model("Estimate.50DC","EC50",data =  boscalid.EC50DC))
-
-#pdf("Linear regression of boscalid 0.2 ppm.pdf")  
-fig.2<- ggplot(boscalid.lm.both.EC50s, aes(x = EC50, y = Estimate.50DC)) +  theme(
-  plot.title = element_text(
-  size = 8,
-  face = "bold",
-  hjust = 1,
-  family = "Arial"
-  ),
-  axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
-  axis.text = element_text(
-  face = "bold",
-  size = 14,
-  family = "Arial"
-  ),
-  panel.background = element_rect(fill = "white", colour = "grey50")
-  ) + labs(title = "Linear regression between EC50 and EC50(D) values of Boscalid ", x =
-  "EC50 (ppm)", y = "EC50(D) (ppm)") + geom_point(shape = 24) + geom_smooth(method = "lm")
-
-  
-########
-ggplot(boscalid.EC50DC, aes(x = EC50, y = Estimate.50DC)) +  geom_point(aes(
-   shape = Host,
-   colour = source,
-   fill = Host
- ),
- size = 2,
- alpha = 3 / 4) +
-   scale_color_grey(start = 0, end = 1) + scale_shape_manual(values = c(15, 16, 17)) +
-   geom_smooth(method = "lm",
-               se = FALSE,
-               colour = "black",
-               size = 0.3) +
-   theme(
-     plot.title = element_text(
-       size = 10,
-       face = "bold",
-       hjust = 0.5,
-       family = "Arial"
-     ),
-     axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
-     axis.text = element_text(
-       face = "bold",
-       size = 10,
-       family = "Arial"
-     ),
-     panel.background = element_rect(fill = "white", colour = "grey50")
-   ) +
-   labs(x =
-          expression(bold(EC[bold("50")]) ~ (bold(ppm ~ bold(
-            "a.i."
-          )))), y = expression(bold(EC[bold("50") ~ (bold("D"))]) ~ (bold(ppm ~ bold(
-            "a.i."
-          ))))) + geom_abline(
-            intercept = 0,
-            slope = 1,
-            color = "black",
-            lty = "dashed",
-            size = 0.3
-          
-          ) +
-   expand_limits(x = c(0.04, 0.25), y = c(0.04, 0.25))  + scale_x_continuous(name = waiver(),
-                                                                             breaks = c(0.05, 0.1, 0.15, 0.20, 0.25)) + scale_y_continuous(breaks = c(0.05, 0.1, 0.15, 0.20, 0.25))
- 
+# Linear Regression graph of log EC50 and relative growth at 0.2 ppm
 ###
-ggplot(boscalid.joined.2.clean, aes(x = RG_0.2, y = logEC50)) +  geom_point(aes(
-   shape = Host,
-   colour = source,
-   fill = Host
- ),
- size = 2,
- alpha = 3 / 4) +
-   scale_color_grey(start = 0, end = 1) + scale_shape_manual(values = c(15, 16, 17)) +
-   geom_smooth(method = "lm",
-               se = FALSE,
-               colour = "black",
-               size = 0.3) +
-   theme(
-     plot.title = element_text(
-       size = 10,
-       face = "bold",
-       hjust = 0.5,
-       family = "Arial"
-     ),
-     axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
-     axis.text = element_text(
-       face = "bold",
-       size = 10,
-       family = "Arial"
-     ),
-     panel.background = element_rect(fill = "white", colour = "grey50")
-   ) +
-   labs(x =
-          expression(bold(EC[bold("50")]) ~ (bold(ppm ~ bold(
-            "a.i."
-          )))), y = expression(bold(EC[bold("50") ~ (bold("D"))]) ~ (bold(ppm ~ bold(
-            "a.i."
-          ))))) + geom_abline(
-            intercept = 0,
-            slope = 1,
-            color = "black",
-            lty = "dashed",
-            size = 0.3
-          
-          ) +
-   expand_limits(x = c(0.04, 0.25), y = c(0.04, 0.25))  + scale_x_continuous(name = waiver(),
+
+myplot_model_1(boscalid.joined.2.clean) 
+ 
+
+######### Linear model of EC50  and EC50DC just to corroborate is a GOOD RELATIONSHIP, check normality and homogeneity of variances
+myplot_model_2(boscalid.EC50DC)+ expand_limits(x = c(0.04, 0.25), y = c(0.04, 0.25))  + scale_x_continuous(name = waiver(),
                                                                              breaks = c(0.05, 0.1, 0.15, 0.20, 0.25)) + scale_y_continuous(breaks = c(0.05, 0.1, 0.15, 0.20, 0.25))
  
+
+  
 
   
 ```
