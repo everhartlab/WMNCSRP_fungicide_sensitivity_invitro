@@ -35,15 +35,23 @@ mexican.isolates <- c(242, 248, 615:632, 779, 1857: 1940)
 brazilian.isolates <-  c(400:402, 972:979, 1010:1022, 1227:1254, 2417:2569)
 
 
-whitemold.inventory <- read_csv("whitemold.inventory.csv")
+whitemold.inventory <- read_csv("whitemold.inventory.csv") %>% mutate(Field_Year= paste (Field, Year,sep = "_year_"))
 
 for (variable in unique(whitemold.inventory$State)) {
     assign(variable, whitemold.inventory %>% filter (State == variable) %>% pull(ID), envir = .GlobalEnv)
 }
 
-for (variable in unique(whitemold.inventory$Field_Names)) {
-    assign(variable, whitemold.inventory %>% filter (Field_Names == variable)%>% pull(ID), envir = .GlobalEnv)
+for (variable in unique(whitemold.inventory$Field_Year)) {
+    assign(variable, whitemold.inventory %>% filter (Field_Year == variable)%>% pull(ID), envir = .GlobalEnv)
 }
+
+# mm <- whitemold.inventory %>% select(Field_Year) %>% unique() %>% pull()
+# MM <- whitemold.inventory %>% select(Field_Year) %>% unique() %>% pull()
+# ala <- whitemold.inventory %>% select(State) %>% unique() %>% pull()
+# ala.2 <- read_csv("ala.csv")
+# ala.2 <- ala.2 %>% mutate(join= paste(X1,x))
+# write.csv(mm.2, "mm.2.csv")
+# mm.2 <- mm.2 %>% mutate(join= paste(X1,x))
 ```
 
 ```{r functions}
@@ -286,11 +294,222 @@ data1 <-data %>%
       ID %in% mexican.isolates,
       "Mexico",
       ifelse(ID %in% brazilian.isolates,
-             "Brazil", "USA"
-      ))) 
-  }
-  
+             "Brazil", "USA")))%>% 
+ mutate(Field_Year= case_when(
+ID %in% NA_year_1973~"NA_year_1973",
+ID %in% NA_year_1974~"NA_year_1974",
+ID %in% NA_year_1963~"NA_year_1963",
+ID %in% NA_year_1975~"NA_year_1975",
+ID %in% NA_year_1977~"NA_year_1977",
+ID %in% NA_year_1976~"NA_year_1976",
+ID %in% NA_year_1978~"NA_year_1978",
+ID %in% NA_year_1979~"NA_year_1979",
+ID %in% NA_year_1980~"NA_year_1980",
+ID %in% NA_year_2003~"NA_year_2003",
+ID %in% NA_year_1982~"NA_year_1982",
+ID %in% NA_year_1983~"NA_year_1983",
+ID %in% NA_year_1984~"NA_year_1984",
+ID %in% NA_year_1985~"NA_year_1985",
+ID %in% NA_year_1987~"NA_year_1987",
+ID %in% NA_year_1990~"NA_year_1990",
+ID %in% NA_year_1965~"NA_year_1965",
+ID %in% NA_year_1989~"NA_year_1989",
+ID %in% NA_year_1991~"NA_year_1991",
+ID %in% NA_year_1992~"NA_year_1992",
+ID %in% NA_year_1969~"NA_year_1969",
+ID %in% NA_year_1981~"NA_year_1981",
+ID %in% NA_year_1993~"NA_year_1993",
+ID %in% NA_year_1994~"NA_year_1994",
+ID %in% NA_year_1995~"NA_year_1995",
+ID %in% NA_year_1996~"NA_year_1996",
+ID %in% NA_year_1997~"NA_year_1997",
+ID %in% WM_production_31_year_1997~"WM_production_31_year_1997",
+ID %in% WM_production_32_year_1997~"WM_production_32_year_1997",
+ID %in% NA_year_1988~"NA_year_1988",
+ID %in% WM_production_33_year_1997~"WM_production_33_year_1997",
+ID %in% NA_year_NA~"NA_year_NA",
+ID %in% NA_year_1998~"NA_year_1998",
+ID %in% NA_year_1999~"NA_year_1999",
+ID %in% NA_year_2000~"NA_year_2000",
+ID %in% NA_year_2002~"NA_year_2002",
+ID %in% WM_nursery_1_year_2003~"WM_nursery_1_year_2003",
+ID %in% WM_nursery_2_year_2003~"WM_nursery_2_year_2003",
+ID %in% WM_nursery_3_year_2003~"WM_nursery_3_year_2003",
+ID %in% WM_nursery_4_year_2003~"WM_nursery_4_year_2003",
+ID %in% WM_nursery_5_year_2003~"WM_nursery_5_year_2003",
+ID %in% WM_production_35_year_2003~"WM_production_35_year_2003",
+ID %in% NA_year_2004~"NA_year_2004",
+ID %in% NA_year_2005~"NA_year_2005",
+ID %in% NA_year_2006~"NA_year_2006",
+ID %in% WM_production_36_year_2004~"WM_production_36_year_2004",
+ID %in% WM_production_37_year_2004~"WM_production_37_year_2004",
+ID %in% WM_production_38_year_2004~"WM_production_38_year_2004",
+ID %in% WM_production_39_year_2004~"WM_production_39_year_2004",
+ID %in% WM_production_40_year_2004~"WM_production_40_year_2004",
+ID %in% WM_production_41_year_2004~"WM_production_41_year_2004",
+ID %in% WM_production_42_year_2004~"WM_production_42_year_2004",
+ID %in% WM_production_43_year_2004~"WM_production_43_year_2004",
+ID %in% WM_production_44_year_2004~"WM_production_44_year_2004",
+ID %in% WM_nursery_6_year_2004~"WM_nursery_6_year_2004",
+ID %in% WM_nursery_7_year_2004~"WM_nursery_7_year_2004",
+ID %in% WM_nursery_8_year_2004~"WM_nursery_8_year_2004",
+ID %in% WM_nursery_9_year_2004~"WM_nursery_9_year_2004",
+ID %in% WM_nursery_10_year_2004~"WM_nursery_10_year_2004",
+ID %in% WM_nursery_11_year_2004~"WM_nursery_11_year_2004",
+ID %in% WM_nursery_12_year_2004~"WM_nursery_12_year_2004",
+ID %in% WM_nursery_24_year_2005~"WM_nursery_24_year_2005",
+ID %in% WM_nursery_13_year_2005~"WM_nursery_13_year_2005",
+ID %in% WM_nursery_14_year_2005~"WM_nursery_14_year_2005",
+ID %in% WM_nursery_15_year_2005~"WM_nursery_15_year_2005",
+ID %in% WM_nursery_16_year_2005~"WM_nursery_16_year_2005",
+ID %in% WM_nursery_17_year_2005~"WM_nursery_17_year_2005",
+ID %in% WM_nursery_18_year_2005~"WM_nursery_18_year_2005",
+ID %in% WM_nursery_19_year_2006~"WM_nursery_19_year_2006",
+ID %in% NA_year_2007~"NA_year_2007",
+ID %in% WM_production_1_year_2007~"WM_production_1_year_2007",
+ID %in% WM_production_2_year_2007~"WM_production_2_year_2007",
+ID %in% WM_production_3_year_2007~"WM_production_3_year_2007",
+ID %in% WM_production_4_year_2007~"WM_production_4_year_2007",
+ID %in% WM_production_5_year_2007~"WM_production_5_year_2007",
+ID %in% WM_production_6_year_2007~"WM_production_6_year_2007",
+ID %in% WM_production_7_year_2007~"WM_production_7_year_2007",
+ID %in% WM_production_8_year_2007~"WM_production_8_year_2007",
+ID %in% WM_production_9_year_2007~"WM_production_9_year_2007",
+ID %in% NA_year_2008~"NA_year_2008",
+ID %in% WM_production_10_year_2008~"WM_production_10_year_2008",
+ID %in% WM_nursery_20_year_2008~"WM_nursery_20_year_2008",
+ID %in% WM_production_11_year_2008~"WM_production_11_year_2008",
+ID %in% WM_production_12_year_2008~"WM_production_12_year_2008",
+ID %in% WM_production_13_year_2008~"WM_production_13_year_2008",
+ID %in% NA_year_2009~"NA_year_2009",
+ID %in% WM_nursery_21_year_2008~"WM_nursery_21_year_2008",
+ID %in% WM_production_38_year_2009~"WM_production_38_year_2009",
+ID %in% WM_nursery_22_year_2009~"WM_nursery_22_year_2009",
+ID %in% WM_nursery_23_year_2009~"WM_nursery_23_year_2009",
+ID %in% WM_production_14_year_2009~"WM_production_14_year_2009",
+ID %in% WM_production_15_year_2009~"WM_production_15_year_2009",
+ID %in% WM_production_16_year_2009~"WM_production_16_year_2009",
+ID %in% WM_production_17_year_2009~"WM_production_17_year_2009",
+ID %in% WM_production_18_year_2009~"WM_production_18_year_2009",
+ID %in% WM_production_19_year_2009~"WM_production_19_year_2009",
+ID %in% WM_production_20_year_2009~"WM_production_20_year_2009",
+ID %in% WM_production_21_year_2010~"WM_production_21_year_2010",
+ID %in% WM_production_22_year_2010~"WM_production_22_year_2010",
+ID %in% WM_production_23_year_2010~"WM_production_23_year_2010",
+ID %in% WM_production_24_year_2010~"WM_production_24_year_2010",
+ID %in% WM_production_25_year_2010~"WM_production_25_year_2010",
+ID %in% WM_production_26_year_2010~"WM_production_26_year_2010",
+ID %in% WM_production_27_year_2010~"WM_production_27_year_2010",
+ID %in% WM_production_28_year_2010~"WM_production_28_year_2010",
+ID %in% WM_production_29_year_2010~"WM_production_29_year_2010",
+ID %in% WM_production_30_year_2010~"WM_production_30_year_2010",
+ID %in% NA_year_2011~"NA_year_2011",
+ID %in% NA_year_2012~"NA_year_2012",
+ID %in% NA_year_2013~"NA_year_2013",
+ID %in% NA_year_2014~"NA_year_2014",
+ID %in% NA_year_2016~"NA_year_2014",
+ID %in% po_year_2016~"NA_year_2016",
+ID %in% flo_year_2016~"flo_year_2016",
+ID %in% lan_year_2016~"lan_year_2016",
+ID %in% ho_year_2017~"ho_year_2017",
+ID %in% an_year_2017~"an_year_2017",
+ID %in% dod_year_2017~"dod_year_2017",
+ID %in% va_year_2017~"va_year_2017",
+ID %in% na_year_2017~"na_year_2017",
+ID %in% sa_year_2017~"sa_year_2017",
+ID %in% han_year_2017~"han_year_2017",
+ID %in% cu_year_2017~"cu_year_2017",
+ID %in% mon_year_2017~"mon_year_2017",
+ID %in% ant_year_2017~"ant_year_2017",
+ID %in% holt_year_2017~"holt_year_2017",
+ID %in% arr_year_2017~"arr_year_2017",
+ID %in% ini_year_2017~"ini_year_2017",
+ID %in% ley_year_2017~"ley_year_2017",
+ID %in% pre_year_2017~"pre_year_2017",
+ID %in% ru_year_2017~"ru_year_2017",
+ID %in% ca_year_2017~"ca_year_2017",
+ID %in% st_year_2017~"st_year_2017",
+ID %in% Al_year_2015~"Al_year_2015",
+ID %in% Hi_year_2015~"Hi_year_2015",
+ID %in% In_year_2015~"In_year_2015",
+ID %in% mont_year_2015~"mont_year_2015",
+ID %in% Sand_year_2015~"Sand_year_2015",
+ID %in% Sani_year_2015~"Sani_year_2015",
+ID %in% St_year_2015~"St_year_2015",
+ID %in% wau_year_2015~"wau_year_2015",
+ID %in% la_year_2015~"la_year_2015",
+ID %in% co_year_2015~"co_year_2015",
+ID %in% cern_year_2015~"cern_year_2015",
+ID %in% cer_year_2015~"cer_year_2015",
+ID %in% NA_year_2010~"NA_year_2010",
+ID %in% NA_year_2017~"NA_year_2017",
+TRUE ~ "no specific field"),
+  State= case_when(
+ID %in% NE~"NE",
+ID %in% CO~"CO",
+ID %in% ID~"ID",
+ID %in% CA~"CA",
+ID %in% NY~"NY",
+ID %in% NA~"NA",
+ID %in% WA~"WA",
+ID %in% NC~"NC",
+ID %in% AZ~"AZ",
+ID %in% MT~"MT",
+ID %in% WI~"WI",
+ID %in% MI~"MI",
+ID %in% ON~"ON",
+ID %in% AB~"AB",
+ID %in% KS~"KS",
+ID %in% ND~"ND",
+ID %in% MD~"MD",
+ID %in% Arusha~"Arusha",
+ID %in% SK~"SK",
+ID %in% OK~"OK",
+ID %in% DF~"DF",
+ID %in% OH~"OH",
+ID %in% SIN~"SIN",
+ID %in% IA~"IA",
+ID %in% PA~"PA",
+ID %in% Herts~"Herts",
+ID %in% Unknown~"Unknown",
+ID %in% FL~"FL",
+ID %in% GA~"GA",
+ID %in% MS~"MS",
+ID %in% LA~"LA",
+ID %in% KY~"KY",
+ID %in% OR~"OR",
+ID %in% MG~"MG",
+ID %in% GO~"GO",
+ID %in% Herverlee~"Herverlee",
+# ID %in% Mooi Rive~"Mooi Rive",
+ID %in% Marathon~"Marathon",
+ID %in% SC~"SC",
+ID %in% MN~"MN",
+ID %in% Blenheim~"Blenheim",
+ID %in% Barranquita~"Barranquita",
+ID %in% Victoria~"Victoria",
+ID %in% Tasmania~"Tasmania",
+ID %in% DE~"DE",
+ID %in% Guerbigny~"Guerbigny",
+ID %in% QUE~"QUE",
+ID %in% Kigali~"Kigali",
+ID %in% birdseed~"birdseed",
+ID %in% Kessenich~"Kessenich",
+ID %in% Elen~"Elen",
+ID %in% Moshi~"Moshi",
+ID %in% Peronne~"Peronne",
+ID %in% Loudéac~"Loudéac",
+# ID %in% Bordeaux-Hourtin~"Bordeaux-Hourtin",
+ID %in% BA~"BA",
+ID %in% RS~"RS",
+ID %in% MO~"MO",
+ID %in% PR~"PR",
+TRUE ~ "no specific state"
+))
 
+
+}
+  
 ##wrangling survey to get the EC50DC
   wrangling_survey <- function(filename) {
     data <- filename
@@ -307,6 +526,23 @@ data1 <-data %>%
   # lineal_model <- function (vardep, varindep, data) {
   #   lm(paste(vardep, "~", varindep), data = data)
   # }
+  
+  wrangling_DC_2<- function(filename){
+   data <-filename
+   data1 <-data %>%
+   mutate(Field_Year =  ifelse(source == "Baseline", "Baseline", Field_Year),
+    Field_Year = as.factor(Field_Year)) %>% 
+   #select(ID, EC50DC) %>% 
+group_by(ID) %>%
+  top_n(1, EC50DC) %>% #keeping the highest value of each ID value
+  ungroup() %>% 
+  group_by(Field_Year) %>% filter(n()>=9) %>% 
+     ungroup() %>% 
+     filter(!Field_Year =="no specific field" ) %>% 
+     mutate(Field_Year = fct_reorder(Field_Year, EC50DC, mean))
+}
+
+  
   
   #test source
   test_source <- function(filename, vardep, varindep) {
@@ -340,11 +576,27 @@ data1 <-data %>%
         print ("No stats difference")
       } else{
         DunnTest(as.numeric(vardep) ~ as.factor(varindep), data = data1, method="bonferroni")}}}
+  
+  test_field <- function(filename, vardep, varindep) {
+    data <- filename
+    vardep <- data$EC50DC
+    varindep <- data$Field_Year
+    data1 <-  data %>%
+      do(tidy(shapiro.test(vardep)))
+    if (data1$p.value > 0.05)  {
+      print ("normal")# I have to add the ANOVA
+    } else {
+      kruskal.test(as.numeric(vardep) ~ as.factor(varindep), data = data1)
+     if (data1$p.value > 0.05) {
+        print ("No stats difference")
+      } else{
+        DunnTest(as.numeric(vardep) ~ as.factor(varindep), data = data1, method="bonferroni")}}}
 
-  ###Probbaly I wil have to change the specific RG0.02 for RG in the previous functions
+
+  
   myplot_model_1 <- function(filename, RG, logEC50) {
     data <- filename
-    RG <- data$RG_0.2
+    RG <- data$RG
     logEC50 <- data$logEC50
     Host <- data$Host
     source <- data$source
@@ -447,13 +699,13 @@ data1 <-data %>%
 #     theme(plot.title=element_text(size=24))  
 # }
 #  
-   myplot_model_comparison <- function(filename, Year_Field, EC50DC) {
+   myplot_model_comparison <- function(filename, Field_Year, EC50DC) {
      data <- filename
-    Year_Field<- data$Year_Field
+    Field_Year<- data$Field_Year
     EC50DC <- data$EC50DC
     Host <- data$Host
     State <- data$State
-    ggplot(data =filename,  aes(x = Year_Field, y = EC50DCC))  +
+    ggplot(data =filename,  aes(x = Field_Year, y = EC50DC))  +
    geom_jitter(aes(color= State, shape = Host),
       width = .1,
       height = 0,
@@ -465,7 +717,7 @@ data1 <-data %>%
       size = 15,
       color = "black"
    ) +
-   labs(x = "Year_Field", y = expression(bold(EC[bold("50") ~ (bold("D"))]) ~
+   labs(x = "Field_Year", y = expression(bold(EC[bold("50") ~ (bold("D"))]) ~
                                             (bold(ppm ~ bold(
                                                "a.i."
                                             ))))) + theme(
@@ -720,16 +972,18 @@ summary(finalRG_0.2)
 
 ##taking out outliers from Q-Q PLOT $ LEVERAGE TEST, ISOLATES # 1032 from treatment, 2222 & 2223 from Farmer fields##
 boscalid.joined.2.clean <-
-  boscalid.joined.2 %>% filter(!ID == "1032", !ID == "2222",!ID == "2223") #%>% 
-  # select(logEC50, RG_0.2) %>% 
-  # rename(RG = RG_0.2)
+  boscalid.joined.2 %>% filter(!ID == "1032", !ID == "2222",!ID == "2223") %>% 
+  select(ID, logEC50, RG_0.2, EC50) %>% 
+  rename(RG = RG_0.2) %>% 
+   wrangling_DC()
 
-summary(boscalid.lm <- lineal_model("logEC50","RG_0.2",data =  boscalid.joined.2.clean))
+summary(boscalid.lm <- lineal_model("logEC50","RG",data =  boscalid.joined.2.clean))
    # Getting the EC50DC according to the model
 boscalid.EC50DC <- boscalid.joined.2.clean %>% mutate(Estimate.50DC =
                                      #using the model the intercept and the coefficient of the model
-                                    exp(boscalid.lm[[1]][[1]] + boscalid.lm[[1]][[2]] * RG_0.2)) %>%# here I need to do this dynamic
-  select(ID, Estimate.50DC, EC50)  %>%  wrangling_DC()
+                                    exp(boscalid.lm[[1]][[1]] + boscalid.lm[[1]][[2]] * RG)) %>%# here I need to do this dynamic
+  select(ID, Estimate.50DC, EC50)  %>%  
+  wrangling_DC()
 
 # Linear Regression graph of log EC50 and relative growth at 0.2 ppm
 ###
@@ -737,7 +991,7 @@ boscalid.EC50DC <- boscalid.joined.2.clean %>% mutate(Estimate.50DC =
 myplot_model_1(boscalid.joined.2.clean) 
  
 
-######### Linear model of EC50  and EC50DC just to corroborate is a GOOD RELATIONSHIP, check normality and homogeneity of variances
+######### Lxxinear model of EC50  and EC50DC just to corroborate is a GOOD RELATIONSHIP, check normality and homogeneity of variances
 myplot_model_2(boscalid.EC50DC)+ expand_limits(x = c(0.04, 0.25), y = c(0.04, 0.25))  + scale_x_continuous(name = waiver(),
                                                                              breaks = c(0.05, 0.1, 0.15, 0.20, 0.25)) + scale_y_continuous(breaks = c(0.05, 0.1, 0.15, 0.20, 0.25))
  
@@ -748,7 +1002,7 @@ tetraconazole <- getting_DC(hey2)
   
 tetraconazole.joined.2 <-  getting_DC_2(tetraconazole.joined) 
  ###Dose chosen as DC. Although there is one dose with higher r2, there is no difference between and this was selected
-# Linear model of log EC50 and relative growth at 0.2 ppm, check normality and homogeneity of variances
+# Linear model of log EC50 and relative growth at 2 ppm, check normality and homogeneity of variances
 
 finalRG_2 <- lm(logEC50 ~ RG_2, tetraconazole.joined.2)
 summary(finalRG_2)
@@ -756,15 +1010,16 @@ summary(finalRG_2)
 
 ##taking out outliers from Q-Q PLOT $ LEVERAGE TEST, ISOLATES # 1032 from treatment, 2222 & 2223 from Farmer fields##
 tetraconazole.joined.2.clean <-
-  tetraconazole.joined.2 %>% filter(!ID == "21", !ID == "558",!ID == "667") #%>% 
-  # select(logEC50, RG_0.2) %>% 
-  # rename(RG = RG_0.2)
+  tetraconazole.joined.2 %>% filter(!ID == "21", !ID == "558",!ID == "667") %>% 
+   select(ID, logEC50, RG_2, EC50) %>% 
+  rename(RG = RG_2) %>% 
+   wrangling_DC()
 
-summary(tetraconazole.lm <- lineal_model("logEC50","RG_2",data =  tetraconazole.joined.2.clean))
+summary(tetraconazole.lm <- lineal_model("logEC50","RG",data =  tetraconazole.joined.2.clean))
    # Getting the EC50DC according to the model
 tetraconazole.EC50DC <- tetraconazole.joined.2.clean %>% mutate(Estimate.50DC =
                                      #using the model the intercept and the coefficient of the model
-                                    exp(tetraconazole.lm[[1]][[1]] + tetraconazole.lm[[1]][[2]] * RG_2)) %>%# here I need to do this dynamic
+                                    exp(tetraconazole.lm[[1]][[1]] + tetraconazole.lm[[1]][[2]] * RG)) %>%# here I need to do this dynamic
   select(ID, Estimate.50DC, EC50)  %>%  wrangling_DC()
 
 # Linear Regression graph of log EC50 and relative growth at 0.2 ppm
@@ -784,7 +1039,7 @@ picoxystrobin<- getting_DC(hey4)
   
  picoxystrobin.joined.2 <-  getting_DC_2(picoxystrobin.joined) 
  ###Dose chosen as DC. Although there is one dose with higher r2, there is no difference between and this was selected
-# Linear model of log EC50 and relative growth at 0.2 ppm, check normality and homogeneity of variances
+# Linear model of log EC50 and relative growth at 0.01 ppm, check normality and homogeneity of variances
 finalRG_0.01 <- lm(logEC50 ~ RG_0.01,  picoxystrobin.joined.2)
 summary(finalRG_0.01)
 #plot(finalRG0.2)
@@ -794,17 +1049,17 @@ summary(finalRG_0.01)
 
 ##taking out outliers from Q-Q PLOT $ LEVERAGE TEST, ISOLATES # 1032 from treatment, 2222 & 2223 from Farmer fields##
 picoxystrobin.joined.2.clean <-
-  picoxystrobin.joined.2 %>% filter(!ID == "1032", !ID == "558",!ID == "581") #%>% 
-  # select(logEC50, RG_0.2) %>% 
-  # rename(RG = RG_0.2)
+  picoxystrobin.joined.2 %>% filter(!ID == "1032", !ID == "558",!ID == "581") %>% 
+  select(ID, logEC50, RG_0.01, EC50) %>% 
+  rename(RG = RG_0.01) %>% 
+   wrangling_DC()
 
 
-
-summary(picoxystrobin.lm <- lineal_model("logEC50","RG_0.01",data =  picoxystrobin.joined.2.clean))
+summary(picoxystrobin.lm <- lineal_model("logEC50","RG",data =  picoxystrobin.joined.2.clean))
    # Getting the EC50DC according to the model
 picoxystrobin.EC50DC <- picoxystrobin.joined.2.clean %>% mutate(Estimate.50DC =
                                      #using the model the intercept and the coefficient of the model
-                                    exp(picoxystrobin.lm[[1]][[1]] + picoxystrobin.lm[[1]][[2]] * RG_0.01)) %>%# here I need to do this dynamic
+                                    exp(picoxystrobin.lm[[1]][[1]] + picoxystrobin.lm[[1]][[2]] * RG)) %>%# here I need to do this dynamic
   select(ID, Estimate.50DC, EC50)  %>%  wrangling_DC()
 
 # Linear Regression graph of log EC50 and relative growth at 0.2 ppm
@@ -961,15 +1216,16 @@ survey.boscalid <- bind_rows(survey.boscalid.thomas.3,
                              survey.boscalid.MX.BZ.2, 
                              boscalid.EC50.2) %>% select(ID, experiment, EC50DC)
 #Have to analyze the controls
-
+#fix the function here
 #wranglind_DC_2
-survey.boscalid.2 <- survey.boscalid%>% select(ID, EC50DC) %>% 
-group_by(ID) %>%
-  top_n(1, EC50DC) %>% #keeping the highest value of each ID value
-  ungroup() %>% 
-  wrangling_DC()         
+survey.boscalid.2 <- survey.boscalid%>% 
+  wrangling_DC() %>% 
+  wrangling_DC_2()
+  # count(Field_Year) %>% 
+  #  filter(n >= 9)
 
- 
+
+
 
 ###For comparisons between hosts I had to take out the ones coming from baseline otherwise would not be fair
 
@@ -1050,12 +1306,11 @@ survey.tetraconazole <- bind_rows(survey.tetraconazole.thomas.2,
 #Have to analyze the controls
 
 #wranglind_DC_2
-survey.tetraconazole.2 <- survey.tetraconazole%>% select(ID, EC50DC) %>% 
-group_by(ID) %>%
-  top_n(1, EC50DC) %>% #keeping the highest value of each ID value
-  ungroup() %>% 
-  wrangling_DC()         
-
+survey.tetraconazole.2 <- survey.tetraconazole%>% 
+  wrangling_DC() %>% 
+  wrangling_DC_2()
+  # count(Field_Year) %>% 
+  #  filter(n >= 9)
  
 
 ###For comparisons between hosts I had to take out the ones coming from baseline otherwise would not be fair
@@ -1139,12 +1394,10 @@ survey.picoxystrobin <- bind_rows(survey.picoxystrobin.thomas.2,
 #Have to analyze the controls
 
 #wranglind_DC_2
-survey.picoxystrobin.2 <- survey.picoxystrobin%>% select(ID, EC50DC) %>% 
-group_by(ID) %>%
-  top_n(1, EC50DC) %>% #keeping the highest value of each ID value
-  ungroup() %>% 
-  wrangling_DC()         
 
+survey.picoxystrobin.2 <- survey.picoxystrobin%>% 
+  wrangling_DC() %>% 
+  wrangling_DC_2()
  
 
 ###For comparisons between hosts I had to take out the ones coming from baseline otherwise would not be fair
@@ -1160,20 +1413,36 @@ Boscalid Ana Stats, by source
 test_source(survey.boscalid.2)
 
 ```
+Ana by Field
+```{r}
+test_field (survey.boscalid.2)
+```
+ 
+ 
  Ana Stats, by host
 ```{r}
 test_host(survey.boscalid.2.host
             )
 
 ```
+
 the graph
 ```{r}
-+  expand_limits(y = c(0.06, 0.18)) + scale_y_continuous(breaks = c(0.06, 0.08, 0.1, 0.12, 0.14, 0.16, 0.18))
+
+myplot_model_comparison(survey.boscalid.2)+
+
+  expand_limits(y = c(0.06, 0.18)) +
+  scale_y_continuous(breaks = c(0.06, 0.08, 0.1, 0.12, 0.14, 0.16, 0.18))
 ```
 Tetraconazole Ana Stats, by source
 ```{r}
 test_source(survey.tetraconazole.2)
 ```
+ Ana by Field
+```{r}
+test_field (survey.tetraconazole.2)
+```
+ 
  Ana Stats, by host
 ```{r}
 test_host(survey.tetraconazole.2.host
@@ -1181,12 +1450,19 @@ test_host(survey.tetraconazole.2.host
 ```
 the graph
 ```{r}
-+  expand_limits(y = c(0.06, 0.18)) + scale_y_continuous(breaks = c(0.06, 0.08, 0.1, 0.12, 0.14, 0.16, 0.18))
+myplot_model_comparison(survey.tetraconazole.2) + scale_y_continuous(breaks = c(0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6))
 ```
+
 Picoxystrobin Ana Stats, by source
 ```{r}
 test_source(survey.picoxystrobin.2)
 ```
+
+Ana by Field
+```{r}
+test_field (survey.picoxystrobin.2)
+```
+
  Ana Stats, by host
 ```{r}
 test_host(survey.picoxystrobin.2.host
@@ -1196,6 +1472,20 @@ test_host(survey.picoxystrobin.2.host
 the graph
 
 ```{r}
-+  expand_limits(y = c(0.06, 0.18)) + scale_y_continuous(breaks = c(0.06, 0.08, 0.1, 0.12, 0.14, 0.16, 0.18))
+myplot_model_comparison(survey.picoxystrobin.2) +  expand_limits(y = c(0.008, 0.024)) + scale_y_continuous(breaks = c(0.008, 0.01, 0.012, 0.014, 0.016, 0.018, 0.020,0.022,0.024))
+
+```
+#table publication
+```{r}
+
+survey.boscalid.2 %>% 
+  bind_rows(survey.tetraconazole.2) %>% 
+  bind_rows(survey.picoxystrobin.2) %>% 
+select(-c(EC50DC)) %>% 
+    unique() %>% 
+group_by(source, Host, country ) %>%
+  summarize(N= n()) %>%
+    ungroup() %>%
+        add_row(source = "Total", N  = sum(.$N))
 ```
 
