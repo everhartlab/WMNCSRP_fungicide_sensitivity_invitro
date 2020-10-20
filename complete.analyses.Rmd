@@ -589,8 +589,17 @@ group_by(ID) %>%
       kruskal.test(as.numeric(vardep) ~ as.factor(varindep), data = data1)
      if (data1$p.value > 0.05) {
         print ("No stats difference")
-      } else{
-        DunnTest(as.numeric(vardep) ~ as.factor(varindep), data = data1, method="bonferroni")}}}
+     } else {dunn_test(vardep ~ varindep, 
+                       p.adjust.method ="bonferroni",
+                       data = data1)
+        
+      }
+      
+      #else{
+        # DunnTest(as.numeric(vardep) ~ as.factor(varindep), data = data1, method="bonferroni")}
+    
+    
+    }}
 
 
   
@@ -1078,6 +1087,42 @@ myplot_model_2(picoxystrobin.EC50DC)+ expand_limits(x = c(0.04, 0.25), y = c(0.0
 ```{r Using the DC and the model, echo = FALSE}
 
 
+TM.joined.2 <- TM.joined.2 %>% select(ID, EC50)
+
+survey.TM <- bind_rows(survey.TM.thomas,
+survey.TM.USA,
+survey.TM.more.USA,
+#survey.TM.MX.BZ,
+TM.joined.2) 
+
+#Have to analyze the controls
+
+#wranglind_DC_2
+
+survey.TM.2 <- survey.TM%>% 
+  wrangling_DC() %>% 
+  mutate(Field_Year =  ifelse(source == "Baseline", "Baseline", Field_Year),
+    Field_Year = as.factor(Field_Year)) %>% 
+   #select(ID, EC50DC) %>% 
+# group_by(ID) %>%
+#   top_n(1, EC50DC) %>% #keeping the highest value of each ID value
+#   ungroup() %>% 
+  group_by(Field_Year) %>% filter(n()>=9) %>% 
+     ungroup() %>% 
+     filter(!Field_Year =="no specific field" ) 
+# %>% 
+#      mutate(Field_Year = fct_reorder(Field_Year, EC50DC, mean))
+# }
+#   wrangling_DC_2()
+ 
+
+###For comparisons between hosts I had to take out the ones coming from baseline otherwise would not be fair
+
+survey.TM.2.host <- survey.TM.2 %>% 
+  filter(!source=="Baseline")
+
+
+
 #Boscalid
 #survey.boscalid <- bind_rows(survey.boscalid.thomas, survey.boscalid.USA,survey.boscalid.more.USA,survey.boscalid.MX.BZ) 
 
@@ -1479,6 +1524,7 @@ myplot_model_comparison(survey.picoxystrobin.2) +  expand_limits(y = c(0.008, 0.
 ```{r}
 
 survey.boscalid.2 %>% 
+  # bind_rows(survey.TM.2) %>% 
   bind_rows(survey.tetraconazole.2) %>% 
   bind_rows(survey.picoxystrobin.2) %>% 
 select(-c(EC50DC)) %>% 
@@ -1487,5 +1533,30 @@ group_by(source, Host, country ) %>%
   summarize(N= n()) %>%
     ungroup() %>%
         add_row(source = "Total", N  = sum(.$N))
+
+myplot_model_comparison(survey.boscalid.2) + stat_compare_means( method = "anova", paired = TRUE,  aes(label = ..p.signif..), 
+                                                                 label.x = 1.5, label.y = 0.28)
 ```
+#Getting the less sensive isolates from boscalid and picoxystrobin
+```{r}
+boscalid.less.sensive <-survey.boscalid.2 %>% arrange(desc(EC50DC))%>% select(ID) %>% pull()
+boscalid.less.sensive.2 <- boscalid.less.sensive[1:10]
+
+
+picoxystrobin.less.sensive <-survey.picoxystrobin.2 %>% arrange(desc(EC50DC))%>% select(ID) %>% pull()
+picoxystrobin.less.sensive.2 <- picoxystrobin.less.sensive[1:10]
+library(kableExtra)
+picoxystrobin.less.sensive.2 %>%  kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
+  write2pdf("picoxystrobin.less.sensive.pdf")
+
+#
+
+genotyping.list <- read_csv("data/Cristian.checklist.labworking.csv",col_names = TRUE) %>% select(X10) %>% pull()
+
+combination <- (c(boscalid.less.sensive.2,picoxystrobin.less.sensive, genotyping.list))
+
+anyDuplicated(combination)
+combination[duplicated(combination)]
+```
+
 
