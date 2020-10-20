@@ -589,17 +589,18 @@ group_by(ID) %>%
       kruskal.test(as.numeric(vardep) ~ as.factor(varindep), data = data1)
      if (data1$p.value > 0.05) {
         print ("No stats difference")
-     } else {dunn_test(vardep ~ varindep, 
-                       p.adjust.method ="bonferroni",
-                       data = data1)
+     } #else {dunn_test(vardep ~ varindep, 
+        #              p.adjust.method = "bonferroni")
         
-      }
+     # }
       
-      #else{
-        # DunnTest(as.numeric(vardep) ~ as.factor(varindep), data = data1, method="bonferroni")}
+      else{
+      DunnTest(as.numeric(vardep) ~ as.factor(varindep), data = data1, method="bonferroni")}
     
     
     }}
+  
+    dunn_test(EC50DC~Field_Year, p.adjust.method ="bonferroni", data = survey.boscalid.2)
 
 
   
@@ -1473,8 +1474,9 @@ test_host(survey.boscalid.2.host
 
 the graph
 ```{r}
+stat.test.boscalid <- survey.boscalid.2 %>% dunn_test(EC50DC ~ Field_Year, p.adjust.method = "bonferroni") %>% add_xy_position(x = "Field_Year")
 
-myplot_model_comparison(survey.boscalid.2)+
+myplot_model_comparison(survey.boscalid.2)+ stat_pvalue_manual(stat.test.boscalid, hide.ns = TRUE)
 
   expand_limits(y = c(0.06, 0.18)) +
   scale_y_continuous(breaks = c(0.06, 0.08, 0.1, 0.12, 0.14, 0.16, 0.18))
