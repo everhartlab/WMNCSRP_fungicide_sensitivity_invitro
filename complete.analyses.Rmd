@@ -11,6 +11,11 @@ library(tidyverse)
 library(broom)
 library(ezec)
 library(DescTools)
+library(rstatix)
+library(ggpubr)
+library(agricolae)
+library(multcompView)
+library(dplyr)
 
 ```
 
@@ -600,7 +605,7 @@ group_by(ID) %>%
     
     }}
   
-    dunn_test(EC50DC~Field_Year, p.adjust.method ="bonferroni", data = survey.boscalid.2)
+    # dunn_test(EC50DC~Field_Year, p.adjust.method ="bonferroni", data = survey.boscalid.2)
 
 
   
@@ -747,6 +752,53 @@ group_by(ID) %>%
                                                panel.background = element_rect(fill = "white", colour = "grey50")
                                             )}
    
+   
+   myplot_model_comparison.publication <- function(filename, Field_Year, EC50DC) {
+     data <- filename
+    Field_Year<- data$Field_Year
+    EC50DC <- data$EC50DC
+    Host <- data$Host
+    source <- data$source
+    ggplot(data =filename,  aes(x = Field_Year, y = EC50DC))  +
+   geom_jitter(
+        aes(shape = Host,
+            colour = source,
+            fill = Host),
+        size = 2,
+        alpha = 3 / 4
+    ) +
+    scale_color_grey(start = 0, end = 1) + scale_shape_manual(values = c(15, 16, 17)) +
+    geom_smooth(method = "lm",
+                se = FALSE,
+                colour = "black",
+                size = 0.3)   + stat_summary(
+      fun.y = mean,
+      geom = "point",
+      shape = 95,
+      size = 15,
+      color = "black"
+   ) +
+   labs(x = "Field_Year", y = expression(bold(EC[bold("50") ~ (bold("D"))]) ~
+                                            (bold(ppm ~ bold(
+                                               "a.i."
+                                            ))))) + theme(
+                                               panel.border = element_rect(
+                                                  colour = "black",
+                                                  fill = NA,
+                                                  size = 1
+                                               ),
+                                               axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+                                               axis.text = element_text(
+                                                  face = "bold",
+                                                  size = 8,
+                                                  family = "Arial",
+                                                  angle = 30
+                                                  
+                                               ),
+                                               panel.background = element_rect(fill = "white", colour = "grey50")
+                                            )}
+   
+ 
 ```
 
 ```{r Reading data}
@@ -1474,12 +1526,101 @@ test_host(survey.boscalid.2.host
 
 the graph
 ```{r}
-stat.test.boscalid <- survey.boscalid.2 %>% dunn_test(EC50DC ~ Field_Year, p.adjust.method = "bonferroni") %>% add_xy_position(x = "Field_Year")
+stat.test.boscalid <- survey.boscalid.2 %>% dunn_test(EC50DC ~ Field_Year, p.adjust.method = "bonferroni") %>% add_xy_position(x = "Field_Year") %>% dplyr::filter(p.adj.signif != "ns")
+ 
 
-myplot_model_comparison(survey.boscalid.2)+ stat_pvalue_manual(stat.test.boscalid, hide.ns = TRUE)
+stat.test.boscalid.2 <- survey.boscalid.2 %>%
+     tukey_hsd (EC50DC ~ Field_Year)%>% add_xy_position(x = "Field_Year") %>% dplyr::filter(p.adj.signif != "ns")
 
-  expand_limits(y = c(0.06, 0.18)) +
+
+ amod <- aov(EC50DC ~ Field_Year, survey.boscalid.2)
+
+ stat.test.boscalid.3 <-  HSD.test(amod,"Field_Year", group=TRUE,console=TRUE,
+         main="Yield of sweetpotato\nDealt with different virus")
+
+myplot_model_comparison(survey.boscalid.2)+ stat_pvalue_manual(stat.test.boscalid, hide.ns = TRUE) +expand_limits(y = c(0.06, 0.18)) +
   scale_y_continuous(breaks = c(0.06, 0.08, 0.1, 0.12, 0.14, 0.16, 0.18))
+
+
+
+####
+ ANOVA.boscalid <- aov(EC50DC ~ Field_Year, survey.boscalid.2)
+  
+ tHSD.boscalid <- TukeyHSD( ANOVA.boscalid, ordered = FALSE, conf.level = 0.95) 
+  
+#
+generate_label_df_boscalid <- function(HSD, flev){
+    # Extract labels and factor levels from Tukey post-hoc 
+  Tukey.levels <- HSD[[flev]][,4]
+  Tukey.labels <- multcompLetters(Tukey.levels)['Letters']
+  plot.labels <- names(Tukey.labels[['Letters']])
+  # Get highest quantile for Tukey's 5 number summary and add a bit of space to buffer between    
+  # upper quantile and label placement
+  boxplot.df <- ddply(survey.boscalid.2, flev, function (x) max(fivenum(x$EC50DC)) + 0.1)
+  
+  # Create a data frame out of the factor levels and Tukey's homogenous group letters
+  plot.levels <- data.frame(plot.labels, labels = Tukey.labels[['Letters']],
+                            stringsAsFactors = FALSE)
+  
+  # Merge it with the labels
+  labels.df <- merge(plot.levels, boxplot.df, by.x = 'plot.labels', by.y = flev, sort = FALSE)
+  
+  return(labels.df)
+}
+
+ggplot(survey.boscalid.2, aes( x = Field_Year, y = EC50DC)) + geom_violin() +
+    geom_text(data = generate_label_df_boscalid(tHSD.boscalid, 'Field_Year'), aes(x = plot.labels, y = V1, label = labels)) +
+    labs(x = "Field_Year", y = expression(bold(EC[bold("50") ~ (bold("D"))]) ~
+                                              (bold(ppm ~ bold(
+                                                  "a.i."
+                                              ))))) + theme(
+                                                  panel.border = element_rect(
+                                                      colour = "black",
+                                                      fill = NA,
+                                                      size = 1
+                                                  ),
+                                                  axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+                                                  axis.text.x = element_text(
+                                                      face = "bold",
+                                                      size = 8,
+                                                      family = "Arial",
+                                                      angle = 30), axis.text.y = element_text(
+                                                      face = "bold",
+                                                      size = 8,
+                                                      family = "Arial"    ),
+                                                  panel.background = element_rect(fill = "white", colour = "grey50")) +expand_limits(y = c(0.06, 0.18)) +
+  scale_y_continuous(breaks = c(0.06, 0.08, 0.1, 0.12, 0.14, 0.16, 0.18))
+###
+# generate_label_df_2 <- function(HSD, flev){
+#   # ANOVA <- aov(EC50DC ~ Field_Year, survey.boscalid.2)
+#   # tHSD <- TukeyHSD(ANOVA, ordered = FALSE, conf.level = 0.95) 
+#   # 
+#   # Extract labels and factor levels from Tukey post-hoc 
+#   Tukey.levels <- HSD[[flev]][,4]
+#   Tukey.labels <- multcompLetters(Tukey.levels)['Letters']
+#   plot.labels <- names(Tukey.labels[['Letters']])
+#   # Get highest quantile for Tukey's 5 number summary and add a bit of space to buffer between    
+#   # upper quantile and label placement
+#   boxplot.df <- ddply(HSD, flev, function (x) max(fivenum(x$EC50DC)) + 0.1)
+#   
+#   # Create a data frame out of the factor levels and Tukey's homogenous group letters
+#   plot.levels <- data.frame(plot.labels, labels = Tukey.labels[['Letters']],
+#                             stringsAsFactors = FALSE)
+#   
+#   # Merge it with the labels
+#   labels.df <- merge(plot.levels, boxplot.df, by.x = 'plot.labels', by.y = flev, sort = FALSE)
+#   
+#   return(labels.df,)
+# }
+
+   
+
+ 
+
+
+
+
+
 ```
 Tetraconazole Ana Stats, by source
 ```{r}
@@ -1497,7 +1638,9 @@ test_host(survey.tetraconazole.2.host
 ```
 the graph
 ```{r}
-myplot_model_comparison(survey.tetraconazole.2) + scale_y_continuous(breaks = c(0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6))
+stat.test.tetraconazole <- survey.tetraconazole.2 %>% dunn_test(EC50DC ~ Field_Year, p.adjust.method = "bonferroni") %>% add_xy_position(x = "Field_Year")
+
+myplot_model_comparison.publication(survey.tetraconazole.2) + stat_pvalue_manual(stat.test.tetraconazole, hide.ns = TRUE,y.position = 1.6,coord.flip = T,step.increase = 0.02,,bracket.shorten = 1) +expand_limits(y = c(0.5, 1.6)) + scale_y_continuous(breaks = c(0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6))
 ```
 
 Picoxystrobin Ana Stats, by source
@@ -1519,7 +1662,20 @@ test_host(survey.picoxystrobin.2.host
 the graph
 
 ```{r}
-myplot_model_comparison(survey.picoxystrobin.2) +  expand_limits(y = c(0.008, 0.024)) + scale_y_continuous(breaks = c(0.008, 0.01, 0.012, 0.014, 0.016, 0.018, 0.020,0.022,0.024))
+
+stat.test.picoxystrobin <- survey.picoxystrobin.2 %>% dunn_test(EC50DC ~ Field_Year, p.adjust.method = "bonferroni") %>% add_xy_position(x = "Field_Year")
+
+myplot_model_comparison.publication(survey.picoxystrobin.2) + stat_pvalue_manual(
+  stat.test.picoxystrobin,
+  hide.ns = TRUE,
+  y.position = 0.022,
+  coord.flip = T,
+  step.increase = 0.02,
+  bracket.shorten = 1
+) + scale_y_continuous(breaks = c(0.008, 0.01, 0.012, 0.014, 0.016, 0.018, 0.020, 0.022, 0.024))
+
+# +  expand_limits(y = c(0.008, 0.024))
+
 
 ```
 #table publication
@@ -1547,18 +1703,83 @@ boscalid.less.sensive.2 <- boscalid.less.sensive[1:10]
 
 picoxystrobin.less.sensive <-survey.picoxystrobin.2 %>% arrange(desc(EC50DC))%>% select(ID) %>% pull()
 picoxystrobin.less.sensive.2 <- picoxystrobin.less.sensive[1:10]
-library(kableExtra)
-picoxystrobin.less.sensive.2 %>%  kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
-  write2pdf("picoxystrobin.less.sensive.pdf")
+# library(kableExtra)
+# picoxystrobin.less.sensive.2 %>%  kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
+#   write2pdf("picoxystrobin.less.sensive.pdf")
 
 #
 
 genotyping.list <- read_csv("data/Cristian.checklist.labworking.csv",col_names = TRUE) %>% select(X10) %>% pull()
 
-combination <- (c(boscalid.less.sensive.2,picoxystrobin.less.sensive, genotyping.list))
+combination.fun <- (c(boscalid.less.sensive.2,picoxystrobin.less.sensive.2))
+micelia.collected.both.experiments <- c(
+  449,
+  564,
+  1426,
+  1612,
+  1889,
+  1890,
+  1891,
+  1898,
+  1902,
+  1921,
+  1922,
+  2488,
+  2489,
+  25570
+  
+)
 
-anyDuplicated(combination)
-combination[duplicated(combination)]
+
+combination.fun.mycelia.collected <- (c(boscalid.less.sensive.2,picoxystrobin.less.sensive.2,micelia.collected.both.experiments ))
+#intersect between both fungicides
+# 1922
+# differences between both
+
+
+
+anyDuplicated(combination.fun)
+
+
+combination.fun.2 <- sort( unique( as.numeric( combination.fun))) %>% na.omit()
+
+micelia.collected.both.experiments <- c(
+  449,
+  564,
+  1426,
+  1612,
+  1889,
+  1890,
+  1891,
+  1898,
+  1902,
+  1921,
+  1922,
+  2488,
+  2489,
+  2570
+  
+)
+
+
+anyDuplicated(combination.fun.mycelia.collected)
+
+combination.fun.mycelia.collected.2 <- sort( unique( as.numeric( combination.fun.mycelia.collected))) %>% na.omit()
+
+sort(as.numeric( intersect(combination.2, genotyping.list)))
+sort(as.numeric( intersect(combination.fun.2, genotyping.list)))
+sort(as.numeric( setdiff(combination.fun.mycelia.collected.2, genotyping.list)))
+
+
+# sort(as.numeric( intersect(combination.fun.2, genotyping.list)))
+# [1] 1887 1889 1890 1921 1922 1928 2550
+# 
+# sort(as.numeric( setdiff(combination.fun.2, genotyping.list)))
+#  [1]  449  461  564  790 1436 1612 1884 1895 1902 2453 2488 2548
+
+
+sort(as.numeric( intersect(combination.2, genotyping.list)))
+
 ```
 
 
