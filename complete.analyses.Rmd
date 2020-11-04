@@ -11,11 +11,11 @@ library(tidyverse)
 library(broom)
 library(ezec)
 library(DescTools)
-library(rstatix)
-library(ggpubr)
+#library(rstatix)
+#library(ggpubr)
 library(agricolae)
 library(multcompView)
-library(dplyr)
+#library(plyr)
 
 ```
 
@@ -49,7 +49,11 @@ for (variable in unique(whitemold.inventory$State)) {
 for (variable in unique(whitemold.inventory$Field_Year)) {
     assign(variable, whitemold.inventory %>% filter (Field_Year == variable)%>% pull(ID), envir = .GlobalEnv)
 }
-
+IDA <- ID
+#MAKE THE SAME BY COUNTY
+for (variable in unique(whitemold.inventory$County)) {
+    assign(variable, whitemold.inventory %>% filter (County == variable)%>% pull(ID), envir = .GlobalEnv)
+}
 # mm <- whitemold.inventory %>% select(Field_Year) %>% unique() %>% pull()
 # MM <- whitemold.inventory %>% select(Field_Year) %>% unique() %>% pull()
 # ala <- whitemold.inventory %>% select(State) %>% unique() %>% pull()
@@ -118,9 +122,9 @@ reading_data_serial_dilution <- function(filename){
     mutate(growth = ((ecuatorial + polar) / 2)) %>% 
   group_by(ID, dose) %>%
   mutate(growth_range = list(get_range(growth))) %>%
-  unnest() %>% 
+  unnest(cols = c(growth_range)) %>% 
   filter(growth <= upper & growth >= lower) %>%
-  rename(response = growth) %>%
+  dplyr::rename(response = growth) %>%
   ungroup() %>%
   select(c(ID, experimental_replicate, repeats, dose, response))
   
@@ -186,9 +190,9 @@ getting_EC50 <- function(filename){
   
   getting.EC50 <- EC_table(filename, form = response ~ dose)
 getting.EC50 <- getting.EC50 %>% 
-  rename(ID = sample ) %>% # renaming
+  dplyr::rename(ID = sample ) %>% # renaming
  # mutate(ID = as.factor(ID)) %>% 
-  rename(EC50 = Estimate.50) %>%
+  dplyr::rename(EC50 = Estimate.50) %>%
    group_by(ID, EC50) %>%
   mutate(source = ifelse(
     ID %in% baseline.isolates.2,# if they are in this group
@@ -217,7 +221,7 @@ getting_DC <- function(filename){
   data1<- data %>% group_by(ID, dose) %>% summarise(mean_response = mean(response, na.rm = TRUE)) %>%
     ungroup() %>% 
   spread(dose, mean_response) %>% 
-    rename(control = `0`) %>% #taking out "different host" becuse does not belong to drybean nor soybean
+    dplyr::rename(control = `0`) %>% #taking out "different host" becuse does not belong to drybean nor soybean
   filter(!ID == 8, !ID == 129) 
     
     
@@ -452,7 +456,7 @@ TRUE ~ "no specific field"),
   State= case_when(
 ID %in% NE~"NE",
 ID %in% CO~"CO",
-ID %in% ID~"ID",
+ID %in% IDA~"ID",
 ID %in% CA~"CA",
 ID %in% NY~"NY",
 ID %in% NA~"NA",
@@ -510,10 +514,50 @@ ID %in% RS~"RS",
 ID %in% MO~"MO",
 ID %in% PR~"PR",
 TRUE ~ "no specific state"
-))
+), 
+County= case_when(
+ID %in% Lambari~"Lambari",
+ID %in% `Porto Firme`~"Porto Firme",
+ID %in% `Unaí`~"Unai",
+TRUE ~ "no specific county"
+)) %>% 
+  mutate(
+    Field_Year =  ifelse(
+      County == "Lambari",
+      "Lambari",
+      ifelse(
+        County == "Porto Firme",
+        "Porto Firme",
+        ifelse(County == "Unai", "Unai", Field_Year
+        )))) %>% mutate(
+Field_Year = recode(
+      Field_Year,
+      WM_production_21_year_2010 = "NE.10.fld21.DB",
+      WM_production_1_year_2007 = "ND.07.fld01.DB",
+      WM_production_9_year_2007 = "WA.07.fld09.DB",
+      lan_year_2016 = "MI.16.East.Lansing.SB",
+      WM_production_10_year_2008 = "WA.08.fld10.DB",
+      WM_production_25_year_2010 = "ND.10.fld25.DB",
+      mont_year_2015= "MI.15.Montcalm.SB",
+      na_year_2017 = "IA.17.Nashua.SB",
+      mon_year_2017 = "MI.17.Montcalm.SB",
+      Baseline = "Baseline",
+      han_year_2017 = "WI.17.Hancock.SB",
+      NA_year_2010 = "BR.2010.fld01.DB",
+      pre_year_2017 = "MX.2017.pre.DB",
+      ca_year_2017 = "MX.2017.ca.DB",
+      ley_year_2017 = "MX.2017.ley.DB",
+      `Porto Firme` = "BR.2010.por.DB",
+      `Unai` = "BR.2010.unai.DB",
+      `Lambari` = "BR.2010.lam.DB"
+        )) 
+  #%>%
+  # mutate(Field_Year = as.factor(Field_Year))
+  
+  }
 
+#NEED TO MODIFI HERE WHEN BRAZIL, MAKE BT COUNTY NOR EVEN STATE
 
-}
   
 ##wrangling survey to get the EC50DC
   wrangling_survey <- function(filename) {
@@ -821,7 +865,7 @@ survey.TM.thomas <- read.csv("data/DD_survey-WMNCSRP.csv") %>%
   ) %>%
   mutate(TM.growth = ((TM.ecuatorial + TM.polar) / 2),
          control.growth = ((control.ecuatorial + control.polar) / 2)) %>% 
-rename(response = TM.growth, control = control.growth) %>% 
+dplyr::rename(response = TM.growth, control = control.growth) %>% 
   select(c(ID, experimental_replicate, repeats, response, control)) %>% 
   reading_data_discriminatory_concentration()
 
@@ -831,7 +875,7 @@ survey.TM.USA <-
       read.csv("data/DD_survey-WMNCSRP_TM.csv") %>% 
 mutate(TM.growth = ((TM.ecuatorial + TM.polar) / 2),
          control.growth = ((control.ecuatorial + control.polar) / 2)) %>% 
-rename(response = TM.growth, control = control.growth) %>% 
+dplyr::rename(response = TM.growth, control = control.growth) %>% 
   select(c(ID, experimental_replicate, repeats, response, control)) %>% 
   reading_data_discriminatory_concentration()
 
@@ -840,7 +884,7 @@ survey.TM.more.USA <-
  read.csv("data/TM.Cristian.csv") %>% 
 mutate(TM.growth = ((TM.ecuatorial + TM.polar) / 2),
          control.growth = ((control.ecuatorial + control.polar) / 2)) %>% 
-rename(response = TM.growth, control = control.growth) %>% 
+dplyr::rename(response = TM.growth, control = control.growth) %>% 
   select(c(ID, experimental_replicate, repeats, response, control)) %>% 
   reading_data_discriminatory_concentration()
 
@@ -870,7 +914,7 @@ survey.tetraconazole.thomas <- read.csv("data/DD_survey-WMNCSRP.csv") %>%
   ) %>%
   mutate(tetraconazole.growth = ((tetraconazole.ecuatorial + tetraconazole.polar) / 2),
          control.growth = ((control.ecuatorial + control.polar) / 2)) %>% 
-rename(response = tetraconazole.growth, control = control.growth) %>% 
+dplyr::rename(response = tetraconazole.growth, control = control.growth) %>% 
   select(c(ID, experimental_replicate, repeats, response, control)) %>% 
   reading_data_discriminatory_concentration()
 
@@ -879,7 +923,7 @@ survey.tetraconazole.USA <-
       read.csv("data/DD_survey-WMNCSRP_tetraconazole.csv") %>% 
 mutate(tetraconazole.growth = ((tetraconazole.ecuatorial + tetraconazole.polar) / 2),
          control.growth = ((control.ecuatorial + control.polar) / 2)) %>% 
-rename(response = tetraconazole.growth, control = control.growth) %>% 
+dplyr::rename(response = tetraconazole.growth, control = control.growth) %>% 
   select(c(ID, experimental_replicate, repeats, response, control)) %>% 
   reading_data_discriminatory_concentration()
 
@@ -889,7 +933,7 @@ survey.tetraconazole.more.USA <-
  read.csv("data/tetraconazole.Cristian.csv") %>% 
 mutate(tetraconazole.growth = ((tetraconazole.ecuatorial + tetraconazole.polar) / 2),
          control.growth = ((control.ecuatorial + control.polar) / 2)) %>% 
-rename(response = tetraconazole.growth, control = control.growth) %>% 
+dplyr::rename(response = tetraconazole.growth, control = control.growth) %>% 
   select(c(ID, experimental_replicate, repeats, response, control)) %>%  
 reading_data_discriminatory_concentration()
 
@@ -897,7 +941,7 @@ reading_data_discriminatory_concentration()
 survey.tetraconazole.MX.BZ <- 
  read.csv("data/DD_survey-WMNCSRP_tetraconazole.Mexican.Brazilian.csv") %>% mutate(tetraconazole.growth = ((tetraconazole.ecuatorial + tetraconazole.polar) / 2),
          control.growth = ((control.ecuatorial + control.polar) / 2)) %>% 
-rename(response = tetraconazole.growth, control = control.growth) %>% 
+dplyr::rename(response = tetraconazole.growth, control = control.growth) %>% 
   select(c(ID, experimental_replicate, repeats, response, control)) %>% 
   reading_data_discriminatory_concentration()
 
@@ -917,7 +961,7 @@ survey.boscalid.thomas <- read.csv("data/DD_survey-WMNCSRP.csv") %>%
   ) %>%
   mutate(boscalid.growth = ((boscalid.ecuatorial + boscalid.polar) / 2),
          control.growth = ((control.ecuatorial + control.polar) / 2)) %>% 
-rename(response = boscalid.growth, control = control.growth) %>% 
+dplyr::rename(response = boscalid.growth, control = control.growth) %>% 
   select(c(ID, experimental_replicate, repeats, response, control)) %>% 
   reading_data_discriminatory_concentration()
 
@@ -927,7 +971,7 @@ survey.boscalid.USA <-
       read.csv("data/DD_survey-WMNCSRP_boscalid.csv") %>% 
 mutate(boscalid.growth = ((boscalid.ecuatorial + boscalid.polar) / 2),
          control.growth = ((control.ecuatorial + control.polar) / 2)) %>% 
-rename(response = boscalid.growth, control = control.growth) %>% 
+dplyr::rename(response = boscalid.growth, control = control.growth) %>% 
   select(c(ID, experimental_replicate, repeats, response, control)) %>% 
   reading_data_discriminatory_concentration()
 
@@ -937,7 +981,7 @@ survey.boscalid.more.USA <-
  read.csv("data/Boscalid.Cristian.csv") %>% 
 mutate(boscalid.growth = ((boscalid.ecuatorial + boscalid.polar) / 2),
          control.growth = ((control.ecuatorial + control.polar) / 2)) %>% 
-rename(response = boscalid.growth, control = control.growth) %>% 
+dplyr::rename(response = boscalid.growth, control = control.growth) %>% 
   select(c(ID, experimental_replicate, repeats, response, control)) %>% 
   reading_data_discriminatory_concentration()
 
@@ -946,7 +990,7 @@ rename(response = boscalid.growth, control = control.growth) %>%
 survey.boscalid.MX.BZ <- 
  read.csv("data/DD_survey-WMNCSRP_boscalid.Brazilian.Mexican.csv") %>% mutate(boscalid.growth = ((boscalid.ecuatorial + boscalid.polar) / 2),
          control.growth = ((control.ecuatorial + control.polar) / 2)) %>% 
-rename(response = boscalid.growth, control = control.growth) %>% 
+dplyr::rename(response = boscalid.growth, control = control.growth) %>% 
   select(c(ID, experimental_replicate, repeats, response, control)) %>% 
   reading_data_discriminatory_concentration()
 
@@ -966,7 +1010,7 @@ survey.picoxystrobin.thomas <- read.csv("data/DD_survey-WMNCSRP.csv") %>%
   ) %>%
   mutate(picoxystrobin.growth = ((picoxystrobin.ecuatorial + picoxystrobin.polar) / 2),
          sham.growth = ((sham.ecuatorial + sham.polar) / 2)) %>% 
-rename(response = picoxystrobin.growth, control = sham.growth) %>% 
+dplyr::rename(response = picoxystrobin.growth, control = sham.growth) %>% 
   select(c(ID, experimental_replicate, repeats, response, control)) %>% 
 reading_data_discriminatory_concentration()
  
@@ -975,7 +1019,7 @@ survey.picoxystrobin.USA <-
       read.csv("data/DD_survey-WMNCSRP_picoxystrobin.csv") %>% 
 mutate(picoxystrobin.growth = ((picoxystrobin.ecuatorial + picoxystrobin.polar) / 2),
          sham.growth = ((sham.ecuatorial + sham.polar) / 2)) %>% 
-rename(response = picoxystrobin.growth, control = sham.growth) %>% 
+dplyr::rename(response = picoxystrobin.growth, control = sham.growth) %>% 
   select(c(ID, experimental_replicate, repeats, response, control)) %>% 
   reading_data_discriminatory_concentration()
 
@@ -985,7 +1029,7 @@ survey.picoxystrobin.more.USA <-
  read.csv("data/picoxystrobin.Cristian.csv") %>% 
 mutate(picoxystrobin.growth = ((picoxystrobin.ecuatorial + picoxystrobin.polar) / 2),
          sham.growth = ((sham.ecuatorial + sham.polar) / 2)) %>% 
-rename(response = picoxystrobin.growth, control = sham.growth) %>% 
+dplyr::rename(response = picoxystrobin.growth, control = sham.growth) %>% 
   select(c(ID, experimental_replicate, repeats, response, control)) %>% 
  reading_data_discriminatory_concentration()
 
@@ -993,7 +1037,7 @@ rename(response = picoxystrobin.growth, control = sham.growth) %>%
 survey.picoxystrobin.MX.BZ <- 
  read.csv("data/DD_survey-WMNCSRP_picoxystrobin.Mexican.Brazilian.csv") %>% mutate(picoxystrobin.growth = ((picoxystrobin.ecuatorial + picoxystrobin.polar) / 2),
          sham.growth = ((sham.ecuatorial + sham.polar) / 2)) %>% 
-rename(response = picoxystrobin.growth, control = sham.growth) %>% 
+dplyr::rename(response = picoxystrobin.growth, control = sham.growth) %>% 
   select(c(ID, experimental_replicate, repeats, response, control)) %>% 
  reading_data_discriminatory_concentration()
 
@@ -1036,7 +1080,7 @@ summary(finalRG_0.2)
 boscalid.joined.2.clean <-
   boscalid.joined.2 %>% filter(!ID == "1032", !ID == "2222",!ID == "2223") %>% 
   select(ID, logEC50, RG_0.2, EC50) %>% 
-  rename(RG = RG_0.2) %>% 
+  dplyr::rename(RG = RG_0.2) %>% 
    wrangling_DC()
 
 summary(boscalid.lm <- lineal_model("logEC50","RG",data =  boscalid.joined.2.clean))
@@ -1074,7 +1118,7 @@ summary(finalRG_2)
 tetraconazole.joined.2.clean <-
   tetraconazole.joined.2 %>% filter(!ID == "21", !ID == "558",!ID == "667") %>% 
    select(ID, logEC50, RG_2, EC50) %>% 
-  rename(RG = RG_2) %>% 
+  dplyr::rename(RG = RG_2) %>% 
    wrangling_DC()
 
 summary(tetraconazole.lm <- lineal_model("logEC50","RG",data =  tetraconazole.joined.2.clean))
@@ -1113,7 +1157,7 @@ summary(finalRG_0.01)
 picoxystrobin.joined.2.clean <-
   picoxystrobin.joined.2 %>% filter(!ID == "1032", !ID == "558",!ID == "581") %>% 
   select(ID, logEC50, RG_0.01, EC50) %>% 
-  rename(RG = RG_0.01) %>% 
+  dplyr::rename(RG = RG_0.01) %>% 
    wrangling_DC()
 
 
@@ -1306,7 +1350,7 @@ survey.boscalid.MX.BZ.2 <- wrangling_survey(survey.boscalid.MX.BZ) %>%
        
 #Gathering 
 boscalid.EC50.2 <- boscalid.EC50 %>% select(ID, EC50) %>% 
-  rename(EC50DC = EC50)#just rebaming in purpose to join the following dataframe
+  dplyr::rename(EC50DC = EC50)#just rebaming in purpose to join the following dataframe
 
 survey.boscalid <- bind_rows(survey.boscalid.thomas.3,
                              survey.boscalid.USA.3,
@@ -1316,6 +1360,7 @@ survey.boscalid <- bind_rows(survey.boscalid.thomas.3,
 #Have to analyze the controls
 #fix the function here
 #wranglind_DC_2
+IDA <- ID
 survey.boscalid.2 <- survey.boscalid%>% 
   wrangling_DC() %>% 
   wrangling_DC_2()
@@ -1394,7 +1439,7 @@ survey.tetraconazole.MX.BZ.2 <- wrangling_survey(survey.tetraconazole.MX.BZ) %>%
        
 #Gathering 
 tetraconazole.EC50.2 <- tetraconazole.EC50 %>% select(ID, EC50) %>% 
-  rename(EC50DC = EC50)#just rebaming in purpose to join the following dataframe
+  dplyr::rename(EC50DC = EC50)#just rebaming in purpose to join the following dataframe
 
 survey.tetraconazole <- bind_rows(survey.tetraconazole.thomas.2,
                              survey.tetraconazole.USA.3,
@@ -1482,7 +1527,7 @@ survey.picoxystrobin.MX.BZ.2 <- wrangling_survey(survey.picoxystrobin.MX.BZ) %>%
        
 #Gathering 
 picoxystrobin.EC50.2 <- picoxystrobin.EC50 %>% select(ID, EC50) %>% 
-  rename(EC50DC = EC50)#just rebaming in purpose to join the following dataframe
+  dplyr::rename(EC50DC = EC50)#just rebaming in purpose to join the following dataframe
 
 survey.picoxystrobin <- bind_rows(survey.picoxystrobin.thomas.2,
                              survey.picoxystrobin.USA.3,
@@ -1556,8 +1601,9 @@ generate_label_df_boscalid <- function(HSD, flev){
   plot.labels <- names(Tukey.labels[['Letters']])
   # Get highest quantile for Tukey's 5 number summary and add a bit of space to buffer between    
   # upper quantile and label placement
-  boxplot.df <- ddply(survey.boscalid.2, flev, function (x) max(fivenum(x$EC50DC)) + 0.1)
-  
+  boxplot.df <- plyr:: ddply(survey.boscalid.2, flev, function (x) max(fivenum(x$EC50DC)) + 0.01)
+  # mm <- function(x) return(max(fivenum(x$EC50DC)) + 0.01)
+  # boxplot.df <- survey.boscalid.2 %>%  group_by(Field_Year) %>% do(mm(.)) 
   # Create a data frame out of the factor levels and Tukey's homogenous group letters
   plot.levels <- data.frame(plot.labels, labels = Tukey.labels[['Letters']],
                             stringsAsFactors = FALSE)
