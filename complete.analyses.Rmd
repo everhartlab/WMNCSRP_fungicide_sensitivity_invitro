@@ -28,9 +28,9 @@ Farmer.fields <- c(136:442, 455, 456, 466, 468, 470, 471, 478:554, 602:610, 612:
 
 baseline.isolates.2 <- c(1: 136, 444: 454, 457: 465, 467, 469, 472:477, 555:601, 611, 636:670, 673: 680, 691:694 , 798: 809,  824: 833, 836: 847)
 
-drybean <- c(1, 5, 12,13:118, 123:128, 133:135, 145, 146, 152, 155:160, 182: 185, 194:200, 205, 220, 223, 248, 253:255, 274, 279, 280, 290, 294, 304: 309, 323, 358, 393, 395, 396, 397, 400:402, 405, 408, 409, 434, 443:465, 467, 469: 493, 495:505, 555:613, 615: 760, 762: 819, 824:833, 835:855, 858:921, 966: 971, 980, 981, 985: 996, 998: 1009, 1220:1225 , 1857: 1940, 2242: 2569)
+drybean <- c(1, 5, 12,13:118, 123:128, 133:135, 145, 146, 152, 155:160, 182: 185, 194:200, 205, 220, 223, 248, 253:255, 274, 279, 280, 290, 294, 304: 309, 323, 358, 393, 395, 396, 397, 400:402, 405, 408, 409, 434, 443:465, 467, 469: 493, 495:505, 555:613, 615: 760, 762: 819, 824:833, 835:855, 858:921, 966: 971, 980, 981, 985: 996, 998: 1009, 1220:1225 , 1857: 1940, 2442: 2569)
 
-soybean <- c(143, 147, 181, 187, 188, 189,202, 257: 259, 264:268, 276, 281, 289, 293, 295, 310 , 399, 412:417, 419, 425:427, 439, 440, 494, 506:554, 834, 972:979, 982, 997, 1010: 1022, 1025:1219, 1229: 1856, 1941: 2241 )
+soybean <- c(143, 147, 181, 187, 188, 189,202, 257: 259, 264:268, 276, 281, 289, 293, 295, 310 , 399, 412:417, 419, 425:427, 439, 440, 494, 506:554, 834, 972:979, 982, 997, 1010: 1022, 1025:1219, 1229: 1856, 1941:2441 )
 
 SI.Production.Field <- c( 698:741, 743:744, 746:760, 762: 778, 
 786: 797, 810:819, 848: 855, 858: 914)
@@ -183,8 +183,11 @@ reading_data_discriminatory_concentration <- function(filename) {
            control <= upper1 & control >= lower1) %>%
     ungroup() %>%
     select(c(ID, experimental_replicate, repeats, response, control)) %>%
-    group_by(ID) %>% mutate(count = n()) %>% ungroup() %>%  mutate(experiment = ifelse(count <= 6, 1, 2))
-  }
+    group_by(ID) %>% 
+    mutate(count = n()) %>%
+    ungroup() %>%
+    mutate(experiment = ifelse(count <= 6, 1, 2))
+}
 #getting EC50
 getting_EC50 <- function(filename){
   
@@ -547,10 +550,12 @@ Field_Year = recode(
       pre_year_2017 = "MX.2017.pre.DB",
       ca_year_2017 = "MX.2017.ca.DB",
       ley_year_2017 = "MX.2017.ley.DB",
+      cer_year_2015 = "WI.2015.cer.SB",
       `Porto Firme` = "BR.2010.por.DB",
       `Unai` = "BR.2010.unai.DB",
       `Lambari` = "BR.2010.lam.DB"
         )) 
+
   #%>%
   # mutate(Field_Year = as.factor(Field_Year))
   
@@ -576,15 +581,24 @@ Field_Year = recode(
   #   lm(paste(vardep, "~", varindep), data = data)
   # }
   
-  wrangling_DC_2<- function(filename){
+   wrangling_DC_2<- function(filename){
+   data <-filename
+   data1 <-data %>%
+    group_by(ID) %>% #keeping the highest value of each ID value
+  top_n(1, EC50DC) %>% 
+  ungroup()
+   }
+  
+  
+  wrangling_DC_3<- function(filename){
    data <-filename
    data1 <-data %>%
    mutate(Field_Year =  ifelse(source == "Baseline", "Baseline", Field_Year),
     Field_Year = as.factor(Field_Year)) %>% 
    #select(ID, EC50DC) %>% 
-group_by(ID) %>%
-  top_n(1, EC50DC) %>% #keeping the highest value of each ID value
-  ungroup() %>% 
+# group_by(ID) %>%
+#   top_n(1, EC50DC) %>% #keeping the highest value of each ID value
+  #ungroup() %>% 
   group_by(Field_Year) %>% filter(n()>=9) %>% 
      ungroup() %>% 
      filter(!Field_Year =="no specific field" ) %>% 
@@ -1189,7 +1203,7 @@ TM.joined.2 <- TM.joined.2 %>% select(ID, EC50)
 survey.TM <- bind_rows(survey.TM.thomas,
 survey.TM.USA,
 survey.TM.more.USA,
-#survey.TM.MX.BZ,
+#survey.TM.MX.BZ, there are the same the other fungicides
 TM.joined.2) 
 
 #Have to analyze the controls
@@ -1200,23 +1214,25 @@ survey.TM.2 <- survey.TM%>%
   wrangling_DC() %>% 
   mutate(Field_Year =  ifelse(source == "Baseline", "Baseline", Field_Year),
     Field_Year = as.factor(Field_Year)) %>% 
+  dplyr::rename(EC50DC = EC50) %>% #change here to be able to join to other datframes to get the total used
+  select(ID, experiment, EC50DC)
    #select(ID, EC50DC) %>% 
 # group_by(ID) %>%
 #   top_n(1, EC50DC) %>% #keeping the highest value of each ID value
 #   ungroup() %>% 
-  group_by(Field_Year) %>% filter(n()>=9) %>% 
-     ungroup() %>% 
-     filter(!Field_Year =="no specific field" ) 
+  # group_by(Field_Year) %>% filter(n()>=9) %>% 
+  #    ungroup() %>% 
+  #    filter(!Field_Year =="no specific field" )
 # %>% 
 #      mutate(Field_Year = fct_reorder(Field_Year, EC50DC, mean))
 # }
-#   wrangling_DC_2()
+#   wrangling_DC_3()
  
 
 ###For comparisons between hosts I had to take out the ones coming from baseline otherwise would not be fair
 
-survey.TM.2.host <- survey.TM.2 %>% 
-  filter(!source=="Baseline")
+# survey.TM.2.host <- survey.TM.2 %>% 
+#   filter(!source=="Baseline")
 
 
 
@@ -1350,7 +1366,7 @@ survey.boscalid.MX.BZ.2 <- wrangling_survey(survey.boscalid.MX.BZ) %>%
        
 #Gathering 
 boscalid.EC50.2 <- boscalid.EC50 %>% select(ID, EC50) %>% 
-  dplyr::rename(EC50DC = EC50)#just rebaming in purpose to join the following dataframe
+  dplyr::rename(EC50DC = EC50)#just renaming in purpose to join the following dataframe
 
 survey.boscalid <- bind_rows(survey.boscalid.thomas.3,
                              survey.boscalid.USA.3,
@@ -1360,10 +1376,15 @@ survey.boscalid <- bind_rows(survey.boscalid.thomas.3,
 #Have to analyze the controls
 #fix the function here
 #wranglind_DC_2
+#Check this
 IDA <- ID
-survey.boscalid.2 <- survey.boscalid%>% 
+survey.boscalid.complete <- survey.boscalid%>% 
+  wrangling_DC() 
+
+survey.boscalid.fields <- survey.boscalid%>% 
   wrangling_DC() %>% 
-  wrangling_DC_2()
+   wrangling_DC_2() %>% 
+  wrangling_DC_3()
   # count(Field_Year) %>% 
   #  filter(n >= 9)
 
@@ -1372,7 +1393,7 @@ survey.boscalid.2 <- survey.boscalid%>%
 
 ###For comparisons between hosts I had to take out the ones coming from baseline otherwise would not be fair
 
-survey.boscalid.2.host <- survey.boscalid.2 %>% 
+survey.boscalid.complete.host <- survey.boscalid.complete %>% 
   filter(!source=="Baseline")
 
 # Tetraconazole
@@ -1449,17 +1470,27 @@ survey.tetraconazole <- bind_rows(survey.tetraconazole.thomas.2,
 #Have to analyze the controls
 
 #wranglind_DC_2
-survey.tetraconazole.2 <- survey.tetraconazole%>% 
+
+survey.tetraconazole.complete <- survey.tetraconazole%>% 
   wrangling_DC() %>% 
   wrangling_DC_2()
+
+survey.tetraconazole.fields <- survey.tetraconazole%>% 
+  wrangling_DC() %>%
+  wrangling_DC_2() %>% 
+  wrangling_DC_3()
   # count(Field_Year) %>% 
   #  filter(n >= 9)
- 
+
+
+
 
 ###For comparisons between hosts I had to take out the ones coming from baseline otherwise would not be fair
 
-survey.tetraconazole.2.host <- survey.tetraconazole.2 %>% 
+survey.tetraconazole.complete.host <- survey.tetraconazole.complete %>% 
   filter(!source=="Baseline")
+
+
 
 # picoxystrobin
 
@@ -1538,14 +1569,23 @@ survey.picoxystrobin <- bind_rows(survey.picoxystrobin.thomas.2,
 
 #wranglind_DC_2
 
-survey.picoxystrobin.2 <- survey.picoxystrobin%>% 
+survey.picoxystrobin.complete <- survey.picoxystrobin%>% 
   wrangling_DC() %>% 
   wrangling_DC_2()
- 
+
+survey.picoxystrobin.fields <- survey.picoxystrobin%>% 
+  wrangling_DC() %>%
+  wrangling_DC_2() %>% 
+  wrangling_DC_3()
+  # count(Field_Year) %>% 
+  #  filter(n >= 9)
+
+
+
 
 ###For comparisons between hosts I had to take out the ones coming from baseline otherwise would not be fair
 
-survey.picoxystrobin.2.host <- survey.picoxystrobin.2 %>% 
+survey.picoxystrobin.complete.host <- survey.picoxystrobin.complete %>% 
   filter(!source=="Baseline")
 
 
@@ -1553,43 +1593,55 @@ survey.picoxystrobin.2.host <- survey.picoxystrobin.2 %>%
 ```
 Boscalid Ana Stats, by source
 ```{r}
-test_source(survey.boscalid.2)
+test_source(survey.boscalid.complete %>% group_by(ID) %>%
+   top_n(1, EC50DC) %>% #keeping the highest value of each ID value
+   ungroup() )
 
 ```
 Ana by Field
 ```{r}
-test_field (survey.boscalid.2)
+test_field (survey.boscalid.fields)
 ```
  
  
  Ana Stats, by host
 ```{r}
-test_host(survey.boscalid.2.host
-            )
+test_host(survey.boscalid.complete.host %>% group_by(ID) %>%
+   top_n(1, EC50DC) %>% #keeping the highest value of each ID value
+   ungroup() )
 
 ```
 
 the graph
 ```{r}
-stat.test.boscalid <- survey.boscalid.2 %>% dunn_test(EC50DC ~ Field_Year, p.adjust.method = "bonferroni") %>% add_xy_position(x = "Field_Year") %>% dplyr::filter(p.adj.signif != "ns")
- 
+# stat.test.boscalid <- survey.boscalid.2 %>% dunn_test(EC50DC ~ Field_Year, p.adjust.method = "bonferroni") %>% add_xy_position(x = "Field_Year") %>% dplyr::filter(p.adj.signif != "ns")
+#  
+# 
+# stat.test.boscalid.2 <- survey.boscalid.2 %>%
+#      tukey_hsd (EC50DC ~ Field_Year)%>% add_xy_position(x = "Field_Year") %>% dplyr::filter(p.adj.signif != "ns")
+# 
+# 
+#  amod <- aov(EC50DC ~ Field_Year, survey.boscalid.2)
+# 
+#  stat.test.boscalid.3 <-  HSD.test(amod,"Field_Year", group=TRUE,console=TRUE,
+#          main="Yield of sweetpotato\nDealt with different virus")
+# 
+# myplot_model_comparison(survey.boscalid.2)+ stat_pvalue_manual(stat.test.boscalid, hide.ns = TRUE) +expand_limits(y = c(0.06, 0.18)) +
+#   scale_y_continuous(breaks = c(0.06, 0.08, 0.1, 0.12, 0.14, 0.16, 0.18))
 
-stat.test.boscalid.2 <- survey.boscalid.2 %>%
-     tukey_hsd (EC50DC ~ Field_Year)%>% add_xy_position(x = "Field_Year") %>% dplyr::filter(p.adj.signif != "ns")
 
-
- amod <- aov(EC50DC ~ Field_Year, survey.boscalid.2)
-
- stat.test.boscalid.3 <-  HSD.test(amod,"Field_Year", group=TRUE,console=TRUE,
-         main="Yield of sweetpotato\nDealt with different virus")
-
-myplot_model_comparison(survey.boscalid.2)+ stat_pvalue_manual(stat.test.boscalid, hide.ns = TRUE) +expand_limits(y = c(0.06, 0.18)) +
-  scale_y_continuous(breaks = c(0.06, 0.08, 0.1, 0.12, 0.14, 0.16, 0.18))
-
-
-
+###
+survey.boscalid.fields.2 <- survey.boscalid.fields %>% 
+mutate(Field_difference = ifelse(
+    Field_Year == "Baseline"| Field_Year == "NE.10.fld21.DB"|
+      Field_Year == "ND.07.fld01.DB"|Field_Year == "WA.07.fld09.DB",
+    "Yes","No")) %>% 
+  mutate(Country_difference = ifelse(
+    country == "USA",
+    "Yes","No"))
+  
 ####
- ANOVA.boscalid <- aov(EC50DC ~ Field_Year, survey.boscalid.2)
+ ANOVA.boscalid <- aov(EC50DC ~ Field_Year, survey.boscalid.fields.2)
   
  tHSD.boscalid <- TukeyHSD( ANOVA.boscalid, ordered = FALSE, conf.level = 0.95) 
   
@@ -1601,7 +1653,7 @@ generate_label_df_boscalid <- function(HSD, flev){
   plot.labels <- names(Tukey.labels[['Letters']])
   # Get highest quantile for Tukey's 5 number summary and add a bit of space to buffer between    
   # upper quantile and label placement
-  boxplot.df <- plyr:: ddply(survey.boscalid.2, flev, function (x) max(fivenum(x$EC50DC)) + 0.01)
+  boxplot.df <- plyr:: ddply(survey.boscalid.fields.2, flev, function (x) max(fivenum(x$EC50DC)) + 0.01)
   # mm <- function(x) return(max(fivenum(x$EC50DC)) + 0.01)
   # boxplot.df <- survey.boscalid.2 %>%  group_by(Field_Year) %>% do(mm(.)) 
   # Create a data frame out of the factor levels and Tukey's homogenous group letters
@@ -1614,9 +1666,9 @@ generate_label_df_boscalid <- function(HSD, flev){
   return(labels.df)
 }
 
-ggplot(survey.boscalid.2, aes( x = Field_Year, y = EC50DC)) + geom_violin() +
+ggplot(survey.boscalid.fields.2, aes( x = Field_Year, y = EC50DC)) + geom_violin(aes( fill = Country_difference)) + scale_fill_manual(values=c( "gray", "white"))+
     geom_text(data = generate_label_df_boscalid(tHSD.boscalid, 'Field_Year'), aes(x = plot.labels, y = V1, label = labels)) +
-    labs(x = "Field_Year", y = expression(bold(EC[bold("50") ~ (bold("D"))]) ~
+    labs(x = "Field", y = expression(bold(EC[bold("50") ~ (bold("D"))]) ~
                                               (bold(ppm ~ bold(
                                                   "a.i."
                                               ))))) + theme(
@@ -1635,7 +1687,13 @@ ggplot(survey.boscalid.2, aes( x = Field_Year, y = EC50DC)) + geom_violin() +
                                                       size = 8,
                                                       family = "Arial"    ),
                                                   panel.background = element_rect(fill = "white", colour = "grey50")) +expand_limits(y = c(0.06, 0.18)) +
-  scale_y_continuous(breaks = c(0.06, 0.08, 0.1, 0.12, 0.14, 0.16, 0.18))
+  scale_y_continuous(breaks = c(0.06, 0.08, 0.1, 0.12, 0.14, 0.16, 0.18)) + stat_summary(
+      fun.y = mean,
+      geom = "point",
+      shape = 23,
+      size = 2,
+      color = "black"
+   )
 ###
 # generate_label_df_2 <- function(HSD, flev){
 #   # ANOVA <- aov(EC50DC ~ Field_Year, survey.boscalid.2)
@@ -1661,6 +1719,56 @@ ggplot(survey.boscalid.2, aes( x = Field_Year, y = EC50DC)) + geom_violin() +
 
    
 
+  phytophthora <-  DunnTest(as.numeric(EC50DC) ~ as.factor(Field_Year), data = survey.boscalid.fields.2, method="bonferroni")
+  
+  generate_label_df_boscalid_2 <- function(HSD, flev){
+    # Extract labels and factor levels from Tukey post-hoc 
+    Tukey.levels <- HSD[[1]][,2]
+    Tukey.labels <- multcompLetters(Tukey.levels)['Letters']
+    plot.labels <- names(Tukey.labels[['Letters']])
+    # Get highest quantile for Tukey's 5 number summary and add a bit of space to buffer between    
+    # upper quantile and label placement
+    boxplot.df <- plyr:: ddply(survey.boscalid.fields.2, flev, function (x) max(fivenum(x$EC50DC)) + 0.01)
+    # mm <- function(x) return(max(fivenum(x$EC50DC)) + 0.01)
+    # boxplot.df <- survey.boscalid.2 %>%  group_by(Field_Year) %>% do(mm(.)) 
+    # Create a data frame out of the factor levels and Tukey's homogenous group letters
+    plot.levels <- data.frame(plot.labels, labels = Tukey.labels[['Letters']],
+                              stringsAsFactors = FALSE)
+    
+    # Merge it with the labels
+    labels.df <- merge(plot.levels, boxplot.df, by.x = 'plot.labels', by.y = flev, sort = FALSE)
+    
+    return(labels.df)
+  }
+  
+  ggplot(survey.boscalid.fields.2, aes( x = Field_Year, y = EC50DC)) + geom_violin(aes( fill = Country_difference)) + scale_fill_manual(values=c( "gray", "white"))+
+    geom_text(data = generate_label_df_boscalid_2(phytophthora, 'Field_Year'), aes(x = plot.labels, y = V1, label = labels)) +
+    labs(x = "Field", y = expression(bold(EC[bold("50") ~ (bold("D"))]) ~
+                                       (bold(ppm ~ bold(
+                                         "a.i."
+                                       ))))) + theme(
+                                         panel.border = element_rect(
+                                           colour = "black",
+                                           fill = NA,
+                                           size = 1
+                                         ),
+                                         axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+                                         axis.text.x = element_text(
+                                           face = "bold",
+                                           size = 8,
+                                           family = "Arial",
+                                           angle = 30), axis.text.y = element_text(
+                                             face = "bold",
+                                             size = 8,
+                                             family = "Arial"    ),
+                                         panel.background = element_rect(fill = "white", colour = "grey50")) +expand_limits(y = c(0.06, 0.18)) +
+    scale_y_continuous(breaks = c(0.06, 0.08, 0.1, 0.12, 0.14, 0.16, 0.18)) + stat_summary(
+      fun.y = mean,
+      geom = "point",
+      shape = 23,
+      size = 2,
+      color = "black"
+    )
  
 
 
@@ -1670,84 +1778,240 @@ ggplot(survey.boscalid.2, aes( x = Field_Year, y = EC50DC)) + geom_violin() +
 ```
 Tetraconazole Ana Stats, by source
 ```{r}
-test_source(survey.tetraconazole.2)
+test_source(survey.tetraconazole.complete  %>% group_by(ID) %>%
+   top_n(1, EC50DC) %>% #keeping the highest value of each ID value
+   ungroup() )
 ```
  Ana by Field
 ```{r}
-test_field (survey.tetraconazole.2)
+test_field (survey.tetraconazole.fields)
 ```
  
  Ana Stats, by host
 ```{r}
-test_host(survey.tetraconazole.2.host
-            )
+test_host(survey.tetraconazole.complete.host %>% group_by(ID) %>%
+   top_n(1, EC50DC) %>% #keeping the highest value of each ID value
+   ungroup())
 ```
 the graph
 ```{r}
-stat.test.tetraconazole <- survey.tetraconazole.2 %>% dunn_test(EC50DC ~ Field_Year, p.adjust.method = "bonferroni") %>% add_xy_position(x = "Field_Year")
+# stat.test.tetraconazole <- survey.tetraconazole.2 %>% dunn_test(EC50DC ~ Field_Year, p.adjust.method = "bonferroni") %>% add_xy_position(x = "Field_Year")
+# 
+# myplot_model_comparison.publication(survey.tetraconazole.2) + stat_pvalue_manual(stat.test.tetraconazole, hide.ns = TRUE,y.position = 1.6,coord.flip = T,step.increase = 0.02,,bracket.shorten = 1) +expand_limits(y = c(0.5, 1.6)) + scale_y_continuous(breaks = c(0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6))
 
-myplot_model_comparison.publication(survey.tetraconazole.2) + stat_pvalue_manual(stat.test.tetraconazole, hide.ns = TRUE,y.position = 1.6,coord.flip = T,step.increase = 0.02,,bracket.shorten = 1) +expand_limits(y = c(0.5, 1.6)) + scale_y_continuous(breaks = c(0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6))
+survey.tetraconazole.fields.2 <- survey.tetraconazole.fields %>% 
+mutate(Field_difference = ifelse(
+    Field_Year == "Baseline"| Field_Year == "NE.10.fld21.DB"|
+      Field_Year == "BR.2010.unai.DB",
+    "Yes","No")) %>% 
+  mutate(Country_difference = ifelse(
+    country == "USA",
+    "Yes","No"))
+####
+ ANOVA.tetraconazole <- aov(EC50DC ~ Field_Year, survey.tetraconazole.fields.2)
+  
+ tHSD.tetraconazole <- TukeyHSD( ANOVA.tetraconazole, ordered = FALSE, conf.level = 0.95) 
+  
+#
+generate_label_df_tetraconazole <- function(HSD, flev){
+    # Extract labels and factor levels from Tukey post-hoc 
+  Tukey.levels <- HSD[[flev]][,4]
+  Tukey.labels <- multcompLetters(Tukey.levels)['Letters']
+  plot.labels <- names(Tukey.labels[['Letters']])
+  # Get highest quantile for Tukey's 5 number summary and add a bit of space to buffer between    
+  # upper quantile and label placement
+  boxplot.df <- plyr:: ddply(survey.tetraconazole.fields.2, flev, function (x) max(fivenum(x$EC50DC)) + 0.08)
+  # mm <- function(x) return(max(fivenum(x$EC50DC)) + 0.01)
+  # boxplot.df <- survey.tetraconazole.2 %>%  group_by(Field_Year) %>% do(mm(.)) 
+  # Create a data frame out of the factor levels and Tukey's homogenous group letters
+  plot.levels <- data.frame(plot.labels, labels = Tukey.labels[['Letters']],
+                            stringsAsFactors = FALSE)
+  
+  # Merge it with the labels
+  labels.df <- merge(plot.levels, boxplot.df, by.x = 'plot.labels', by.y = flev, sort = FALSE)
+  
+  return(labels.df)
+}
+
+ggplot(survey.tetraconazole.fields.2, aes( x = Field_Year, y = EC50DC)) + geom_violin(aes( fill = Country_difference)
+  ) + scale_fill_manual(values=c( "gray", "white"))+
+    geom_text(data = generate_label_df_tetraconazole(tHSD.tetraconazole, 'Field_Year'), aes(x = plot.labels, y = V1, label = labels)) +
+    labs(x = "Field", y = expression(bold(EC[bold("50") ~ (bold("D"))]) ~
+                                              (bold(ppm ~ bold(
+                                                  "a.i."
+                                              ))))) + theme(
+                                                  panel.border = element_rect(
+                                                      colour = "black",
+                                                      fill = NA,
+                                                      size = 1
+                                                  ),
+                                                  axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+                                                  axis.text.x = element_text(
+                                                      face = "bold",
+                                                      size = 8,
+                                                      family = "Arial",
+                                                      angle = 30), axis.text.y = element_text(
+                                                      face = "bold",
+                                                      size = 8,
+                                                      family = "Arial"    ),
+                                                  panel.background = element_rect(fill = "white", colour = "grey50"))+expand_limits(y = c(0.5, 1.6)) + scale_y_continuous(breaks = c(0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6)) + stat_summary(
+      fun.y = mean,
+      geom = "point",
+      shape = 23,
+      size = 2,
+      color = "black"
+   )
+
 ```
 
 Picoxystrobin Ana Stats, by source
 ```{r}
-test_source(survey.picoxystrobin.2)
+test_source(survey.picoxystrobin.complete %>% group_by(ID) %>%
+   top_n(1, EC50DC) %>% #keeping the highest value of each ID value
+   ungroup())
 ```
 
 Ana by Field
 ```{r}
-test_field (survey.picoxystrobin.2)
+test_field (survey.picoxystrobin.fields)
 ```
 
  Ana Stats, by host
 ```{r}
-test_host(survey.picoxystrobin.2.host
-            )
+test_host(survey.picoxystrobin.complete.host  %>% group_by(ID) %>%
+   top_n(1, EC50DC) %>% #keeping the highest value of each ID value
+   ungroup())
 
 ```
 the graph
 
 ```{r}
 
-stat.test.picoxystrobin <- survey.picoxystrobin.2 %>% dunn_test(EC50DC ~ Field_Year, p.adjust.method = "bonferroni") %>% add_xy_position(x = "Field_Year")
-
-myplot_model_comparison.publication(survey.picoxystrobin.2) + stat_pvalue_manual(
-  stat.test.picoxystrobin,
-  hide.ns = TRUE,
-  y.position = 0.022,
-  coord.flip = T,
-  step.increase = 0.02,
-  bracket.shorten = 1
-) + scale_y_continuous(breaks = c(0.008, 0.01, 0.012, 0.014, 0.016, 0.018, 0.020, 0.022, 0.024))
-
+# stat.test.picoxystrobin <- survey.picoxystrobin.2 %>% dunn_test(EC50DC ~ Field_Year, p.adjust.method = "bonferroni") %>% add_xy_position(x = "Field_Year")
+# 
+# myplot_model_comparison.publication(survey.picoxystrobin.2) + stat_pvalue_manual(
+#   stat.test.picoxystrobin,
+#   hide.ns = TRUE,
+#   y.position = 0.022,
+#   coord.flip = T,
+#   step.increase = 0.02,
+#   bracket.shorten = 1
+# ) + scale_y_continuous(breaks = c(0.008, 0.01, 0.012, 0.014, 0.016, 0.018, 0.020, 0.022, 0.024))
+# 
 # +  expand_limits(y = c(0.008, 0.024))
+
+
+survey.picoxystrobin.fields.2  <- survey.picoxystrobin.fields %>% 
+mutate(Field_difference = ifelse(
+    Field_Year == "Baseline"| Field_Year == "ND.07.fld01.DB"|
+      Field_Year == "BR.2010.unai.DB"|Field_Year == "MX.2017.ca.DB"|Field_Year == "MX.2017.ley.DB" ,
+    "Yes","No"))%>% 
+  mutate(Country_difference = ifelse(
+    country == "USA",
+    "Yes","No"))
+####
+ ANOVA.picoxystrobin <- aov(EC50DC ~ Field_Year, survey.picoxystrobin.fields.2)
+  
+ tHSD.picoxystrobin <- TukeyHSD( ANOVA.picoxystrobin, ordered = FALSE, conf.level = 0.95) 
+  
+#
+generate_label_df_picoxystrobin <- function(HSD, flev){
+    # Extract labels and factor levels from Tukey post-hoc 
+  Tukey.levels <- HSD[[flev]][,4]
+  Tukey.labels <- multcompLetters(Tukey.levels)['Letters']
+  plot.labels <- names(Tukey.labels[['Letters']])
+  # Get highest quantile for Tukey's 5 number summary and add a bit of space to buffer between    
+  # upper quantile and label placement
+  boxplot.df <- plyr:: ddply(survey.picoxystrobin.fields.2, flev, function (x) max(fivenum(x$EC50DC)) + 0.001)
+  # mm <- function(x) return(max(fivenum(x$EC50DC)) + 0.01)
+  # boxplot.df <- survey.picoxystrobin.2 %>%  group_by(Field_Year) %>% do(mm(.)) 
+  # Create a data frame out of the factor levels and Tukey's homogenous group letters
+  plot.levels <- data.frame(plot.labels, labels = Tukey.labels[['Letters']],
+                            stringsAsFactors = FALSE)
+  
+  # Merge it with the labels
+  labels.df <- merge(plot.levels, boxplot.df, by.x = 'plot.labels', by.y = flev, sort = FALSE)
+  
+  return(labels.df)
+}
+
+ggplot(survey.picoxystrobin.fields.2, aes( x = Field_Year, y = EC50DC)) + geom_violin(aes( fill = Country_difference  )
+) + scale_fill_manual(values=c( "gray", "white"))+
+    geom_text(data = generate_label_df_picoxystrobin(tHSD.picoxystrobin, 'Field_Year'), aes(x = plot.labels, y = V1, label = labels)) +
+    labs(x = "Field", y = expression(bold(EC[bold("50") ~ (bold("D"))]) ~
+                                              (bold(ppm ~ bold(
+                                                  "a.i."
+                                              ))))) + theme(
+                                                  panel.border = element_rect(
+                                                      colour = "black",
+                                                      fill = NA,
+                                                      size = 1
+                                                  ),
+                                                  axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+                                                  axis.text.x = element_text(
+                                                      face = "bold",
+                                                      size = 8,
+                                                      family = "Arial",
+                                                      angle = 30), axis.text.y = element_text(
+                                                      face = "bold",
+                                                      size = 8,
+                                                      family = "Arial"    ),
+                                                  panel.background = element_rect(fill = "white", colour = "grey50"))+ scale_y_continuous(breaks = c(0.008, 0.01, 0.012, 0.014, 0.016, 0.018, 0.020, 0.022, 0.024)) + stat_summary(
+      fun.y = mean,
+      geom = "point",
+      shape = 23,
+      size = 2,
+      color = "black"
+   )
+
 
 
 ```
 #table publication
 ```{r}
-
-survey.boscalid.2 %>% 
-  # bind_rows(survey.TM.2) %>% 
-  bind_rows(survey.tetraconazole.2) %>% 
-  bind_rows(survey.picoxystrobin.2) %>% 
+vientos <- 
+survey.boscalid.complete %>% 
+ bind_rows(wrangling_DC(survey.TM.2)) %>% 
+  bind_rows(survey.tetraconazole.complete) %>% 
+  bind_rows(survey.picoxystrobin.complete) %>% 
 select(-c(EC50DC)) %>% 
-    unique() %>% 
-group_by(source, Host, country ) %>%
+  distinct(ID, .keep_all = TRUE) %>% 
+group_by(source, Host, country, Field_Year, State ) %>%
   summarize(N= n()) %>%
     ungroup() %>%
         add_row(source = "Total", N  = sum(.$N))
 
-myplot_model_comparison(survey.boscalid.2) + stat_compare_means( method = "anova", paired = TRUE,  aes(label = ..p.signif..), 
+
+hola.2 <- survey.TM.2 %>% select(-c(EC50DC))  %>% 
+  pull(ID) %>% unique()
+
+survey.boscalid.complete %>% 
+ bind_rows(survey.TM.2) %>% 
+  bind_rows(survey.tetraconazole.complete) %>% 
+  bind_rows(survey.picoxystrobin.complete) %>% 
+select(-c(EC50DC)) %>% 
+  pull(ID) %>% 
+  unique()
+
+hola.2 <- 
+survey.boscalid.complete %>% 
+  bind_rows(survey.TM.2) %>% 
+  bind_rows(survey.tetraconazole.complete) %>% 
+  bind_rows(survey.picoxystrobin.complete) %>% 
+select(-c(EC50DC)) %>% 
+    unique() %>% 
+  pull(ID)
+
+myplot_model_comparison(survey.boscalid.fields.2) + stat_compare_means( method = "anova", paired = TRUE,  aes(label = ..p.signif..), 
                                                                  label.x = 1.5, label.y = 0.28)
 ```
 #Getting the less sensive isolates from boscalid and picoxystrobin
 ```{r}
-boscalid.less.sensive <-survey.boscalid.2 %>% arrange(desc(EC50DC))%>% select(ID) %>% pull()
+boscalid.less.sensive <-survey.boscalid.fields.2 %>% arrange(desc(EC50DC))%>% select(ID) %>% pull()
 boscalid.less.sensive.2 <- boscalid.less.sensive[1:10]
 
 
-picoxystrobin.less.sensive <-survey.picoxystrobin.2 %>% arrange(desc(EC50DC))%>% select(ID) %>% pull()
+picoxystrobin.less.sensive <- survey.picoxystrobin.fields.2 %>% arrange(desc(EC50DC))%>% select(ID) %>% pull()
 picoxystrobin.less.sensive.2 <- picoxystrobin.less.sensive[1:10]
 # library(kableExtra)
 # picoxystrobin.less.sensive.2 %>%  kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
@@ -1828,4 +2092,12 @@ sort(as.numeric( intersect(combination.2, genotyping.list)))
 
 ```
 
+```{r}
+survey.picoxystrobin.complete %>% group_by( Host) %>% summarise(ave=mean(EC50DC))
+
+ View(survey.boscalid.fields %>% select(-c(EC50DC)) %>% 
++          distinct(ID, .keep_all = TRUE) %>% 
++          group_by(Field_Year ) %>%
++          summarize(N= n()) )
+```
 
