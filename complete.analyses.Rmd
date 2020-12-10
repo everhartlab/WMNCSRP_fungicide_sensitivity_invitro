@@ -181,12 +181,12 @@ reading_data_discriminatory_concentration <- function(filename) {
     filter(response <= upper &
              response >= lower,
            control <= upper1 & control >= lower1) %>%
-    ungroup() %>%
-    select(c(ID, experimental_replicate, repeats, response, control)) %>%
-    group_by(ID) %>% 
-    mutate(count = n()) %>%
-    ungroup() %>%
-    mutate(experiment = ifelse(count <= 6, 1, 2))
+    ungroup() #%>%
+    # select(c(ID, experimental_replicate, repeats, response, control)) %>%
+    # group_by(ID) %>% 
+    # mutate(count = n()) %>%
+    # ungroup() %>%
+    # mutate(experiment = ifelse(count <= 6, 1, 2))
 }
 #getting EC50
 getting_EC50 <- function(filename){
@@ -568,7 +568,7 @@ Field_Year = recode(
   wrangling_survey <- function(filename) {
     data <- filename
     data1 <- data %>%
-      group_by(ID, experiment) %>% # It was added here experiment because there are more repetatiosn ID in prurpose as cpositive controsl and non in purpose
+      group_by(ID) %>% 
       summarise(
         mean_response = mean(response, na.rm = TRUE),
         mean_control = mean(control, na.rm = TRUE)
@@ -772,90 +772,63 @@ Field_Year = recode(
 #     theme(plot.title=element_text(size=24))  
 # }
 #  
-   myplot_model_comparison <- function(filename, Field_Year, EC50DC) {
-     data <- filename
-    Field_Year<- data$Field_Year
-    EC50DC <- data$EC50DC
-    Host <- data$Host
-    State <- data$State
-    ggplot(data =filename,  aes(x = Field_Year, y = EC50DC))  +
-   geom_jitter(aes(color= State, shape = Host),
-      width = .1,
-      height = 0,
-         alpha = 3 / 4
-   ) + stat_summary(
-      fun.y = mean,
-      geom = "point",
-      shape = 95,
-      size = 15,
-      color = "black"
-   ) +
-   labs(x = "Field_Year", y = expression(bold(EC[bold("50") ~ (bold("D"))]) ~
-                                            (bold(ppm ~ bold(
-                                               "a.i."
-                                            ))))) + theme(
-                                               panel.border = element_rect(
-                                                  colour = "black",
-                                                  fill = NA,
-                                                  size = 1
-                                               ),
-                                               axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
-                                               axis.text = element_text(
-                                                  face = "bold",
-                                                  size = 8,
-                                                  family = "Arial",
-                                                  angle = 30
-                                                  
-                                               ),
-                                               panel.background = element_rect(fill = "white", colour = "grey50")
-                                            )}
-   
-   
-   myplot_model_comparison.publication <- function(filename, Field_Year, EC50DC) {
-     data <- filename
-    Field_Year<- data$Field_Year
-    EC50DC <- data$EC50DC
-    Host <- data$Host
-    source <- data$source
-    ggplot(data =filename,  aes(x = Field_Year, y = EC50DC))  +
-   geom_jitter(
-        aes(shape = Host,
-            colour = source,
-            fill = Host),
-        size = 2,
-        alpha = 3 / 4
-    ) +
-    scale_color_grey(start = 0, end = 1) + scale_shape_manual(values = c(15, 16, 17)) +
-    geom_smooth(method = "lm",
-                se = FALSE,
-                colour = "black",
-                size = 0.3)   + stat_summary(
-      fun.y = mean,
-      geom = "point",
-      shape = 95,
-      size = 15,
-      color = "black"
-   ) +
-   labs(x = "Field_Year", y = expression(bold(EC[bold("50") ~ (bold("D"))]) ~
-                                            (bold(ppm ~ bold(
-                                               "a.i."
-                                            ))))) + theme(
-                                               panel.border = element_rect(
-                                                  colour = "black",
-                                                  fill = NA,
-                                                  size = 1
-                                               ),
-                                               axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
-                                               axis.text = element_text(
-                                                  face = "bold",
-                                                  size = 8,
-                                                  family = "Arial",
-                                                  angle = 30
-                                                  
-                                               ),
-                                               panel.background = element_rect(fill = "white", colour = "grey50")
-                                            )}
-   
+  generate_label <- function(HSD, flev, surveyy, highlabel){
+  # Extract labels and factor levels from Tukey post-hoc 
+  Dunn.levels <- HSD[[1]][,2]
+  Dunn.labels <- multcompLetters(Dunn.levels)['Letters']
+  plot.labels <- names(Dunn.labels[['Letters']])
+  # Get highest quantile for Dunn's 5 number summary and add a bit of space to buffer between    
+  # upper quantile and label placement
+  boxplot.df <- plyr:: ddply(surveyy, flev, function (x) max(fivenum(x$EC50DC)) + highlabel)
+  # mm <- function(x) return(max(fivenum(x$EC50DC)) + 0.01)
+  # boxplot.df <- survey.boscalid.2 %>%  group_by(Field_Year) %>% do(mm(.)) 
+  # Create a data frame out of the factor levels and Dunn's homogenous group letters
+  plot.levels <- data.frame(plot.labels, labels = Dunn.labels[['Letters']],
+                            stringsAsFactors = FALSE)
+  
+  # Merge it with the labels
+  labels.df <- merge(plot.levels, boxplot.df, by.x = 'plot.labels', by.y = flev, sort = FALSE)
+  
+  return(labels.df)
+}
+
+
+
+myplot_comparison <- function(filename, Field_Year,EC50DC, highlabel) {
+  data <- filename
+  Field_Year <- data$Field_Year
+  EC50DC<- data$EC50DC
+  
+  ggplot(data = filename,  aes(x = Field_Year, y = EC50DC)) + geom_boxplot() +
+    geom_text(data = generate_label(test_field(filename), 'Field_Year', filename,highlabel ),
+              aes(x = plot.labels, y = V1, label = labels)) +     labs(x = "Field", y = expression(bold(EC[bold("50") ~ (bold("D"))]) ~
+                                                                                                     (bold(ppm ~ bold(
+                                                                                                       "a.i."
+                                                                                                     ))))) + theme(
+                                                                                                       panel.border = element_rect(
+                                                                                                         colour = "black",
+                                                                                                         fill = NA,
+                                                                                                         size = 1
+                                                                                                       ),
+                                                                                                       axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+                                                                                                       axis.text.x = element_text(
+                                                                                                         face = "bold",
+                                                                                                         size = 8,
+                                                                                                         family = "Arial",
+                                                                                                         angle = 30,
+                                                                                                         hjust = 1
+                                                                                                       ),
+                                                                                                       axis.text.y = element_text(
+                                                                                                         face = "bold",
+                                                                                                         size = 8,
+                                                                                                         family = "Arial"
+                                                                                                       ),
+                                                                                                       panel.background = element_rect(fill = "white", colour = "grey50")
+                                                                                                     ) 
+  
+  
+}
+
  
 ```
 
@@ -1215,7 +1188,7 @@ survey.TM.2 <- survey.TM%>%
   mutate(Field_Year =  ifelse(source == "Baseline", "Baseline", Field_Year),
     Field_Year = as.factor(Field_Year)) %>% 
   dplyr::rename(EC50DC = EC50) %>% #change here to be able to join to other datframes to get the total used
-  select(ID, experiment, EC50DC)
+  select(ID, EC50DC)
    #select(ID, EC50DC) %>% 
 # group_by(ID) %>%
 #   top_n(1, EC50DC) %>% #keeping the highest value of each ID value
@@ -1240,32 +1213,32 @@ survey.TM.2 <- survey.TM%>%
 #survey.boscalid <- bind_rows(survey.boscalid.thomas, survey.boscalid.USA,survey.boscalid.more.USA,survey.boscalid.MX.BZ) 
 
 #any particular case check so far by this way
-survey.boscalid.thomas.2 <- survey.boscalid.thomas %>% mutate(
-    experiment = case_when(
-      response == 1.775 |
-        response == 1.905 |
-        response == 1.980 |
-        response == 1.910 |
-        response == 1.660 | 
-        response == 1.885~ 2,
-      TRUE ~ 1))
+# survey.boscalid.thomas.2 <- survey.boscalid.thomas %>% mutate(
+#     experiment = case_when(
+#       response == 1.775 |
+#         response == 1.905 |
+#         response == 1.980 |
+#         response == 1.910 |
+#         response == 1.660 | 
+#         response == 1.885~ 2,
+#       TRUE ~ 1))
 
 
-survey.boscalid.thomas.3 <- wrangling_survey(survey.boscalid.thomas.2) %>%
+survey.boscalid.thomas.2 <- wrangling_survey(survey.boscalid.thomas) %>%
   mutate(EC50DC = exp (boscalid.lm [[1]][[1]] + boscalid.lm[[1]][[2]] * RG))# exponential is the opposite of log
         #using the model the intercept and the coefficient of the model
 ##
-survey.boscalid.USA.2 <- survey.boscalid.USA %>% mutate(
-    experiment = case_when(
-      response == 2.0635 |
-        control == 5.4735 |
-        response == 2.2900 |
-        response == 2.1965 |
-        response == 2.4830 | 
-        control == 5.5380 ~ 2,
-      TRUE ~ 1))
+# survey.boscalid.USA.2 <- survey.boscalid.USA %>% mutate(
+#     experiment = case_when(
+#       response == 2.0635 |
+#         control == 5.4735 |
+#         response == 2.2900 |
+#         response == 2.1965 |
+#         response == 2.4830 | 
+#         control == 5.5380 ~ 2,
+#       TRUE ~ 1))
 
-survey.boscalid.USA.3 <- wrangling_survey(survey.boscalid.USA.2) %>%
+survey.boscalid.USA.2 <- wrangling_survey(survey.boscalid.USA) %>%
   mutate(EC50DC = exp (boscalid.lm [[1]][[1]] + boscalid.lm[[1]][[2]] * RG))#
 
 ##
@@ -1286,78 +1259,78 @@ survey.boscalid.more.USA <- survey.boscalid.more.USA %>% mutate(response = (resp
 #   )
 # )
 
-survey.boscalid.more.USA.2 <-
-  survey.boscalid.more.USA %>% mutate(
-    experiment = ifelse(
-      response == 1.6570 |
-        response == 1.6735  |
-        response == 1.6910 |
-        response == 1.8705 |
-        response == 2.1945 |
-        response == 2.0860,
-      1,
-      ifelse(
-        response == 1.9390 |
-          response ==  1.9865 |
-          response ==  1.7995 |
-          response ==  1.9625 |
-          response ==  1.9140 |
-          response ==  1.7965,
-        3,
-        ifelse(
-          response ==  1.9400 |
-            response ==  2.1380 |
-            response ==  2.1775 |
-            response ==  2.2110 |
-            response ==  2.5435,
-          4,
-          ifelse(
-            response ==  1.9800 |
-              response ==  2.1390 |
-              response ==  2.1840 |
-              response ==  2.0815 |
-              response ==  1.9240 |
-              response ==  1.8405,
-            5,
-            experiment
-          )
-        )
-        
-      )
-    )
-  )
+# survey.boscalid.more.USA.2 <-
+#   survey.boscalid.more.USA %>% mutate(
+#     experiment = ifelse(
+#       response == 1.6570 |
+#         response == 1.6735  |
+#         response == 1.6910 |
+#         response == 1.8705 |
+#         response == 2.1945 |
+#         response == 2.0860,
+#       1,
+#       ifelse(
+#         response == 1.9390 |
+#           response ==  1.9865 |
+#           response ==  1.7995 |
+#           response ==  1.9625 |
+#           response ==  1.9140 |
+#           response ==  1.7965,
+#         3,
+#         ifelse(
+#           response ==  1.9400 |
+#             response ==  2.1380 |
+#             response ==  2.1775 |
+#             response ==  2.2110 |
+#             response ==  2.5435,
+#           4,
+#           ifelse(
+#             response ==  1.9800 |
+#               response ==  2.1390 |
+#               response ==  2.1840 |
+#               response ==  2.0815 |
+#               response ==  1.9240 |
+#               response ==  1.8405,
+#             5,
+#             experiment
+#           )
+#         )
+#         
+#       )
+#     )
+#   )
+# 
+#  survey.boscalid.more.USA.3 <-
+#   survey.boscalid.more.USA %>% mutate(           
+#   experiment = case_when(
+#       response == 1.6570 |
+#         response ==1.6735  |
+#         response == 1.6910 |
+#         response == 1.8705 |
+#         response == 2.1945 |
+#         response == 2.0860  ~ 2,
+#       response == 1.9390 |
+#         response ==  1.9865|
+#         response ==  1.7995|
+#         response ==  1.9625|
+#         response ==  1.9140| 
+#          response ==  1.7965 ~ 3,
+#          response ==  1.9400|
+#         response ==  2.1380|
+#         response ==  2.1840|
+#         response ==  2.0815|
+#         response ==  1.9240| 
+#          response ==  1.8405 ~ 4,
+#       response ==  1.9800 |
+#               response ==  2.1390 |
+#               response ==  2.1840 |
+#               response ==  2.0815 |
+#               response ==  1.9240 |
+#               response ==  1.8405~5,
+#         TRUE ~ 1))
+#       
 
- survey.boscalid.more.USA.3 <-
-  survey.boscalid.more.USA %>% mutate(           
-  experiment = case_when(
-      response == 1.6570 |
-        response ==1.6735  |
-        response == 1.6910 |
-        response == 1.8705 |
-        response == 2.1945 |
-        response == 2.0860  ~ 2,
-      response == 1.9390 |
-        response ==  1.9865|
-        response ==  1.7995|
-        response ==  1.9625|
-        response ==  1.9140| 
-         response ==  1.7965 ~ 3,
-         response ==  1.9400|
-        response ==  2.1380|
-        response ==  2.1840|
-        response ==  2.0815|
-        response ==  1.9240| 
-         response ==  1.8405 ~ 4,
-      response ==  1.9800 |
-              response ==  2.1390 |
-              response ==  2.1840 |
-              response ==  2.0815 |
-              response ==  1.9240 |
-              response ==  1.8405~5,
-        TRUE ~ 1))
-      
-
-survey.boscalid.more.USA.4 <- wrangling_survey(survey.boscalid.more.USA.2) %>%
+survey.boscalid.more.USA.2 <- wrangling_survey(survey.boscalid.more.USA) %>%
   mutate(EC50DC = exp (boscalid.lm [[1]][[1]] + boscalid.lm[[1]][[2]] * RG))#
 ##
 
@@ -1368,11 +1341,11 @@ survey.boscalid.MX.BZ.2 <- wrangling_survey(survey.boscalid.MX.BZ) %>%
 boscalid.EC50.2 <- boscalid.EC50 %>% select(ID, EC50) %>% 
   dplyr::rename(EC50DC = EC50)#just renaming in purpose to join the following dataframe
 
-survey.boscalid <- bind_rows(survey.boscalid.thomas.3,
-                             survey.boscalid.USA.3,
-                             survey.boscalid.more.USA.4,
+survey.boscalid <- bind_rows(survey.boscalid.thomas.2,
+                             survey.boscalid.USA.2,
+                             survey.boscalid.more.USA.2,
                              survey.boscalid.MX.BZ.2, 
-                             boscalid.EC50.2) %>% select(ID, experiment, EC50DC)
+                             boscalid.EC50.2) %>% select(ID,EC50DC)
 #Have to analyze the controls
 #fix the function here
 #wranglind_DC_2
@@ -1406,52 +1379,52 @@ survey.tetraconazole.thomas.2 <- wrangling_survey(survey.tetraconazole.thomas) %
   mutate(EC50DC = exp (tetraconazole.lm [[1]][[1]] + tetraconazole.lm[[1]][[2]] * RG))# exponential is the opposite of log
         #using the model the intercept and the coefficient of the model
 ##
-survey.tetraconazole.USA.2 <- survey.tetraconazole.USA %>% mutate(
-    experiment = case_when(
-      control == 5.2245 |
-        response == 2.1955 |
-        response == 2.2385 |
-        response ==  2.3260|
-        response == 2.5710 | 
-        response == 2.4230 ~ 2,
-      TRUE ~ 1))
-
-survey.tetraconazole.USA.3 <- wrangling_survey(survey.tetraconazole.USA.2) %>%
+# survey.tetraconazole.USA.2 <- survey.tetraconazole.USA %>% mutate(
+#     experiment = case_when(
+#       control == 5.2245 |
+#         response == 2.1955 |
+#         response == 2.2385 |
+#         response ==  2.3260|
+#         response == 2.5710 | 
+#         response == 2.4230 ~ 2,
+#       TRUE ~ 1))
+# 
+survey.tetraconazole.USA.2 <- wrangling_survey(survey.tetraconazole.USA) %>%
   mutate(EC50DC = exp (tetraconazole.lm [[1]][[1]] + tetraconazole.lm[[1]][[2]] * RG))#
 
 ##
 survey.tetraconazole.more.USA <- survey.tetraconazole.more.USA %>% mutate(response = (response/10), control = (control/10))
 
 
-survey.tetraconazole.more.USA.2 <-
-  survey.tetraconazole.more.USA %>% mutate(
-    experiment = case_when(
-      response == 2.2885 |
-        response == 2.4825|
-        response == 2.4805 |
-        response == 2.1630 |
-        response == 2.0860 |
-        response == 2.0560 ~2,
-        response == 1.9675 |
-          response ==  1.9775 |
-          response ==  1.9220 |
-          response ==  2.595 |
-          response ==  2.4075 |
-          response ==  2.5915~3,
-         response ==  1.9400 |
-            response ==  2.1380 |
-            response ==  2.1775 |
-            response ==  2.2110 |
-            response ==  2.5435~4,
-          response ==  2.1640 |
-              response ==  2.3290 |
-              response ==  2.2745~5,
-            TRUE ~ 1))
+# survey.tetraconazole.more.USA.2 <-
+#   survey.tetraconazole.more.USA %>% mutate(
+#     experiment = case_when(
+#       response == 2.2885 |
+#         response == 2.4825|
+#         response == 2.4805 |
+#         response == 2.1630 |
+#         response == 2.0860 |
+#         response == 2.0560 ~2,
+#         response == 1.9675 |
+#           response ==  1.9775 |
+#           response ==  1.9220 |
+#           response ==  2.595 |
+#           response ==  2.4075 |
+#           response ==  2.5915~3,
+#          response ==  1.9400 |
+#             response ==  2.1380 |
+#             response ==  2.1775 |
+#             response ==  2.2110 |
+#             response ==  2.5435~4,
+#           response ==  2.1640 |
+#               response ==  2.3290 |
+#               response ==  2.2745~5,
+#             TRUE ~ 1))
+#       
+# 
       
 
-      
-
-survey.tetraconazole.more.USA.3 <- wrangling_survey(survey.tetraconazole.more.USA.2) %>%
+survey.tetraconazole.more.USA.2 <- wrangling_survey(survey.tetraconazole.more.USA) %>%
   mutate(EC50DC = exp (tetraconazole.lm [[1]][[1]] + tetraconazole.lm[[1]][[2]] * RG))#
 ##
 
@@ -1463,10 +1436,10 @@ tetraconazole.EC50.2 <- tetraconazole.EC50 %>% select(ID, EC50) %>%
   dplyr::rename(EC50DC = EC50)#just rebaming in purpose to join the following dataframe
 
 survey.tetraconazole <- bind_rows(survey.tetraconazole.thomas.2,
-                             survey.tetraconazole.USA.3,
-                             survey.tetraconazole.more.USA.3,
+                             survey.tetraconazole.USA.2,
+                             survey.tetraconazole.more.USA.2,
                              survey.tetraconazole.MX.BZ.2, 
-                             tetraconazole.EC50.2) %>% select(ID, experiment, EC50DC)
+                             tetraconazole.EC50.2) %>% select(ID,  EC50DC)
 #Have to analyze the controls
 
 #wranglind_DC_2
@@ -1501,17 +1474,17 @@ survey.picoxystrobin.thomas.2 <- wrangling_survey(survey.picoxystrobin.thomas) %
   mutate(EC50DC = exp (picoxystrobin.lm [[1]][[1]] + picoxystrobin.lm[[1]][[2]] * RG))# exponential is the opposite of log
         #using the model the intercept and the coefficient of the model
 ##
-survey.picoxystrobin.USA.2 <- survey.picoxystrobin.USA %>% mutate(
-    experiment = case_when(
-      control == 7.3565 |
-        response == 4.8610 |
-        control == 7.6690 |
-        response == 4.8415 |
-        response == 5.0570 | 
-        response == 3.1245 ~ 2,
-      TRUE ~ 1))
-
-survey.picoxystrobin.USA.3 <- wrangling_survey(survey.picoxystrobin.USA.2) %>%
+# survey.picoxystrobin.USA.2 <- survey.picoxystrobin.USA %>% mutate(
+#     experiment = case_when(
+#       control == 7.3565 |
+#         response == 4.8610 |
+#         control == 7.6690 |
+#         response == 4.8415 |
+#         response == 5.0570 | 
+#         response == 3.1245 ~ 2,
+#       TRUE ~ 1))
+# 
+survey.picoxystrobin.USA.2 <- wrangling_survey(survey.picoxystrobin.USA) %>%
   mutate(EC50DC = exp (picoxystrobin.lm [[1]][[1]] + picoxystrobin.lm[[1]][[2]] * RG))#
 
 ##
@@ -1520,36 +1493,36 @@ survey.picoxystrobin.more.USA <- survey.picoxystrobin.more.USA %>% mutate(respon
 
 
 
- survey.picoxystrobin.more.USA.2 <-
-  survey.picoxystrobin.more.USA %>% mutate(           
-  experiment = case_when(
-      response == 2.8865 |
-        response == 2.7210|
-        response == 3.2805 |
-        response == 3.1685 |
-        response == 3.2510 ~ 2,
-      response == 3.4420 |
-        response ==  3.3235|
-        response ==  3.3500|
-        response ==  3.1155|
-        response ==  2.7910| 
-         response ==  3.005 ~ 3,
-         response ==  3.0510|
-        response ==  2.9070|
-        response ==  3.0100|
-        response ==  2.5925|
-        response ==  2.2020| 
-         response ==  2.2700 ~ 4,
-      response ==  2.2530 |
-              response ==  2.3955 |
-              response ==  2.4980 |
-              response ==  2.9685 |
-              response ==  2.8245 |
-              response ==  2.8660~5,
-        TRUE ~ 1))
-      
+ # survey.picoxystrobin.more.USA.2 <-
+ #  survey.picoxystrobin.more.USA %>% mutate(           
+ #  experiment = case_when(
+ #      response == 2.8865 |
+ #        response == 2.7210|
+ #        response == 3.2805 |
+ #        response == 3.1685 |
+ #        response == 3.2510 ~ 2,
+ #      response == 3.4420 |
+ #        response ==  3.3235|
+ #        response ==  3.3500|
+ #        response ==  3.1155|
+ #        response ==  2.7910| 
+ #         response ==  3.005 ~ 3,
+ #         response ==  3.0510|
+ #        response ==  2.9070|
+ #        response ==  3.0100|
+ #        response ==  2.5925|
+ #        response ==  2.2020| 
+ #         response ==  2.2700 ~ 4,
+ #      response ==  2.2530 |
+ #              response ==  2.3955 |
+ #              response ==  2.4980 |
+ #              response ==  2.9685 |
+ #              response ==  2.8245 |
+ #              response ==  2.8660~5,
+ #        TRUE ~ 1))
+ #      
 
-survey.picoxystrobin.more.USA.3 <- wrangling_survey(survey.picoxystrobin.more.USA.2) %>%
+survey.picoxystrobin.more.USA.2 <- wrangling_survey(survey.picoxystrobin.more.USA) %>%
   mutate(EC50DC = exp (picoxystrobin.lm [[1]][[1]] + picoxystrobin.lm[[1]][[2]] * RG))#
 ##
 
@@ -1561,10 +1534,10 @@ picoxystrobin.EC50.2 <- picoxystrobin.EC50 %>% select(ID, EC50) %>%
   dplyr::rename(EC50DC = EC50)#just rebaming in purpose to join the following dataframe
 
 survey.picoxystrobin <- bind_rows(survey.picoxystrobin.thomas.2,
-                             survey.picoxystrobin.USA.3,
-                             survey.picoxystrobin.more.USA.3,
+                             survey.picoxystrobin.USA.2,
+                             survey.picoxystrobin.more.USA.2,
                              survey.picoxystrobin.MX.BZ.2, 
-                             picoxystrobin.EC50.2) %>% select(ID, experiment, EC50DC)
+                             picoxystrobin.EC50.2) %>% select(ID,  EC50DC)
 #Have to analyze the controls
 
 #wranglind_DC_2
@@ -1614,21 +1587,6 @@ test_host(survey.boscalid.complete.host %>% group_by(ID) %>%
 
 the graph
 ```{r}
-# stat.test.boscalid <- survey.boscalid.2 %>% dunn_test(EC50DC ~ Field_Year, p.adjust.method = "bonferroni") %>% add_xy_position(x = "Field_Year") %>% dplyr::filter(p.adj.signif != "ns")
-#  
-# 
-# stat.test.boscalid.2 <- survey.boscalid.2 %>%
-#      tukey_hsd (EC50DC ~ Field_Year)%>% add_xy_position(x = "Field_Year") %>% dplyr::filter(p.adj.signif != "ns")
-# 
-# 
-#  amod <- aov(EC50DC ~ Field_Year, survey.boscalid.2)
-# 
-#  stat.test.boscalid.3 <-  HSD.test(amod,"Field_Year", group=TRUE,console=TRUE,
-#          main="Yield of sweetpotato\nDealt with different virus")
-# 
-# myplot_model_comparison(survey.boscalid.2)+ stat_pvalue_manual(stat.test.boscalid, hide.ns = TRUE) +expand_limits(y = c(0.06, 0.18)) +
-#   scale_y_continuous(breaks = c(0.06, 0.08, 0.1, 0.12, 0.14, 0.16, 0.18))
-
 
 ###
 survey.boscalid.fields.2 <- survey.boscalid.fields %>% 
@@ -1641,140 +1599,11 @@ mutate(Field_difference = ifelse(
     "Yes","No"))
   
 ####
- ANOVA.boscalid <- aov(EC50DC ~ Field_Year, survey.boscalid.fields.2)
-  
- tHSD.boscalid <- TukeyHSD( ANOVA.boscalid, ordered = FALSE, conf.level = 0.95) 
-  
-#
-generate_label_df_boscalid <- function(HSD, flev){
-    # Extract labels and factor levels from Tukey post-hoc 
-  Tukey.levels <- HSD[[flev]][,4]
-  Tukey.labels <- multcompLetters(Tukey.levels)['Letters']
-  plot.labels <- names(Tukey.labels[['Letters']])
-  # Get highest quantile for Tukey's 5 number summary and add a bit of space to buffer between    
-  # upper quantile and label placement
-  boxplot.df <- plyr:: ddply(survey.boscalid.fields.2, flev, function (x) max(fivenum(x$EC50DC)) + 0.01)
-  # mm <- function(x) return(max(fivenum(x$EC50DC)) + 0.01)
-  # boxplot.df <- survey.boscalid.2 %>%  group_by(Field_Year) %>% do(mm(.)) 
-  # Create a data frame out of the factor levels and Tukey's homogenous group letters
-  plot.levels <- data.frame(plot.labels, labels = Tukey.labels[['Letters']],
-                            stringsAsFactors = FALSE)
-  
-  # Merge it with the labels
-  labels.df <- merge(plot.levels, boxplot.df, by.x = 'plot.labels', by.y = flev, sort = FALSE)
-  
-  return(labels.df)
-}
+myplot_comparison(survey.boscalid.fields.2,highlabel = 0.01) + expand_limits(y = c(0.06, 0.18)) +
+  scale_y_continuous(breaks = c(0.06, 0.08, 0.1, 0.12, 0.14, 0.16, 0.18)) + geom_hline(yintercept =
+                                                                                         0.1606226, linetype = "dashed")# make dynamic the value of intercept, create a new fucntion
 
-ggplot(survey.boscalid.fields.2, aes( x = Field_Year, y = EC50DC)) + geom_violin(aes( fill = Country_difference)) + scale_fill_manual(values=c( "gray", "white"))+
-    geom_text(data = generate_label_df_boscalid(tHSD.boscalid, 'Field_Year'), aes(x = plot.labels, y = V1, label = labels)) +
-    labs(x = "Field", y = expression(bold(EC[bold("50") ~ (bold("D"))]) ~
-                                              (bold(ppm ~ bold(
-                                                  "a.i."
-                                              ))))) + theme(
-                                                  panel.border = element_rect(
-                                                      colour = "black",
-                                                      fill = NA,
-                                                      size = 1
-                                                  ),
-                                                  axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
-                                                  axis.text.x = element_text(
-                                                      face = "bold",
-                                                      size = 8,
-                                                      family = "Arial",
-                                                      angle = 30), axis.text.y = element_text(
-                                                      face = "bold",
-                                                      size = 8,
-                                                      family = "Arial"    ),
-                                                  panel.background = element_rect(fill = "white", colour = "grey50")) +expand_limits(y = c(0.06, 0.18)) +
-  scale_y_continuous(breaks = c(0.06, 0.08, 0.1, 0.12, 0.14, 0.16, 0.18)) + stat_summary(
-      fun.y = mean,
-      geom = "point",
-      shape = 23,
-      size = 2,
-      color = "black"
-   )
-###
-# generate_label_df_2 <- function(HSD, flev){
-#   # ANOVA <- aov(EC50DC ~ Field_Year, survey.boscalid.2)
-#   # tHSD <- TukeyHSD(ANOVA, ordered = FALSE, conf.level = 0.95) 
-#   # 
-#   # Extract labels and factor levels from Tukey post-hoc 
-#   Tukey.levels <- HSD[[flev]][,4]
-#   Tukey.labels <- multcompLetters(Tukey.levels)['Letters']
-#   plot.labels <- names(Tukey.labels[['Letters']])
-#   # Get highest quantile for Tukey's 5 number summary and add a bit of space to buffer between    
-#   # upper quantile and label placement
-#   boxplot.df <- ddply(HSD, flev, function (x) max(fivenum(x$EC50DC)) + 0.1)
-#   
-#   # Create a data frame out of the factor levels and Tukey's homogenous group letters
-#   plot.levels <- data.frame(plot.labels, labels = Tukey.labels[['Letters']],
-#                             stringsAsFactors = FALSE)
-#   
-#   # Merge it with the labels
-#   labels.df <- merge(plot.levels, boxplot.df, by.x = 'plot.labels', by.y = flev, sort = FALSE)
-#   
-#   return(labels.df,)
-# }
-
-   
-
-  phytophthora <-  DunnTest(as.numeric(EC50DC) ~ as.factor(Field_Year), data = survey.boscalid.fields.2, method="bonferroni")
-  
-  generate_label_df_boscalid_2 <- function(HSD, flev){
-    # Extract labels and factor levels from Tukey post-hoc 
-    Tukey.levels <- HSD[[1]][,2]
-    Tukey.labels <- multcompLetters(Tukey.levels)['Letters']
-    plot.labels <- names(Tukey.labels[['Letters']])
-    # Get highest quantile for Tukey's 5 number summary and add a bit of space to buffer between    
-    # upper quantile and label placement
-    boxplot.df <- plyr:: ddply(survey.boscalid.fields.2, flev, function (x) max(fivenum(x$EC50DC)) + 0.01)
-    # mm <- function(x) return(max(fivenum(x$EC50DC)) + 0.01)
-    # boxplot.df <- survey.boscalid.2 %>%  group_by(Field_Year) %>% do(mm(.)) 
-    # Create a data frame out of the factor levels and Tukey's homogenous group letters
-    plot.levels <- data.frame(plot.labels, labels = Tukey.labels[['Letters']],
-                              stringsAsFactors = FALSE)
-    
-    # Merge it with the labels
-    labels.df <- merge(plot.levels, boxplot.df, by.x = 'plot.labels', by.y = flev, sort = FALSE)
-    
-    return(labels.df)
-  }
-  
-  ggplot(survey.boscalid.fields.2, aes( x = Field_Year, y = EC50DC)) + geom_violin(aes( fill = Country_difference)) + scale_fill_manual(values=c( "gray", "white"))+
-    geom_text(data = generate_label_df_boscalid_2(phytophthora, 'Field_Year'), aes(x = plot.labels, y = V1, label = labels)) +
-    labs(x = "Field", y = expression(bold(EC[bold("50") ~ (bold("D"))]) ~
-                                       (bold(ppm ~ bold(
-                                         "a.i."
-                                       ))))) + theme(
-                                         panel.border = element_rect(
-                                           colour = "black",
-                                           fill = NA,
-                                           size = 1
-                                         ),
-                                         axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
-                                         axis.text.x = element_text(
-                                           face = "bold",
-                                           size = 8,
-                                           family = "Arial",
-                                           angle = 30), axis.text.y = element_text(
-                                             face = "bold",
-                                             size = 8,
-                                             family = "Arial"    ),
-                                         panel.background = element_rect(fill = "white", colour = "grey50")) +expand_limits(y = c(0.06, 0.18)) +
-    scale_y_continuous(breaks = c(0.06, 0.08, 0.1, 0.12, 0.14, 0.16, 0.18)) + stat_summary(
-      fun.y = mean,
-      geom = "point",
-      shape = 23,
-      size = 2,
-      color = "black"
-    )
  
-
-
-
-
-
 ```
 Tetraconazole Ana Stats, by source
 ```{r}
@@ -1795,10 +1624,6 @@ test_host(survey.tetraconazole.complete.host %>% group_by(ID) %>%
 ```
 the graph
 ```{r}
-# stat.test.tetraconazole <- survey.tetraconazole.2 %>% dunn_test(EC50DC ~ Field_Year, p.adjust.method = "bonferroni") %>% add_xy_position(x = "Field_Year")
-# 
-# myplot_model_comparison.publication(survey.tetraconazole.2) + stat_pvalue_manual(stat.test.tetraconazole, hide.ns = TRUE,y.position = 1.6,coord.flip = T,step.increase = 0.02,,bracket.shorten = 1) +expand_limits(y = c(0.5, 1.6)) + scale_y_continuous(breaks = c(0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6))
-
 survey.tetraconazole.fields.2 <- survey.tetraconazole.fields %>% 
 mutate(Field_difference = ifelse(
     Field_Year == "Baseline"| Field_Year == "NE.10.fld21.DB"|
@@ -1808,60 +1633,10 @@ mutate(Field_difference = ifelse(
     country == "USA",
     "Yes","No"))
 ####
- ANOVA.tetraconazole <- aov(EC50DC ~ Field_Year, survey.tetraconazole.fields.2)
-  
- tHSD.tetraconazole <- TukeyHSD( ANOVA.tetraconazole, ordered = FALSE, conf.level = 0.95) 
-  
-#
-generate_label_df_tetraconazole <- function(HSD, flev){
-    # Extract labels and factor levels from Tukey post-hoc 
-  Tukey.levels <- HSD[[flev]][,4]
-  Tukey.labels <- multcompLetters(Tukey.levels)['Letters']
-  plot.labels <- names(Tukey.labels[['Letters']])
-  # Get highest quantile for Tukey's 5 number summary and add a bit of space to buffer between    
-  # upper quantile and label placement
-  boxplot.df <- plyr:: ddply(survey.tetraconazole.fields.2, flev, function (x) max(fivenum(x$EC50DC)) + 0.08)
-  # mm <- function(x) return(max(fivenum(x$EC50DC)) + 0.01)
-  # boxplot.df <- survey.tetraconazole.2 %>%  group_by(Field_Year) %>% do(mm(.)) 
-  # Create a data frame out of the factor levels and Tukey's homogenous group letters
-  plot.levels <- data.frame(plot.labels, labels = Tukey.labels[['Letters']],
-                            stringsAsFactors = FALSE)
-  
-  # Merge it with the labels
-  labels.df <- merge(plot.levels, boxplot.df, by.x = 'plot.labels', by.y = flev, sort = FALSE)
-  
-  return(labels.df)
-}
-
-ggplot(survey.tetraconazole.fields.2, aes( x = Field_Year, y = EC50DC)) + geom_violin(aes( fill = Country_difference)
-  ) + scale_fill_manual(values=c( "gray", "white"))+
-    geom_text(data = generate_label_df_tetraconazole(tHSD.tetraconazole, 'Field_Year'), aes(x = plot.labels, y = V1, label = labels)) +
-    labs(x = "Field", y = expression(bold(EC[bold("50") ~ (bold("D"))]) ~
-                                              (bold(ppm ~ bold(
-                                                  "a.i."
-                                              ))))) + theme(
-                                                  panel.border = element_rect(
-                                                      colour = "black",
-                                                      fill = NA,
-                                                      size = 1
-                                                  ),
-                                                  axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
-                                                  axis.text.x = element_text(
-                                                      face = "bold",
-                                                      size = 8,
-                                                      family = "Arial",
-                                                      angle = 30), axis.text.y = element_text(
-                                                      face = "bold",
-                                                      size = 8,
-                                                      family = "Arial"    ),
-                                                  panel.background = element_rect(fill = "white", colour = "grey50"))+expand_limits(y = c(0.5, 1.6)) + scale_y_continuous(breaks = c(0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6)) + stat_summary(
-      fun.y = mean,
-      geom = "point",
-      shape = 23,
-      size = 2,
-      color = "black"
-   )
-
+myplot_comparison(survey.tetraconazole.fields.2, highlabel = 0.1)  + expand_limits(y = c(0.5, 1.6)) + scale_y_continuous(breaks = c(0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6)) + geom_hline(yintercept =
+                                                                                                                                                                    1.5770788, linetype = "dashed") 
+ 
+ 
 ```
 
 Picoxystrobin Ana Stats, by source
@@ -1910,62 +1685,9 @@ mutate(Field_difference = ifelse(
     country == "USA",
     "Yes","No"))
 ####
- ANOVA.picoxystrobin <- aov(EC50DC ~ Field_Year, survey.picoxystrobin.fields.2)
+myplot_comparison(survey.picoxystrobin.fields.2,highlabel = 0.005)  + scale_y_continuous(breaks = c(0.008, 0.01, 0.012, 0.014, 0.016, 0.018, 0.020, 0.022, 0.024)) + geom_hline(yintercept =
+                                                                                                                                                       0.02148932, linetype = "dashed")
   
- tHSD.picoxystrobin <- TukeyHSD( ANOVA.picoxystrobin, ordered = FALSE, conf.level = 0.95) 
-  
-#
-generate_label_df_picoxystrobin <- function(HSD, flev){
-    # Extract labels and factor levels from Tukey post-hoc 
-  Tukey.levels <- HSD[[flev]][,4]
-  Tukey.labels <- multcompLetters(Tukey.levels)['Letters']
-  plot.labels <- names(Tukey.labels[['Letters']])
-  # Get highest quantile for Tukey's 5 number summary and add a bit of space to buffer between    
-  # upper quantile and label placement
-  boxplot.df <- plyr:: ddply(survey.picoxystrobin.fields.2, flev, function (x) max(fivenum(x$EC50DC)) + 0.001)
-  # mm <- function(x) return(max(fivenum(x$EC50DC)) + 0.01)
-  # boxplot.df <- survey.picoxystrobin.2 %>%  group_by(Field_Year) %>% do(mm(.)) 
-  # Create a data frame out of the factor levels and Tukey's homogenous group letters
-  plot.levels <- data.frame(plot.labels, labels = Tukey.labels[['Letters']],
-                            stringsAsFactors = FALSE)
-  
-  # Merge it with the labels
-  labels.df <- merge(plot.levels, boxplot.df, by.x = 'plot.labels', by.y = flev, sort = FALSE)
-  
-  return(labels.df)
-}
-
-ggplot(survey.picoxystrobin.fields.2, aes( x = Field_Year, y = EC50DC)) + geom_violin(aes( fill = Country_difference  )
-) + scale_fill_manual(values=c( "gray", "white"))+
-    geom_text(data = generate_label_df_picoxystrobin(tHSD.picoxystrobin, 'Field_Year'), aes(x = plot.labels, y = V1, label = labels)) +
-    labs(x = "Field", y = expression(bold(EC[bold("50") ~ (bold("D"))]) ~
-                                              (bold(ppm ~ bold(
-                                                  "a.i."
-                                              ))))) + theme(
-                                                  panel.border = element_rect(
-                                                      colour = "black",
-                                                      fill = NA,
-                                                      size = 1
-                                                  ),
-                                                  axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
-                                                  axis.text.x = element_text(
-                                                      face = "bold",
-                                                      size = 8,
-                                                      family = "Arial",
-                                                      angle = 30), axis.text.y = element_text(
-                                                      face = "bold",
-                                                      size = 8,
-                                                      family = "Arial"    ),
-                                                  panel.background = element_rect(fill = "white", colour = "grey50"))+ scale_y_continuous(breaks = c(0.008, 0.01, 0.012, 0.014, 0.016, 0.018, 0.020, 0.022, 0.024)) + stat_summary(
-      fun.y = mean,
-      geom = "point",
-      shape = 23,
-      size = 2,
-      color = "black"
-   )
-
-
-
 ```
 #table publication
 ```{r}
@@ -1984,7 +1706,7 @@ group_by(source, Host, country, Field_Year, State ) %>%
 
 hola.2 <- survey.TM.2 %>% select(-c(EC50DC))  %>% 
   pull(ID) %>% unique()
-
+## Corroboroating
 survey.boscalid.complete %>% 
  bind_rows(survey.TM.2) %>% 
   bind_rows(survey.tetraconazole.complete) %>% 
@@ -1992,7 +1714,7 @@ survey.boscalid.complete %>%
 select(-c(EC50DC)) %>% 
   pull(ID) %>% 
   unique()
-
+#incorrect
 hola.2 <- 
 survey.boscalid.complete %>% 
   bind_rows(survey.TM.2) %>% 
@@ -2002,17 +1724,15 @@ select(-c(EC50DC)) %>%
     unique() %>% 
   pull(ID)
 
-myplot_model_comparison(survey.boscalid.fields.2) + stat_compare_means( method = "anova", paired = TRUE,  aes(label = ..p.signif..), 
-                                                                 label.x = 1.5, label.y = 0.28)
 ```
 #Getting the less sensive isolates from boscalid and picoxystrobin
 ```{r}
 boscalid.less.sensive <-survey.boscalid.fields.2 %>% arrange(desc(EC50DC))%>% select(ID) %>% pull()
-boscalid.less.sensive.2 <- boscalid.less.sensive[1:10]
+boscalid.less.sensive.2 <- sort(boscalid.less.sensive[1:10])
 
 
 picoxystrobin.less.sensive <- survey.picoxystrobin.fields.2 %>% arrange(desc(EC50DC))%>% select(ID) %>% pull()
-picoxystrobin.less.sensive.2 <- picoxystrobin.less.sensive[1:10]
+picoxystrobin.less.sensive.2 <- sort(picoxystrobin.less.sensive[1:10])
 # library(kableExtra)
 # picoxystrobin.less.sensive.2 %>%  kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
 #   write2pdf("picoxystrobin.less.sensive.pdf")
@@ -2096,8 +1816,8 @@ sort(as.numeric( intersect(combination.2, genotyping.list)))
 survey.picoxystrobin.complete %>% group_by( Host) %>% summarise(ave=mean(EC50DC))
 
  View(survey.boscalid.fields %>% select(-c(EC50DC)) %>% 
-+          distinct(ID, .keep_all = TRUE) %>% 
-+          group_by(Field_Year ) %>%
-+          summarize(N= n()) )
+ distinct(ID, .keep_all = TRUE) %>% 
+group_by(Field_Year ) %>%
+summarize(N= n()) )
 ```
 
