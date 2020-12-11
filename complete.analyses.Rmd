@@ -673,15 +673,12 @@ Field_Year = recode(
     logEC50 <- data$logEC50
     Host <- data$Host
     source <- data$source
-    ggplot(data = filename,  aes(x = RG, y = logEC50))  +
-      geom_point(aes(
-        shape = Host,
-        colour = source,
-        fill = Host
-      ),
-      size = 2,
-      alpha = 3 / 4) +
-      scale_color_grey(start = 0, end = 1) + scale_shape_manual(values = c(15, 16, 17)) +
+ggplot(data = filename,  aes(x = RG, y = logEC50))  +
+  geom_point(aes(
+    shape = Host,
+    fill= source
+  ),
+  size = 2, stroke= 1, colour= "black")  + scale_shape_manual(values = c(21, 24))+ scale_fill_grey(start = 0, end = 1) +
       geom_smooth(
         method = "lm",
         se = FALSE,
@@ -800,8 +797,8 @@ myplot_comparison <- function(filename, Field_Year,EC50DC, highlabel) {
   EC50DC<- data$EC50DC
   
   ggplot(data = filename,  aes(x = Field_Year, y = EC50DC)) + geom_boxplot() +
-    geom_text(data = generate_label(test_field(filename), 'Field_Year', filename,highlabel ),
-              aes(x = plot.labels, y = V1, label = labels)) +     labs(x = "Field", y = expression(bold(EC[bold("50") ~ (bold("D"))]) ~
+    geom_text(data = generate_label(test_field(filename), 'Field_Year', filename,highlabel),
+              aes(x = plot.labels, y = V1, label = labels), size= 8) +     labs(x = "Field", y = expression(bold(EC[bold("50") ~ (bold("D"))]) ~
                                                                                                      (bold(ppm ~ bold(
                                                                                                        "a.i."
                                                                                                      ))))) + theme(
@@ -810,17 +807,17 @@ myplot_comparison <- function(filename, Field_Year,EC50DC, highlabel) {
                                                                                                          fill = NA,
                                                                                                          size = 1
                                                                                                        ),
-                                                                                                       axis.title = element_text(size = 10, face = "bold", hjust = 0.5),
+                                                                                                       axis.title = element_text(size = 18, face = "bold", hjust = 0.5),
                                                                                                        axis.text.x = element_text(
                                                                                                          face = "bold",
-                                                                                                         size = 8,
+                                                                                                         size = 18,
                                                                                                          family = "Arial",
                                                                                                          angle = 30,
                                                                                                          hjust = 1
                                                                                                        ),
                                                                                                        axis.text.y = element_text(
                                                                                                          face = "bold",
-                                                                                                         size = 8,
+                                                                                                         size = 18,
                                                                                                          family = "Arial"
                                                                                                        ),
                                                                                                        panel.background = element_rect(fill = "white", colour = "grey50")
@@ -1088,6 +1085,9 @@ myplot_model_1(boscalid.joined.2.clean)
 myplot_model_2(boscalid.EC50DC)+ expand_limits(x = c(0.04, 0.25), y = c(0.04, 0.25))  + scale_x_continuous(name = waiver(),
                                                                              breaks = c(0.05, 0.1, 0.15, 0.20, 0.25)) + scale_y_continuous(breaks = c(0.05, 0.1, 0.15, 0.20, 0.25))
  
+
+round(boscalid.lm[[1]][[2]],4)
+round(boscalid.lm[[1]][[1]],3) 
 #Tetraconazole
   
 tetraconazole <- getting_DC(hey2) 
@@ -1189,54 +1189,10 @@ survey.TM.2 <- survey.TM%>%
     Field_Year = as.factor(Field_Year)) %>% 
   dplyr::rename(EC50DC = EC50) %>% #change here to be able to join to other datframes to get the total used
   select(ID, EC50DC)
-   #select(ID, EC50DC) %>% 
-# group_by(ID) %>%
-#   top_n(1, EC50DC) %>% #keeping the highest value of each ID value
-#   ungroup() %>% 
-  # group_by(Field_Year) %>% filter(n()>=9) %>% 
-  #    ungroup() %>% 
-  #    filter(!Field_Year =="no specific field" )
-# %>% 
-#      mutate(Field_Year = fct_reorder(Field_Year, EC50DC, mean))
-# }
-#   wrangling_DC_3()
- 
-
-###For comparisons between hosts I had to take out the ones coming from baseline otherwise would not be fair
-
-# survey.TM.2.host <- survey.TM.2 %>% 
-#   filter(!source=="Baseline")
-
-
-
-#Boscalid
-#survey.boscalid <- bind_rows(survey.boscalid.thomas, survey.boscalid.USA,survey.boscalid.more.USA,survey.boscalid.MX.BZ) 
-
-#any particular case check so far by this way
-# survey.boscalid.thomas.2 <- survey.boscalid.thomas %>% mutate(
-#     experiment = case_when(
-#       response == 1.775 |
-#         response == 1.905 |
-#         response == 1.980 |
-#         response == 1.910 |
-#         response == 1.660 | 
-#         response == 1.885~ 2,
-#       TRUE ~ 1))
-
-
+  
 survey.boscalid.thomas.2 <- wrangling_survey(survey.boscalid.thomas) %>%
   mutate(EC50DC = exp (boscalid.lm [[1]][[1]] + boscalid.lm[[1]][[2]] * RG))# exponential is the opposite of log
         #using the model the intercept and the coefficient of the model
-##
-# survey.boscalid.USA.2 <- survey.boscalid.USA %>% mutate(
-#     experiment = case_when(
-#       response == 2.0635 |
-#         control == 5.4735 |
-#         response == 2.2900 |
-#         response == 2.1965 |
-#         response == 2.4830 | 
-#         control == 5.5380 ~ 2,
-#       TRUE ~ 1))
 
 survey.boscalid.USA.2 <- wrangling_survey(survey.boscalid.USA) %>%
   mutate(EC50DC = exp (boscalid.lm [[1]][[1]] + boscalid.lm[[1]][[2]] * RG))#
@@ -1246,89 +1202,6 @@ survey.boscalid.more.USA <- survey.boscalid.more.USA %>% mutate(response = (resp
 
 
 
-# survey.boscalid.more.USA.2 <- survey.boscalid.more.USA %>% mutate(
-#   experiment = ifelse(
-#     response == 1.6570 |
-#       response == 1.6735  |
-#       response == 1.6910 |
-#       response == 1.8705 |
-#       response == 2.1945 |
-#       response == 2.0860,
-#     1,
-#     2
-#   )
-# )
-
-# survey.boscalid.more.USA.2 <-
-#   survey.boscalid.more.USA %>% mutate(
-#     experiment = ifelse(
-#       response == 1.6570 |
-#         response == 1.6735  |
-#         response == 1.6910 |
-#         response == 1.8705 |
-#         response == 2.1945 |
-#         response == 2.0860,
-#       1,
-#       ifelse(
-#         response == 1.9390 |
-#           response ==  1.9865 |
-#           response ==  1.7995 |
-#           response ==  1.9625 |
-#           response ==  1.9140 |
-#           response ==  1.7965,
-#         3,
-#         ifelse(
-#           response ==  1.9400 |
-#             response ==  2.1380 |
-#             response ==  2.1775 |
-#             response ==  2.2110 |
-#             response ==  2.5435,
-#           4,
-#           ifelse(
-#             response ==  1.9800 |
-#               response ==  2.1390 |
-#               response ==  2.1840 |
-#               response ==  2.0815 |
-#               response ==  1.9240 |
-#               response ==  1.8405,
-#             5,
-#             experiment
-#           )
-#         )
-#         
-#       )
-#     )
-#   )
-# 
-#  survey.boscalid.more.USA.3 <-
-#   survey.boscalid.more.USA %>% mutate(           
-#   experiment = case_when(
-#       response == 1.6570 |
-#         response ==1.6735  |
-#         response == 1.6910 |
-#         response == 1.8705 |
-#         response == 2.1945 |
-#         response == 2.0860  ~ 2,
-#       response == 1.9390 |
-#         response ==  1.9865|
-#         response ==  1.7995|
-#         response ==  1.9625|
-#         response ==  1.9140| 
-#          response ==  1.7965 ~ 3,
-#          response ==  1.9400|
-#         response ==  2.1380|
-#         response ==  2.1840|
-#         response ==  2.0815|
-#         response ==  1.9240| 
-#          response ==  1.8405 ~ 4,
-#       response ==  1.9800 |
-#               response ==  2.1390 |
-#               response ==  2.1840 |
-#               response ==  2.0815 |
-#               response ==  1.9240 |
-#               response ==  1.8405~5,
-#         TRUE ~ 1))
-#       
 
 survey.boscalid.more.USA.2 <- wrangling_survey(survey.boscalid.more.USA) %>%
   mutate(EC50DC = exp (boscalid.lm [[1]][[1]] + boscalid.lm[[1]][[2]] * RG))#
@@ -1379,16 +1252,6 @@ survey.tetraconazole.thomas.2 <- wrangling_survey(survey.tetraconazole.thomas) %
   mutate(EC50DC = exp (tetraconazole.lm [[1]][[1]] + tetraconazole.lm[[1]][[2]] * RG))# exponential is the opposite of log
         #using the model the intercept and the coefficient of the model
 ##
-# survey.tetraconazole.USA.2 <- survey.tetraconazole.USA %>% mutate(
-#     experiment = case_when(
-#       control == 5.2245 |
-#         response == 2.1955 |
-#         response == 2.2385 |
-#         response ==  2.3260|
-#         response == 2.5710 | 
-#         response == 2.4230 ~ 2,
-#       TRUE ~ 1))
-# 
 survey.tetraconazole.USA.2 <- wrangling_survey(survey.tetraconazole.USA) %>%
   mutate(EC50DC = exp (tetraconazole.lm [[1]][[1]] + tetraconazole.lm[[1]][[2]] * RG))#
 
@@ -1396,33 +1259,7 @@ survey.tetraconazole.USA.2 <- wrangling_survey(survey.tetraconazole.USA) %>%
 survey.tetraconazole.more.USA <- survey.tetraconazole.more.USA %>% mutate(response = (response/10), control = (control/10))
 
 
-# survey.tetraconazole.more.USA.2 <-
-#   survey.tetraconazole.more.USA %>% mutate(
-#     experiment = case_when(
-#       response == 2.2885 |
-#         response == 2.4825|
-#         response == 2.4805 |
-#         response == 2.1630 |
-#         response == 2.0860 |
-#         response == 2.0560 ~2,
-#         response == 1.9675 |
-#           response ==  1.9775 |
-#           response ==  1.9220 |
-#           response ==  2.595 |
-#           response ==  2.4075 |
-#           response ==  2.5915~3,
-#          response ==  1.9400 |
-#             response ==  2.1380 |
-#             response ==  2.1775 |
-#             response ==  2.2110 |
-#             response ==  2.5435~4,
-#           response ==  2.1640 |
-#               response ==  2.3290 |
-#               response ==  2.2745~5,
-#             TRUE ~ 1))
-#       
-# 
-      
+
 
 survey.tetraconazole.more.USA.2 <- wrangling_survey(survey.tetraconazole.more.USA) %>%
   mutate(EC50DC = exp (tetraconazole.lm [[1]][[1]] + tetraconazole.lm[[1]][[2]] * RG))#
@@ -1474,15 +1311,6 @@ survey.picoxystrobin.thomas.2 <- wrangling_survey(survey.picoxystrobin.thomas) %
   mutate(EC50DC = exp (picoxystrobin.lm [[1]][[1]] + picoxystrobin.lm[[1]][[2]] * RG))# exponential is the opposite of log
         #using the model the intercept and the coefficient of the model
 ##
-# survey.picoxystrobin.USA.2 <- survey.picoxystrobin.USA %>% mutate(
-#     experiment = case_when(
-#       control == 7.3565 |
-#         response == 4.8610 |
-#         control == 7.6690 |
-#         response == 4.8415 |
-#         response == 5.0570 | 
-#         response == 3.1245 ~ 2,
-#       TRUE ~ 1))
 # 
 survey.picoxystrobin.USA.2 <- wrangling_survey(survey.picoxystrobin.USA) %>%
   mutate(EC50DC = exp (picoxystrobin.lm [[1]][[1]] + picoxystrobin.lm[[1]][[2]] * RG))#
@@ -1493,35 +1321,7 @@ survey.picoxystrobin.more.USA <- survey.picoxystrobin.more.USA %>% mutate(respon
 
 
 
- # survey.picoxystrobin.more.USA.2 <-
- #  survey.picoxystrobin.more.USA %>% mutate(           
- #  experiment = case_when(
- #      response == 2.8865 |
- #        response == 2.7210|
- #        response == 3.2805 |
- #        response == 3.1685 |
- #        response == 3.2510 ~ 2,
- #      response == 3.4420 |
- #        response ==  3.3235|
- #        response ==  3.3500|
- #        response ==  3.1155|
- #        response ==  2.7910| 
- #         response ==  3.005 ~ 3,
- #         response ==  3.0510|
- #        response ==  2.9070|
- #        response ==  3.0100|
- #        response ==  2.5925|
- #        response ==  2.2020| 
- #         response ==  2.2700 ~ 4,
- #      response ==  2.2530 |
- #              response ==  2.3955 |
- #              response ==  2.4980 |
- #              response ==  2.9685 |
- #              response ==  2.8245 |
- #              response ==  2.8660~5,
- #        TRUE ~ 1))
- #      
-
+ 
 survey.picoxystrobin.more.USA.2 <- wrangling_survey(survey.picoxystrobin.more.USA) %>%
   mutate(EC50DC = exp (picoxystrobin.lm [[1]][[1]] + picoxystrobin.lm[[1]][[2]] * RG))#
 ##
