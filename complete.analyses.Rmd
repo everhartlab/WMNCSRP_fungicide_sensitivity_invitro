@@ -678,7 +678,7 @@ ggplot(data = filename,  aes(x = RG, y = logEC50))  +
     shape = Host,
     fill= source
   ),
-  size = 2, stroke= 1, colour= "black")  + scale_shape_manual(values = c(21, 24))+ scale_fill_grey(start = 0, end = 1) +
+  size = 6, stroke= 1, colour= "black")  + scale_shape_manual(values = c(21, 24))+ scale_fill_grey(start = 0, end = 1) +
       geom_smooth(
         method = "lm",
         se = FALSE,
@@ -687,30 +687,30 @@ ggplot(data = filename,  aes(x = RG, y = logEC50))  +
       ) +
       theme(
         plot.title = element_text(
-          size = 10,
+          size = 18,
           face = "bold",
           hjust = 0.5,
           family = "Arial"
         ),
         axis.title = element_text(
-          size = 14,
+          size = 18,
           face = "bold",
           hjust = 0.5
         ),
         axis.text = element_text(
           face = "bold",
-          size = 10,
+          size = 18,
           family = "Arial"
         ),
         panel.background = element_rect(fill = "white", colour = "grey50")
       ) + labs(x =
-                 "Relative growth (%)", y = expression(bold(Log  (EC[bold("50")])))) + expand_limits(x = c(15, 65)) + scale_x_continuous(name = waiver(), breaks = c(15, 25, 35, 45, 55, 65)) + scale_y_continuous(breaks = c(-3,-2.75,-2.5,-2.25,-2.0,-1.75,-1.5)) + geom_abline(
+                 "Relative growth (%)", y = expression(bold(Log  (EC[bold("50")])))) + geom_abline(
                    intercept = 0,
                    slope = 1,
                    color = "black",
                    lty = "dashed",
                    size = 0.3
-                 )
+                 ) + expand_limits(x = c(15, 65)) + scale_x_continuous(name = waiver(), breaks = c(15, 25, 35, 45, 55, 65))  
     }
   ####
    myplot_model_2 <- function(filename, EC50, Estimate.50DC, Host, source) {
@@ -719,29 +719,27 @@ ggplot(data = filename,  aes(x = RG, y = logEC50))  +
     Estimate.50DC <- data$Estimate.50DC
     Host <- data$Host
     source <- data$source
-    ggplot(data =filename,  aes(x = EC50, y = Estimate.50DC)) +  geom_point(aes(
-   shape = Host,
-   colour = source,
-   fill = Host
- ),
- size = 2,
- alpha = 3 / 4) +
-   scale_color_grey(start = 0, end = 1) + scale_shape_manual(values = c(15, 16, 17)) +
+    ggplot(data = filename,  aes(x = EC50, y = Estimate.50DC))  +
+  geom_point(aes(
+    shape = Host,
+    fill= source
+  ),
+  size = 6, stroke= 1, colour= "black")  + scale_shape_manual(values = c(21, 24))+ scale_fill_grey(start = 0, end = 1)  +
    geom_smooth(method = "lm",
                se = FALSE,
                colour = "black",
                size = 0.3) +
    theme(
      plot.title = element_text(
-       size = 10,
+       size = 18,
        face = "bold",
        hjust = 0.5,
        family = "Arial"
      ),
-     axis.title = element_text(size = 14, face = "bold", hjust = 0.5),
+     axis.title = element_text(size = 18, face = "bold", hjust = 0.5),
      axis.text = element_text(
        face = "bold",
-       size = 10,
+       size = 18,
        family = "Arial"
      ),
      panel.background = element_rect(fill = "white", colour = "grey50")
@@ -1078,7 +1076,7 @@ boscalid.EC50DC <- boscalid.joined.2.clean %>% mutate(Estimate.50DC =
 # Linear Regression graph of log EC50 and relative growth at 0.2 ppm
 ###
 
-myplot_model_1(boscalid.joined.2.clean) 
+myplot_model_1(boscalid.joined.2.clean) #+ scale_y_continuous(breaks = c(-3,-2.75,-2.5,-2.25,-2.0,-1.75,-1.5))
  
 
 ######### Lxxinear model of EC50  and EC50DC just to corroborate is a GOOD RELATIONSHIP, check normality and homogeneity of variances
@@ -1120,10 +1118,11 @@ tetraconazole.EC50DC <- tetraconazole.joined.2.clean %>% mutate(Estimate.50DC =
 
 myplot_model_1(tetraconazole.joined.2.clean) 
  
+ 
 
 ######### Linear model of EC50  and EC50DC just to corroborate is a GOOD RELATIONSHIP, check normality and homogeneity of variances
-myplot_model_2(tetraconazole.EC50DC)+ expand_limits(x = c(0.04, 0.25), y = c(0.04, 0.25))  + scale_x_continuous(name = waiver(),
-                                                                             breaks = c(0.05, 0.1, 0.15, 0.20, 0.25)) + scale_y_continuous(breaks = c(0.05, 0.1, 0.15, 0.20, 0.25))
+myplot_model_2(tetraconazole.EC50DC)+ expand_limits(x = c(0.27, 1.8), y = c(0.27, 1.8))  + scale_x_continuous(name = waiver(),
+                                                                             breaks = c(0.3, 0.6, 0.9, 1.2, 1.5,1.8)) + scale_y_continuous(breaks = c(0.3, 0.6, 0.9, 1.2, 1.5,1.8))
  
 ## Picoxystrobin
 
@@ -1162,8 +1161,8 @@ myplot_model_1(picoxystrobin.joined.2.clean)
  
 
 ######### Linear model of EC50  and EC50DC just to corroborate is a GOOD RELATIONSHIP, check normality and homogeneity of variances
-myplot_model_2(picoxystrobin.EC50DC)+ expand_limits(x = c(0.04, 0.25), y = c(0.04, 0.25))  + scale_x_continuous(name = waiver(),
-                                                                             breaks = c(0.05, 0.1, 0.15, 0.20, 0.25)) + scale_y_continuous(breaks = c(0.05, 0.1, 0.15, 0.20, 0.25))
+myplot_model_2(picoxystrobin.EC50DC)+ expand_limits(x = c(0.005, 0.018), y = c(0.005, 0.018))  + scale_x_continuous(name = waiver(),
+                                                                             breaks = c(0.0075, 0.01, 0.0125, 0.0150, 0.018)) + scale_y_continuous(breaks = c(0.0075, 0.01, 0.0125, 0.0150, 0.018))
 
   
 ```
@@ -1433,8 +1432,10 @@ mutate(Field_difference = ifelse(
     country == "USA",
     "Yes","No"))
 ####
-myplot_comparison(survey.tetraconazole.fields.2, highlabel = 0.1)  + expand_limits(y = c(0.5, 1.6)) + scale_y_continuous(breaks = c(0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6)) + geom_hline(yintercept =
-                                                                                                                                                                    1.5770788, linetype = "dashed") 
+myplot_comparison(survey.tetraconazole.fields.2, highlabel = 0.1)  + expand_limits(y = c(0.5, 1.6)) + scale_y_continuous(breaks = c(0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6)) 
+
+# + geom_hline(yintercept =
+#                                                                                                                                                                     1.5770788, linetype = "dashed") 
  
  
 ```
