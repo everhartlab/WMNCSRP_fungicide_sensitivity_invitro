@@ -1201,8 +1201,13 @@ survey.TM.2 <- survey.TM%>%
   mutate(Field_Year =  ifelse(source == "Baseline", "Baseline", Field_Year),
     Field_Year = as.factor(Field_Year)) %>% 
   dplyr::rename(EC50DC = EC50) %>% #change here to be able to join to other datframes to get the total used
-  select(ID, EC50DC)
+  select(ID, EC50DC) %>% 
+   # is here where now I have to remove the isolates from controls from fields
+  dplyr::filter(! ID %in% controls.in.the.plots )
   
+
+
+
 survey.boscalid.thomas.2 <- wrangling_survey(survey.boscalid.thomas) %>%
   mutate(EC50DC = exp (boscalid.lm [[1]][[1]] + boscalid.lm[[1]][[2]] * RG))# exponential is the opposite of log
         #using the model the intercept and the coefficient of the model
@@ -1231,7 +1236,10 @@ survey.boscalid <- bind_rows(survey.boscalid.thomas.2,
                              survey.boscalid.USA.2,
                              survey.boscalid.more.USA.2,
                              survey.boscalid.MX.BZ.2, 
-                             boscalid.EC50.2) %>% select(ID,EC50DC)
+                             boscalid.EC50.2) %>% select(ID,EC50DC)%>% 
+   # is here where now I have to remove the isolates from controls from fields
+  dplyr::filter(! ID %in% controls.in.the.plots )
+
 #Have to analyze the controls
 #fix the function here
 #wranglind_DC_2
@@ -1289,7 +1297,9 @@ survey.tetraconazole <- bind_rows(survey.tetraconazole.thomas.2,
                              survey.tetraconazole.USA.2,
                              survey.tetraconazole.more.USA.2,
                              survey.tetraconazole.MX.BZ.2, 
-                             tetraconazole.EC50.2) %>% select(ID,  EC50DC)
+                             tetraconazole.EC50.2) %>% select(ID,  EC50DC) %>% 
+# is here where now I have to remove the isolates from controls from fields
+  dplyr::filter(! ID %in% controls.in.the.plots )
 #Have to analyze the controls
 
 #wranglind_DC_2
@@ -1350,7 +1360,9 @@ survey.picoxystrobin <- bind_rows(survey.picoxystrobin.thomas.2,
                              survey.picoxystrobin.USA.2,
                              survey.picoxystrobin.more.USA.2,
                              survey.picoxystrobin.MX.BZ.2, 
-                             picoxystrobin.EC50.2) %>% select(ID,  EC50DC)
+                             picoxystrobin.EC50.2) %>% select(ID,  EC50DC) %>% 
+# is here where now I have to remove the isolates from controls from fields
+  dplyr::filter(! ID %in% controls.in.the.plots )
 #Have to analyze the controls
 
 #wranglind_DC_2
