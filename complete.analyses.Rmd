@@ -1181,6 +1181,85 @@ myplot_model_2(picoxystrobin.EC50DC)+ expand_limits(x = c(0.005, 0.018), y = c(0
   
 ```
 
+```{r}
+#based on object Vientos which is correct, just 
+
+
+#Fungicide_current_season
+ #molecule.s._current_season
+ #Group_MOA_current_season, source, Host, country, Field_Year, State, County
+ #source, Host, country, Field_Year, State )
+ # Colletotrichum <-
+ #   whitemold.inventory %>% filter(ID %in% lasiodiplodia) %>% select(
+ #     ID,
+ #     Origin,#we will change later to the real variable "source"
+ #     Host,
+ #     #country, add later
+ #     Field_Year,
+ #     State,
+ #     County,
+ #     Fungicide_current_season,
+ #     molecule.s._current_season,
+ #     Group_MOA_current_season
+ #   )
+ # ##
+ 
+ # I have to keep Field adn Year separate tahts why reading again the main table from data
+ 
+ whitemold.inventory.2 <- read_csv("whitemold.inventory.csv")
+ 
+ Colletotrichum <-
+    whitemold.inventory.2 %>% 
+   # filter(ID %in% lasiodiplodia) %>% 
+   mutate(country = ifelse(
+      ID %in% mexican.isolates,
+      "Mexico",
+      ifelse(ID %in% brazilian.isolates,
+             "Brazil", "USA")),
+      source = ifelse(
+    ID %in% baseline.isolates.2,
+    "Baseline",
+    ifelse(
+      ID %in% Farmer.fields,
+      "Producer Fields","Fungicide Field Trials"
+    )), Host = ifelse(
+    ID %in% drybean,
+    "Drybean", ifelse(
+      ID %in% soybean,
+      "Soybean","different_host")),
+ source = as.factor(source),
+  Host = as.factor(Host),
+ country = as.factor(country),
+ Field = as.factor(Field),
+ Year = as.factor(Year),
+ State = as.factor(State),
+ County = as.factor(County),
+ Fungicide_current_season = as.factor(Fungicide_current_season),
+ molecule.s._current_season = as.factor(molecule.s._current_season),
+ Group_MOA_current_season = as.factor(Group_MOA_current_season),
+ Applications = as.factor(Applications),
+ Rate = as.factor(Rate)
+      ) %>%    select(
+     ID,
+     source,#we will change later to the real variable "source"
+     Host,
+     country, 
+     Field,
+     Year,
+     State,
+     County,
+     Fungicide_current_season,
+     molecule.s._current_season,
+     Group_MOA_current_season,
+     Applications,
+     Rate
+   ) 
+ 
+ controls.in.the.plots <- Colletotrichum %>% filter( Fungicide_current_season == "control") %>% select(ID) %>% pull()
+
+ controls.in.the.plots.2 <- c(1175, 1195, 1327, 1443, 1446, 1461, 1541, 1710)
+```
+
 ```{r Using the DC and the model, echo = FALSE}
 
 
@@ -1730,7 +1809,7 @@ select(-c(EC50DC)) %>%
      Rate
    ) 
  
- controls.in.the.plots <- Colletotrichum %>% filter( Fungicide_current_season == "control") %>% select(ID) %>% pull()
+  controls.in.the.plots..<- Colletotrichum %>% filter( Fungicide_current_season == "control") %>% select(ID) %>% pull()
  
  Colletotrichum.2 <- Colletotrichum %>%
    group_by(
