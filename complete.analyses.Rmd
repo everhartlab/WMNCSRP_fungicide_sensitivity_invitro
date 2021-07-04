@@ -1281,8 +1281,8 @@ survey.TM.2 <- survey.TM%>%
     Field_Year = as.factor(Field_Year)) %>% 
   dplyr::rename(EC50DC = EC50) %>% #change here to be able to join to other datframes to get the total used
   select(ID, EC50DC) %>% 
-   # is here where now I have to remove the isolates from controls from fields
-  dplyr::filter(! ID %in% controls.in.the.plots )
+   # is here where now I have to remove the isolates from controls from fields and potato host isolates provided by Chilvers at the end
+  dplyr::filter(! ID %in% controls.in.the.plots,  ! ID %in% 2570:2574)
   
 
 
@@ -1316,8 +1316,8 @@ survey.boscalid <- bind_rows(survey.boscalid.thomas.2,
                              survey.boscalid.more.USA.2,
                              survey.boscalid.MX.BZ.2, 
                              boscalid.EC50.2) %>% select(ID,EC50DC)%>% 
-   # is here where now I have to remove the isolates from controls from fields
-  dplyr::filter(! ID %in% controls.in.the.plots )
+   # is here where now I have to remove the isolates from controls from fields and potato host isolates provided by Chilvers at the end
+  dplyr::filter(! ID %in% controls.in.the.plots, ! ID %in% 2570:2574 )
 
 #Have to analyze the controls
 #fix the function here
@@ -1377,8 +1377,8 @@ survey.tetraconazole <- bind_rows(survey.tetraconazole.thomas.2,
                              survey.tetraconazole.more.USA.2,
                              survey.tetraconazole.MX.BZ.2, 
                              tetraconazole.EC50.2) %>% select(ID,  EC50DC) %>% 
-# is here where now I have to remove the isolates from controls from fields
-  dplyr::filter(! ID %in% controls.in.the.plots )
+# is here where now I have to remove the isolates from controls from fields and potato host isolates provided by Chilvers at the end
+  dplyr::filter(! ID %in% controls.in.the.plots, ! ID %in% 2570:2574 )
 #Have to analyze the controls
 
 #wranglind_DC_2
@@ -1440,8 +1440,8 @@ survey.picoxystrobin <- bind_rows(survey.picoxystrobin.thomas.2,
                              survey.picoxystrobin.more.USA.2,
                              survey.picoxystrobin.MX.BZ.2, 
                              picoxystrobin.EC50.2) %>% select(ID,  EC50DC) %>% 
-# is here where now I have to remove the isolates from controls from fields
-  dplyr::filter(! ID %in% controls.in.the.plots )
+# is here where now I have to remove the isolates from controls from fields and potato host isolates provided by Chilvers at the end
+  dplyr::filter(! ID %in% controls.in.the.plots, ! ID %in% 2570:2574 )
 #Have to analyze the controls
 
 #wranglind_DC_2
