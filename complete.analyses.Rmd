@@ -1474,6 +1474,11 @@ generate_label( test_source(survey.boscalid.complete %>% group_by(ID) %>%
    top_n(1, EC50DC) %>% #keeping the highest value of each ID value
    ungroup() ))
 
+survey.boscalid.complete %>% group_by(ID) %>%
+   top_n(1, EC50DC) %>% #keeping the highest value of each ID value
+   ungroup()  %>% 
+  group_by(source) %>% summarize(round(range(EC50DC),3), average= round(mean(EC50DC), 2), N= n(),  sd = sd(EC50DC), se = round(sd/sqrt(N),3))
+
 ```
 Ana by Field
 ```{r}
@@ -1483,9 +1488,17 @@ generate_label(  test_field (survey.boscalid.fields))
  
  Ana Stats, by host
 ```{r}
-generate_label( test_host(survey.boscalid.complete.host %>% group_by(ID) %>%
+#generate_label(
+  test_host(survey.boscalid.complete.host %>% group_by(ID) %>%
    top_n(1, EC50DC) %>% #keeping the highest value of each ID value
-   ungroup() ))
+   ungroup() )
+ # )
+survey.boscalid.complete.host %>%
+  group_by(ID) %>%
+   top_n(1, EC50DC) %>% #keeping the highest value of each ID value
+   ungroup() %>% 
+  group_by(Host) %>% summarize(round(range(EC50DC),3), average= round(mean(EC50DC),2), N= n(),  sd = sd(EC50DC), se = round(sd/sqrt(N),3))
+
 
 ```
 
@@ -1514,6 +1527,12 @@ Tetraconazole Ana Stats, by source
 generate_label(test_source(survey.tetraconazole.complete  %>% group_by(ID) %>%
    top_n(1, EC50DC) %>% #keeping the highest value of each ID value
    ungroup() ))
+
+survey.tetraconazole.complete %>% 
+ group_by(ID) %>%
+   top_n(1, EC50DC) %>% #keeping the highest value of each ID value
+   ungroup() %>% 
+  group_by(source) %>% summarize(range(EC50DC), average= mean(EC50DC), N= n(),  sd = sd(EC50DC), se = round(sd/sqrt(N),3))
 ```
  Ana by Field
 ```{r}
@@ -1522,9 +1541,17 @@ generate_label( test_field (survey.tetraconazole.fields))
  
  Ana Stats, by host
 ```{r}
-generate_label( test_host(survey.tetraconazole.complete.host %>% group_by(ID) %>%
+#generate_label(
+  test_host(survey.tetraconazole.complete.host %>% group_by(ID) %>%
    top_n(1, EC50DC) %>% #keeping the highest value of each ID value
-   ungroup()))
+   ungroup())
+  #)
+
+survey.tetraconazole.complete.host %>%
+group_by(ID) %>%
+   top_n(1, EC50DC) %>% #keeping the highest value of each ID value
+   ungroup() %>% 
+  group_by(Host) %>% summarize(range(EC50DC), average= mean(EC50DC), N= n(),  sd = sd(EC50DC), se = round(sd/sqrt(N),3))
 ```
 the graph
 ```{r}
@@ -1550,6 +1577,13 @@ Picoxystrobin Ana Stats, by source
 generate_label( test_source(survey.picoxystrobin.complete %>% group_by(ID) %>%
    top_n(1, EC50DC) %>% #keeping the highest value of each ID value
    ungroup()))
+
+survey.picoxystrobin.complete %>% 
+  group_by(ID) %>%
+   top_n(1, EC50DC) %>% #keeping the highest value of each ID value
+   ungroup()%>% 
+  group_by(source) %>% summarize(round(range(EC50DC),3), average= round(mean(EC50DC), 2), N= n(),  sd = sd(EC50DC), se = round(sd/sqrt(N),3))
+
 ```
 
 Ana by Field
@@ -1559,9 +1593,17 @@ Ana by Field
 
  Ana Stats, by host
 ```{r}
-generate_label( test_host(survey.picoxystrobin.complete.host  %>% group_by(ID) %>%
+#generate_label( 
+  test_host(survey.picoxystrobin.complete.host  %>% group_by(ID) %>%
    top_n(1, EC50DC) %>% #keeping the highest value of each ID value
-   ungroup()))
+   ungroup())
+  #)
+
+survey.picoxystrobin.complete.host %>%
+   group_by(ID) %>%
+   top_n(1, EC50DC) %>% #keeping the highest value of each ID value
+   ungroup() %>% 
+  group_by(Host) %>% summarize(round(range(EC50DC),3), average= round(mean(EC50DC),2), N= n(),  sd = sd(EC50DC), se = round(sd/sqrt(N),3))
 
 ```
 the graph
