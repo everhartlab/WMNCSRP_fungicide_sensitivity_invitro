@@ -608,7 +608,20 @@ Field_Year = recode(
   
   
   #test source
-  test_source <- function(filename, vardep, varindep) {
+  
+  test_kruskal_source <- function(filename, vardep, varindep) {
+    data <- filename
+    vardep <- data$EC50DC
+    varindep <- data$source
+    data1 <-  data %>%
+      do(tidy(shapiro.test(vardep)))
+    if (data1$p.value > 0.05)  {
+      print ("normal")# I have to add the ANOVA
+    } else {
+      kruskal.test(as.numeric(vardep) ~ as.factor(varindep), data = data1)
+         }}
+  
+  test_Dunn_source <- function(filename, vardep, varindep) {
     data <- filename
     vardep <- data$EC50DC
     varindep <- data$source
@@ -625,7 +638,19 @@ Field_Year = recode(
   
    #test host
 
-  test_host <- function(filename, vardep, varindep) {
+   test_kruskal_host <- function(filename, vardep, varindep) {
+    data <- filename
+    vardep <- data$EC50DC
+    varindep <- data$Host
+    data1 <-  data %>%
+      do(tidy(shapiro.test(vardep))) 
+      if (data1$p.value > 0.05)  {
+      print ("normal")# I have to add the ANOVA
+    } else {
+      kruskal.test(as.numeric(vardep) ~ as.factor(varindep), data = data1)
+      }}    
+  
+  test_Dunn_host <- function(filename, vardep, varindep) {
     data <- filename
     vardep <- data$EC50DC
     varindep <- data$Host
@@ -1094,6 +1119,13 @@ myplot_model_1(boscalid.joined.2.clean) #+ scale_y_continuous(breaks = c(-3,-2.7
  
 
 ######### Lxxinear model of EC50  and EC50DC just to corroborate is a GOOD RELATIONSHIP, check normality and homogeneity of variances
+
+
+summary(boscalid.lm.2 <- lineal_model("Estimate.50DC","EC50",data =  boscalid.EC50DC))
+
+round(boscalid.lm.2[[1]][[2]],4)
+round(boscalid.lm.2[[1]][[1]],3) 
+
 myplot_model_2(boscalid.EC50DC)+ expand_limits(x = c(0.04, 0.25), y = c(0.04, 0.25))  + scale_x_continuous(name = waiver(),
                                                                              breaks = c(0.05, 0.1, 0.15, 0.20, 0.25)) + scale_y_continuous(breaks = c(0.05, 0.1, 0.15, 0.20, 0.25))
  
@@ -1135,6 +1167,12 @@ myplot_model_1(tetraconazole.joined.2.clean)
  
 
 ######### Linear model of EC50  and EC50DC just to corroborate is a GOOD RELATIONSHIP, check normality and homogeneity of variances
+
+summary(tetraconazole.lm.2 <- lineal_model("Estimate.50DC","EC50",data =  tetraconazole.EC50DC))
+
+round(tetraconazole.lm.2[[1]][[2]],4)
+round(tetraconazole.lm.2[[1]][[1]],3)
+
 myplot_model_2(tetraconazole.EC50DC)+ expand_limits(x = c(0.27, 1.8), y = c(0.27, 1.8))  + scale_x_continuous(name = waiver(),
                                                                              breaks = c(0.3, 0.6, 0.9, 1.2, 1.5,1.8)) + scale_y_continuous(breaks = c(0.3, 0.6, 0.9, 1.2, 1.5,1.8))
  
@@ -1170,6 +1208,11 @@ picoxystrobin.EC50DC <- picoxystrobin.joined.2.clean %>% mutate(Estimate.50DC =
 
 # Linear Regression graph of log EC50 and relative growth at 0.2 ppm
 ###
+
+summary(picoxystrobin.lm.2 <- lineal_model("Estimate.50DC","EC50",data =  picoxystrobin.EC50DC))
+
+round(picoxystrobin.lm.2[[1]][[2]],4)
+round(picoxystrobin.lm.2[[1]][[1]],3)
 
 myplot_model_1(picoxystrobin.joined.2.clean) 
  
@@ -1470,7 +1513,16 @@ survey.picoxystrobin.complete.host <- survey.picoxystrobin.complete %>%
 ```
 Boscalid Ana Stats, by source
 ```{r}
-generate_label( test_source(survey.boscalid.complete %>% group_by(ID) %>%
+test_kruskal_source(survey.boscalid.complete %>% group_by(ID) %>%
+   top_n(1, EC50DC) %>% #keeping the highest value of each ID value
+   ungroup() )
+
+
+test_Dunn_source(survey.boscalid.complete %>% group_by(ID) %>%
+   top_n(1, EC50DC) %>% #keeping the highest value of each ID value
+   ungroup() )
+
+generate_label( test_Dunn_source(survey.boscalid.complete %>% group_by(ID) %>%
    top_n(1, EC50DC) %>% #keeping the highest value of each ID value
    ungroup() ))
 
@@ -1489,10 +1541,17 @@ generate_label(  test_field (survey.boscalid.fields))
  Ana Stats, by host
 ```{r}
 #generate_label(
-  test_host(survey.boscalid.complete.host %>% group_by(ID) %>%
+  test_kruskal_host(survey.boscalid.complete.host %>% group_by(ID) %>%
    top_n(1, EC50DC) %>% #keeping the highest value of each ID value
    ungroup() )
  # )
+
+#generate_label(
+  test_Dunn_host(survey.boscalid.complete.host %>% group_by(ID) %>%
+   top_n(1, EC50DC) %>% #keeping the highest value of each ID value
+   ungroup() )
+ # )
+
 survey.boscalid.complete.host %>%
   group_by(ID) %>%
    top_n(1, EC50DC) %>% #keeping the highest value of each ID value
@@ -1524,7 +1583,15 @@ myplot_comparison(survey.boscalid.fields.2,highlabel = 0.01) + expand_limits(y =
 ```
 Tetraconazole Ana Stats, by source
 ```{r}
-generate_label(test_source(survey.tetraconazole.complete  %>% group_by(ID) %>%
+test_kruskal_source(survey.tetraconazole.complete  %>% group_by(ID) %>%
+   top_n(1, EC50DC) %>% #keeping the highest value of each ID value
+   ungroup() )
+
+test_Dunn_source(survey.tetraconazole.complete  %>% group_by(ID) %>%
+   top_n(1, EC50DC) %>% #keeping the highest value of each ID value
+   ungroup() )
+
+generate_label(test_Dunn_source(survey.tetraconazole.complete  %>% group_by(ID) %>%
    top_n(1, EC50DC) %>% #keeping the highest value of each ID value
    ungroup() ))
 
@@ -1542,7 +1609,13 @@ generate_label( test_field (survey.tetraconazole.fields))
  Ana Stats, by host
 ```{r}
 #generate_label(
-  test_host(survey.tetraconazole.complete.host %>% group_by(ID) %>%
+  test_kruskal_host(survey.tetraconazole.complete.host %>% group_by(ID) %>%
+   top_n(1, EC50DC) %>% #keeping the highest value of each ID value
+   ungroup())
+  #)
+
+#generate_label(
+  test_Dunn_host(survey.tetraconazole.complete.host %>% group_by(ID) %>%
    top_n(1, EC50DC) %>% #keeping the highest value of each ID value
    ungroup())
   #)
@@ -1574,7 +1647,15 @@ myplot_comparison(survey.tetraconazole.fields.2, highlabel = 0.1)  + expand_limi
 
 Picoxystrobin Ana Stats, by source
 ```{r}
-generate_label( test_source(survey.picoxystrobin.complete %>% group_by(ID) %>%
+ test_kruskal_source(survey.picoxystrobin.complete %>% group_by(ID) %>%
+   top_n(1, EC50DC) %>% #keeping the highest value of each ID value
+   ungroup())
+ 
+test_Dunn_source(survey.picoxystrobin.complete %>% group_by(ID) %>%
+   top_n(1, EC50DC) %>% #keeping the highest value of each ID value
+   ungroup())
+
+generate_label( test_Dunn_source(survey.picoxystrobin.complete %>% group_by(ID) %>%
    top_n(1, EC50DC) %>% #keeping the highest value of each ID value
    ungroup()))
 
@@ -1594,7 +1675,12 @@ Ana by Field
  Ana Stats, by host
 ```{r}
 #generate_label( 
-  test_host(survey.picoxystrobin.complete.host  %>% group_by(ID) %>%
+  test_kruskal_host(survey.picoxystrobin.complete.host  %>% group_by(ID) %>%
+   top_n(1, EC50DC) %>% #keeping the highest value of each ID value
+   ungroup())
+  #)
+#generate_label( 
+  test_Dunn_host(survey.picoxystrobin.complete.host  %>% group_by(ID) %>%
    top_n(1, EC50DC) %>% #keeping the highest value of each ID value
    ungroup())
   #)
@@ -1675,12 +1761,22 @@ select(-c(EC50DC)) %>%
 ```
 #Getting the less sensive isolates from boscalid and picoxystrobin
 ```{r}
-boscalid.less.sensive <-survey.boscalid.fields.2 %>% arrange(desc(EC50DC))%>% select(ID) %>% pull()
-boscalid.less.sensive.2 <- sort(boscalid.less.sensive[1:10])
+boscalid.less.sensive <-survey.boscalid.fields.2 %>% arrange(desc(EC50DC))
+
+View(boscalid.less.sensive[1:11,] %>% arrange(ID))
+
+boscalid.less.sensive.2 <-boscalid.less.sensive %>% select(ID) %>% pull()
+boscalid.less.sensive.3 <- sort(boscalid.less.sensive.2[1:10])
 
 
-picoxystrobin.less.sensive <- survey.picoxystrobin.fields.2 %>% arrange(desc(EC50DC))%>% select(ID) %>% pull()
-picoxystrobin.less.sensive.2 <- sort(picoxystrobin.less.sensive[1:10])
+
+picoxystrobin.less.sensive <-survey.picoxystrobin.fields.2 %>% arrange(desc(EC50DC))
+
+View(picoxystrobin.less.sensive[1:11,] %>% arrange(ID))
+
+picoxystrobin.less.sensive.2 <-picoxystrobin.less.sensive %>% select(ID) %>% pull()
+picoxystrobin.less.sensive.3 <- sort(picoxystrobin.less.sensive.2[1:10])
+
 # library(kableExtra)
 # picoxystrobin.less.sensive.2 %>%  kable(format = "markdown",caption = "Table with outliers for each fungicide, NA= never tested, 0= not an outlier but tested, 1= outlier", padding = 0, align = "l") %>%
 #   write2pdf("picoxystrobin.less.sensive.pdf")
@@ -2325,5 +2421,107 @@ select(-c(EC50DC)) %>%
    add_row(source = "Total", N  = sum(.$N))
  
  write.csv(Colletotrichum.4, file = "SA_table_molecule.s._current_season.csv")
+```
+
+```{r}
+
+```
+
+
+```{r}
+Colletotrichum <-
+    whitemold.inventory.2 %>% filter(ID %in% lasiodiplodia) %>% 
+    mutate(country = ifelse(
+        ID %in% mexican.isolates,
+        "Mexico",
+        ifelse(ID %in% brazilian.isolates,
+               "Brazil", "USA")),
+        source = ifelse(
+            ID %in% baseline.isolates.2,
+            "Baseline",
+            ifelse(
+                ID %in% Farmer.fields,
+                "Producer Fields","Fungicide Field Trials"
+            )), Host = ifelse(
+                ID %in% drybean,
+                "Drybean", ifelse(
+                    ID %in% soybean,
+                    "Soybean","different_host")),
+        source = as.factor(source),
+        Host = as.factor(Host),
+        country = as.factor(country),
+        Field = as.factor(Field),
+        Year = as.factor(Year),
+        State = as.factor(State),
+        County = as.factor(County),
+        Fungicide_current_season = as.factor(Fungicide_current_season),
+        molecule.s._current_season = as.factor(molecule.s._current_season),
+        Group_MOA_current_season = as.factor(Group_MOA_current_season),
+        Applications = as.factor(Applications),
+        Rate = as.factor(Rate)
+    ) %>%    mutate(Field_Year =  paste(Field, Field_Names, sep = "_")) %>% select(
+        ID,
+        source,#we will change later to the real variable "source"
+        Host,
+        country, 
+        Field,
+        Year,
+        State,
+        County,
+        Fungicide_current_season,
+        molecule.s._current_season,
+        Group_MOA_current_season,
+        Applications,
+        Rate, Field_Year) %>% mutate(Field_Year = recode(
+            Field_Year,
+            WM_production_21_2010_WM_production_21 = "NE.10.fld21.DB",
+            WM_production_1_2007_WM_production_1 = "ND.07.fld01.DB",
+            WM_production_9_2007_WM_production_9  = "WA.07.fld09.DB",
+            lan_2016_lan = "MI.16.East.Lansing.SB",
+            WM_production_10_2008_WM_production_10  = "WA.08.fld10.DB",
+            WM_production_25_2010_WM_production_25 = "ND.10.fld25.DB",
+            mont_2015_mont= "MI.15.Montcalm.SB",
+            na_2017_na = "IA.17.Nashua.SB",
+            mon_2017_mon = "MI.17.Montcalm.SB",
+            NA_1973_NA = "Baseline",
+            NA_1974_NA = "Baseline",
+            NA_1963_NA = "Baseline",
+            WM_nursery_2_2003_WM_nursery_2 = "Baseline",
+            WM_nursery_3_2003_WM_nursery_3 = "Baseline",
+            WM_nursery_4_2003_WM_nursery_4 = "Baseline",
+            WM_nursery_5_2003_WM_nursery_5 = "Baseline",
+            WM_nursery_6_2004_WM_nursery_6 = "Baseline",
+            WM_nursery_7_2004_WM_nursery_7 = "Baseline",
+            WM_nursery_9_2004_WM_nursery_9= "Baseline",
+            WM_nursery_9_2004_WM_nursery_14 = "Baseline",
+            WM_nursery_9_2004_WM_nursery_16 = "Baseline",
+            WM_nursery_9_2004_WM_nursery_20 = "Baseline",
+            WM_nursery_9_2004_WM_nursery_21 = "Baseline",
+            WM_nursery_9_2004_WM_nursery_22 = "Baseline",
+            han_2017_han = "WI.17.Hancock.SB",
+            NA_2010_NA = "BR.2010.fld01.DB",
+            #there are more
+            pre_2017_pre = "MX.2017.pre.DB",
+            ca_2017_ca = "MX.2017.ca.DB",
+            ley_2017_ley = "MX.2017.ley.DB",
+            cer_2015_cer = "WI.2015.cer.SB",
+            NA_2010_NA = "BR.2011.por.DB"
+        )) 
+
+        Colletotrichum.4 <- Colletotrichum %>% filter(!source == "Baseline") %>% 
+    group_by(
+        source,
+        Host,
+        country,
+        State,
+        Field_Year,
+        molecule.s._current_season,
+        Applications,
+        Rate
+    ) %>%
+    summarize(N = n()) %>%
+    ungroup() %>%
+    add_row(source = "Total", N  = sum(.$N))
+  
 ```
 
