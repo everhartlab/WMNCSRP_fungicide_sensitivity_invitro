@@ -691,9 +691,9 @@ Field_Year = recode(
   
     # dunn_test(EC50DC~Field_Year, p.adjust.method ="bonferroni", data = survey.boscalid.2)
 
-
-  
-  myplot_model_1 <- function(filename, RG, logEC50, lm)  { 
+##Myplotmyplot_model_1 function
+  #boscalid
+  myplot_model_1_boscalid <- function(filename, RG, logEC50, lm)  { 
     data <- filename
     RG <- data$RG
     logEC50 <- data$logEC50
@@ -737,7 +737,132 @@ ggplot(data = filename,  aes(x = RG, y = logEC50))  +
                    lty = "dashed",
                    size = 0.3
                   ) + expand_limits(x = c(15, 65)) + scale_x_continuous(name = waiver(), breaks = c(15, 25, 35, 45, 55, 65))  + geom_label(aes(x = 55,
-                                                                                                                                                                                        y = -2.75)
+                                                                                                                                                                                        y = -2.5)
+                                                                                                                                                                                    ,
+                                                                                                                                                                                    label = c(paste  (
+                                                                                                                                                                                      " Y =",
+                                                                                                                                                                                      paste0 (round(summary(lm)[[4]][2], 4), "x"),
+                                                                                                                                                                                      "-",
+                                                                                                                                                                                      round(summary(lm)[[4]][1], 3) *
+                                                                                                                                                                                        -1,
+                                                                                                                                                                                      paste  ("\n R =",
+                                                                                                                                                                                              paste0 (round(
+                                                                                                                                                                                                summary(lm)[[9]][1], 4
+                                                                                                                                                                                              ), "\n p < 0.001"))
+                                                                                                                                                                                    )),size = 7,
+                                                                                                                                                                                    fontface = "bold")
+
+ }
+    ### tetraconazole
+  
+   myplot_model_1_tetraconazole <- function(filename, RG, logEC50, lm)  { 
+    data <- filename
+    RG <- data$RG
+    logEC50 <- data$logEC50
+    Host <- data$Host
+    source <- data$source
+ggplot(data = filename,  aes(x = RG, y = logEC50))  +
+  geom_point(aes(
+    shape = Host,
+    fill= source
+  ),
+  size = 3, stroke= 1, colour= "black")  + scale_shape_manual(values = c(21, 24))+ scale_fill_grey(start = 0, end = 1) +
+      geom_smooth(
+        method = "lm",
+        se = FALSE,
+        colour = "black",
+        size = 0.3
+      ) +
+      theme(
+        plot.title = element_text(
+          size = 18,
+          face = "bold",
+          hjust = 0.5,
+          family = "Arial"
+        ),
+        axis.title = element_text(
+          size = 18,
+          face = "bold",
+          hjust = 0.5
+        ),
+        axis.text = element_text(
+          face = "bold",
+          size = 18,
+          family = "Arial"
+        ),
+        panel.background = element_rect(fill = "white", colour = "grey50")
+      ) + labs(x =
+                 "Relative growth (%)", y = expression(bold(Log  (EC[bold("50")])))) + geom_abline(
+                   intercept = 0,
+                   slope = 1,
+                   color = "black",
+                   lty = "dashed",
+                   size = 0.3
+                  ) + expand_limits(x = c(15, 65)) + scale_x_continuous(name = waiver(), breaks = c(15, 25, 35, 45, 55, 65))  + geom_label(aes(x = 55,
+                                                                                                                                                                                        y = -0.5)
+                                                                                                                                                                                    ,
+                                                                                                                                                                                    label = c(paste  (
+                                                                                                                                                                                      " Y =",
+                                                                                                                                                                                      paste0 (round(summary(lm)[[4]][2], 4), "x"),
+                                                                                                                                                                                      "-",
+                                                                                                                                                                                      round(summary(lm)[[4]][1], 3) *
+                                                                                                                                                                                        -1,
+                                                                                                                                                                                      paste  ("\n R =",
+                                                                                                                                                                                              paste0 (round(
+                                                                                                                                                                                                summary(lm)[[9]][1], 4
+                                                                                                                                                                                              ), "\n p < 0.001"))
+                                                                                                                                                                                    )),size = 7,
+                                                                                                                                                                                    fontface = "bold")
+
+ }
+  
+   #### picoxystrobin
+  
+   myplot_model_1_picoxystrobin <- function(filename, RG, logEC50, lm)  { 
+    data <- filename
+    RG <- data$RG
+    logEC50 <- data$logEC50
+    Host <- data$Host
+    source <- data$source
+ggplot(data = filename,  aes(x = RG, y = logEC50))  +
+  geom_point(aes(
+    shape = Host,
+    fill= source
+  ),
+  size = 3, stroke= 1, colour= "black")  + scale_shape_manual(values = c(21, 24))+ scale_fill_grey(start = 0, end = 1) +
+      geom_smooth(
+        method = "lm",
+        se = FALSE,
+        colour = "black",
+        size = 0.3
+      ) +
+      theme(
+        plot.title = element_text(
+          size = 18,
+          face = "bold",
+          hjust = 0.5,
+          family = "Arial"
+        ),
+        axis.title = element_text(
+          size = 18,
+          face = "bold",
+          hjust = 0.5
+        ),
+        axis.text = element_text(
+          face = "bold",
+          size = 18,
+          family = "Arial"
+        ),
+        panel.background = element_rect(fill = "white", colour = "grey50")
+      ) + labs(x =
+                 "Relative growth (%)", y = expression(bold(Log  (EC[bold("50")])))) + geom_abline(
+                   intercept = 0,
+                   slope = 1,
+                   color = "black",
+                   lty = "dashed",
+                   size = 0.3
+                  ) + expand_limits(x = c(15, 65)) + scale_x_continuous(name = waiver(), breaks = c(15, 25, 35, 45, 55, 65))  + geom_label(aes(x = 30,
+                                                                                                                                                                                        y = -4.65)
                                                                                                                                                                                     ,
                                                                                                                                                                                     label = c(paste  (
                                                                                                                                                                                       " Y =",
@@ -755,7 +880,7 @@ ggplot(data = filename,  aes(x = RG, y = logEC50))  +
  }
   
   
-  ####
+    ####
    myplot_model_2 <- function(filename, EC50, Estimate.50DC, Host, source) {
      data <- filename
     EC50 <- data$EC50
@@ -774,7 +899,7 @@ ggplot(data = filename,  aes(x = RG, y = logEC50))  +
                size = 0.3) +
    theme(
      plot.title = element_text(
-       size = 18,
+       size = 14,
        face = "bold",
        hjust = 0.5,
        family = "Arial"
@@ -782,7 +907,7 @@ ggplot(data = filename,  aes(x = RG, y = logEC50))  +
      axis.title = element_text(size = 18, face = "bold", hjust = 0.5),
      axis.text = element_text(
        face = "bold",
-       size = 18,
+       size = 14,
        family = "Arial"
      ),
      panel.background = element_rect(fill = "white", colour = "grey50")
@@ -1173,7 +1298,7 @@ boscalid.EC50DC <- boscalid.joined.2.clean %>% mutate(Estimate.50DC =
 # Linear Regression graph of log EC50 and relative growth at 0.2 ppm
 ###
 
-myplot_model_1(boscalid.joined.2.clean, lm = boscalid.lm) #+ scale_y_continuous(breaks = c(-3,-2.75,-2.5,-2.25,-2.0,-1.75,-1.5))
+myplot_model_1_boscalid(boscalid.joined.2.clean, lm = boscalid.lm) #+ scale_y_continuous(breaks = c(-3,-2.75,-2.5,-2.25,-2.0,-1.75,-1.5))
  
 
 ######### Lxxinear model of EC50  and EC50DC just to corroborate is a GOOD RELATIONSHIP, check normality and homogeneity of variances
@@ -1198,7 +1323,7 @@ myplot_model_2(boscalid.EC50DC)+ expand_limits(x = c(0.04, 0.25), y = c(0.04, 0.
                                                           paste0 (round(
                                                            summary(boscalid.lm.2)[[9]][1], 4
                                                           ), "\n p < 0.001"))
-                                                )),size = 7,
+                                                )),size = 5,
                                                 fontface = "bold")
                                                
                                                
@@ -1238,7 +1363,7 @@ tetraconazole.EC50DC <- tetraconazole.joined.2.clean %>% mutate(Estimate.50DC =
 # Linear Regression graph of log EC50 and relative growth at 0.2 ppm
 ###
 
-myplot_model_1(tetraconazole.joined.2.clean, lm = tetraconazole.lm) 
+myplot_model_1_tetraconazole(tetraconazole.joined.2.clean, lm = tetraconazole.lm) 
  
  
 
@@ -1262,7 +1387,7 @@ myplot_model_2(tetraconazole.EC50DC)+ expand_limits(x = c(0.27, 1.8), y = c(0.27
                         paste0 (round(
                           summary(tetraconazole.lm.2)[[9]][1], 4
                         ), "\n p < 0.001"))
-              )),size = 7,
+              )),size = 5,
               fontface = "bold")
  
 
@@ -1306,7 +1431,7 @@ summary(picoxystrobin.lm.2 <- lineal_model("Estimate.50DC","EC50",data =  picoxy
 round(picoxystrobin.lm.2[[1]][[2]],4)
 round(picoxystrobin.lm.2[[1]][[1]],3)
 
-myplot_model_1(picoxystrobin.joined.2.clean, lm = picoxystrobin.lm) 
+myplot_model_1_picoxystrobin(picoxystrobin.joined.2.clean, lm = picoxystrobin.lm) 
 
 
 ######### Linear model of EC50  and EC50DC just to corroborate is a GOOD RELATIONSHIP, check normality and homogeneity of variances
@@ -1323,9 +1448,10 @@ myplot_model_2(picoxystrobin.EC50DC)+ expand_limits(x = c(0.005, 0.018), y = c(0
                         paste0 (round(
                           summary(picoxystrobin.lm.2)[[9]][1], 4
                         ), "\n p < 0.001"))
-              )),size = 7,
+              )),size = 5,
               fontface = "bold")
  
+
 
 
 ```
@@ -2988,17 +3114,21 @@ myplot_baseline(survey.picoxystrobin.complete)
 #
  # unit(c(t, r, b, l), "cm") with margin sizes at the top, right, bottom, and left, 
 #data
-a.tet <- myplot_model_1(tetraconazole.joined.2.clean, lm = tetraconazole.lm) + theme(plot.margin = unit(c(1,1,1,1),"cm"))+   theme(axis.text.x=element_blank(), axis.title = element_blank(), axis.title.y = element_blank(), legend.position = "none")
+a.tet <- myplot_model_1_tetraconazole (tetraconazole.joined.2.clean, lm = tetraconazole.lm) + theme(plot.margin = unit(c(1,1,1,1),"cm"))+   theme(axis.text.x=element_blank(), axis.title = element_blank(), axis.title.y = element_blank(), legend.position = "none") #+ coord_equal()
 a.tet
 
-b.bos <- myplot_model_1(boscalid.joined.2.clean, lm = boscalid.lm)+  theme(plot.margin = unit(c(-0.5,1,1,1),"cm")) +   theme(axis.text.x=element_blank(), axis.title.x = element_blank(), legend.position = "none")
+b.bos <- myplot_model_1_boscalid (boscalid.joined.2.clean, lm = boscalid.lm)+  theme(plot.margin = unit(c(-0.5,1,1,1),"cm")) +   theme(axis.text.x=element_blank(), axis.title.x = element_blank(), legend.position = "none") #+ coord_equal()
 b.bos
 
-c.pico <- myplot_model_1(picoxystrobin.joined.2.clean, lm = picoxystrobin.lm) + theme(plot.margin = unit(c(-0.5,1,1,1),"cm")) +   theme(axis.title.y = element_blank(), legend.position = "none")
+c.pico <- myplot_model_1_picoxystrobin (picoxystrobin.joined.2.clean, lm = picoxystrobin.lm) + theme(plot.margin = unit(c(-0.5,1,1,1),"cm")) +   theme(axis.title.y = element_blank(), legend.position = "none") #+ coord_equal()
 c.pico
 
 #Myplot <- multiplot(aa,bb,cc, cols=1)
- ggarrange(a.tet,b.bos,c.pico, ncol = 1, labels = c("A", "B", "C"))
+ # ggarrange(a.tet,b.bos,c.pico, ncol = 1, labels = c("A", "B", "C"))
+
+ #My plot 
+ 
+cowplot::plot_grid(a.tet, b.bos, c.pico, align = "v", nrow = 3, rel_widths =   c(1/40, 1/40, 1/40))
 
 #####
 
@@ -3007,8 +3137,8 @@ c.pico
 
 
 aa.tet <-myplot_model_2(tetraconazole.EC50DC)+ expand_limits(x = c(0.27, 1.8), y = c(0.27, 1.8))  + scale_x_continuous(name = waiver(),
-                                                                             breaks = c(0.3, 0.6, 0.9, 1.2, 1.5,1.8)) + scale_y_continuous(breaks = c(0.3, 0.6, 0.9, 1.2, 1.5,1.8))+ theme(plot.margin = unit(c(1,1,1,1),"cm"))+   theme( axis.title = element_blank(), axis.title.y = element_blank(), legend.position = "none")+ geom_label(aes(x = 1.5,
-                  y = 0.6)
+                                                                             breaks = c(0.3, 0.6, 0.9, 1.2, 1.5,1.8)) + scale_y_continuous(breaks = c(0.3, 0.6, 0.9, 1.2, 1.5,1.8))+ theme(plot.margin = unit(c(1,1,1,1),"cm"))+   theme( axis.title = element_blank(), axis.title.y = element_blank(), legend.position = "none")+ geom_label(aes(x = 0.45,
+                  y = 1.35)
               ,
               label = c(paste  (
                 " Y =",
@@ -3019,7 +3149,7 @@ aa.tet <-myplot_model_2(tetraconazole.EC50DC)+ expand_limits(x = c(0.27, 1.8), y
                         paste0 (round(
                           summary(tetraconazole.lm.2)[[9]][1], 4
                         ), "\n p < 0.001"))
-              )),size = 7,
+              )),size = 5,
               fontface = "bold")
  
 
@@ -3028,8 +3158,8 @@ aa.tet
 
 
 bb.bos <-myplot_model_2(boscalid.EC50DC)+ expand_limits(x = c(0.04, 0.25), y = c(0.04, 0.25))  + scale_x_continuous(name = waiver(),
-                                                                             breaks = c(0.05, 0.1, 0.15, 0.20, 0.25)) + scale_y_continuous(breaks = c(0.05, 0.1, 0.15, 0.20, 0.25))+  theme(plot.margin = unit(c(-0.7,1,1,1),"cm")) +   theme( axis.title.x   = element_blank(), legend.position = "none") + geom_label(aes(x = 0.20,
-                                                    y = 0.10)
+                                                                             breaks = c(0.05, 0.1, 0.15, 0.20, 0.25)) + scale_y_continuous(breaks = c(0.05, 0.1, 0.15, 0.20, 0.25))+  theme(plot.margin = unit(c(-0.7,1,1,1),"cm")) +   theme( axis.title.x   = element_blank(), legend.position = "none") + geom_label(aes(x = 0.075,
+                                                    y = 0.175)
                                                 ,
                                                 label = c(paste  (
                                                   " Y =",
@@ -3041,7 +3171,7 @@ bb.bos <-myplot_model_2(boscalid.EC50DC)+ expand_limits(x = c(0.04, 0.25), y = c
                                                           paste0 (round(
                                                            summary(boscalid.lm.2)[[9]][1], 4
                                                           ), "\n p < 0.001"))
-                                                )),size = 7,
+                                                )),size = 5,
                                                 fontface = "bold")
                                                
  bb.bos                                              
@@ -3049,8 +3179,8 @@ bb.bos <-myplot_model_2(boscalid.EC50DC)+ expand_limits(x = c(0.04, 0.25), y = c
 
 
 cc.pico<- myplot_model_2(picoxystrobin.EC50DC)+ expand_limits(x = c(0.005, 0.018), y = c(0.005, 0.018))  + scale_x_continuous(name = waiver(),
-                                                                             breaks = c(0.0075, 0.01, 0.0125, 0.0150, 0.018)) + scale_y_continuous(breaks = c(0.0075, 0.01, 0.0125, 0.0150, 0.018))  +   theme(plot.margin = unit(c(-0.6,1,1,1),"cm")) + theme(axis.title.y = element_blank(), legend.position = "none") + geom_label(aes(x = 0.015,
-                  y = 0.009)
+                                                                             breaks = c(0.0075, 0.01, 0.0125, 0.0150, 0.018)) + scale_y_continuous(breaks = c(0.0075, 0.01, 0.0125, 0.0150, 0.018))  +   theme(plot.margin = unit(c(-0.6,1,1,1),"cm")) + theme(axis.title.y = element_blank(), legend.position = "none") + geom_label(aes(x = 0.003,
+                  y = 0.015)
               ,
               label = c(paste  (
                 " Y =",
@@ -3061,7 +3191,7 @@ cc.pico<- myplot_model_2(picoxystrobin.EC50DC)+ expand_limits(x = c(0.005, 0.018
                         paste0 (round(
                           summary(picoxystrobin.lm.2)[[9]][1], 4
                         ), "\n p < 0.001"))
-              )),size = 7,
+              )),size = 5,
               fontface = "bold")
  
 cc.pico
@@ -3070,25 +3200,29 @@ cc.pico
 
 
 #Myplot <- multiplot(aa,bb,cc, cols=1)
-ggarrange(aa.tet,bb.bos,cc.pico, ncol = 1, labels = c("A", "B", "C"))
+#ggarrange(aa.tet,bb.bos,cc.pico, ncol = 1, labels = c("A", "B", "C"))
+# Myplot
 
+cowplot::plot_grid(aa.tet, bb.bos, cc.pico, align = "v", nrow = 3, rel_widths =   c(1/40, 1/40, 1/40))
 ####
 
-aaa.tet <- myplot_comparison(survey.tetraconazole.fields.2, highlabel = 0.1)  + expand_limits(y = c(0.5, 1.6)) + scale_y_continuous(breaks = c(0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6))+ theme(plot.margin = unit(c(1,1,1,1),"cm"))+   theme( axis.title = element_blank(), axis.title.y = element_blank(), legend.position = "none")
-
+aaa.tet <- myplot_comparison(survey.tetraconazole.fields.2, highlabel = 0.1)  + expand_limits(y = c(0.5, 1.6)) + scale_y_continuous(breaks = c(0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6))+ theme(plot.margin = unit(c(1,1,1,1),"cm"))+   theme( axis.title = element_blank(), axis.title.y = element_blank(), legend.position = "none") 
+aaa.tet
 
 bbb.bos <- myplot_comparison(survey.boscalid.fields.2,highlabel = 0.01) + expand_limits(y = c(0.06, 0.18)) +
   scale_y_continuous(breaks = c(0.06, 0.08, 0.1, 0.12, 0.14, 0.16, 0.18)) + geom_hline(yintercept =
                                                                                          0.1606226, linetype = "dashed")+  theme(plot.margin = unit(c(-0.7,1,1,1),"cm"))+   theme( axis.title.x   = element_blank(), legend.position = "none")# make dynamic the value of intercept, create a new fucntion
-
+bbb.bos
 
 
 ccc.pico <- myplot_comparison(survey.picoxystrobin.fields.2,highlabel = 0.005)  + scale_y_continuous(breaks = c(0.008, 0.01, 0.012, 0.014, 0.016, 0.018, 0.020, 0.022, 0.024)) + geom_hline(yintercept =
                                                                                                                                                        0.02148932, linetype = "dashed")  +   theme(plot.margin = unit(c(-0.7,1,1,1),"cm")) + theme(axis.title.y = element_blank(), legend.position = "none")
 
+ccc.pico
+
  ggarrange(aaa.tet,bbb.bos,ccc.pico, ncol = 1, labels = c("A", "B", "C"))
 
-
+cowplot::plot_grid(a.tet, b.bos, c.pico, align = "v", nrow = 3, rel_widths =   c(1/40, 1/40, 1/40))
 ```
 
 ```
