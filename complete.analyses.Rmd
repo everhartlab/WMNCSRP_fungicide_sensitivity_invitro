@@ -3273,23 +3273,30 @@ ggarrange(aa.tet,
           ggarrange(bb.bos, cc.pico, nrow = 2,align = "v", labels = c( "B", "C") ),
           ncol = 2,align = "h", labels = c( "A"))
 
-aaa.tet <- myplot_comparison(survey.tetraconazole.fields.2, highlabel = 0.1)  + expand_limits(y = c(0.5, 1.6)) + scale_y_continuous(breaks = c(0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6))+ theme(plot.margin = unit(c(1,1,1,1),"cm"))+   theme( axis.title = element_blank(), axis.title.y = element_blank(), legend.position = "none") 
+aaa.tet <- myplot_comparison(survey.tetraconazole.fields.2, highlabel = 0.1)  + expand_limits(y = c(0.4, 2.5)) + scale_y_continuous(breaks = c(0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6,1.8,2, 2.2, 2.4 ))+ theme(plot.margin = unit(c(1,1,1,1),"cm"))+   theme( axis.title = element_blank(), axis.title.y = element_blank(), legend.position = "none") + theme(plot.margin = unit(c(1,1,1,1),"cm")) + labs(tag = "A")  +     theme(  plot.tag = element_text(face = "bold")) 
 aaa.tet
 
-bbb.bos <- myplot_comparison(survey.boscalid.fields.2,highlabel = 0.01) + expand_limits(y = c(0.06, 0.18)) +
-  scale_y_continuous(breaks = c(0.06, 0.08, 0.1, 0.12, 0.14, 0.16, 0.18)) + geom_hline(yintercept =
-                                                                                         0.1606226, linetype = "dashed")+  theme(plot.margin = unit(c(-0.7,1,1,1),"cm"))+   theme( axis.title.x   = element_blank(), legend.position = "none")# make dynamic the value of intercept, create a new fucntion
+bbb.bos <- myplot_comparison(survey.boscalid.fields.2, highlabel = 0.01) + expand_limits(y = c(0.05, 0.22)) +
+  scale_y_continuous(breaks = c(0.06, 0.08, 0.1, 0.12, 0.14, 0.16, 0.18, 0.2, 0.22)) + geom_hline(yintercept =  boscalid.less.sensive$EC50DC[9]
+                                                                            , linetype = "dashed")+  theme(plot.margin = unit(c(1,1,1,1),"cm"))+   theme( axis.title.x   = element_blank(), legend.position = "none") +  theme(plot.margin = unit(c(-0.7,1,1,1),"cm")) + labs(tag = "B")  +     theme(  plot.tag = element_text(face = "bold")) # make dynamic the value of intercept, create a new fucntion
 bbb.bos
 
 
-ccc.pico <- myplot_comparison(survey.picoxystrobin.fields.2,highlabel = 0.005)  + scale_y_continuous(breaks = c(0.008, 0.01, 0.012, 0.014, 0.016, 0.018, 0.020, 0.022, 0.024)) + geom_hline(yintercept =
-                                                                                                                                                       0.02148932, linetype = "dashed")  +   theme(plot.margin = unit(c(-0.7,1,1,1),"cm")) + theme(axis.title.y = element_blank(), legend.position = "none")
+ccc.pico <-
+  myplot_comparison(survey.picoxystrobin.fields.2, highlabel = 0.005)  + expand_limits(y = c(0.008, 0.032)) +
+  scale_y_continuous(breaks = c(0.008, 0.01, 0.012, 0.014, 0.016, 0.018, 0.020, 0.022, 0.024, 0.026,0.028,0.03,0.032 )) + geom_hline(yintercept =
+                                                                                                              picoxystrobin.less.sensive$EC50DC[10] , linetype = "dashed")  +   theme(plot.margin = unit(c(1, 1, 1, 1), "cm"))  + theme(axis.title.y = element_blank(), legend.position = "none") +   theme(plot.margin = unit(c(-0.7,1,1,1),"cm"))  + labs(tag = "C")  +     theme(  plot.tag = element_text(face = "bold")) 
 
 ccc.pico
 
- ggarrange(aaa.tet,bbb.bos,ccc.pico, ncol = 1, labels = c("A", "B", "C"))
+#aaa.tet/bbb.bos/ccc.pico + plot_annotation(tag_levels = 'A')
+#aaa.tet/bbb.bos/ccc.pico 
 
-cowplot::plot_grid(a.tet, b.bos, c.pico, align = "v", nrow = 3, rel_widths =   c(1/40, 1/40, 1/40))
+# ggarrange(aaa.tet,bbb.bos,ccc.pico, ncol = 1, labels = c("A", "B", "C"), align = "v")
+ggarrange(aaa.tet,bbb.bos,ccc.pico, ncol = 1,  align = "v")
+# cowplot::plot_grid(aaa.tet, bbb.bos, ccc.pico, align = "v", nrow = 3, rel_widths =   c(1/40, 1/40, 1/40), labels = c("A", "B", "C"))
+
+cowplot::plot_grid(aaa.tet, bbb.bos, ccc.pico, align = "v", nrow = 3, rel_widths =   c(1/40, 1/40, 1/40))
 ```
 
 ```
