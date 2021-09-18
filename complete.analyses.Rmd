@@ -3290,7 +3290,7 @@ ccc.pico <-
 ccc.pico
 
 #aaa.tet/bbb.bos/ccc.pico + plot_annotation(tag_levels = 'A')
-#aaa.tet/bbb.bos/ccc.pico 
+#aaa.tet/bbb.bos/ccc.picoo
 
 # ggarrange(aaa.tet,bbb.bos,ccc.pico, ncol = 1, labels = c("A", "B", "C"), align = "v")
 ggarrange(aaa.tet,bbb.bos,ccc.pico, ncol = 1,  align = "v")
