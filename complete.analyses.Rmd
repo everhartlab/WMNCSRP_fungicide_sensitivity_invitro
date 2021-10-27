@@ -16,6 +16,7 @@ library(DescTools)
 library(agricolae)
 library(multcompView)
 library(ggpubr)
+library(patchwork)
 #library(plyr)
 
 ```
@@ -1019,8 +1020,8 @@ myplot_baseline <- function(filename, EC50DC, source) {
     Baseline = ifelse(
       ID %in% SI.Screening.Nursery.Field,
       # if they are in this group
-      "White mold screening nursery",
-      "True baseline"
+      "Contemporary isolates*",
+      "Historic isolates**"
     )
   ) %>%   ggplot(aes(x = Baseline, y = EC50DC, )) + geom_violin() + geom_jitter(aes(shape = Baseline), size = 6) +     labs(x = "Baseline", y = expression(bold(EC[bold("50") ~ (bold("D"))]) ~
                                                                                                                                                              (bold(ppm ~ bold(
@@ -3106,23 +3107,17 @@ Colletotrichum <-
 ```{r}
 survey.tetraconazole.complete %>% filter(source=="Baseline") %>% mutate(Baseline= ifelse(
     ID %in% SI.Screening.Nursery.Field,# if they are in this group
-    "White mold screening nursery", "True baseline")) %>%   ggplot(aes(x = Baseline, y = EC50DC,)) + geom_violin() + geom_jitter(aes(shape= Baseline))
-
-+   theme(
+    "White mold screening nursery", "True baseline")) %>%   ggplot(aes(x = Baseline, y = EC50DC,)) + geom_violin() + geom_jitter(aes(shape= Baseline))+   theme(
     axis.text.x = element_blank(),
     axis.title.x = element_blank(),
     axis.title.y = element_blank(),
     legend.position = "none"
-  )
-
-+   theme(
+  )+   theme(
     axis.text.x = element_blank(),
     axis.title.x = element_blank(),
     axis.title.y = element_blank(),
     legend.position = "none"
-  )
-
-+ labs(tag = "A")  +     theme(  plot.tag = element_text(face = "bold"))
+  )+ labs(tag = "A")  +     theme(  plot.tag = element_text(face = "bold"))
 
 
 a.tet.baseline <-
