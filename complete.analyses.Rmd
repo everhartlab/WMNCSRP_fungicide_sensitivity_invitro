@@ -1038,13 +1038,13 @@ myplot_baseline <- function(filename, EC50DC, source) {
                                                                                                                                                                ),
                                                                                                                                                                axis.text.x = element_text(
                                                                                                                                                                  face = "bold",
-                                                                                                                                                                 size = 18,
+                                                                                                                                                                 size = 14,
                                                                                                                                                                  family = "Arial",
                                                                                                                                                                  hjust = 0.5
                                                                                                                                                                ),
                                                                                                                                                                axis.text.y = element_text(
                                                                                                                                                                  face = "bold",
-                                                                                                                                                                 size = 18,
+                                                                                                                                                                 size = 14,
                                                                                                                                                                  family = "Arial"
                                                                                                                                                                ),
                                                                                                                                                                panel.background = element_rect(fill = "white", colour = "grey50")
@@ -3108,9 +3108,47 @@ survey.tetraconazole.complete %>% filter(source=="Baseline") %>% mutate(Baseline
     ID %in% SI.Screening.Nursery.Field,# if they are in this group
     "White mold screening nursery", "True baseline")) %>%   ggplot(aes(x = Baseline, y = EC50DC,)) + geom_violin() + geom_jitter(aes(shape= Baseline))
 
-myplot_baseline(survey.tetraconazole.complete)
-myplot_baseline(survey.boscalid.complete)
-myplot_baseline(survey.picoxystrobin.complete)
++   theme(
+    axis.text.x = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    legend.position = "none"
+  )
+
++   theme(
+    axis.text.x = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    legend.position = "none"
+  )
+
++ labs(tag = "A")  +     theme(  plot.tag = element_text(face = "bold"))
+
+
+a.tet.baseline <-
+  myplot_baseline(survey.tetraconazole.complete)  + expand_limits(y = c(0.2, 1.8)) + scale_y_continuous(breaks = c(0.2,0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6,1.8 )) +   theme(
+      legend.position = "none"
+    ) + labs(tag = "A")  +     theme(plot.tag = element_text(face = "bold"))
+    
+b.bos.baseline <- myplot_baseline(survey.boscalid.complete)+ expand_limits(y = c(0.04, 0.24)) +  scale_y_continuous(breaks = c(0.04,0.06, 0.08, 0.1, 0.12, 0.14, 0.16, 0.18, 0.2, 0.22, 0.24))+   theme(
+      axis.text.x = element_blank(),
+      axis.title.x = element_blank(),
+      axis.title.y = element_blank(),
+      legend.position = "none"
+    ) + labs(tag = "B")  +     theme(plot.tag = element_text(face = "bold"))
+
+c.pico.baseline <- myplot_baseline(survey.picoxystrobin.complete)  + expand_limits(y = c(0.008, 0.024)) +  scale_y_continuous(breaks = c(0.008, 0.01, 0.012, 0.014, 0.016, 0.018, 0.020, 0.022, 0.024 ))+   theme(
+      axis.title.y = element_blank(),
+      legend.position = "none"
+    ) + labs(tag = "C")  +     theme(plot.tag = element_text(face = "bold"))
+
+a.tet.baseline/b.bos.baseline/c.pico.baseline
+a.tet.baseline| (b.bos.baseline/c.pico.baseline)
+
+
+
+ggarrange(a.tet.baseline,b.bos.baseline,c.pico.baseline, ncol = 1,  align = "v")
+
 ```
 
 ```{r}
@@ -3273,24 +3311,48 @@ ggarrange(aa.tet,
           ggarrange(bb.bos, cc.pico, nrow = 2,align = "v", labels = c( "B", "C") ),
           ncol = 2,align = "h", labels = c( "A"))
 
-aaa.tet <- myplot_comparison(survey.tetraconazole.fields.2, highlabel = 0.1)  + expand_limits(y = c(0.4, 2.5)) + scale_y_continuous(breaks = c(0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6,1.8,2, 2.2, 2.4 ))+ theme(plot.margin = unit(c(1,1,1,1),"cm"))+   theme( axis.title = element_blank(), axis.title.y = element_blank(), legend.position = "none") + theme(plot.margin = unit(c(1,1,1,1),"cm")) + labs(tag = "A")  +     theme(  plot.tag = element_text(face = "bold")) 
+aaa.tet <-
+  myplot_comparison(survey.tetraconazole.fields.2, highlabel = 0.1)  + expand_limits(y = c(0.4, 2.5)) + scale_y_continuous(breaks = c(0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6, 1.8, 2, 2.2, 2.4)) + theme(plot.margin = unit(c(1, 1, 1, 1), "cm")) +   theme(
+    axis.title = element_blank(),
+    axis.title.y = element_blank(),
+    legend.position = "none"
+  ) + theme(plot.margin = unit(c(1, 1, 1, 1), "cm")) + labs(tag = "A")  +     theme(plot.tag = element_text(face = "bold")) 
 aaa.tet
 
-bbb.bos <- myplot_comparison(survey.boscalid.fields.2, highlabel = 0.01) + expand_limits(y = c(0.05, 0.22)) +
+bbb.bos <-
+  myplot_comparison(survey.boscalid.fields.2, highlabel = 0.01) + expand_limits(y = c(0.05, 0.22)) +
   scale_y_continuous(breaks = c(0.06, 0.08, 0.1, 0.12, 0.14, 0.16, 0.18, 0.2, 0.22)) + geom_hline(yintercept =  boscalid.less.sensive$EC50DC[9]
-                                                                            , linetype = "dashed")+  theme(plot.margin = unit(c(1,1,1,1),"cm"))+   theme( axis.title.x   = element_blank(), legend.position = "none") +  theme(plot.margin = unit(c(-0.7,1,1,1),"cm")) + labs(tag = "B")  +     theme(  plot.tag = element_text(face = "bold")) # make dynamic the value of intercept, create a new fucntion
+                                                                                                  , linetype = "dashed") +  theme(plot.margin = unit(c(1, 1, 1, 1), "cm")) +   theme(axis.title.x   = element_blank(), axis.title.y = element_blank(), legend.position = "none") +  theme(plot.margin = unit(c(-0.7, 1, 1, 1), "cm")) + labs(tag = "B")  +     theme(plot.tag = element_text(face = "bold")) # make dynamic the value of intercept, create a new fucntion
 bbb.bos
 
 
 ccc.pico <-
   myplot_comparison(survey.picoxystrobin.fields.2, highlabel = 0.005)  + expand_limits(y = c(0.008, 0.032)) +
-  scale_y_continuous(breaks = c(0.008, 0.01, 0.012, 0.014, 0.016, 0.018, 0.020, 0.022, 0.024, 0.026,0.028,0.03,0.032 )) + geom_hline(yintercept =
-                                                                                                              picoxystrobin.less.sensive$EC50DC[10] , linetype = "dashed")  +   theme(plot.margin = unit(c(1, 1, 1, 1), "cm"))  + theme(axis.title.y = element_blank(), legend.position = "none") +   theme(plot.margin = unit(c(-0.7,1,1,1),"cm"))  + labs(tag = "C")  +     theme(  plot.tag = element_text(face = "bold")) 
+  scale_y_continuous(
+    breaks = c(
+      0.008,
+      0.01,
+      0.012,
+      0.014,
+      0.016,
+      0.018,
+      0.020,
+      0.022,
+      0.024,
+      0.026,
+      0.028,
+      0.03,
+      0.032
+    )
+  ) + geom_hline(yintercept =
+                   picoxystrobin.less.sensive$EC50DC[10] , linetype = "dashed")  +   theme(plot.margin = unit(c(1, 1, 1, 1), "cm"))  + theme(axis.title.y = element_blank(), legend.position = "none") +   theme(plot.margin = unit(c(-0.7, 1, 1, 1), "cm"))  + labs(tag = "C")  +     theme(plot.tag = element_text(face = "bold")) 
 
 ccc.pico
 
 #aaa.tet/bbb.bos/ccc.pico + plot_annotation(tag_levels = 'A')
-#aaa.tet/bbb.bos/ccc.picoo
+#aaa.tet/bbb.bos/ccc.pico
+
+aaa.tet| (bbb.bos/ccc.pico)
 
 # ggarrange(aaa.tet,bbb.bos,ccc.pico, ncol = 1, labels = c("A", "B", "C"), align = "v")
 ggarrange(aaa.tet,bbb.bos,ccc.pico, ncol = 1,  align = "v")
