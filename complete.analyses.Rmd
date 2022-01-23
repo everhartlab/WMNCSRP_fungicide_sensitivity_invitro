@@ -1604,7 +1604,8 @@ survey.boscalid <- bind_rows(survey.boscalid.thomas.2,
 #Check this
 IDA <- ID
 survey.boscalid.complete <- survey.boscalid%>% 
-  wrangling_DC() 
+  wrangling_DC() %>%  
+ wrangling_DC_2() 
 
 survey.boscalid.fields <- survey.boscalid%>% 
   wrangling_DC() %>% 
@@ -2660,7 +2661,7 @@ select(-c(EC50DC)) %>%
 ```
 
 ```{r}
-punal <- whitemold.inventory %>% mutate(source = ifelse(
+panal <- whitemold.inventory %>% mutate(source = ifelse(
   ID %in% baseline.isolates.2,
   "Baseline",
   ifelse(
@@ -2956,7 +2957,7 @@ punal <- whitemold.inventory %>% mutate(source = ifelse(
                           Rate, Field_Year) %>% filter(ID %in% lasiodiplodia )
 
 
-erica_hermosa <- punal %>% filter(!source == "Baseline") %>% 
+erica_hermosa <- panal %>% filter(!source == "Baseline") %>% 
   group_by(
     source,
     Host,
@@ -2971,7 +2972,7 @@ erica_hermosa <- punal %>% filter(!source == "Baseline") %>%
   ungroup() %>%
   add_row(source = "Total", N  = sum(.$N))
 
-erica_hermosa.2<- punal %>% filter(!source == "Baseline") %>% filter(source == "Fungicide Field Trials") %>% 
+erica_hermosa.2<- panal %>% filter(!source == "Baseline") %>% filter(source == "Fungicide Field Trials") %>% 
   group_by(
     source,
     Host,
@@ -2986,7 +2987,7 @@ erica_hermosa.2<- punal %>% filter(!source == "Baseline") %>% filter(source == "
   ungroup() %>%
   add_row(source = "Total", N  = sum(.$N))
 
-erica_hermosa.3<- punal %>% filter(!source == "Baseline") %>% filter(source == "Producer Fields") %>% 
+erica_hermosa.3<- panal %>% filter(!source == "Baseline") %>% filter(source == "Producer Fields") %>% 
   group_by(
     source,
     Host,
