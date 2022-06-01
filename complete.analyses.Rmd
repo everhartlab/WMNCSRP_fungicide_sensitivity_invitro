@@ -1,27 +1,70 @@
 ---
 title: "R Notebook"
-output: html_notebook
+output:
+  html_document:
+    df_print: paged
 ---
+#  Background   
+Knowledge of baseline sensitivity of a pathogen population to fungicides is important for detection of resistance and for achieving effective disease management strategies (Brent and Holloman 2007). QoI, DMI, MBC and SDHI fungicides are used to control _S. sclerotiorum_ in an IPM approach in soybean and dry bean in the U.S. DMI fungicides are considered to medium risk of resistance emergence, whereas QoI, SDHI and MBC are high risk (Fungicide Resistance Action Committee 2016). MBC and dicarboximide fungicides are used for white mold in Brazil, wherein resistance to MBC fungicide, Thiophanate methyl, has been reported (Lehner et al. 2015). Fungicide resistance has also been reported in China to the MBC, Carbendazim and dicarboximide, Dimethachlon (Ma et al. 2009).
 
-This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+**Commonly Used Fungicides For WM**
+------------------------------------
+|Fungicide| Efficacy of Control| Launched|
+|:---:|:----:|:-----:|:-----:|
+|Thiophanate methyl (MBC)| fair control| 1970|
+|Tetraconazole (DMI)|  fair control| 1988|
+|Picoxystrobin (QoI)| good-very good control| 2000|
+|Boscalid (SDHI)| very good control| 2003|
 
-Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
-```{r}
-library(tidyverse)
-library(broom)
-library(ezec)
-library(DescTools)
+Examples of these include: **Topsin, Domark, Aproach & Endura**. Several other products are mixtures
+
+MBC: Methyl Benzimidazole Carbamates 
+DMI: DeMethylation Inhibitors 
+QoI: Quinone outside Inhibitors 
+SDHI: Succinate dehydrogenase inhibitors 
+
+Field applications of fungicides in the United States on soybean show control of _S. sclerotiorum_ is low to fair for QoI, DMI and MBC fungicides, and good for SDHI fungicides (The North Central Regional Committee on Soybean Diseases 2015). However, it is unknown whether efficacy is related to reduce sensitivity within populations under study. 
+
+ 
+```{r  Packages, warning= FALSE, include=FALSE}
+
+using<-function(...) {
+    libs<-unlist(list(...))
+    req<-unlist(lapply(libs,require,character.only=TRUE))
+    need<-libs[req==FALSE]
+    if(length(need)>0){ 
+        install.packages(need)
+        lapply(need,require,character.only=TRUE)
+    }
+}
+
+using("tidyverse","broom","ezec","DescTools", "agricolae", "multcompView","ggpubr", "patchwork")
+
+# library(tidyverse)
+# library(broom)
+# library(ezec)
+# library(DescTools)
+
 #library(rstatix)
 #library(ggpubr)
-library(agricolae)
-library(multcompView)
-library(ggpubr)
-library(patchwork)
+
+# library(agricolae)
+# library(multcompView)
+# library(ggpubr)
+# library(patchwork)
+
 #library(plyr)
 
 ```
+# Hypotheses  
 
-```{r}
+ 
+1. Isolates _S. sclerotiorum_ collected from producer fields and fungicide research trials, which already have been in contact with **MBC (FRAC group 1), DMI (FRAC group 3), SdhI (FRAC group 7), and QoI (FRAC group 11) fungicides** will have less sensitivity **(except FRAC group 3)** compared to the baseline, because these fungicides have a high risk of resistance and resistance to mostly these groups have been reported previously in _S. sclerotiorum_;
+2. Isolates _S. sclerotiorum_ collected from dry bean will have lower sensitivity compared to the isolates from soybean for the three group fungicides **(except FRAC group 3)**, which have fewer fungicide applications;
+3. Isolates  _S. sclerotiorum_ from Brazil and Mexico will have less sensitivity compared to the USA isolates for the three group fungicides **(except FRAC group 3)** because of different populations and management practices used in tropical and sub-tropical environment.
+
+
+```{r Objects, warning=FALSE}
 baseline.isolates <- c(1, 8, 12, 20, 21, 74, 87, 118, 123, 129, 449, 461, 467, 475, 558, 564, 568, 581, 645, 667, 800)
 
 survey.isolates <-  c( 2385, 2386, 2098, 2099, 2100, 2139, 2140, 2143, 2220, 2222, 2223, 2320, 2362, 2388, 2390 )
@@ -59,9 +102,9 @@ for (variable in unique(whitemold.inventory$County)) {
 
 
 ```
-
-```{r functions}
-#Getrange function
+# Functions
+```{r Functions}
+#Get range function
 get_range <- function(mynumber) {
   bb <- boxplot.stats(mynumber)
   cc <- bb$stats
@@ -108,8 +151,6 @@ reading_data_serial_dilution <- function(filename){
  data$ID[data$ID == "419"]  <- "2385"
  data$ID[data$ID == "78-02"]  <- "2140"
 
- 
- 
  
  data$ID <- as.numeric(data$ID)
   data <- data %>%
@@ -921,7 +962,7 @@ myplot_comparison <- function(filename, Field_Year,EC50DC, highlabel) {
   
   
 }
-#####
+
  myplot_baseline <- function(filename, EC50DC, source) {
   data <- filename
   EC50DC <- data$EC50DC
@@ -963,8 +1004,14 @@ myplot_comparison <- function(filename, Field_Year,EC50DC, highlabel) {
                                                                                                                                                              )
 }
 ```
+# Fungicides:
+**1. Thiophanate methyl**  
+**2. Tetraconazole**  
+**3. Boscalid**  
+**4. Picoxystrobin**  
 
-```{r Reading data}
+
+```{r Reading Data, echo = TRUE, warning=FALSE}
 #TM
 hey <-
   reading_data_serial_dilution("data/TM_serialdi_BL-WMN_survey-WMNCSRP(validationdata).csv") %>%
@@ -1149,8 +1196,12 @@ dplyr::rename(response = picoxystrobin.growth, control = sham.growth) %>%
   select(c(ID, experimental_replicate, repeats, response, control)) %>% 
  reading_data_discriminatory_concentration()
 ```
+#  Fungicide sensitivity by fungicide
+## Serial dilution  
+Fungicide sensitivity was determined from 22 baseline isolates plus 21 additional isolates from FF and FFT randomly selected. Serial dilution  by fungicide eas carried out from 5-6 concentrations with 4 repetitions per isolate and 2 experimental replications. Plates were incubated in darkness at 23 ± 2 °C for 42 h and diameter measured with digital calipers. A dose-response curve was fit to estimate the EC50 for each fungicide.  
 
-```{r getting EC50 serial dilution}
+
+```{r EC50 serial dilution, echo=TRUE, warning=FALSE}
 # TM
 TM.EC50 <-  getting_EC50(hey)
 # Tetraconazole
@@ -1161,7 +1212,11 @@ boscalid.EC50 <- getting_EC50(hey3)
 picoxystrobin.EC50 <- getting_EC50(hey4)
 ```
 
-```{r Getting Discriminatory dose}
+
+## Procedure to get the Discriminatory Concentration (DC)  
+We identified the concentration with the best prediction of EC50 for each fungicide, known as discriminatory concentration (DC), by linear regression of **% mycelial growth vs. log(EC50)**. The concentration yielding the **highest coefficient of determination (r2)** was selected as the DC for each fungicide. For the remaining isolates among the 207, growth on the DC was used to estimate EC50, which is termed EC50(D).
+
+```{r Getting Discriminatory dose, warning=FALSE, echo=TRUE}
 #TM
   #getting_EC50 releases ID with factor
 TM <- getting_DC(hey) 
@@ -1344,8 +1399,11 @@ myplot_model_2(picoxystrobin.EC50DC)+ expand_limits(x = c(0.005, 0.018), y = c(0
 picoxystrobin.joined.2 %>% filter(!EC50 %in% Outlier(EC50))
 ```
 
-```{r}
-#based on object Vientos which is correct, just 
+
+
+### Reading from White Mold Inventory; needed downstream
+```{r White Mold Inventory}
+#based on object Vientos which has all the complete isolates used in this study,  
 
  # I have to keep Field adn Year separate tahts why reading again the main table from data
  
@@ -1402,8 +1460,11 @@ picoxystrobin.joined.2 %>% filter(!EC50 %in% Outlier(EC50))
 
  controls.in.the.plots.2 <- c(1175, 1195, 1327, 1443, 1446, 1461, 1541, 1710)
 ```
+##  Use of the Discriminatory Concentration DC  
+We randomly selected 154 isolates: 86 from dry beans (from 9 states with 1-17 isolates/state, and 2 states from Brazil) and 66 from soybeans (6 NE, 18 IA, 13 WI & 18 MI and 4 from Mexico)  from the collection (baseline, FF, and FF) plus 5 same isolates used in the serial dilution approach
 
-```{r Using the DC and the model, echo = FALSE}
+
+```{r Using the DC and the model}
 TM.joined.2 <- TM.joined.2 %>% select(ID, EC50)
 
 survey.TM <- bind_rows(survey.TM.thomas,
@@ -1578,8 +1639,10 @@ survey.picoxystrobin.fields <- survey.picoxystrobin%>%
 survey.picoxystrobin.complete.host <- survey.picoxystrobin.complete %>% 
   filter(!source=="Baseline")
 ```
-Boscalid Ana Stats, by source
-```{r}
+#  Statistic Analysis 
+## Boscalid 
+### By Source 
+```{r Stat Anal Boscalid By Source}
 test_kruskal_source(survey.boscalid.complete %>% group_by(ID) %>%
    top_n(1, EC50DC) %>% #keeping the highest value of each ID value
    ungroup() )
@@ -1598,14 +1661,10 @@ survey.boscalid.complete %>% group_by(ID) %>%
   group_by(source) %>% summarize(round(range(EC50DC),3), average= round(mean(EC50DC), 2), N= n(),  sd = sd(EC50DC), se = round(sd/sqrt(N),3))
 
 ```
-Ana by Field
-```{r}
-generate_label(  test_field (survey.boscalid.fields))
-```
- 
- 
- Ana Stats, by host
-```{r}
+
+### By Host  
+
+```{r Stat Anal Boscalid By Host}
 #generate_label(
   test_kruskal_host(survey.boscalid.complete.host %>% group_by(ID) %>%
    top_n(1, EC50DC) %>% #keeping the highest value of each ID value
@@ -1623,8 +1682,11 @@ survey.boscalid.complete.host %>%
   group_by(Host) %>% summarize(round(range(EC50DC),3), average= round(mean(EC50DC),2), N= n(),  sd = sd(EC50DC), se = round(sd/sqrt(N),3))
 ```
 
-the graph
-```{r}
+### By Field
+
+```{r Stat Anal Boscalid By Field}
+generate_label(  test_field (survey.boscalid.fields))
+
 survey.boscalid.fields.2 <- survey.boscalid.fields %>% 
 mutate(Field_difference = ifelse(
     Field_Year == "Baseline"| Field_Year == "NE.10.fld21.DB"|
@@ -1639,10 +1701,13 @@ myplot_comparison(survey.boscalid.fields.2,highlabel = 0.01) + expand_limits(y =
   scale_y_continuous(breaks = c(0.06, 0.08, 0.1, 0.12, 0.14, 0.16, 0.18)) + geom_hline(yintercept =
                                                                                          0.1606226, linetype = "dashed")# make dynamic the value of intercept, create a new fucntion
 
- 
 ```
-Tetraconazole Ana Stats, by source
-```{r}
+ 
+
+## Tetraconazole 
+
+### By Source
+```{r Stat Anal Tetraconazole By Source}
 test_kruskal_source(survey.tetraconazole.complete  %>% group_by(ID) %>%
    top_n(1, EC50DC) %>% #keeping the highest value of each ID value
    ungroup() )
@@ -1661,13 +1726,9 @@ survey.tetraconazole.complete %>%
    ungroup() %>% 
   group_by(source) %>% summarize(range(EC50DC), average= mean(EC50DC), N= n(),  sd = sd(EC50DC), se = round(sd/sqrt(N),3))
 ```
- Ana by Field
-```{r}
-generate_label( test_field (survey.tetraconazole.fields))
-```
  
- Ana Stats, by host
-```{r}
+### By Host
+```{r Stat Anal Tetraconazole By Host}
 #generate_label
   test_kruskal_host(survey.tetraconazole.complete.host %>% group_by(ID) %>%
    top_n(1, EC50DC) %>% #keeping the highest value of each ID value
@@ -1685,8 +1746,13 @@ group_by(ID) %>%
    ungroup() %>% 
   group_by(Host) %>% summarize(range(EC50DC), average= mean(EC50DC), N= n(),  sd = sd(EC50DC), se = round(sd/sqrt(N),3))
 ```
-the graph
-```{r}
+
+
+### By Field
+```{r Stat Anal Tetraconazole By Field}
+
+generate_label( test_field (survey.tetraconazole.fields))
+
 survey.tetraconazole.fields.2 <- survey.tetraconazole.fields %>% 
 mutate(Field_difference = ifelse(
     Field_Year == "Baseline"| Field_Year == "NE.10.fld21.DB"|
@@ -1700,8 +1766,10 @@ myplot_comparison(survey.tetraconazole.fields.2, highlabel = 0.1)  + expand_limi
 
 ```
 
-Picoxystrobin Ana Stats, by source
-```{r}
+
+## Picoxystrobin  
+### By Source  
+```{r Stat Anal Picoxystrobin By Source}
  test_kruskal_source(survey.picoxystrobin.complete %>% group_by(ID) %>%
    top_n(1, EC50DC) %>% #keeping the highest value of each ID value
    ungroup())
@@ -1722,13 +1790,9 @@ survey.picoxystrobin.complete %>%
 
 ```
 
-Ana by Field
-```{r}
- test_field (survey.picoxystrobin.fields)
-```
 
- Ana Stats, by host
-```{r}
+### By Host  
+```{r Stat Anal Picoxystrobin By Host}
 #generate_label
   test_kruskal_host(survey.picoxystrobin.complete.host  %>% group_by(ID) %>%
    top_n(1, EC50DC) %>% #keeping the highest value of each ID value
@@ -1746,9 +1810,12 @@ survey.picoxystrobin.complete.host %>%
   group_by(Host) %>% summarize(round(range(EC50DC),3), average= round(mean(EC50DC),2), N= n(),  sd = sd(EC50DC), se = round(sd/sqrt(N),3))
 
 ```
-the graph
 
-```{r}
+### By Field
+
+```{r Stat Anal Picoxystrobin By Field}
+test_field (survey.picoxystrobin.fields)
+
 survey.picoxystrobin.fields.2  <- survey.picoxystrobin.fields %>% 
 mutate(Field_difference = ifelse(
     Field_Year == "Baseline"| Field_Year == "ND.07.fld01.DB"|
@@ -1762,8 +1829,10 @@ myplot_comparison(survey.picoxystrobin.fields.2,highlabel = 0.005)  + scale_y_co
                                                                                                                                                        0.02148932, linetype = "dashed")
   
 ```
-#table publication
-```{r}
+
+
+# Table Publication
+```{r Table Publication}
 vientos <- 
 survey.boscalid.complete %>% 
  bind_rows(wrangling_DC(survey.TM.2)) %>% 
@@ -1788,14 +1857,18 @@ select(-c(EC50DC)) %>%
   pull(ID) %>% 
   unique()
 ```
-#Getting the less sensive isolates from boscalid and picoxystrobin
-```{r}
+
+
+## Less sensive isolates from boscalid and picoxystrobin
+```{r Less sensive isolates}
 boscalid.less.sensive <-survey.boscalid.fields.2 %>% arrange(desc(EC50DC))
 
 View(boscalid.less.sensive[1:11,] %>% arrange(ID))
 
 boscalid.less.sensive.2 <-boscalid.less.sensive %>% select(ID) %>% pull()
+
 boscalid.less.sensive.3 <- sort(boscalid.less.sensive.2[1:10])
+boscalid.less.sensive.3
 
 picoxystrobin.less.sensive <-survey.picoxystrobin.fields.2 %>% arrange(desc(EC50DC))
 
@@ -1803,9 +1876,11 @@ View(picoxystrobin.less.sensive[1:11,] %>% arrange(ID))
 
 picoxystrobin.less.sensive.2 <-picoxystrobin.less.sensive %>% select(ID) %>% pull()
 picoxystrobin.less.sensive.3 <- sort(picoxystrobin.less.sensive.2[1:10])
+picoxystrobin.less.sensive.3
 ```
 
-```{r}
+## Corroboration complete isolates  
+```{r Corroboration complete isolates}
 survey.picoxystrobin.complete %>% group_by( Host) %>% summarise(ave=mean(EC50DC))
 
  View(survey.boscalid.fields %>% select(-c(EC50DC)) %>% 
@@ -1814,7 +1889,8 @@ group_by(Field_Year ) %>%
 summarize(N= n()) )
 ```
 
-```{r}
+# Supplementary Table
+```{r Supplementary Table}
 #based on object Vientos which is correct, just 
 lasiodiplodia <- survey.boscalid.complete %>% 
  bind_rows(wrangling_DC(survey.TM.2)) %>% 
@@ -1826,12 +1902,12 @@ select(-c(EC50DC)) %>%
   pull()
 
  colnames(whitemold.inventory)
- # I have to keep Field adn Year separate tahts why reading again the main table from data
+ # I have to keep Field and Year separate tahts why reading again the main table from data
  
 ```
 
-# Supplemental graph about baseline
-```{r}
+# Supplementary Figure Baseline Distribution 
+```{r Supplementary Figure Baseline}
 a.tet.baseline <-
   myplot_baseline(survey.tetraconazole.complete)  + expand_limits(y = c(0.2, 1.8)) + scale_y_continuous(breaks = c(0.2,0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6,1.8 )) +   theme(
       legend.position = "none"
@@ -1852,7 +1928,11 @@ c.pico.baseline <- myplot_baseline(survey.picoxystrobin.complete)  + expand_limi
 a.tet.baseline| (b.bos.baseline/c.pico.baseline)
 ```
 
-```{r}
+# Figures 1 and 2 article  
+**A. Tetraconazole**  
+**B. Boscalid**  
+**C. Picoxystrobin**
+```{r Figures 1 and 2 Article}
 a.tet <-
   myplot_model_1_tetraconazole (tetraconazole.joined.2.clean, lm = tetraconazole.lm)+   theme(
      legend.position = "none"
@@ -1868,7 +1948,7 @@ b.bos <-
 ###
 c.pico <-
   myplot_model_1_picoxystrobin (picoxystrobin.joined.2.clean, lm = picoxystrobin.lm)  +   theme(axis.title.y = element_blank(), legend.position = "none")+ labs(tag = "C")  +     theme(  plot.tag = element_text(face = "bold")) 
-#####
+
 #Graph together
 a.tet | (b.bos / c.pico)
 ###
@@ -1893,7 +1973,7 @@ aa.tet <-
                                                                                                                    size = 3,
                                                                                                                    fontface = "bold"
                                                                                                                  ) + labs(tag = "A")  +     theme(  plot.tag = element_text(face = "bold")) 
-#####
+
 bb.bos <-
   myplot_model_2(boscalid.EC50DC) + expand_limits(x = c(0.04, 0.25), y = c(0.04, 0.25))  + scale_x_continuous(name = waiver(),
                                                                                                               breaks = c(0.05, 0.1, 0.15, 0.20, 0.25)) + scale_y_continuous(breaks = c(0.05, 0.1, 0.15, 0.20, 0.25)) +   theme(axis.title.x   = element_blank(), axis.title.y = element_blank(), legend.position = "none") + geom_label(
@@ -1942,11 +2022,19 @@ bb.bos <-
                                                                                                                         )  + labs(tag = "C")  +     theme(plot.tag = element_text(face = "bold"))
  ## together
 aa.tet | (bb.bos / cc.pico)
-#####
+
+```
+
+### Figure 3 By Fields Article  
+**A. Tetraconazole**  
+**B. Boscalid**  
+**C. Picoxystrobin**
+```{r Figure 3 Article}
+
 aaa.tet <-
   myplot_comparison(survey.tetraconazole.fields.2, highlabel = 0.1)  + expand_limits(y = c(0.4, 2.5)) + scale_y_continuous(breaks = c(0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6, 1.8, 2, 2.2, 2.4)) + theme(plot.margin = unit(c(0.5, 0.5, 0.5, 0.25), "cm")) +   
    labs(tag = "A")  +     theme(plot.tag = element_text(face = "bold"))
-#####
+
 bbb.bos <-
   myplot_comparison(survey.boscalid.fields.2, highlabel = 0.017) + expand_limits(y = c(0.05, 0.24)) +
   scale_y_continuous(breaks = c(0.06, 0.1, 0.14,  0.18,  0.22)) + geom_hline(yintercept =  boscalid.less.sensive$EC50DC[9]
@@ -1957,7 +2045,7 @@ bbb.bos <-
     legend.position = "none"
   ) +  #theme(plot.margin = unit(c(-1, 1, 1, 1), "cm"))
   labs(tag = "B")  +     theme(plot.tag = element_text(face = "bold")) # make dynamic the value of intercept, create a new fucntion
-#####
+
 ccc.pico <-
   myplot_comparison(survey.picoxystrobin.fields.2, highlabel = 0.007)  + expand_limits(y = c(0.008, 0.032)) +
   scale_y_continuous(
