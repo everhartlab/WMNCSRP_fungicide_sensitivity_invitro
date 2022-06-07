@@ -45,7 +45,7 @@ using("tidyverse","broom","ezec","DescTools", "agricolae", "multcompView","ggpub
 # library(ezec)
 # library(DescTools)
 
-<<<<<<< HEAD
+
 #library(rstatix)
 #library(ggpubr)
 
@@ -55,21 +55,7 @@ using("tidyverse","broom","ezec","DescTools", "agricolae", "multcompView","ggpub
 # library(patchwork)
 
 #library(plyr)
-=======
-Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
-```{r}
-#library(tidyverse)
-library(broom)
-library(ezec)
-library(DescTools)
-#library(rstatix)
-#library(ggpubr)
-library(agricolae)
-library(multcompView)
-library(ggpubr)
-library(patchwork)
-library(plyr)
->>>>>>> 7f38812367322c30deb0539c7e8eb0d0549f0bf4
+
 
 ```
 # Hypotheses  
