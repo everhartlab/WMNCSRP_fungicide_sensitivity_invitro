@@ -88,7 +88,7 @@ mexican.isolates <- c(242, 248, 615:632, 779, 1857: 1940)
 brazilian.isolates <-  c(400:402, 972:979, 1010:1022, 1227:1254, 2417:2569)
 
 
-whitemold.inventory <- read_csv("../data/whitemold.inventory.csv") %>% mutate(Field_Year= paste (Field, Year,sep = "_year_"))
+whitemold.inventory <- read_csv("data/whitemold.inventory.csv") %>% mutate(Field_Year= paste (Field, Year,sep = "_year_"))
 
 for (variable in unique(whitemold.inventory$State)) {
     assign(variable, whitemold.inventory %>% filter (State == variable) %>% pull(ID), envir = .GlobalEnv)
@@ -1410,7 +1410,7 @@ picoxystrobin.joined.2 %>% filter(!EC50 %in% Outlier(EC50))
 
  # I have to keep Field adn Year separate tahts why reading again the main table from data
  
- whitemold.inventory.2 <- read_csv("whitemold.inventory.csv")
+ whitemold.inventory.2 <- read_csv("data/whitemold.inventory.csv")
  
  Colletotrichum <-
     whitemold.inventory.2 %>% 
