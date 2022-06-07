@@ -12,6 +12,8 @@ This is an example of fungicide sensitivity test _in vitro_ for _Sclerotinia scl
 
 5. Data analyses using reproducible methods
 
+The 23 own created functions were compelled in a package FastconcR in https://github.com/EdgarNietoFungi/FastconcR 
+
 Shield: [![CC BY-SA 4.0][cc-by-sa-shield]][cc-by-sa]
 
 This work is licensed under a
