@@ -3,6 +3,7 @@ title: "R Notebook"
 output:
   html_document:
     df_print: paged
+  pdf_document: default
 ---
 #  Background   
 Knowledge of baseline sensitivity of a pathogen population to fungicides is important for detection of resistance and for achieving effective disease management strategies (Brent and Holloman 2007). QoI, DMI, MBC and SDHI fungicides are used to control _S. sclerotiorum_ in an IPM approach in soybean and dry bean in the U.S. DMI fungicides are considered to medium risk of resistance emergence, whereas QoI, SDHI and MBC are high risk (Fungicide Resistance Action Committee 2016). MBC and dicarboximide fungicides are used for white mold in Brazil, wherein resistance to MBC fungicide, Thiophanate methyl, has been reported (Lehner et al. 2015). Fungicide resistance has also been reported in China to the MBC, Carbendazim and dicarboximide, Dimethachlon (Ma et al. 2009).
@@ -1865,7 +1866,7 @@ select(-c(EC50DC)) %>%
 ```{r Less sensive isolates}
 boscalid.less.sensive <-survey.boscalid.fields.2 %>% arrange(desc(EC50DC))
 
-View(boscalid.less.sensive[1:11,] %>% arrange(ID))
+boscalid.less.sensive[1:11,] %>% arrange(ID)
 
 boscalid.less.sensive.2 <-boscalid.less.sensive %>% select(ID) %>% pull()
 
@@ -1874,7 +1875,7 @@ boscalid.less.sensive.3
 
 picoxystrobin.less.sensive <-survey.picoxystrobin.fields.2 %>% arrange(desc(EC50DC))
 
-View(picoxystrobin.less.sensive[1:11,] %>% arrange(ID))
+picoxystrobin.less.sensive[1:11,] %>% arrange(ID)
 
 picoxystrobin.less.sensive.2 <-picoxystrobin.less.sensive %>% select(ID) %>% pull()
 picoxystrobin.less.sensive.3 <- sort(picoxystrobin.less.sensive.2[1:10])
@@ -1885,10 +1886,10 @@ picoxystrobin.less.sensive.3
 ```{r Corroboration complete isolates}
 survey.picoxystrobin.complete %>% group_by( Host) %>% summarise(ave=mean(EC50DC))
 
- View(survey.boscalid.fields %>% select(-c(EC50DC)) %>% 
+ survey.boscalid.fields %>% select(-c(EC50DC)) %>% 
  distinct(ID, .keep_all = TRUE) %>% 
 group_by(Field_Year ) %>%
-summarize(N= n()) )
+summarize(N= n()) 
 ```
 
 # Supplementary Table
