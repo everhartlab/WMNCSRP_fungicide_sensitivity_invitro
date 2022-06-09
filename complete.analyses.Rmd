@@ -88,7 +88,7 @@ mexican.isolates <- c(242, 248, 615:632, 779, 1857: 1940)
 brazilian.isolates <-  c(400:402, 972:979, 1010:1022, 1227:1254, 2417:2569)
 
 
-whitemold.inventory <- read_csv("whitemold.inventory.csv") %>% mutate(Field_Year= paste (Field, Year,sep = "_year_"))
+whitemold.inventory <- read_csv("data/whitemold.inventory.csv") %>% mutate(Field_Year= paste (Field, Year,sep = "_year_"))
 
 for (variable in unique(whitemold.inventory$State)) {
     assign(variable, whitemold.inventory %>% filter (State == variable) %>% pull(ID), envir = .GlobalEnv)
@@ -1406,11 +1406,11 @@ picoxystrobin.joined.2 %>% filter(!EC50 %in% Outlier(EC50))
 
 ### Reading from White Mold Inventory; needed downstream
 ```{r White Mold Inventory}
-#based on object Vientos which has all the complete isolates used in this study,  
+#based on object table1 which has all the complete isolates used in this study,  
 
  # I have to keep Field adn Year separate tahts why reading again the main table from data
  
- whitemold.inventory.2 <- read_csv("whitemold.inventory.csv")
+ whitemold.inventory.2 <- read_csv("data/whitemold.inventory.csv")
  
  Colletotrichum <-
     whitemold.inventory.2 %>% 
@@ -1836,7 +1836,8 @@ myplot_comparison(survey.picoxystrobin.fields.2,highlabel = 0.005)  + scale_y_co
 
 # Table Publication
 ```{r Table Publication}
-vientos <- 
+##
+table1 <- 
 survey.boscalid.complete %>% 
  bind_rows(wrangling_DC(survey.TM.2)) %>% 
   bind_rows(survey.tetraconazole.complete) %>% 
@@ -1892,9 +1893,9 @@ group_by(Field_Year ) %>%
 summarize(N= n()) 
 ```
 
-# Supplementary Table
+# Supplementary Table: Fungicides applied in the field
 ```{r Supplementary Table}
-#based on object Vientos which is correct, just 
+#based on object table1 which is correct, just 
 lasiodiplodia <- survey.boscalid.complete %>% 
  bind_rows(wrangling_DC(survey.TM.2)) %>% 
   bind_rows(survey.tetraconazole.complete) %>% 
@@ -1907,6 +1908,31 @@ select(-c(EC50DC)) %>%
  colnames(whitemold.inventory)
  # I have to keep Field and Year separate tahts why reading again the main table from data
  
+tableS1 <-  wrangling_DC(filename = whitemold.inventory) %>% mutate(source = as.factor(source),
+                        Host = as.factor(Host),
+                        country = as.factor(country),
+                        Field = as.factor(Field),
+                        Year = as.factor(Year),
+                        State = as.factor(State),
+                        County = as.factor(County),
+                        Fungicide_current_season = as.factor(Fungicide_current_season),
+                        molecule.s._current_season = as.factor(molecule.s._current_season),
+                        Group_MOA_current_season = as.factor(Group_MOA_current_season),
+                        Applications = as.factor(Applications),
+                        Rate = as.factor(Rate))%>% select(
+                          ID,
+                          source,#we will change later to the real variable "source"
+                          Host,
+                          country, 
+                          Field,
+                          Year,
+                          State,
+                          County,
+                          Fungicide_current_season,
+                          molecule.s._current_season,
+                          Group_MOA_current_season,
+                          Applications,
+                          Rate, Field_Year) %>% filter(ID %in% lasiodiplodia )
 ```
 
 # Supplementary Figure Baseline Distribution 
