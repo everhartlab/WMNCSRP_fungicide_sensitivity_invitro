@@ -3,8 +3,25 @@ title: "R Notebook"
 output:
   html_document:
     df_print: paged
-  pdf_document: default
 ---
+# About 
+
+This is an example of fungicide sensitivity test in vitro for Sclerotinia sclerotiorum by discriminatory concetrations approach:
+
+Serial dilution method with 6 concentrations for each fungicide from 22 baseline isolates (never exposed to fungicides) + 22 from between farmer fields and fungicide field trials
+
+EC50 estimated from dose-response curve by ezec-package R (Kamvar, 2016)
+
+Identify a single concentration that can be a discriminatory concentration
+
+Use DC to assess sensitivity of large collection
+
+Data analyses using reproducible methods
+
+The 23 own created functions were compelled in a package FastconcR in https://github.com/EdgarNietoFungi/FastconcR
+
+
+
 #  Background   
 Knowledge of baseline sensitivity of a pathogen population to fungicides is important for detection of resistance and for achieving effective disease management strategies (Brent and Holloman 2007). QoI, DMI, MBC and SDHI fungicides are used to control _S. sclerotiorum_ in an IPM approach in soybean and dry bean in the U.S. DMI fungicides are considered to medium risk of resistance emergence, whereas QoI, SDHI and MBC are high risk (Fungicide Resistance Action Committee 2016). MBC and dicarboximide fungicides are used for white mold in Brazil, wherein resistance to MBC fungicide, Thiophanate methyl, has been reported (Lehner et al. 2015). Fungicide resistance has also been reported in China to the MBC, Carbendazim and dicarboximide, Dimethachlon (Ma et al. 2009).
 
